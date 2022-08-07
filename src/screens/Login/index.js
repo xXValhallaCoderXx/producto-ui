@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { StatusBar } from "expo-status-bar";
 import { Text } from "@rneui/themed";
 import {
@@ -16,6 +17,7 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 import Button from "../../components/Button";
+import JwtService from "../../services/auth-service";
 
 const LoginScreen = () => {
   const [displayForm, setDisplayForm] = useState(false);
@@ -83,27 +85,31 @@ const LoginScreen = () => {
           source={require("../../assets/sad-one.png")}
         />
       </Animated.View> */}
-      <Animated.View style={[styles.ctaWrapper, ctaWrapperStyle]}>
-        <Button
-          color="#007ea7"
-          title="Login"
-          onPress={onClickToggleForm("login")}
-        />
-        <Button
-          type="clear"
-          color="#007ea7"
-          title="Signup"
-          onPress={onClickToggleForm("register")}
-        />
-      </Animated.View>
-      <Animated.View style={[styles.loginWrapper, loginFormStyle]}>
-        {formType === "login" ? (
-          <LoginSection onClickDismissLogin={onClickToggleForm("login")} />
-        ) : null}
-        {formType === "register" ? (
-          <RegisterSection onClickDismiss={onClickToggleForm("register")} />
-        ) : null}
-      </Animated.View>
+      {!displayForm && (
+        <Animated.View style={[styles.ctaWrapper, ctaWrapperStyle]}>
+          <Button
+            color="#007ea7"
+            title="Login"
+            onPress={onClickToggleForm("login")}
+          />
+          <Button
+            type="clear"
+            color="#007ea7"
+            title="Signup"
+            onPress={onClickToggleForm("register")}
+          />
+        </Animated.View>
+      )}
+      {displayForm && (
+        <Animated.View style={[styles.loginWrapper, loginFormStyle]}>
+          {formType === "login" ? (
+            <LoginSection onClickDismissLogin={onClickToggleForm("login")} />
+          ) : null}
+          {formType === "register" ? (
+            <RegisterSection onClickDismiss={onClickToggleForm("register")} />
+          ) : null}
+        </Animated.View>
+      )}
       <StatusBar style="auto" />
     </KeyboardAvoidingView>
   );
