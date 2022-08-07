@@ -3,11 +3,12 @@ import { StatusBar } from "expo-status-bar";
 import { Text } from "@rneui/themed";
 import {
   StyleSheet,
-  Image,
+  // Image,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import LoginSection from "./LogoSection";
+import LoginSection from "./LoginSection";
+import RegisterSection from "./RegisterSection";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,8 +18,9 @@ import Animated, {
 import Button from "../../components/Button";
 
 const LoginScreen = () => {
-  const [displaySignup, setDisplaySignup] = useState(false);
-  const offset = useSharedValue(0);
+  const [displayForm, setDisplayForm] = useState(false);
+  const [formType, setFormType] = useState("login");
+  // const offset = useSharedValue(0);
   const titleOffset = useSharedValue(0);
   const imageOffset = useSharedValue(0);
   const ctaWrapperOffset = useSharedValue(0);
@@ -30,11 +32,11 @@ const LoginScreen = () => {
     };
   });
 
-  const imageAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: imageOffset.value }],
-    };
-  });
+  // const imageAnimatedStyle = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [{ translateY: imageOffset.value }],
+  //   };
+  // });
   const ctaWrapperStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: ctaWrapperOffset.value }],
@@ -47,19 +49,20 @@ const LoginScreen = () => {
     };
   });
 
-  const onClickSignup = () => {
-    if (!displaySignup) {
-      titleOffset.value = withSpring(-150);
+  const onClickToggleForm = (formType) => () => {
+    if (!displayForm) {
+      titleOffset.value = withSpring(20);
       loginFormOffset.value = withSpring(-130);
-      imageOffset.value = withDelay(100, withSpring(-100));
-      ctaWrapperOffset.value = withSpring(400);
+      imageOffset.value = withDelay(0, withSpring(-0));
+      ctaWrapperOffset.value = withSpring(550);
     } else {
       titleOffset.value = withSpring(0);
-      imageOffset.value = withDelay(50, withSpring(0));
-      loginFormOffset.value = withSpring(220);
+      imageOffset.value = withDelay(0, withSpring(0));
+      loginFormOffset.value = withSpring(300);
       ctaWrapperOffset.value = withSpring(0);
     }
-    setDisplaySignup(!displaySignup);
+    setFormType(formType);
+    setDisplayForm(!displayForm);
   };
   return (
     <KeyboardAvoidingView
@@ -67,21 +70,39 @@ const LoginScreen = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <Animated.View style={[styles.titleWrapper, titleAnimatedStyle]}>
-        <Text style={{color: "#00a8e8"}} h1>Expenso-Track!</Text>
-        <Text style={{color: "#007ea7"}} h4>We magically track your expenses</Text>
+        <Text style={{ color: "#00a8e8" }} h1>
+          Producto
+        </Text>
+        <Text style={{ color: "#007ea7" }} h4>
+          Unleash Your Creativity
+        </Text>
       </Animated.View>
-      <Animated.View style={[styles.imageWrapper, imageAnimatedStyle]}>
+      {/* <Animated.View style={[styles.imageWrapper, imageAnimatedStyle]}>
         <Image
           style={styles.imageStyle}
           source={require("../../assets/sad-one.png")}
         />
-      </Animated.View>
+      </Animated.View> */}
       <Animated.View style={[styles.ctaWrapper, ctaWrapperStyle]}>
-        <Button color="#007ea7" title="Login" onPress={onClickSignup} />
-        <Button type="clear" color="#007ea7" title="Signup" onPress={onClickSignup} />
+        <Button
+          color="#007ea7"
+          title="Login"
+          onPress={onClickToggleForm("login")}
+        />
+        <Button
+          type="clear"
+          color="#007ea7"
+          title="Signup"
+          onPress={onClickToggleForm("register")}
+        />
       </Animated.View>
       <Animated.View style={[styles.loginWrapper, loginFormStyle]}>
-        <LoginSection onClickDismissLogin={onClickSignup} />
+        {formType === "login" ? (
+          <LoginSection onClickDismissLogin={onClickToggleForm("login")} />
+        ) : null}
+        {formType === "register" ? (
+          <RegisterSection onClickDismiss={onClickToggleForm("register")} />
+        ) : null}
       </Animated.View>
       <StatusBar style="auto" />
     </KeyboardAvoidingView>
