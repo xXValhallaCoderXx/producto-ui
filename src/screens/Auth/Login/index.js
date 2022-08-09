@@ -1,4 +1,5 @@
 import axios from "axios";
+import Constants from 'expo-constants'
 import { useState } from "react";
 import { Text, Card, Input, Button } from "@rneui/themed";
 import JwtService from "../../../services/auth-service"
@@ -12,7 +13,6 @@ import {
 } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
-  console.log("nav:", navigation);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
     if (email && password) {
       axios
         .post(
-          `https://d916-2406-3003-2007-179f-e813-ef88-75d1-6623.ngrok.io/api/v1/auth/login`,
+          `${Constants.manifest.extra.baseUrl}/api/v1/auth/login`,
           {
             username: email,
             password: password,
@@ -31,7 +31,7 @@ const LoginScreen = ({ navigation }) => {
           JwtService.setToken(response.data.access_token);
           // navigation.navigate("Dashboard")
           navigation.dispatch(
-            StackActions.replace('Dashboard')
+            StackActions.replace('App')
           );
         })
         .catch((err) => {

@@ -1,26 +1,35 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import DashboardScreen from "./Dashboard";
+import ProfileScreen from "./Profile";
+import { Ionicons } from "@expo/vector-icons";
 
-const DashboardScreen = ({ navigation }) => {
+
+const Tab = createBottomTabNavigator();
+
+export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Dashboard Screen!</Text>
-      {/* <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate("Registration")}
-      /> */}
-      <StatusBar style="auto" />
-    </View>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === "Home") {
+            iconName = focused
+              ? "ios-information-circle"
+              : "ios-information-circle-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "ios-list-box" : "ios-list";
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+      })}
+      tabBarOptions={{
+        activeTintColor: "blue",
+        inactiveTintColor: "gray",
+      }}
+    >
+      <Tab.Screen name="Home" component={DashboardScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
-
-export default DashboardScreen;
+}
