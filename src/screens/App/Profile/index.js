@@ -5,38 +5,38 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, ToastAndroid } from "react-native";
 import JwtService from "../../../services/auth-service";
 import { ListItem, Avatar } from "@rneui/themed";
+import { Switch } from "@rneui/themed";
+import { useQuery } from "@tanstack/react-query";
 const ProfileScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState();
+
+  const {
+    isLoading,
+    isError,
+    data,
+    error: error2,
+    refetch,
+  } = useQuery("getCategories", async () => {
+    // const data = await axios( `${Constants.manifest.extra.baseUrl}/api/v1/categories`, {
+    //   headers: {
+    //     Authorization: `Bearer ${JwtService.accessToken}`,
+    //   },
+    // });
+    // return data;
+    const response = await fetch(
+      `${Constants.manifest.extra.baseUrl}/api/v1/categories`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${JwtService.accessToken}`,
+        },
+      }
+    );
+    return await response.json();
+  });
   useEffect(() => {
     fetchCategories();
-    // axios
-    //   .get(`${Constants.manifest.extra.baseUrl}/api/v1/categories`, {
-    //     headers: {
-    //       Authorization: `Bearer ${JwtService.accessToken}`,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     // console.log("RESPONSE: ", response.data.map(() => console.log("s")));
-
-    //     // const parsedCategories = response.data.map((category) => {
-    //     //     return {
-    //     //       active: category.active,
-    //     //       id: category.id,
-    //     //       name: category.name,
-    //     //     };
-    //     //   });
-    //     //   setCategories(parsedCategories);
-    //       console.log(res.data);
-    //     // if (response.data.length > 0) {
-
-    //     // }
-    //   })
-    //   .catch((err) => {
-    //     console.log("HEHE: ", err);
-    //     // ToastAndroid.sho,w(err.response.data.message, ToastAndroid.SHORT);
-    //     // setError("Error fetching categories");
-    //   });
   }, []);
 
   const fetchCategories = async () => {
@@ -50,14 +50,44 @@ const ProfileScreen = ({ navigation }) => {
       }
     );
     const json = await response.json();
+    // console.log("CATEOGIRES: ", json.data)
+    setCategories(json.data);
+  };
 
-    const res = await axios.get(`${Constants.manifest.extra.baseUrl}/api/v1/categories`, {
-        headers: {
-          Authorization: `Bearer ${JwtService.accessToken}`,
-        },
-      })
+  const toggleCategory = async (category) => {
+    console.log("!category.active", !category.active);
+    console.log("!category.id", Constants.manifest.extra.baseUrl);
+    try {
+      console.log("go");
+      const response = await fetch(
+        `${Constants.manifest.extra.baseUrl}/api/v1/categories/update`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${JwtService.accessToken}`,
+          },
+          body: {
+            active: !category.active,
+            categoryId: category.id,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(response.status);
+      if (response.status) {
+        console.log("WHATS THE DATA: ", data);
+        setError("Some things missing ah");
+      }
 
-    console.log("LALAL: ", res.data.length);
+  
+    } catch (err) {
+      console.log("X: ", err);
+    }
+  };
+
+  const handleToggleSwitch = (category) => async () => {
+    await toggleCategory(category);
+    // await fetchCategories();
   };
   return (
     <View style={styles.container}>
@@ -68,6 +98,10 @@ const ProfileScreen = ({ navigation }) => {
             <ListItem.Content>
               <ListItem.Title>{category.name}</ListItem.Title>
             </ListItem.Content>
+            <Switch
+              onValueChange={handleToggleSwitch(category)}
+              value={category.active}
+            />
           </ListItem>
         ))
       ) : (
@@ -81,9 +115,9 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#6F0DB3",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
 });
 

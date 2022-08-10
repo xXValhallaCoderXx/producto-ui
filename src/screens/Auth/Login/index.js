@@ -3,21 +3,25 @@ import Constants from 'expo-constants'
 import { useState } from "react";
 import { Text, Card, Input, Button } from "@rneui/themed";
 import JwtService from "../../../services/auth-service"
+
 import { StackActions } from '@react-navigation/native';
 import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   View,
+  Image,
   ToastAndroid,
 } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const handleOnSubmit = () => {
     if (email && password) {
+      setLoading(true);
       axios
         .post(
           `${Constants.manifest.extra.baseUrl}/api/v1/auth/login`,
@@ -27,15 +31,16 @@ const LoginScreen = ({ navigation }) => {
           }
         )
         .then((response) => {
-          console.log("RESPONSE: ", response.data);
+          setLoading(false);
           JwtService.setToken(response.data.access_token);
-          // navigation.navigate("Dashboard")
+          ToastAndroid.show("Login success", ToastAndroid.SHORT);
           navigation.dispatch(
             StackActions.replace('App')
           );
+        
         })
         .catch((err) => {
-          console.log(err);
+          setLoading(false);
           ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
           setError("Invalid username / password");
         });
@@ -48,16 +53,16 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.titleContainer}>
-        <Text style={{ color: "#00a8e8" }} h1>
+        <Text style={{ color: "white" }} h1>
           Producto
         </Text>
-        <Text style={{ color: "#007ea7" }} h4>
+        <Text style={{ color: "white" }} h4>
           Unleash Your Creativity
         </Text>
       </View>
       <Card containerStyle={styles.loginCard}>
         <Text
-          style={{ color: "#007ea7", textAlign: "center", marginBottom: 10 }}
+          style={{ color: "#6F0DB3", textAlign: "center", marginBottom: 10 }}
           h2
         >
           Login
@@ -89,12 +94,14 @@ const LoginScreen = ({ navigation }) => {
         )) ||
           null}
         <Button
-          // disabled={!email || !password}
+          disabled={!email || !password}
+          loading={loading}
           title="Submit"
           onPress={handleOnSubmit}
+          color="#6F0DB3"
         />
       </Card>
-      <Text style={{ color: "#007ea7", marginTop: 20 }} h4>
+      <Text style={{ color: "white", marginTop: 20 }} h4>
         Not boosting your productivity?
       </Text>
       <Text
@@ -103,6 +110,10 @@ const LoginScreen = ({ navigation }) => {
       >
         Sign Up <Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
       </Text>
+      <Image
+          style={{width: 40, height: 40, marginTop: 100}}
+          source={require("./water.gif")} />
+          <Text style={{ fontWeight: "bold", color: "white" }}>Bloop Dev Studios</Text>
     </KeyboardAvoidingView>
   );
 };
@@ -110,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#003459",
+    backgroundColor: "#6F0DB3",
     display: "flex",
     alignItems: "center",
     // justifyContent: "space-between",

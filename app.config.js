@@ -1,8 +1,11 @@
 export default {
   name: "Producto",
   version: "1.0.0",
+  "android": {
+    "package": "com.xxvalhallacoderxx.producto"
+  },
   extra: {
     environment: "development",
-    baseUrl: "https://428b-2406-3003-2007-179f-e813-ef88-75d1-6623.ngrok.io"
+    baseUrl: "https://four-flowers-turn-116-86-1-104.loca.lt"
   },
 };

@@ -53,16 +53,16 @@ const RegisterScreen = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.titleContainer}>
-        <Text style={{ color: "#00a8e8" }} h1>
+        <Text style={{ color: "white" }} h1>
           Producto
         </Text>
-        <Text style={{ color: "#007ea7" }} h4>
+        <Text style={{ color: "white" }} h4>
           Unleash Your Creativity
         </Text>
       </View>
       <Card containerStyle={styles.loginCard}>
         <Text
-          style={{ color: "#007ea7", textAlign: "center", marginBottom: 10 }}
+          style={{ color: "#6F0DB3", textAlign: "center", marginBottom: 10 }}
           h2
         >
           Registration
@@ -104,16 +104,17 @@ const RegisterScreen = ({ navigation }) => {
           disabled={!email || !password || (!confirmPassword && !error)}
           title="Submit"
           onPress={handleOnSubmit}
+          color="#6F0DB3"
         />
       </Card>
-      <Text style={{ color: "#007ea7", marginTop: 20 }} h4>
+      <Text style={{ color: "white", marginTop: 20 }} h4>
         Already have an account?
       </Text>
       <Text
         onPress={() => navigation.navigate("Login")}
         style={{ color: "white", marginTop: 20, fontSize: 20 }}
       >
-        Log-in<Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
+        Log-in <Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
       </Text>
     </KeyboardAvoidingView>
   );
@@ -122,7 +123,7 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#003459",
+    backgroundColor: "#6F0DB3",
     display: "flex",
     alignItems: "center",
     // justifyContent: "space-between",
