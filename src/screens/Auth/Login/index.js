@@ -1,10 +1,10 @@
 import axios from "axios";
-import Constants from 'expo-constants'
+import Constants from "expo-constants";
 import { useState } from "react";
 import { Text, Card, Input, Button } from "@rneui/themed";
-import JwtService from "../../../services/auth-service"
-
-import { StackActions } from '@react-navigation/native';
+import JwtService from "../../../services/auth-service";
+import { useTheme } from "@rneui/themed";
+import { StackActions } from "@react-navigation/native";
 import {
   StyleSheet,
   KeyboardAvoidingView,
@@ -15,6 +15,7 @@ import {
 } from "react-native";
 
 const LoginScreen = ({ navigation }) => {
+  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,21 +24,15 @@ const LoginScreen = ({ navigation }) => {
     if (email && password) {
       setLoading(true);
       axios
-        .post(
-          `${Constants.manifest.extra.baseUrl}/api/v1/auth/login`,
-          {
-            username: email,
-            password: password,
-          }
-        )
+        .post(`${Constants.manifest.extra.baseUrl}/api/v1/auth/login`, {
+          username: email,
+          password: password,
+        })
         .then((response) => {
           setLoading(false);
           JwtService.setToken(response.data.access_token);
           ToastAndroid.show("Login success", ToastAndroid.SHORT);
-          navigation.dispatch(
-            StackActions.replace('App')
-          );
-        
+          navigation.dispatch(StackActions.replace("App"));
         })
         .catch((err) => {
           setLoading(false);
@@ -53,16 +48,21 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.titleContainer}>
-        <Text style={{ color: "white" }} h1>
+        <Text style={{ color: theme.colors.primary }} h1>
           Producto
         </Text>
-        <Text style={{ color: "white" }} h4>
+        <Text style={{ color: "black" }} h4>
           Unleash Your Creativity
         </Text>
       </View>
       <Card containerStyle={styles.loginCard}>
         <Text
-          style={{ color: "#6F0DB3", textAlign: "center", marginBottom: 10 }}
+          color="primary"
+          style={{
+            color: theme.colors.primary,
+            textAlign: "center",
+            marginBottom: 10,
+          }}
           h2
         >
           Login
@@ -98,22 +98,30 @@ const LoginScreen = ({ navigation }) => {
           loading={loading}
           title="Submit"
           onPress={handleOnSubmit}
-          color="#6F0DB3"
+          color={theme.colors.primary}
         />
       </Card>
-      <Text style={{ color: "white", marginTop: 20 }} h4>
+      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h4>
         Not boosting your productivity?
       </Text>
       <Text
         onPress={() => navigation.navigate("Registration")}
-        style={{ color: "white", marginTop: 20, fontSize: 20 }}
+        style={{
+          color: "black",
+          marginTop: 15,
+          fontSize: 20,
+          fontWeight: "700",
+        }}
       >
-        Sign Up <Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
+        Sign Up Here
       </Text>
       <Image
-          style={{width: 40, height: 40, marginTop: 100}}
-          source={require("./water.gif")} />
-          <Text style={{ fontWeight: "bold", color: "white" }}>Bloop Dev Studios</Text>
+        style={{ width: 40, height: 40, marginTop: 100 }}
+        source={require("./water.gif")}
+      />
+      <Text style={{ fontWeight: "bold", color: theme.colors.primary }}>
+        Bloop Studios
+      </Text>
     </KeyboardAvoidingView>
   );
 };
@@ -121,7 +129,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#6F0DB3",
+    backgroundColor: "white",
     display: "flex",
     alignItems: "center",
     // justifyContent: "space-between",
@@ -133,11 +141,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   loginCard: {
+    borderColor: "#5048E5",
     marginTop: 125,
     minWidth: 300,
     maxWidth: 350,
     borderRadius: 6,
     display: "flex",
+    padding: 30
   },
 });
 

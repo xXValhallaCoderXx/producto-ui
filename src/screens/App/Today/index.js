@@ -4,11 +4,18 @@ import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, ToastAndroid } from "react-native";
 import JwtService from "../../../services/auth-service";
-import { ListItem, Text, Button, Icon, Input, useTheme } from "@rneui/themed";
+import {
+  ListItem,
+  Text,
+  Button,
+  Icon,
+  Input,
+  useTheme,
+  Tab,
+} from "@rneui/themed";
 import { Switch, Dialog } from "@rneui/themed";
 
-
-const ProfileScreen = ({ navigation }) => {
+const ListScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState();
@@ -22,7 +29,6 @@ const ProfileScreen = ({ navigation }) => {
   const toggleDialog = () => {
     setVisible(!visible);
   };
-
 
   const fetchCategories = async () => {
     const response = await fetch(
@@ -83,7 +89,7 @@ const ProfileScreen = ({ navigation }) => {
     await fetchCategories();
     setCategoryName("");
     setVisible(false);
-  }
+  };
   return (
     <View style={styles.container}>
       <View
@@ -97,7 +103,7 @@ const ProfileScreen = ({ navigation }) => {
           flexDirection: "row",
         }}
       >
-        <Text style={{ fontWeight: "700", fontSize: 30 }}>Goals</Text>
+        <Text style={{ fontWeight: "700", fontSize: 30 }}>Today</Text>
         <Button
           onPress={toggleDialog}
           type="outline"
@@ -111,19 +117,23 @@ const ProfileScreen = ({ navigation }) => {
 
       <View style={{ padding: 30, paddingLeft: 20 }}>
         {categories.length > 0 ? (
-          categories.map((category, i) => (
-            <ListItem key={i}>
-              <ListItem.Content>
-                <ListItem.Title style={{ fontSize: 20, fontWeight: "600" }}>
-                  {category.name}ss
-                </ListItem.Title>
-              </ListItem.Content>
-              <Switch
-                onValueChange={handleToggleSwitch(category)}
-                value={category.active}
-              />
-            </ListItem>
-          ))
+          <Tab
+            indicatorStyle={{
+              backgroundColor: "purple",
+              height: 3,
+            }}
+            value={0}
+            variant="primary"
+          >
+            {categories.map((category) => (
+              <Tab.Item
+                style={{ color: "black" }}
+                // containerStyle={{ backgroundColor: "" }}
+              >
+                {category.name}
+              </Tab.Item>
+            ))}
+          </Tab>
         ) : (
           <Text>No Results</Text>
         )}
@@ -139,7 +149,7 @@ const ProfileScreen = ({ navigation }) => {
           value={categoryName}
           nativeID="categoryName"
           placeholder="Enter Cateogry Name..."
-          style={{marginTop: 15}}
+          style={{ marginTop: 15 }}
         />
         <Button
           disabled={!categoryName}
@@ -161,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default ListScreen;

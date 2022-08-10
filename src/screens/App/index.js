@@ -1,8 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DashboardScreen from "./Dashboard";
+import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
-import { Ionicons } from "@expo/vector-icons";
-
+import { Button, Text } from "@rneui/themed";
+import { Ionicons, Feather } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
 
@@ -10,17 +10,17 @@ export default function App() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "Home") {
-            iconName = focused
-              ? "ios-information-circle"
-              : "ios-information-circle-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "ios-list-box" : "ios-list";
+          if (route.name === "Today") {
+            iconName = "list";
+          } else if (route.name === "Goals") {
+            iconName = "target";
+          } else if (route.name === "Account") {
+            return <Ionicons name="person" size={size} color={color} />;
           }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
+          return <Feather name={iconName} size={size} color={color} />;
         },
       })}
       tabBarOptions={{
@@ -28,8 +28,9 @@ export default function App() {
         inactiveTintColor: "gray",
       }}
     >
-      <Tab.Screen name="Home" component={DashboardScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Today" component={DashboardScreen} />
+      <Tab.Screen name="Goals" component={ProfileScreen} />
+      <Tab.Screen name="Account" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
