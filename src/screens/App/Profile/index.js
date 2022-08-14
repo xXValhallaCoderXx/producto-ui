@@ -15,9 +15,7 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View
-        style={styles.headerContainer}
-      >
+      <View style={styles.headerContainer}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <Text h4 style={{ color: theme.colors.primary }}>
             Blooper
@@ -50,8 +48,12 @@ const ProfileScreen = ({ navigation }) => {
         <Text h5>Are you sure you want to logout?</Text>
 
         <Dialog.Actions>
-          <Button title="Cancel" color={theme.colors.primary} type="clear"/>
-          <Button title="Log out" titleStyle={{color: "#D14343"}} type="clear" />
+          <Button title="Cancel" color={theme.colors.primary} type="clear" />
+          <Button
+            title="Log out"
+            titleStyle={{ color: "#D14343" }}
+            type="clear"
+          />
         </Dialog.Actions>
       </Dialog>
     </View>
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     flexDirection: "row",
-  }
+  },
 });
 
 export default ProfileScreen;
