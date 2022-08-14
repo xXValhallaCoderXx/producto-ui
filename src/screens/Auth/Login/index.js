@@ -1,7 +1,8 @@
 import axios from "axios";
 import Constants from "expo-constants";
 import { useState } from "react";
-import { Text, Card, Input, Button } from "@rneui/themed";
+import { TextInput } from "react-native";
+import { Text, Card, Button } from "@rneui/themed";
 import JwtService from "../../../services/auth-service";
 import { useTheme } from "@rneui/themed";
 import { StackActions } from "@react-navigation/native";
@@ -47,37 +48,24 @@ const LoginScreen = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.titleContainer}>
-        <Text style={{ color: theme.colors.primary }} h1>
+     <Text style={{ color: theme.colors.primary, marginBottom: 50 }} h1>
           Producto
         </Text>
-        <Text style={{ color: "black" }} h4>
-          Unleash Your Creativity
-        </Text>
-      </View>
-      <Card containerStyle={styles.loginCard}>
-        <Text
-          color="primary"
-          style={{
-            color: theme.colors.primary,
-            textAlign: "center",
-            marginBottom: 10,
-          }}
-          h2
-        >
-          Login
-        </Text>
-        <Input
+    
+    
+        <TextInput
+          style={styles.input}
           onChangeText={(value) => setEmail(value)}
           value={email}
           nativeID="email"
-          placeholder="Enter your email..."
+          placeholder="Email"
         />
-        <Input
+        <TextInput
+          style={{...styles.input, marginTop: 20, marginBottom: 40}}
           onChangeText={(value) => setPassword(value)}
           value={password}
           nativeID="password"
-          placeholder="Enter your password..."
+          placeholder="Password"
         />
         {(error && (
           <Text
@@ -96,32 +84,28 @@ const LoginScreen = ({ navigation }) => {
         <Button
           disabled={!email || !password}
           loading={loading}
-          title="Submit"
+          title="Log in"
+          buttonStyle={{borderRadius: 8, padding: 10, minWidth: 200}}
           onPress={handleOnSubmit}
           color={theme.colors.primary}
         />
-      </Card>
-      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h4>
+  
+      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
         Not boosting your productivity?
       </Text>
       <Text
+      h6
         onPress={() => navigation.navigate("Registration")}
         style={{
           color: "black",
-          marginTop: 15,
-          fontSize: 20,
-          fontWeight: "700",
+          marginTop: 5,
+          fontWeight: "700"
+    
         }}
       >
         Sign Up Here
       </Text>
-      <Image
-        style={{ width: 40, height: 40, marginTop: 100 }}
-        source={require("./water.gif")}
-      />
-      <Text style={{ fontWeight: "bold", color: theme.colors.primary }}>
-        Bloop Studios
-      </Text>
+
     </KeyboardAvoidingView>
   );
 };
@@ -132,23 +116,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
-  },
-  titleContainer: {
-    marginTop: 50,
-    display: "flex",
     justifyContent: "center",
-    alignItems: "center",
   },
-  loginCard: {
-    borderColor: "#5048E5",
-    marginTop: 125,
-    minWidth: 300,
-    maxWidth: 350,
-    borderRadius: 6,
-    display: "flex",
-    padding: 30
-  },
+  input: {
+    width: 300,
+    height: 45,
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8, 
+    fontSize: 16,
+  }
 });
 
 export default LoginScreen;

@@ -1,6 +1,8 @@
 import axios from "axios";
 import Constants from "expo-constants";
 import { useState, useEffect } from "react";
+import { useTheme } from "@rneui/themed";
+import { TextInput } from "react-native";
 import { Text, Card, Input, Button } from "@rneui/themed";
 import {
   StyleSheet,
@@ -11,6 +13,7 @@ import {
 } from "react-native";
 
 const RegisterScreen = ({ navigation }) => {
+  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +47,7 @@ const RegisterScreen = ({ navigation }) => {
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
     } else {
-        setError("");
+      setError("");
     }
   }, [confirmPassword, password]);
   return (
@@ -52,69 +55,73 @@ const RegisterScreen = ({ navigation }) => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.titleContainer}>
-        <Text style={{ color: "white" }} h1>
-          Producto
-        </Text>
-        <Text style={{ color: "white" }} h4>
-          Unleash Your Creativity
-        </Text>
-      </View>
-      <Card containerStyle={styles.loginCard}>
+      <Text style={{ color: theme.colors.primary, marginBottom: 50 }} h1>
+        Producto
+      </Text>
+
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => setEmail(value)}
+        value={email}
+        nativeID="email"
+        placeholder="Enter"
+      />
+      <TextInput
+        style={{ ...styles.input, marginTop: 20, marginBottom: 20 }}
+        onChangeText={(value) => setPassword(value)}
+        value={password}
+        nativeID="password"
+        placeholder="Password"
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => setConfirmPassword(value)}
+        value={confirmPassword}
+        nativeID="confirmPassword"
+        placeholder="Confirm Password"
+      />
+
+      {(error && (
         <Text
-          style={{ color: "#6F0DB3", textAlign: "center", marginBottom: 10 }}
-          h2
+          style={{
+            color: "red",
+            textAlign: "center",
+            fontWeight: "700",
+            marginTop: -10,
+            marginBottom: 10,
+          }}
         >
-          Registration
+          {error}
         </Text>
-        <Input
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          nativeID="email"
-          placeholder="Enter your email..."
-        />
-        <Input
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          nativeID="password"
-          placeholder="Enter your password..."
-        />
-        <Input
-          onChangeText={(value) => setConfirmPassword(value)}
-          value={confirmPassword}
-          nativeID="confirmPassword"
-          placeholder="Confirm your password..."
-        />
-        {(error && (
-          <Text
-            style={{
-              color: "red",
-              textAlign: "center",
-              fontWeight: "700",
-              marginTop: -10,
-              marginBottom: 10,
-            }}
-          >
-            {error}
-          </Text>
-        )) ||
-          null}
-        <Button
-          loading={loading}
-          disabled={!email || !password || (!confirmPassword && !error)}
-          title="Submit"
-          onPress={handleOnSubmit}
-          color="#6F0DB3"
-        />
-      </Card>
-      <Text style={{ color: "white", marginTop: 20 }} h4>
+      )) ||
+        null}
+      <Button
+        loading={loading}
+        buttonStyle={{
+          borderRadius: 8,
+          padding: 10,
+          minWidth: 200,
+          marginTop: 40,
+        }}
+        disabled={!email || !password || (!confirmPassword && !error)}
+        title="Submit"
+        onPress={handleOnSubmit}
+        color="#6F0DB3"
+      />
+
+      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
         Already have an account?
       </Text>
       <Text
+        h6
         onPress={() => navigation.navigate("Login")}
-        style={{ color: "white", marginTop: 20, fontSize: 20 }}
+        style={{
+          color: "black",
+          marginTop: 5,
+          fontWeight: "700",
+        }}
       >
-        Log-in <Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
+        Log-in Here
       </Text>
     </KeyboardAvoidingView>
   );
@@ -123,23 +130,21 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#6F0DB3",
+    backgroundColor: "white",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
-  },
-  titleContainer: {
-    marginTop: 50,
-    display: "flex",
     justifyContent: "center",
-    alignItems: "center",
   },
-  loginCard: {
-    marginTop: 75,
-    minWidth: 300,
-    maxWidth: 350,
-    borderRadius: 6,
-    display: "flex",
+  input: {
+    width: 300,
+    height: 45,
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    fontSize: 16,
   },
 });
 

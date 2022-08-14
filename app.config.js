@@ -6,6 +6,6 @@ export default {
   },
   extra: {
     environment: "development",
-    baseUrl: "https://four-flowers-turn-116-86-1-104.loca.lt"
+    baseUrl: "http://10.0.2.2:3000"
   },
 };
