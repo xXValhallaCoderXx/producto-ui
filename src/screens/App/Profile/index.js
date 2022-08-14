@@ -1,153 +1,58 @@
-import axios from "axios";
-import Constants from "expo-constants";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, ToastAndroid } from "react-native";
-import JwtService from "../../../services/auth-service";
-import { ListItem, Text, Button, Icon, Input, useTheme } from "@rneui/themed";
-import { Switch, Dialog } from "@rneui/themed";
-
+import { StyleSheet, View } from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Text, Button, useTheme } from "@rneui/themed";
+import { Dialog } from "@rneui/themed";
 
 const ProfileScreen = ({ navigation }) => {
   const { theme } = useTheme();
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState();
-  const [categoryName, setCategoryName] = useState("");
   const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
 
   const toggleDialog = () => {
     setVisible(!visible);
   };
 
-
-  const fetchCategories = async () => {
-    const response = await fetch(
-      `${Constants.manifest.extra.baseUrl}/api/v1/categories`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${JwtService.accessToken}`,
-        },
-      }
-    );
-    const json = await response.json();
-    // console.log("CATEOGIRES: ", json.data)
-    setCategories(json.data);
-  };
-
-  const toggleCategory = async (category) => {
-    try {
-      await axios.post(
-        `${Constants.manifest.extra.baseUrl}/api/v1/categories/update`,
-        {
-          active: !category.active,
-          categoryId: category.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${JwtService.accessToken}`,
-          },
-        }
-      );
-      ToastAndroid.show("Updated!", ToastAndroid.SHORT);
-    } catch (err) {
-      console.log("X: ", err);
-    }
-  };
-
-  const handleToggleSwitch = (category) => async () => {
-    await toggleCategory(category);
-    await fetchCategories();
-  };
-
-  const onSubmitCategory = async () => {
-    try {
-      await axios.post(
-        `${Constants.manifest.extra.baseUrl}/api/v1/categories`,
-        {
-          name: categoryName,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${JwtService.accessToken}`,
-          },
-        }
-      );
-    } catch (err) {
-      console.log("X: ", err);
-    }
-    await fetchCategories();
-    setCategoryName("");
-    setVisible(false);
-  }
   return (
     <View style={styles.container}>
       <View
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 50,
-          paddingLeft: 30,
-          paddingRight: 30,
-          flexDirection: "row",
-        }}
+        style={styles.headerContainer}
       >
-        <Text style={{ fontWeight: "700", fontSize: 30 }}>Goals</Text>
-        <Button
-          onPress={toggleDialog}
-          type="outline"
-          color="primary"
-          style={{ padding: 15 }}
-        >
-          <Icon color="#5048E5" name="add" style={{ paddingRight: 10 }} />
-          Add New
-        </Button>
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <Text h4 style={{ color: theme.colors.primary }}>
+            Blooper
+          </Text>
+          <Text h4>'s Profile</Text>
+        </View>
       </View>
 
-      <View style={{ padding: 30, paddingLeft: 20 }}>
-        {categories.length > 0 ? (
-          categories.map((category, i) => (
-            <ListItem key={i}>
-              <ListItem.Content>
-                <ListItem.Title style={{ fontSize: 20, fontWeight: "600" }}>
-                  {category.name}ss
-                </ListItem.Title>
-              </ListItem.Content>
-              <Switch
-                onValueChange={handleToggleSwitch(category)}
-                value={category.active}
-              />
-            </ListItem>
-          ))
-        ) : (
-          <Text>No Results</Text>
-        )}
+      <View style={{ paddingLeft: 30, marginBottom: 50 }}>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <MaterialIcons onPress={toggleDialog} name="logout" color="#D14343" />
+          <Text
+            onPress={toggleDialog}
+            h5
+            style={{ paddingLeft: 10, color: "#D14343" }}
+          >
+            Logout
+          </Text>
+        </View>
       </View>
       <StatusBar style="auto" />
       <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
-        <Dialog.Title title="Create a new Goal" />
-        <Text>
-          These can be toggled to change visibility, depending on your focus
-        </Text>
-        <Input
-          onChangeText={(value) => setCategoryName(value)}
-          value={categoryName}
-          nativeID="categoryName"
-          placeholder="Enter Cateogry Name..."
-          style={{marginTop: 15}}
-        />
-        <Button
-          disabled={!categoryName}
-          // loading={loading}
-          title="Submit"
-          onPress={onSubmitCategory}
-          color={theme.colors.primary}
-        />
+        <Dialog.Title title="Confirm" />
+        <Text h5>Are you sure you want to logout?</Text>
+
+        <Dialog.Actions>
+          <Button title="Cancel" color={theme.colors.primary} type="clear"/>
+          <Button title="Log out" titleStyle={{color: "#D14343"}} type="clear" />
+        </Dialog.Actions>
       </Dialog>
     </View>
   );
@@ -157,8 +62,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    display: "flex",
+    justifyContent: "space-between",
     paddingTop: 15,
   },
+  headerContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 50,
+    paddingLeft: 30,
+    paddingRight: 30,
+    flexDirection: "row",
+  }
 });
 
 export default ProfileScreen;

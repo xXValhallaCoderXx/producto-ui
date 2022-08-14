@@ -3,26 +3,20 @@ import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, ToastAndroid } from "react-native";
-import EvilIcon from "react-native-vector-icons/EvilIcons";
 import JwtService from "../../../services/auth-service";
-import {
-  ListItem,
-  Text,
-  Button,
-  Icon,
-  Input,
-  useTheme,
-  Tab,
-} from "@rneui/themed";
+import { ListItem, Text, Button, Icon, Input, useTheme } from "@rneui/themed";
 import { Switch, Dialog } from "@rneui/themed";
+import { Picker } from "@react-native-picker/picker";
 
-const ListScreen = ({ navigation }) => {
+const GoalScreen = ({ navigation }) => {
   const { theme } = useTheme();
-  const [locked, setLocked] = useState(true);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState();
   const [categoryName, setCategoryName] = useState("");
   const [visible, setVisible] = useState(false);
+  const [country, setCountry] = useState("Unknown");
+
+  const [value, setValue] = useState("");
 
   useEffect(() => {
     fetchCategories();
@@ -105,45 +99,39 @@ const ListScreen = ({ navigation }) => {
           flexDirection: "row",
         }}
       >
-        <View style={{ display: "flex", flexDirection: "row" }}>
-          <Text h4 style={{ color: theme.colors.primary }}>
-            Today
-          </Text>
-          <Text h4>'s tasks</Text>
-        </View>
-
-        <EvilIcon
-        onPress={() => setLocked(!locked)}
-          style={{ fontSize: 40 }}
-          color={theme.colors.primary}
-          name={locked ? "lock" : "unlock"}
-        />
+        <Text style={{ fontWeight: "700", fontSize: 30 }}>Goals</Text>
+        {/* <Picker
+        selectedValue={country}
+        onValueChange={(value, index) => setCountry(value)}
+        mode="dropdown" // Android only
+        style={styles.picker}
+      >
+        <Picker.Item label="Please select your country" value="Unknown" />
+        <Picker.Item label="Australia" value="Australia" />
+        <Picker.Item label="Belgium" value="Belgium" />
+        <Picker.Item label="Canada" value="Canada" />
+        <Picker.Item label="India" value="India" />
+        <Picker.Item label="Japan" value="Japan" />
+      </Picker> */}
       </View>
 
-      <View style={{ paddingRight: 30, paddingLeft: 30, paddingTop: 0 }}>
-        <Text h6>THUR, 11 AUG 2022</Text>
-      </View>
-      <View style={{ paddingRight: 30, paddingLeft: 30, marginTop: 20 }}>
+      <View style={{ paddingLeft: 30, paddingRight: 30, marginTop: 10 }}>
         {categories.length > 0 ? (
-          <Tab
-            indicatorStyle={{
-              backgroundColor: "purple",
-              height: 3,
-            }}
-            value={0}
-            variant="primary"
-          >
-            {categories.map((category) => (
-              <Tab.Item
-                style={{ color: "black" }}
-                // containerStyle={{ backgroundColor: "" }}
-              >
-                {category.name}
-              </Tab.Item>
-            ))}
-          </Tab>
+          categories.map((category, i) => (
+            <ListItem key={i}>
+              <ListItem.Content>
+                <ListItem.Title style={{ fontSize: 20, fontWeight: "600" }}>
+                  {category.name}ss
+                </ListItem.Title>
+              </ListItem.Content>
+              <Switch
+                onValueChange={handleToggleSwitch(category)}
+                value={category.active}
+              />
+            </ListItem>
+          ))
         ) : (
-          <Text>No Results</Text>
+          <Text>No results found...</Text>
         )}
       </View>
       <StatusBar style="auto" />
@@ -177,6 +165,12 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingTop: 15,
   },
+  picker: {
+    width: 200,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#666",
+  },
 });
 
-export default ListScreen;
+export default GoalScreen;

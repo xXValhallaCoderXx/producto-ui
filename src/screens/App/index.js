@@ -1,16 +1,21 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
+import GoalScreen from "./Goals";
 import { Button, Text } from "@rneui/themed";
 import { Ionicons, Feather } from "@expo/vector-icons";
+import { useTheme } from "@rneui/themed";
 
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const { theme } = useTheme();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: "gray",
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "Today") {
@@ -23,13 +28,9 @@ export default function App() {
           return <Feather name={iconName} size={size} color={color} />;
         },
       })}
-      tabBarOptions={{
-        activeTintColor: "#6F0DB3",
-        inactiveTintColor: "gray",
-      }}
     >
       <Tab.Screen name="Today" component={DashboardScreen} />
-      <Tab.Screen name="Goals" component={ProfileScreen} />
+      <Tab.Screen name="Goals" component={GoalScreen} />
       <Tab.Screen name="Account" component={ProfileScreen} />
     </Tab.Navigator>
   );
