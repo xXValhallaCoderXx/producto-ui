@@ -8,6 +8,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import JwtService from "../../../services/auth-service";
+import { format } from "date-fns";
 import {
   ListItem,
   Text,
@@ -56,7 +57,7 @@ const ListScreen = ({ navigation }) => {
       await axios.post(
         `${Constants.manifest.extra.baseUrl}/api/v1/task/${task.id}`,
         {
-          ...task
+          ...task,
         },
         {
           headers: {
@@ -74,17 +75,17 @@ const ListScreen = ({ navigation }) => {
     await toggleCategory({
       ...task,
       completed: !task.completed,
-      taskId: task.id
+      taskId: task.id,
     });
     await fetchTasks();
   };
 
   const handleToggleFocus = (task) => async () => {
-    console.log("go")
+    console.log("go");
     await toggleCategory({
       ...task,
       focus: !task.focus,
-      taskId: task.id
+      taskId: task.id,
     });
     await fetchTasks();
   };
@@ -140,7 +141,9 @@ const ListScreen = ({ navigation }) => {
       </View>
 
       <View style={{ paddingRight: 30, paddingLeft: 30, paddingTop: 0 }}>
-        <Text h6>THUR, 11 AUG 2022</Text>
+        <Text style={{ marginLeft: -5 }} h6>
+          {format(new Date(), "	EEE, d LLL yyyy").toUpperCase()}
+        </Text>
         <View
           style={{
             display: "flex",
