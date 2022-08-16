@@ -51,13 +51,12 @@ const ListScreen = ({ navigation }) => {
     setTasks(res.data);
   };
 
-  const toggleCategory = async (category) => {
+  const toggleCategory = async (task) => {
     try {
       await axios.post(
-        `${Constants.manifest.extra.baseUrl}/api/v1/categories/update`,
+        `${Constants.manifest.extra.baseUrl}/api/v1/task/${task.id}`,
         {
-          active: !category.active,
-          categoryId: category.id,
+          ...task
         },
         {
           headers: {
@@ -71,8 +70,22 @@ const ListScreen = ({ navigation }) => {
     }
   };
 
-  const handleToggleSwitch = (category) => async () => {
-    await toggleCategory(category);
+  const handleToggleSwitch = (task) => async () => {
+    await toggleCategory({
+      ...task,
+      completed: !task.completed,
+      taskId: task.id
+    });
+    await fetchTasks();
+  };
+
+  const handleToggleFocus = (task) => async () => {
+    console.log("go")
+    await toggleCategory({
+      ...task,
+      focus: !task.focus,
+      taskId: task.id
+    });
     await fetchTasks();
   };
 
@@ -182,8 +195,19 @@ const ListScreen = ({ navigation }) => {
                       flexDirection: "row",
                     }}
                   >
-                    {editMode && <IoniIcons name={"key"} />}
-                    <CheckBox containerStyle={{ padding: 0 }} />
+                    {editMode && (
+                      <IoniIcons
+                        style={{ fontSize: 20, marginRight: 10 }}
+                        color={task.focus ? theme.colors.primary : "black"}
+                        name={"key"}
+                        onPress={handleToggleFocus(task)}
+                      />
+                    )}
+                    <CheckBox
+                      checked={task.completed}
+                      containerStyle={{ padding: 0 }}
+                      onPress={handleToggleSwitch(task)}
+                    />
                   </View>
                   {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
                 </ListItem.Content>
