@@ -20,16 +20,13 @@ import {
 } from "@rneui/themed";
 import { Dialog } from "@rneui/themed";
 import { toggleEdit } from "./today-slice";
-// import { useGetTasksQuery } from "../../../api";
 
 const ListScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [tasks, setTasks] = useState([]);
-  const [error, setError] = useState();
   const [taskTitle, setTaskTitle] = useState("");
   const [visible, setVisible] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
-  // const { data, isLoading } = useGetTasksQuery();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -97,7 +94,6 @@ const ListScreen = ({ navigation }) => {
         {
           title: taskTitle,
           description: "",
-          categoryId: 1,
         },
         {
           headers: {
@@ -112,6 +108,8 @@ const ListScreen = ({ navigation }) => {
     setTaskTitle("");
     setVisible(false);
   };
+
+
   return (
     <View style={styles.container}>
       <View
@@ -179,7 +177,12 @@ const ListScreen = ({ navigation }) => {
         {tasks.length === 0 ? (
           <Text>No Tasks Added</Text>
         ) : (
-          tasks.map((task, index) => {
+          tasks.filter(task => {
+            if(!editMode && !task.focus){
+               return false
+            }
+            return task;
+          }).map((task, index) =>  {
             return (
               <ListItem key={index} bottomDivider>
                 <ListItem.Content
@@ -217,7 +220,9 @@ const ListScreen = ({ navigation }) => {
               </ListItem>
             );
           })
-        )}
+          )
+
+        }
         <View
           style={{
             display: "flex",
