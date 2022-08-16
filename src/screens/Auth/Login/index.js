@@ -59,6 +59,7 @@ const LoginScreen = ({ navigation }) => {
           value={email}
           nativeID="email"
           placeholder="Email"
+     
         />
         <TextInput
           style={{...styles.input, marginTop: 20, marginBottom: 40}}
@@ -66,6 +67,7 @@ const LoginScreen = ({ navigation }) => {
           value={password}
           nativeID="password"
           placeholder="Password"
+          secureTextEntry={true}
         />
         {(error && (
           <Text

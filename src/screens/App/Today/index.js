@@ -1,50 +1,54 @@
 import axios from "axios";
 import Constants from "expo-constants";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, ToastAndroid } from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
+import IoniIcons from "react-native-vector-icons/Ionicons";
 import JwtService from "../../../services/auth-service";
 import {
   ListItem,
   Text,
   Button,
-  Icon,
   Input,
   useTheme,
-  Tab,
+  LinearProgress,
+  CheckBox,
 } from "@rneui/themed";
-import { Switch, Dialog } from "@rneui/themed";
+import { Dialog } from "@rneui/themed";
+import { toggleEdit } from "./today-slice";
+// import { useGetTasksQuery } from "../../../api";
 
 const ListScreen = ({ navigation }) => {
   const { theme } = useTheme();
-  const [locked, setLocked] = useState(true);
-  const [categories, setCategories] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [error, setError] = useState();
-  const [categoryName, setCategoryName] = useState("");
+  const [taskTitle, setTaskTitle] = useState("");
   const [visible, setVisible] = useState(false);
+  const editMode = useSelector((state) => state.today.editMode);
+  // const { data, isLoading } = useGetTasksQuery();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchCategories();
+    fetchTasks();
   }, []);
 
   const toggleDialog = () => {
     setVisible(!visible);
   };
 
-  const fetchCategories = async () => {
-    const response = await fetch(
-      `${Constants.manifest.extra.baseUrl}/api/v1/categories`,
+  const fetchTasks = async () => {
+    const res = await axios.get(
+      `${Constants.manifest.extra.baseUrl}/api/v1/task`,
       {
-        method: "GET",
         headers: {
           Authorization: `Bearer ${JwtService.accessToken}`,
         },
       }
     );
-    const json = await response.json();
-    // console.log("CATEOGIRES: ", json.data)
-    setCategories(json.data);
+    setTasks(res.data);
   };
 
   const toggleCategory = async (category) => {
@@ -69,15 +73,17 @@ const ListScreen = ({ navigation }) => {
 
   const handleToggleSwitch = (category) => async () => {
     await toggleCategory(category);
-    await fetchCategories();
+    await fetchTasks();
   };
 
-  const onSubmitCategory = async () => {
+  const onSubmitTask = async () => {
     try {
       await axios.post(
-        `${Constants.manifest.extra.baseUrl}/api/v1/categories`,
+        `${Constants.manifest.extra.baseUrl}/api/v1/task`,
         {
-          name: categoryName,
+          title: taskTitle,
+          description: "",
+          categoryId: 1,
         },
         {
           headers: {
@@ -88,8 +94,8 @@ const ListScreen = ({ navigation }) => {
     } catch (err) {
       console.log("X: ", err);
     }
-    await fetchCategories();
-    setCategoryName("");
+    await fetchTasks();
+    setTaskTitle("");
     setVisible(false);
   };
   return (
@@ -113,57 +119,110 @@ const ListScreen = ({ navigation }) => {
         </View>
 
         <EvilIcon
-        onPress={() => setLocked(!locked)}
+          onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
           style={{ fontSize: 40 }}
           color={theme.colors.primary}
-          name={locked ? "lock" : "unlock"}
+          name={editMode ? "unlock" : "lock"}
         />
       </View>
 
       <View style={{ paddingRight: 30, paddingLeft: 30, paddingTop: 0 }}>
         <Text h6>THUR, 11 AUG 2022</Text>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <LinearProgress
+            style={{
+              marginVertical: 15,
+              height: 15,
+              borderRadius: 8,
+              flex: 0.85,
+            }}
+            value={0.5}
+            color={theme.colors.primary}
+            variant="determinate"
+          />
+          <Text
+            h6
+            style={{
+              flex: 0.15,
+              textAlign: "center",
+              color: theme.colors.primary,
+              fontWeight: "700",
+            }}
+          >
+            75%
+          </Text>
+        </View>
       </View>
       <View style={{ paddingRight: 30, paddingLeft: 30, marginTop: 20 }}>
-        {categories.length > 0 ? (
-          <Tab
-            indicatorStyle={{
-              backgroundColor: "purple",
-              height: 3,
-            }}
-            value={0}
-            variant="primary"
-          >
-            {categories.map((category) => (
-              <Tab.Item
-                style={{ color: "black" }}
-                // containerStyle={{ backgroundColor: "" }}
-              >
-                {category.name}
-              </Tab.Item>
-            ))}
-          </Tab>
+        {tasks.length === 0 ? (
+          <Text>No Tasks Added</Text>
         ) : (
-          <Text>No Results</Text>
+          tasks.map((task, index) => {
+            return (
+              <ListItem key={index} bottomDivider>
+                <ListItem.Content
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <ListItem.Title>{task.title}</ListItem.Title>
+                  <View
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {editMode && <IoniIcons name={"key"} />}
+                    <CheckBox containerStyle={{ padding: 0 }} />
+                  </View>
+                  {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
+                </ListItem.Content>
+              </ListItem>
+            );
+          })
         )}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 20,
+          }}
+        >
+          <MaterialIcons
+            onPress={toggleDialog}
+            style={{ paddingRight: 4 }}
+            name={"add"}
+          />
+          <Text onPress={toggleDialog}>Add Item</Text>
+        </View>
       </View>
       <StatusBar style="auto" />
       <Dialog isVisible={visible} onBackdropPress={toggleDialog}>
-        <Dialog.Title title="Create a new Goal" />
-        <Text>
-          These can be toggled to change visibility, depending on your focus
-        </Text>
+        <Dialog.Title title="Create a new Task" />
+        <Text>Each step, takes you closer!</Text>
         <Input
-          onChangeText={(value) => setCategoryName(value)}
-          value={categoryName}
-          nativeID="categoryName"
-          placeholder="Enter Cateogry Name..."
+          onChangeText={(value) => setTaskTitle(value)}
+          value={taskTitle}
+          nativeID="taskTitle"
+          placeholder="Enter Task Name..."
           style={{ marginTop: 15 }}
         />
         <Button
-          disabled={!categoryName}
+          disabled={!taskTitle}
           // loading={loading}
           title="Submit"
-          onPress={onSubmitCategory}
+          onPress={onSubmitTask}
           color={theme.colors.primary}
         />
       </Dialog>

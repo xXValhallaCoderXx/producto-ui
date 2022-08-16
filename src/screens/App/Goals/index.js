@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View, ToastAndroid } from "react-native";
 import JwtService from "../../../services/auth-service";
 import { ListItem, Text, Button, Icon, Input, useTheme } from "@rneui/themed";
-import { Switch, Dialog } from "@rneui/themed";
+import { Switch, Dialog, LinearProgress } from "@rneui/themed";
 import { Picker } from "@react-native-picker/picker";
 
 const GoalScreen = ({ navigation }) => {

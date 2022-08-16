@@ -20,8 +20,8 @@ export default function App() {
           let iconName;
           if (route.name === "Today") {
             iconName = "list";
-          } else if (route.name === "Goals") {
-            iconName = "target";
+            // } else if (route.name === "Goals") {
+            //   iconName = "target";
           } else if (route.name === "Account") {
             return <Ionicons name="person" size={size} color={color} />;
           }
@@ -30,7 +30,7 @@ export default function App() {
       })}
     >
       <Tab.Screen name="Today" component={DashboardScreen} />
-      <Tab.Screen name="Goals" component={GoalScreen} />
+      {/* <Tab.Screen name="Goals" component={GoalScreen} /> */}
       <Tab.Screen name="Account" component={ProfileScreen} />
     </Tab.Navigator>
   );

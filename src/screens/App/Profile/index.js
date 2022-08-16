@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, BackHandler, Alert } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Text, Button, useTheme } from "@rneui/themed";
 import { Dialog } from "@rneui/themed";
@@ -8,6 +8,27 @@ import { Dialog } from "@rneui/themed";
 const ProfileScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Hold on!", "Are you sure you want to go back?", [
+        {
+          text: "Cancel",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "YES", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const toggleDialog = () => {
     setVisible(!visible);
@@ -48,8 +69,14 @@ const ProfileScreen = ({ navigation }) => {
         <Text h5>Are you sure you want to logout?</Text>
 
         <Dialog.Actions>
-          <Button title="Cancel" color={theme.colors.primary} type="clear" />
           <Button
+            title="Cancel"
+            color={theme.colors.primary}
+            onPress={toggleDialog}
+            type="clear"
+          />
+          <Button
+            onPress={() => BackHandler.exitApp()}
             title="Log out"
             titleStyle={{ color: "#D14343" }}
             type="clear"
