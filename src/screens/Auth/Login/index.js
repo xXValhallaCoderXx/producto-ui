@@ -29,8 +29,8 @@ const LoginScreen = ({ navigation }) => {
       setLoading(true);
       axios
         .post(`${Constants.manifest.extra.baseUrl}/api/v1/auth/login`, {
-          username: email,
-          password: password,
+          email,
+          password,
         })
         .then((response) => {
           setLoading(false);

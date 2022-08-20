@@ -19,8 +19,8 @@ const RegisterScreen = ({ navigation }) => {
     if (email && password) {
       axios
         .post(`${Constants.manifest.extra.baseUrl}/api/v1/auth/register`, {
-          username: email,
-          password: password,
+          email,
+          password,
         })
         .then((response) => {
           //   JwtService.setToken(response.data.access_token);
