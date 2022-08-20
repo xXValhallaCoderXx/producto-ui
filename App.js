@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./src/config/store";
-
+import { View, Image, Animated } from "react-native";
 const queryClient = new QueryClient({});
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,41 @@ const theme = createTheme({
 });
 
 export default function App() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      setIsLoaded(true);
+    });
+  }, [fadeAnim]);
+
+  if (!isLoaded) {
+    return (
+      <Animated.View
+        style={[
+          {
+            flex: 1,
+            backgroundColor: "#5049e5",
+            alignItems: "center",
+            paddingTop: 200,
+          },
+          {
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <Image
+          style={{ height: 40, width: 220 }}
+          source={require("./src/assets/images/title-white.png")}
+        />
+      </Animated.View>
+    );
+  }
   return (
     <SafeAreaProvider>
       <Provider store={store}>

@@ -4,13 +4,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@rneui/themed";
 import { TextInput } from "react-native";
 import { Text, Card, Input, Button } from "@rneui/themed";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-  ToastAndroid,
-} from "react-native";
+import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
 
 const RegisterScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -51,20 +45,21 @@ const RegisterScreen = ({ navigation }) => {
     }
   }, [confirmPassword, password]);
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <Text style={{ color: theme.colors.primary, marginBottom: 50 }} h1>
-        Producto
-      </Text>
+      <Image
+          style={{ height: 40, width: 220, marginBottom: 40 }}
+          source={require("../../../assets/images/title-dark.png")}
+        />
 
       <TextInput
         style={styles.input}
         onChangeText={(value) => setEmail(value)}
         value={email}
         nativeID="email"
-        placeholder="Enter"
+        placeholder="Email"
       />
       <TextInput
         style={{ ...styles.input, marginTop: 20, marginBottom: 20 }}
@@ -72,6 +67,7 @@ const RegisterScreen = ({ navigation }) => {
         value={password}
         nativeID="password"
         placeholder="Password"
+        secureTextEntry={true}
       />
       <TextInput
         style={styles.input}
@@ -79,15 +75,16 @@ const RegisterScreen = ({ navigation }) => {
         value={confirmPassword}
         nativeID="confirmPassword"
         placeholder="Confirm Password"
+        secureTextEntry={true}
       />
 
       {(error && (
         <Text
           style={{
-            color: "red",
+            color: "#f43a3a",
             textAlign: "center",
             fontWeight: "700",
-            marginTop: -10,
+            marginTop: 5,
             marginBottom: 10,
           }}
         >
@@ -104,9 +101,9 @@ const RegisterScreen = ({ navigation }) => {
           marginTop: 40,
         }}
         disabled={!email || !password || (!confirmPassword && !error)}
-        title="Submit"
+        title="Register"
         onPress={handleOnSubmit}
-        color="#6F0DB3"
+        color="primary"
       />
 
       <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
@@ -123,7 +120,7 @@ const RegisterScreen = ({ navigation }) => {
       >
         Log-in Here
       </Text>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

@@ -24,6 +24,7 @@ import { toggleEdit } from "./today-slice";
 const ListScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [tasks, setTasks] = useState([]);
+  const [progress, setProgress] = useState(0);
   const [taskTitle, setTaskTitle] = useState("");
   const [visible, setVisible] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
@@ -32,6 +33,12 @@ const ListScreen = ({ navigation }) => {
   useEffect(() => {
     fetchTasks();
   }, []);
+
+  useEffect(() => {
+    const total = tasks.length;
+    const completed = tasks.filter((task) => task.completed).length;
+    setProgress(Math.round((completed / total) * 100) / 100) ;
+  }, [tasks]);
 
   const toggleDialog = () => {
     setVisible(!visible);
@@ -109,7 +116,6 @@ const ListScreen = ({ navigation }) => {
     setVisible(false);
   };
 
-
   return (
     <View style={styles.container}>
       <View
@@ -147,82 +153,88 @@ const ListScreen = ({ navigation }) => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            height: 20,
+            marginTop: 5,
           }}
         >
-          <LinearProgress
-            style={{
-              marginVertical: 15,
-              height: 15,
-              borderRadius: 8,
-              flex: 0.85,
-            }}
-            value={0.5}
-            color={theme.colors.primary}
-            variant="determinate"
-          />
-          <Text
-            h6
-            style={{
-              flex: 0.15,
-              textAlign: "center",
-              color: theme.colors.primary,
-              fontWeight: "700",
-            }}
-          >
-            75%
-          </Text>
+          {editMode && (
+            <>
+              <LinearProgress
+                style={{
+                  marginVertical: 15,
+                  height: 15,
+                  borderRadius: 8,
+                  flex: 0.85,
+                }}
+                value={progress}
+                color={theme.colors.primary}
+                variant="determinate"
+              />
+              <Text
+                h6
+                style={{
+                  flex: 0.15,
+                  textAlign: "center",
+                  color: theme.colors.primary,
+                  fontWeight: "700",
+                }}
+              >
+                {progress || 0 * 100}%
+              </Text>
+            </>
+          )}
         </View>
       </View>
-      <View style={{ paddingRight: 30, paddingLeft: 30, marginTop: 20 }}>
+      <View style={{ paddingRight: 30, paddingLeft: 30, marginTop: 10 }}>
         {tasks.length === 0 ? (
           <Text>No Tasks Added</Text>
         ) : (
-          tasks.filter(task => {
-            if(!editMode && !task.focus){
-               return false
-            }
-            return task;
-          }).map((task, index) =>  {
-            return (
-              <ListItem key={index} bottomDivider>
-                <ListItem.Content
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <ListItem.Title>{task.title}</ListItem.Title>
-                  <View
+          tasks
+            .filter((task) => {
+              if (!editMode && !task.focus && !task.completed) {
+                return false;
+              }
+              return task;
+            })
+            .map((task, index) => {
+              return (
+                <ListItem key={index} bottomDivider>
+                  <ListItem.Content
                     style={{
                       display: "flex",
-                      alignItems: "center",
                       flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    {editMode && (
-                      <IoniIcons
-                        style={{ fontSize: 20, marginRight: 10 }}
-                        color={task.focus ? theme.colors.primary : "black"}
-                        name={"key"}
-                        onPress={handleToggleFocus(task)}
+                    <ListItem.Title>{task.title}</ListItem.Title>
+                    <View
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexDirection: "row",
+                      }}
+                    >
+                      {editMode && (
+                        <IoniIcons
+                          style={{ fontSize: 20, marginRight: 10 }}
+                          color={task.focus ? theme.colors.primary : "black"}
+                          name={"key"}
+                          onPress={handleToggleFocus(task)}
+                        />
+                      )}
+                      <CheckBox
+                        checked={task.completed}
+                        containerStyle={{ padding: 0 }}
+                        onPress={handleToggleSwitch(task)}
                       />
-                    )}
-                    <CheckBox
-                      checked={task.completed}
-                      containerStyle={{ padding: 0 }}
-                      onPress={handleToggleSwitch(task)}
-                    />
-                  </View>
-                  {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
-                </ListItem.Content>
-              </ListItem>
-            );
-          })
-          )
-
-        }
+                    </View>
+                    {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
+                  </ListItem.Content>
+                </ListItem>
+              );
+            })
+        )}
         <View
           style={{
             display: "flex",
