@@ -19,7 +19,7 @@ const AddItem = ({ handleCreateNewTask }) => {
       setError("Task name too short");
     } else {
       try {
-        await httpClient.post(`/task`, { title: taskName });
+        await httpClient.post(`/task`, { title: taskName, focus: true });
         await handleCreateNewTask(taskName);
         setTaskName("");
         setAddTask(false);

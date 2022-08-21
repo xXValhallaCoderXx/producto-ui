@@ -36,7 +36,7 @@ export default function App() {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 3000,
+      duration: 2500,
       useNativeDriver: true,
     }).start(({ finished }) => {
       setIsLoaded(true);

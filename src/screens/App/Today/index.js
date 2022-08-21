@@ -68,11 +68,11 @@ const ListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1 }}>
+      {/* <View style={{ flex: 1 }}> */}
         <Header editMode={editMode} />
         <ProgressBar editMode={editMode} progress={progress} />
-      </View>
-      <View style={{ flex: 6, marginTop: 20 }}>
+      {/* </View> */}
+      <View>
         <TaskList
           tasks={tasks}
           editMode={editMode}

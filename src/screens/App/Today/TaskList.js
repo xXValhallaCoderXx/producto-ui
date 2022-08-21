@@ -23,7 +23,7 @@ const TaskList = ({
           </Text>
         </Text>
       ) : (
-        <ScrollView style={{ height: 400 }}>
+        <ScrollView style={{ maxHeight: 400, marginTop: 15 }}>
           {tasks
             .filter((task) => {
               if (!editMode && !task.focus && !task.completed) {
@@ -33,13 +33,14 @@ const TaskList = ({
             })
             .map((task, index) => {
               return (
-                <ListItem key={index} bottomDivider>
+                <ListItem key={index} bottomDivider containerStyle={{padding: 5}} >
                   <ListItem.Content
                     style={{
                       display: "flex",
                       flexDirection: "row",
                       justifyContent: "space-between",
                       alignItems: "center",
+                
                     }}
                   >
                     <ListItem.Title>{task.title}</ListItem.Title>
