@@ -1,20 +1,18 @@
-import axios from "axios";
-import Constants from "expo-constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated } from "react-native";
-import { Text, Card, Button } from "@rneui/themed";
-import JwtService from "../../../services/auth-service";
+import { Text, Button } from "@rneui/themed";
 import { useTheme } from "@rneui/themed";
 import { StackActions } from "@react-navigation/native";
-import { StyleSheet, Platform, Image, ToastAndroid } from "react-native";
-
+import { StyleSheet, View, Image, ToastAndroid } from "react-native";
+import httpClient from "../../../api/api-handler";
 const LoginScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -24,76 +22,86 @@ const LoginScreen = ({ navigation }) => {
     }).start();
   }, [fadeAnim]);
 
-  const handleOnSubmit = () => {
+  const handleOnSubmit = async () => {
     if (email && password) {
-      setLoading(true);
-      axios
-        .post(`${Constants.manifest.extra.baseUrl}/api/v1/auth/login`, {
+      setIsLoading(true);
+
+      try {
+        const response = await httpClient.post("/auth/login", {
           email,
           password,
-        })
-        .then((response) => {
-          setLoading(false);
-          JwtService.setToken(response.data.access_token);
-          ToastAndroid.show("Login success", ToastAndroid.SHORT);
-          navigation.dispatch(StackActions.replace("App"));
-        })
-        .catch((err) => {
-          setLoading(false);
-          ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
-          setError("Invalid username / password");
         });
+        setIsLoading(false);
+        await AsyncStorage.setItem(
+          "@producto-jwt-token",
+          response.data.access_token
+        );
+        ToastAndroid.show("Login success", ToastAndroid.SHORT);
+        navigation.dispatch(StackActions.replace("App"));
+      } catch (err) {
+        setIsLoading(false);
+        if (err.response.status === 400) {
+          setError(err.response.data.message);
+        } else {
+          setError("Sorry, an error occured");
+        }
+      }
     }
-    //
   };
   return (
     <Animated.View
       style={[
         styles.container,
         {
-          // Bind opacity to animated value
-          opacity: fadeAnim
-        }
+          opacity: fadeAnim,
+        },
       ]}
-     
     >
-         <Image
-          style={{ height: 40, width: 220, marginBottom: 40 }}
-          source={require("../../../assets/images/title-dark.png")}
-        />
+      <Image
+        style={{ height: 40, width: 220, marginBottom: 40 }}
+        source={require("../../../assets/images/title-dark.png")}
+      />
 
       <TextInput
         style={styles.input}
-        onChangeText={(value) => setEmail(value)}
+        onChangeText={(value) => {
+          setError("");
+          setEmail(value);
+        }}
         value={email}
         nativeID="email"
         placeholder="Email"
       />
       <TextInput
         style={{ ...styles.input, marginTop: 20, marginBottom: 40 }}
-        onChangeText={(value) => setPassword(value)}
+        onChangeText={(value) => {
+          setError("");
+          setPassword(value);
+        }}
         value={password}
         nativeID="password"
         placeholder="Password"
         secureTextEntry={true}
       />
-      {(error && (
-        <Text
-          style={{
-            color: "red",
-            textAlign: "center",
-            fontWeight: "700",
-            marginTop: -10,
-            marginBottom: 10,
-          }}
-        >
-          Invalid username / password
-        </Text>
-      )) ||
-        null}
+      <View style={{ height: 10 }}>
+        {(error && (
+          <Text
+            style={{
+              color: "#D14343",
+              textAlign: "center",
+              fontWeight: "700",
+              marginTop: -25,
+              marginBottom: 10,
+            }}
+          >
+            {error}
+          </Text>
+        )) ||
+          null}
+      </View>
       <Button
         disabled={!email || !password}
-        loading={loading}
+        loading={isLoading}
         title="Log in"
         buttonStyle={{ borderRadius: 8, padding: 10, minWidth: 200 }}
         onPress={handleOnSubmit}

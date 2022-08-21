@@ -1,39 +1,44 @@
-import axios from "axios";
-import Constants from "expo-constants";
 import { useState, useEffect } from "react";
 import { useTheme } from "@rneui/themed";
 import { TextInput } from "react-native";
 import { Text, Card, Input, Button } from "@rneui/themed";
 import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
+import httpClient from "../../../api/api-handler";
 
 const RegisterScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const handleOnSubmit = () => {
+
+  const handleOnSubmit = async () => {
     setError("");
-    setLoading(true);
+    setIsLoading(true);
     if (email && password) {
-      axios
-        .post(`${Constants.manifest.extra.baseUrl}/api/v1/auth/register`, {
+      try {
+        const response = await httpClient.post("/auth/register", {
           email,
           password,
-        })
-        .then((response) => {
-          //   JwtService.setToken(response.data.access_token);
-          setLoading(false);
-          ToastAndroid.show("Registration successful", ToastAndroid.SHORT);
-          navigation.navigate("Login");
-        })
-        .catch((err) => {
-          console.log(err.response);
-          ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
-          setError("Credentials already used");
-          setLoading(false);
         });
+        setIsLoading(false);
+
+        ToastAndroid.show("Registration success", ToastAndroid.SHORT);
+        navigation.navigate("Login");
+      } catch (err) {
+        setIsLoading(false);
+        console.log("ERR: ", err.response.data)
+        // ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
+        if (err.response.status === 400) {
+          if(Array.isArray(err.response.data.message)){
+            setError(err.response.data.message[0]);
+          }
+          setError(err.response.data.message);
+        } else {
+          setError("Sorry, an error occured");
+        }
+      }
     }
   };
 
@@ -44,26 +49,33 @@ const RegisterScreen = ({ navigation }) => {
       setError("");
     }
   }, [confirmPassword, password]);
+
   return (
     <View
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <Image
-          style={{ height: 40, width: 220, marginBottom: 40 }}
-          source={require("../../../assets/images/title-dark.png")}
-        />
+        style={{ height: 40, width: 220, marginBottom: 40 }}
+        source={require("../../../assets/images/title-dark.png")}
+      />
 
       <TextInput
         style={styles.input}
-        onChangeText={(value) => setEmail(value)}
+        onChangeText={(value) => {
+          setError("");
+          setEmail(value);
+        }}
         value={email}
         nativeID="email"
         placeholder="Email"
       />
       <TextInput
         style={{ ...styles.input, marginTop: 20, marginBottom: 20 }}
-        onChangeText={(value) => setPassword(value)}
+        onChangeText={(value) => {
+          setError("");
+          setPassword(value);
+        }}
         value={password}
         nativeID="password"
         placeholder="Password"
@@ -77,7 +89,22 @@ const RegisterScreen = ({ navigation }) => {
         placeholder="Confirm Password"
         secureTextEntry={true}
       />
-
+      <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+        {(error && (
+          <Text
+            style={{
+              color: "#D14343",
+              textAlign: "center",
+              fontWeight: "700",
+            }}
+          >
+            {error}
+          </Text>
+        )) ||
+          null}
+      </View>
+      {/* 
+       Object.entries(errors)
       {(error && (
         <Text
           style={{
@@ -91,16 +118,15 @@ const RegisterScreen = ({ navigation }) => {
           {error}
         </Text>
       )) ||
-        null}
+        null} */}
       <Button
-        loading={loading}
+        loading={isLoading}
         buttonStyle={{
           borderRadius: 8,
           padding: 10,
           minWidth: 200,
-          marginTop: 40,
         }}
-        disabled={!email || !password || (!confirmPassword && !error)}
+        // disabled={!email || !password || (!confirmPassword && !error)}
         title="Register"
         onPress={handleOnSubmit}
         color="primary"
