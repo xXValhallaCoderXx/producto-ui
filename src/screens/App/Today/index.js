@@ -9,6 +9,8 @@ import EvilIcon from "react-native-vector-icons/EvilIcons";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import JwtService from "../../../services/auth-service";
 import { format } from "date-fns";
+import httpClient from "../../../api/api-handler";
+
 import {
   ListItem,
   Text,
@@ -37,7 +39,7 @@ const ListScreen = ({ navigation }) => {
   useEffect(() => {
     const total = tasks.length;
     const completed = tasks.filter((task) => task.completed).length;
-    setProgress(Math.round((completed / total) * 100) / 100) ;
+    setProgress(Math.round((completed / total) * 100) / 100);
   }, [tasks]);
 
   const toggleDialog = () => {
@@ -45,15 +47,12 @@ const ListScreen = ({ navigation }) => {
   };
 
   const fetchTasks = async () => {
-    const res = await axios.get(
-      `${Constants.manifest.extra.baseUrl}/api/v1/task`,
-      {
-        headers: {
-          Authorization: `Bearer ${JwtService.accessToken}`,
-        },
-      }
-    );
-    setTasks(res.data);
+    try {
+      const response = await httpClient.get("/task");
+      setTasks(response.data);
+    } catch (err) {
+      console.log("err", err.response);
+    }
   };
 
   const toggleCategory = async (task) => {
