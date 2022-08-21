@@ -43,7 +43,7 @@ const ProgressBar = ({ editMode, progress }) => {
               }}
             >
             
-              { Math.round((parseFloat(progress) * 100))}%
+              { Math.round((parseFloat(progress || 0) * 100))}%
             </Text>
           </>
         )}

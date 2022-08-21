@@ -15,6 +15,15 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("blur", async (e) => {
+      setError("")
+      setEmail("")
+      setPassword("")
+    });
+    // Unsubscribe to event listener when component unmount
+    return () => unsubscribe();
+  }, []);
+  useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2000,

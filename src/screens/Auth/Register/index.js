@@ -15,8 +15,9 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleOnSubmit = async () => {
     setError("");
-    setIsLoading(true);
+
     if (email && password) {
+      setIsLoading(true);
       try {
         const response = await httpClient.post("/auth/register", {
           email,
@@ -33,12 +34,16 @@ const RegisterScreen = ({ navigation }) => {
         if (err.response.status === 400) {
           if(Array.isArray(err.response.data.message)){
             setError(err.response.data.message[0]);
+          } else {
+            setError(err.response.data.message);
           }
-          setError(err.response.data.message);
+       
         } else {
           setError("Sorry, an error occured");
         }
       }
+    } else {
+      setError("Please fill in all required fields")
     }
   };
 

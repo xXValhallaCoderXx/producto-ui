@@ -57,7 +57,6 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    console.log("title", _title);
     try {
       ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
       await fetchTasks();
@@ -69,20 +68,22 @@ const ListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ padding: 30 }}>
+      <View style={{ flex: 1 }}>
         <Header editMode={editMode} />
         <ProgressBar editMode={editMode} progress={progress} />
+      </View>
+      <View style={{ flex: 6, marginTop: 20 }}>
         <TaskList
           tasks={tasks}
           editMode={editMode}
           handleToggleTaskFocus={handleToggleTaskFocus}
           handleToggleTaskComplete={handleToggleTaskComplete}
         />
-        <AddItem
-          handleCreateNewTask={handleCreateNewTask}
-          fetchTasks={fetchTasks}
-        />
       </View>
+      <AddItem
+        handleCreateNewTask={handleCreateNewTask}
+        fetchTasks={fetchTasks}
+      />
 
       <StatusBar style="auto" />
     </View>
@@ -93,7 +94,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: 15,
+    marginTop: 15,
+    flexDirection: "column",
+    padding: 30,
   },
 });
 
