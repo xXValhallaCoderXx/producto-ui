@@ -1,138 +1,178 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
+import { useTheme } from "@rneui/themed";
+import { TextInput } from "react-native";
 import { Text, Card, Input, Button } from "@rneui/themed";
-import {
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-  ToastAndroid,
-} from "react-native";
+import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
+import httpClient from "../../../api/api-handler";
 
-const RegisterScreen = ({navigation}) => {
+const RegisterScreen = ({ navigation }) => {
+  const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
-  const handleOnSubmit = () => {
+
+  const handleOnSubmit = async () => {
+    setError("");
+
     if (email && password) {
-      axios
-        .post(
-          `https://d916-2406-3003-2007-179f-e813-ef88-75d1-6623.ngrok.io/api/v1/auth/register`,
-          {
-            username: email,
-            password: password,
-          }
-        )
-        .then((response) => {
-            console.log("what is this: ", response)
-          JwtService.setToken(response.data.access_token);
-        })
-        .catch((err) => {
-          console.log(err.response);
-          ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
-          setError("Credentials already used");
+      setIsLoading(true);
+      try {
+        const response = await httpClient.post("/auth/register", {
+          email,
+          password,
         });
+        setIsLoading(false);
+
+        ToastAndroid.show("Registration success", ToastAndroid.SHORT);
+        navigation.navigate("Login");
+      } catch (err) {
+        setIsLoading(false);
+        console.log("ERR: ", err.response.data)
+        // ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
+        if (err.response.status === 400) {
+          if(Array.isArray(err.response.data.message)){
+            setError(err.response.data.message[0]);
+          } else {
+            setError(err.response.data.message);
+          }
+       
+        } else {
+          setError("Sorry, an error occured");
+        }
+      }
+    } else {
+      setError("Please fill in all required fields")
     }
-    //
   };
 
   useEffect(() => {
-    if(password !== confirmPassword){
-        setError("Passwords do not match!")
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+    } else {
+      setError("");
     }
-  }, [confirmPassword])
+  }, [confirmPassword, password]);
+
   return (
-    <KeyboardAvoidingView
+    <View
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.titleContainer}>
-        <Text style={{ color: "#00a8e8" }} h1>
-          Producto
-        </Text>
-        <Text style={{ color: "#007ea7" }} h4>
-          Unleash Your Creativity
-        </Text>
-      </View>
-      <Card containerStyle={styles.loginCard}>
-        <Text
-          style={{ color: "#007ea7", textAlign: "center", marginBottom: 10 }}
-          h2
-        >
-          Registration
-        </Text>
-        <Input
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          nativeID="email"
-          placeholder="Enter your email..."
-        />
-        <Input
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          nativeID="password"
-          placeholder="Enter your password..."
-        />
-        <Input
-          onChangeText={(value) => setConfirmPassword(value)}
-          value={confirmPassword}
-          nativeID="confirmPassword"
-          placeholder="Confirm your password..."
-        />
+      <Image
+        style={{ height: 40, width: 220, marginBottom: 40 }}
+        source={require("../../../assets/images/title-dark.png")}
+      />
+
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => {
+          setError("");
+          setEmail(value);
+        }}
+        value={email}
+        nativeID="email"
+        placeholder="Email"
+      />
+      <TextInput
+        style={{ ...styles.input, marginTop: 20, marginBottom: 20 }}
+        onChangeText={(value) => {
+          setError("");
+          setPassword(value);
+        }}
+        value={password}
+        nativeID="password"
+        placeholder="Password"
+        secureTextEntry={true}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={(value) => setConfirmPassword(value)}
+        value={confirmPassword}
+        nativeID="confirmPassword"
+        placeholder="Confirm Password"
+        secureTextEntry={true}
+      />
+      <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
         {(error && (
           <Text
             style={{
-              color: "red",
+              color: "#D14343",
               textAlign: "center",
               fontWeight: "700",
-              marginTop: -10,
-              marginBottom: 10,
             }}
           >
             {error}
           </Text>
         )) ||
           null}
-        <Button
-          disabled={!email || !password || !confirmPassword && !error}
-          title="Submit"
-          onPress={handleOnSubmit}
-        />
-      </Card>
-      <Text style={{ color: "#007ea7", marginTop: 20 }} h4>
+      </View>
+      {/* 
+       Object.entries(errors)
+      {(error && (
+        <Text
+          style={{
+            color: "#f43a3a",
+            textAlign: "center",
+            fontWeight: "700",
+            marginTop: 5,
+            marginBottom: 10,
+          }}
+        >
+          {error}
+        </Text>
+      )) ||
+        null} */}
+      <Button
+        loading={isLoading}
+        buttonStyle={{
+          borderRadius: 8,
+          padding: 10,
+          minWidth: 200,
+        }}
+        // disabled={!email || !password || (!confirmPassword && !error)}
+        title="Register"
+        onPress={handleOnSubmit}
+        color="primary"
+      />
+
+      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
         Already have an account?
       </Text>
       <Text
+        h6
         onPress={() => navigation.navigate("Login")}
-        style={{ color: "white", marginTop: 20, fontSize: 20 }}
+        style={{
+          color: "black",
+          marginTop: 5,
+          fontWeight: "700",
+        }}
       >
-        Log-in<Text style={{ fontWeight: "bold", color: "white" }}>Here</Text>
+        Log-in Here
       </Text>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#003459",
+    backgroundColor: "white",
     display: "flex",
     alignItems: "center",
-    // justifyContent: "space-between",
-  },
-  titleContainer: {
-    marginTop: 50,
-    display: "flex",
     justifyContent: "center",
-    alignItems: "center",
   },
-  loginCard: {
-    marginTop: 125,
-    minWidth: 300,
-    maxWidth: 350,
-    borderRadius: 6,
-    display: "flex",
+  input: {
+    width: 300,
+    height: 45,
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    fontSize: 16,
   },
 });
 
