@@ -11,7 +11,6 @@ import AddItem from "./AddItem";
 const ListScreen = ({ navigation }) => {
   const [tasks, setTasks] = useState([]);
   const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
 
   useEffect(() => {
@@ -24,12 +23,7 @@ const ListScreen = ({ navigation }) => {
     setProgress(Math.round((completed / total) * 100) / 100);
   }, [tasks]);
 
-  const toggleDialog = () => {
-    setVisible(!visible);
-  };
-
   const fetchTasks = async () => {
-    console.log("FETCHING TASKAS");
     try {
       const response = await httpClient.get("/task");
       setTasks(response.data);
@@ -38,46 +32,40 @@ const ListScreen = ({ navigation }) => {
     }
   };
 
-  const toggleCategory = async (_task) => {
+  const handleToggleTaskComplete = async (_task) => {
     try {
-      ToastAndroid.show("Updated!", ToastAndroid.SHORT);
+      await httpClient.patch(`/task/${_task.id}`, {
+        completed: !_task.completed,
+      });
+      ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+      await fetchTasks();
     } catch (err) {
-      console.log("err", err.response);
+      console.log("TOGGLE COMPLETE ERROR: ", err.response);
     }
   };
 
-  const handleToggleSwitch = (task) => async () => {
-    const response = await httpClient.post(`/task/${_task.id}`, {
-      ...task,
-      completed: !task.completed,
-      taskId: task.id,
-    });
-    console.log("RESPONSE: ", response.data);
-
-    // await fetchTasks();
+  const handleToggleTaskFocus = async (_task) => {
+    try {
+      await httpClient.patch(`/task/${_task.id}`, {
+        focus: !_task.focus,
+      });
+      ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+      await fetchTasks();
+    } catch (err) {
+      console.log("TOGGLE FOCUS ERROR: ", err.response);
+    }
   };
 
-  const handleToggleFocus = (task) => async () => {
-    console.log("go");
-    await toggleCategory({
-      ...task,
-      focus: !task.focus,
-      taskId: task.id,
-    });
-    await fetchTasks();
+  const handleCreateNewTask = async (_title) => {
+    console.log("title", _title);
+    try {
+      ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+      await fetchTasks();
+      return;
+    } catch (err) {
+      console.log("ERROR CRESATING TASK:", err.response);
+    }
   };
-
-  // const onSubmitTask = async () => {
-  //   try {
-  //     const response = await httpClient.post(`/task`, { title: taskTitle });
-  //     ToastAndroid.show("Updated!", ToastAndroid.SHORT);
-  //     await fetchTasks();
-  //     setTaskTitle("");
-  //     setVisible(false);
-  //   } catch (err) {
-  //     console.log("err", err.response);
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
@@ -87,10 +75,13 @@ const ListScreen = ({ navigation }) => {
         <TaskList
           tasks={tasks}
           editMode={editMode}
-          handleToggleSwitch={handleToggleSwitch}
-          handleToggleFocus={handleToggleFocus}
+          handleToggleTaskFocus={handleToggleTaskFocus}
+          handleToggleTaskComplete={handleToggleTaskComplete}
         />
-        <AddItem fetchTasks={fetchTasks} />
+        <AddItem
+          handleCreateNewTask={handleCreateNewTask}
+          fetchTasks={fetchTasks}
+        />
       </View>
 
       <StatusBar style="auto" />

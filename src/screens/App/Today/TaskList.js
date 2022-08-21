@@ -6,10 +6,13 @@ import { ListItem, Text, useTheme, CheckBox } from "@rneui/themed";
 const TaskList = ({
   editMode,
   tasks,
-  handleToggleSwitch,
-  handleToggleFocus,
+  handleToggleTaskFocus,
+  handleToggleTaskComplete
 }) => {
   const { theme } = useTheme();
+
+  const onCheckTask = (_task) => () =>  handleToggleTaskComplete(_task);
+  const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   return (
     <View>
       {tasks.length === 0 ? (
@@ -52,13 +55,13 @@ const TaskList = ({
                           style={{ fontSize: 20, marginRight: 10 }}
                           color={task.focus ? theme.colors.primary : "black"}
                           name={"key"}
-                          onPress={handleToggleFocus(task)}
+                          onPress={onToggleFocus(task)}
                         />
                       )}
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
-                        onPress={handleToggleSwitch(task)}
+                        onPress={onCheckTask(task)}
                       />
                     </View>
                     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}

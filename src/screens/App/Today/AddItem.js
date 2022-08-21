@@ -4,7 +4,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button } from "@rneui/themed";
 import httpClient from "../../../api/api-handler";
 
-const AddItem = () => {
+const AddItem = ({handleCreateNewTask}) => {
   const { theme } = useTheme();
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -14,16 +14,16 @@ const AddItem = () => {
     setAddTask(!addTask);
   };
 
-  const onSubmitTask = async ({ fetchTasks }) => {
+  const onSubmitTask = async () => {
     if (taskName.length < 3) {
       setError("Task name too short");
     } else {
       try {
-        const response = await httpClient.post(`/task`, { title: taskName });
-        console.log("RESPONSE: ", response.data);
-        // ToastAndroid.show("Updated!", ToastAndroid.SHORT);
+        await httpClient.post(`/task`, { title: taskName });
+        await handleCreateNewTask(taskName);
+        setTaskName("")
       } catch (err) {
-        console.log("err: ", err.response);
+        console.log("err: ", err);
       }
     }
   };
@@ -50,6 +50,7 @@ const AddItem = () => {
                   setError("");
                   setTaskName(value);
                 }}
+                value={taskName}
               />
             </View>
             <View
