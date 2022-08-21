@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { View, Text } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Input, useTheme, Button } from "@rneui/themed";
+import { Input, useTheme, Button, Icon } from "@rneui/themed";
 import httpClient from "../../../api/api-handler";
 
-const AddItem = ({handleCreateNewTask}) => {
+const AddItem = ({ handleCreateNewTask }) => {
   const { theme } = useTheme();
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -21,7 +21,8 @@ const AddItem = ({handleCreateNewTask}) => {
       try {
         await httpClient.post(`/task`, { title: taskName });
         await handleCreateNewTask(taskName);
-        setTaskName("")
+        setTaskName("");
+        setAddTask(false);
       } catch (err) {
         console.log("err: ", err);
       }
@@ -62,20 +63,22 @@ const AddItem = ({handleCreateNewTask}) => {
                 marginTop: 10,
               }}
             >
-              <MaterialIcons
-                style={{ paddingRight: 4, color: "green", fontSize: 25 }}
-                name={"check"}
+              <Icon
+                name="check"
+                color={theme.colors.primary}
+                type="material-icons"
                 onPress={onSubmitTask}
               />
-              <MaterialIcons
-                style={{ paddingRight: 4, color: "red", fontSize: 25 }}
+              <Icon
                 name={"clear"}
+                color="#D14343"
+                type="material-icons"
                 onPress={handleOnPress}
               />
             </View>
           </View>
           {error ? (
-            <Text style={{ color: "red", marginTop: -10, marginLeft: 10 }}>
+            <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
               {error}
             </Text>
           ) : null}
