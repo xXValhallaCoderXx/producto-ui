@@ -5,6 +5,7 @@ import { Text, useTheme, LinearProgress } from "@rneui/themed";
 
 const ProgressBar = ({ editMode, progress }) => {
   const { theme } = useTheme();
+
   return (
     <View style={{ paddingTop: 0 }}>
       <Text style={{ marginLeft: -5 }} h6>
@@ -41,7 +42,8 @@ const ProgressBar = ({ editMode, progress }) => {
                 fontWeight: "700",
               }}
             >
-              {progress || 0 * 100}%
+            
+              { Math.round((parseFloat(progress) * 100))}%
             </Text>
           </>
         )}
