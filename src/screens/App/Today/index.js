@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
+
 import { StyleSheet, View, ToastAndroid } from "react-native";
 import httpClient from "../../../api/api-handler";
 import Header from "./Header";
@@ -69,8 +69,8 @@ const ListScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* <View style={{ flex: 1 }}> */}
-        <Header editMode={editMode} />
-        <ProgressBar editMode={editMode} progress={progress} />
+      <Header editMode={editMode} />
+      <ProgressBar editMode={editMode} progress={progress} />
       {/* </View> */}
       <View>
         <TaskList
@@ -83,9 +83,8 @@ const ListScreen = ({ navigation }) => {
       <AddItem
         handleCreateNewTask={handleCreateNewTask}
         fetchTasks={fetchTasks}
+        editMode={editMode}
       />
-
-      <StatusBar style="auto" />
     </View>
   );
 };

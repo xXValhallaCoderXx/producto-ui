@@ -9,7 +9,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./src/config/store";
-import { View, Image, Animated } from "react-native";
+import { Image, Animated } from "react-native";
+import { StatusBar } from "expo-status-bar";
 const queryClient = new QueryClient({});
 const Stack = createNativeStackNavigator();
 
@@ -83,6 +84,7 @@ export default function App() {
                 />
                 <Stack.Screen name="App" component={AppScreens} />
               </Stack.Navigator>
+              <StatusBar backgroundColor="#5049e5" style="dark" />
             </NavigationContainer>
           </QueryClientProvider>
         </ThemeProvider>
