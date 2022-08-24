@@ -1,17 +1,54 @@
-import { useState } from "react";
-import { View, Text } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { View, Text, Keyboard } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
 import httpClient from "../../../api/api-handler";
 
-const AddItem = ({ handleCreateNewTask }) => {
+const AddItem = ({ handleCreateNewTask, editMode }) => {
   const { theme } = useTheme();
+  const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // or some other action
+        setAddTask(false);
+        setTaskName("");
+        setError("");
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const handleOnPress = () => {
-    setAddTask(!addTask);
+    setAddTask(true);
+    addTaskInputRef.current && addTaskInputRef.current.focus();
+    setTaskName("");
+    setError("");
+  };
+
+  const handleOnPressCancel = () => {
+    setAddTask(true);
+    setTaskName("");
+    setError("");
+    Keyboard.dismiss();
   };
 
   const onSubmitTask = async () => {
@@ -29,13 +66,17 @@ const AddItem = ({ handleCreateNewTask }) => {
     }
   };
 
+  if(!editMode){
+    return null;
+  }
+  
   return (
     <View
       style={{
         marginTop: 20,
       }}
     >
-      {addTask ? (
+      {isKeyboardVisible || addTask ? (
         <View>
           <View
             style={{
@@ -47,6 +88,7 @@ const AddItem = ({ handleCreateNewTask }) => {
             <View style={{ flex: 7 }}>
               <Input
                 placeholder="Enter task name..."
+                autoFocus
                 onChangeText={(value) => {
                   setError("");
                   setTaskName(value);
@@ -73,7 +115,7 @@ const AddItem = ({ handleCreateNewTask }) => {
                 name={"clear"}
                 color="#D14343"
                 type="material-icons"
-                onPress={handleOnPress}
+                onPress={handleOnPressCancel}
               />
             </View>
           </View>
@@ -87,7 +129,7 @@ const AddItem = ({ handleCreateNewTask }) => {
         <Button
           type="clear"
           color={theme.colors.primary}
-          containerStyle={{ width: 100 }}
+          buttonStyle={{ display: "flex", justifyContent: "flex-start" }}
           onPress={handleOnPress}
         >
           <MaterialIcons

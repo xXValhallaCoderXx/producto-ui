@@ -6,8 +6,10 @@ import { useTheme } from "@rneui/themed";
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function App({navigation}) {
   const { theme } = useTheme();
+
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
