@@ -1,5 +1,6 @@
 # producto-ui
 
-<div align="center">
-  <a href="https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE"><img src="https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" alt="IMAGE ALT TEXT"></a>
-</div>
+<img width="787" alt="image" src="https://user-images.githubusercontent.com/19978411/186477140-9f8765cf-7285-4014-8d5d-3d74dac8c13c.png">
+
+
+<img width="436" alt="image" src="https://user-images.githubusercontent.com/19978411/186477206-99892b26-c085-4074-8cfe-216dadcee461.png">
