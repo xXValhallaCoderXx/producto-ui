@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Text, Keyboard } from "react-native";
+import { View, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
 import httpClient from "../../../api/api-handler";
@@ -69,7 +69,7 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
   if(!editMode){
     return null;
   }
-  
+
   return (
     <View
       style={{
@@ -128,6 +128,7 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
       ) : (
         <Button
           type="clear"
+          TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}
           buttonStyle={{ display: "flex", justifyContent: "flex-start" }}
           onPress={handleOnPress}
