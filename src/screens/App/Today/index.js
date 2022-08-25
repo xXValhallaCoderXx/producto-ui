@@ -13,103 +13,88 @@ import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
+import { useGetTodaysTasksQuery, useToggleTaskMutation } from "../../../api";
 
 const ListScreen = ({ navigation }) => {
-  const [tasks, setTasks] = useState([]);
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
+  const { data: tasks, isLoading, error } = useGetTodaysTasksQuery();
+  console.log("TASKS: ", tasks);
+  // const mutate = useToggleTaskMutation();
+  // console.log("DATA: ", mutate);
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  useEffect(() => {
-    const total = tasks.length;
-    const completed = tasks.filter((task) => task.completed).length;
-    setProgress(Math.round((completed / total) * 100) / 100);
+    if (tasks) {
+      const total = tasks.length;
+      const completed = tasks.filter((task) => task.completed).length;
+      setProgress(Math.round((completed / total) * 100) / 100);
+    }
   }, [tasks]);
 
-  const fetchTasks = async () => {
-    try {
-      // const queryDate = moment(new Date()).format("YYYY/MM/DD")
-      const response = await httpClient.get(`/task`);
-      setTasks(response.data);
-    } catch (err) {
-      console.log("err", err.response);
-    }
-  };
+  // const handleToggleTaskComplete = async (_task) => {
+  //   try {
+  //     await httpClient.patch(`/task/${_task.id}`, {
+  //       completed: !_task.completed,
+  //     });
+  //     ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+  //     // await fetchTasks();
+  //   } catch (err) {
+  //     console.log("TOGGLE COMPLETE ERROR: ", err.response);
+  //   }
+  // };
 
-  const handleToggleTaskComplete = async (_task) => {
-    try {
-      await httpClient.patch(`/task/${_task.id}`, {
-        completed: !_task.completed,
-      });
-      ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-      await fetchTasks();
-    } catch (err) {
-      console.log("TOGGLE COMPLETE ERROR: ", err.response);
-    }
-  };
+  // const handleToggleTaskFocus = async (_task) => {
+  //   try {
+  //     setCurrentTask(task.id);
+  //     setIsLoadingToggle(true);
+  //     await httpClient.patch(`/task/${_task.id}`, {
+  //       focus: !_task.focus,
+  //     });
+  //     ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+  //     setCurrentTask("");
+  //     setIsLoadingToggle(false);
+  //     // await fetchTasks();
+  //   } catch (err) {
+  //     console.log("TOGGLE FOCUS ERROR: ", err.response);
+  //   }
+  // };
 
-  const handleToggleTaskFocus = async (_task) => {
-    try {
-      setCurrentTask(task.id);
-      setIsLoadingToggle(true);
-      await httpClient.patch(`/task/${_task.id}`, {
-        focus: !_task.focus,
-      });
-      ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-      setCurrentTask("");
-      setIsLoadingToggle(false);
-      await fetchTasks();
-    } catch (err) {
-      console.log("TOGGLE FOCUS ERROR: ", err.response);
-    }
-  };
-
-  const handleCreateNewTask = async (_title) => {
-    try {
-      ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
-      await fetchTasks();
-      return;
-    } catch (err) {
-      console.log("ERROR CRESATING TASK:", err.response);
-    }
-  };
+  // const handleCreateNewTask = async (_title) => {
+  //   try {
+  //     ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+  //     // await fetchTasks();
+  //     return;
+  //   } catch (err) {
+  //     console.log("ERROR CRESATING TASK:", err.response);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
-        <Header editMode={editMode} />
+      <Header editMode={editMode} />
       <ProgressBar editMode={editMode} progress={progress} />
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{flex: 1}}
-    >
-      {/* <View style={{ flex: 1 }}> */}
-    
-      {/* </View> */}
-
-      <TaskList
-        tasks={tasks}
-        editMode={editMode}
-        handleToggleTaskFocus={handleToggleTaskFocus}
-        handleToggleTaskComplete={handleToggleTaskComplete}
-        currentTask={currentTask}
-        isLoadingToggle={isLoadingToggle}
-      />
-
-      {/* <KeyboardAvoidingView></KeyboardAvoidingView> */}
-
-      <AddItem
-        handleCreateNewTask={handleCreateNewTask}
-        fetchTasks={fetchTasks}
-        editMode={editMode}
-      />
-    </KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
+      >
+        <TaskList
+          tasks={tasks || []}
+          editMode={editMode}
+          handleToggleTaskFocus={() => console.log("")}
+          handleToggleTaskComplete={() => console.log("")}
+          currentTask={currentTask}
+          isLoadingToggle={isLoadingToggle}
+        />
+        {/* 
+        <AddItem
+          handleCreateNewTask={handleCreateNewTask}
+          fetchTasks={() => console.log("add")}
+          editMode={editMode}
+        /> */}
+      </KeyboardAvoidingView>
     </View>
-
   );
 };
 
