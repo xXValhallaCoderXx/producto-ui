@@ -1,7 +1,13 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
-import { StyleSheet, View, ToastAndroid } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ToastAndroid,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import httpClient from "../../../api/api-handler";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -11,6 +17,8 @@ import AddItem from "./AddItem";
 const ListScreen = ({ navigation }) => {
   const [tasks, setTasks] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [isLoadingToggle, setIsLoadingToggle] = useState(false);
+  const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
 
   useEffect(() => {
@@ -25,7 +33,8 @@ const ListScreen = ({ navigation }) => {
 
   const fetchTasks = async () => {
     try {
-      const response = await httpClient.get("/task");
+      // const queryDate = moment(new Date()).format("YYYY/MM/DD")
+      const response = await httpClient.get(`/task`);
       setTasks(response.data);
     } catch (err) {
       console.log("err", err.response);
@@ -46,10 +55,14 @@ const ListScreen = ({ navigation }) => {
 
   const handleToggleTaskFocus = async (_task) => {
     try {
+      setCurrentTask(task.id);
+      setIsLoadingToggle(true);
       await httpClient.patch(`/task/${_task.id}`, {
         focus: !_task.focus,
       });
       ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+      setCurrentTask("");
+      setIsLoadingToggle(false);
       await fetchTasks();
     } catch (err) {
       console.log("TOGGLE FOCUS ERROR: ", err.response);
@@ -67,25 +80,32 @@ const ListScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       {/* <View style={{ flex: 1 }}> */}
       <Header editMode={editMode} />
       <ProgressBar editMode={editMode} progress={progress} />
       {/* </View> */}
-      <View>
-        <TaskList
-          tasks={tasks}
-          editMode={editMode}
-          handleToggleTaskFocus={handleToggleTaskFocus}
-          handleToggleTaskComplete={handleToggleTaskComplete}
-        />
-      </View>
+
+      <TaskList
+        tasks={tasks}
+        editMode={editMode}
+        handleToggleTaskFocus={handleToggleTaskFocus}
+        handleToggleTaskComplete={handleToggleTaskComplete}
+        currentTask={currentTask}
+        isLoadingToggle={isLoadingToggle}
+      />
+
+      {/* <KeyboardAvoidingView></KeyboardAvoidingView> */}
+
       <AddItem
         handleCreateNewTask={handleCreateNewTask}
         fetchTasks={fetchTasks}
         editMode={editMode}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

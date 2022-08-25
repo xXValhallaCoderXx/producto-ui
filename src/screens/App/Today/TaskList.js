@@ -7,7 +7,9 @@ const TaskList = ({
   editMode,
   tasks,
   handleToggleTaskFocus,
-  handleToggleTaskComplete
+  handleToggleTaskComplete,
+  currentTask,
+  isLoadingToggle
 }) => {
   const { theme } = useTheme();
 
@@ -63,6 +65,7 @@ const TaskList = ({
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
                         onPress={onCheckTask(task)}
+                        disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>
                     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
