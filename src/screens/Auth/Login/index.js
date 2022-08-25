@@ -15,6 +15,7 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    handleInit();
     const unsubscribe = navigation.addListener("blur", async (e) => {
       setError("");
       setEmail("");
@@ -23,6 +24,13 @@ const LoginScreen = ({ navigation }) => {
     // Unsubscribe to event listener when component unmount
     return () => unsubscribe();
   }, []);
+
+  const handleInit =  async () => {
+    const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
+    if (jwtToken) {
+      navigation.dispatch(StackActions.replace("App"));
+    }
+  }
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,

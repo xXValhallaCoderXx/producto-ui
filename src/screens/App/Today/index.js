@@ -21,9 +21,16 @@ const ListScreen = ({ navigation }) => {
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
   const { data: tasks, isLoading, error } = useGetTodaysTasksQuery();
-  console.log("TASKS: ", tasks);
-  // const mutate = useToggleTaskMutation();
-  // console.log("DATA: ", mutate);
+  const [
+    toggleTask,
+    {
+      isError: isToggleError,
+      isSuccess: isToggleSuccess,
+      isLoading: isToggleLoading,
+      data: toggleData
+    },
+  ] = useToggleTaskMutation();
+
 
   useEffect(() => {
     if (tasks) {
@@ -33,32 +40,37 @@ const ListScreen = ({ navigation }) => {
     }
   }, [tasks]);
 
-  // const handleToggleTaskComplete = async (_task) => {
-  //   try {
-  //     await httpClient.patch(`/task/${_task.id}`, {
-  //       completed: !_task.completed,
-  //     });
-  //     ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-  //     // await fetchTasks();
-  //   } catch (err) {
-  //     console.log("TOGGLE COMPLETE ERROR: ", err.response);
-  //   }
-  // };
+  const handleToggleTaskComplete = async (_task) => {
+    // try {
+    //   await httpClient.patch(`/task/${_task.id}`, {
+    //     completed: !_task.completed,
+    //   });
+    //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+    //   // await fetchTasks();
+    // } catch (err) {
+    //   console.log("TOGGLE COMPLETE ERROR: ", err.response);
+    // }
+    console.log("LEGGO")
+    await toggleTask(_task.id, !completed)
+  };
+  console.log("toggleData", toggleData)
+  console.log("isToggleLoading", isToggleLoading)
 
   // const handleToggleTaskFocus = async (_task) => {
-  //   try {
-  //     setCurrentTask(task.id);
-  //     setIsLoadingToggle(true);
-  //     await httpClient.patch(`/task/${_task.id}`, {
-  //       focus: !_task.focus,
-  //     });
-  //     ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-  //     setCurrentTask("");
-  //     setIsLoadingToggle(false);
-  //     // await fetchTasks();
-  //   } catch (err) {
-  //     console.log("TOGGLE FOCUS ERROR: ", err.response);
-  //   }
+    // try {
+    //   setCurrentTask(task.id);
+    //   setIsLoadingToggle(true);
+    //   await httpClient.patch(`/task/${_task.id}`, {
+    //     focus: !_task.focus,
+    //   });
+    //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+    //   setCurrentTask("");
+    //   setIsLoadingToggle(false);
+    //   // await fetchTasks();
+    // } catch (err) {
+    //   console.log("TOGGLE FOCUS ERROR: ", err.response);
+    // }
+ 
   // };
 
   // const handleCreateNewTask = async (_title) => {
@@ -83,7 +95,7 @@ const ListScreen = ({ navigation }) => {
           tasks={tasks || []}
           editMode={editMode}
           handleToggleTaskFocus={() => console.log("")}
-          handleToggleTaskComplete={() => console.log("")}
+          handleToggleTaskComplete={handleToggleTaskComplete}
           currentTask={currentTask}
           isLoadingToggle={isLoadingToggle}
         />
