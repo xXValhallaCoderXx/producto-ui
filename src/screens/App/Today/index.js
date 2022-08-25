@@ -8,12 +8,11 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import httpClient from "../../../api/api-handler";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
-import { useGetTodaysTasksQuery, useToggleTaskMutation } from "../../../api";
+import { useGetTodaysTasksQuery, useToggleTaskMutation } from "../../../api/task-api";
 
 const ListScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
@@ -39,7 +38,7 @@ const ListScreen = ({ navigation }) => {
       setProgress(Math.round((completed / total) * 100) / 100);
     }
   }, [tasks]);
-
+  console.log("TASKS", tasks)
   const handleToggleTaskComplete = async (_task) => {
     // try {
     //   await httpClient.patch(`/task/${_task.id}`, {
@@ -50,8 +49,9 @@ const ListScreen = ({ navigation }) => {
     // } catch (err) {
     //   console.log("TOGGLE COMPLETE ERROR: ", err.response);
     // }
-    console.log("LEGGO")
-    await toggleTask(_task.id, !completed)
+    console.log("LEGGO", !_task.completed)
+    console.log("LEGGO", _task)
+    // await toggleTask(_task.id, !_task.completed)
   };
   console.log("toggleData", toggleData)
   console.log("isToggleLoading", isToggleLoading)

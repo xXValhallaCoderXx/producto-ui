@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    handleInit();
+    // handleInit();
     const unsubscribe = navigation.addListener("blur", async (e) => {
       setError("");
       setEmail("");

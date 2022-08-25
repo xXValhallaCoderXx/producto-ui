@@ -19,37 +19,6 @@ const baseQuery = fetchBaseQuery({
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQuery,
-  endpoints: (builder) => ({
-    login: builder.mutation({
-      query: (email, password) => ({
-        url: "/auth/login",
-        method: "POST",
-        body: { email, password },
-      }),
-    }),
-    register: builder.mutation({
-      query: (email, password) => ({
-        url: "/auth/register",
-        method: "POST",
-        body: { email, password },
-      }),
-    }),
-    getTodaysTasks: builder.query({
-      query: (name) => `/task`,
-    }),
-    toggleTask: builder.mutation({
-      query: (id, completed) => ({
-        url: `/task/${id}`,
-        method: "POST",
-        body: { completed },
-      }),
-    }),
-  }),
+  endpoints: () => ({}),
+  tagTypes: ["Tasks"],
 });
-
-export const {
-  useLoginMutation,
-  useRegisterMutation,
-  useGetTodaysTasksQuery,
-  useToggleTaskMutation,
-} = api;
