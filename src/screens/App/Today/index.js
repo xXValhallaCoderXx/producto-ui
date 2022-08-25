@@ -80,13 +80,15 @@ const ListScreen = ({ navigation }) => {
   };
 
   return (
+    <View style={styles.container}>
+        <Header editMode={editMode} />
+      <ProgressBar editMode={editMode} progress={progress} />
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{flex: 1}}
     >
       {/* <View style={{ flex: 1 }}> */}
-      <Header editMode={editMode} />
-      <ProgressBar editMode={editMode} progress={progress} />
+    
       {/* </View> */}
 
       <TaskList
@@ -106,6 +108,8 @@ const ListScreen = ({ navigation }) => {
         editMode={editMode}
       />
     </KeyboardAvoidingView>
+    </View>
+
   );
 };
 
