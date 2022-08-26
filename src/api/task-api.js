@@ -2,10 +2,9 @@ import { api } from "./index";
 
 const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
-  
     getTodaysTasks: builder.query({
-      query: (name) => `/task`,
-      providesTags: ["Tasks"]
+      query: (date) => `/task?date=${date}`,
+      providesTags: ["Tasks"],
     }),
     toggleTask: builder.mutation({
       invalidatesTags: ["Tasks"],

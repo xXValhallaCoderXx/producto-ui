@@ -1,11 +1,12 @@
 import { StyleSheet, View, ToastAndroid } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
+import IonIcon from "react-native-vector-icons/Ionicons";
 
 import { Text, useTheme } from "@rneui/themed";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode }) => {
+const TodayHeader = ({ editMode, onChangeDate }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   return (
@@ -18,10 +19,32 @@ const TodayHeader = ({ editMode }) => {
       }}
     >
       <View style={{ display: "flex", flexDirection: "row" }}>
-        <Text h4 style={{ color: theme.colors.primary }}>
-          Today
-        </Text>
-        <Text h4>'s tasks</Text>
+        <View>
+          <View>
+            <Text h4 style={{ color: theme.colors.primary }}>
+              Today
+            </Text>
+          </View>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              marginTop: 5,
+              marginBottom: 5,
+            }}
+          >
+            <IonIcon
+              style={{ fontSize: 20, marginRight: 15 }}
+              name="caret-back-sharp"
+              onPress={onChangeDate("back")}
+            />
+            <IonIcon
+              onPress={onChangeDate("forward")}
+              style={{ fontSize: 20 }}
+              name="caret-forward-sharp"
+            />
+          </View>
+        </View>
       </View>
 
       <EvilIcon

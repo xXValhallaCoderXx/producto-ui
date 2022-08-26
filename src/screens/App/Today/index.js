@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-
+import { format, add, sub } from "date-fns";
 import {
   StyleSheet,
   View,
@@ -12,24 +12,33 @@ import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
-import { useGetTodaysTasksQuery, useToggleTaskMutation } from "../../../api/task-api";
+import {
+  useGetTodaysTasksQuery,
+  useToggleTaskMutation,
+} from "../../../api/task-api";
+
+const date = new Date();
 
 const ListScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
-  const { data: tasks, isLoading, error } = useGetTodaysTasksQuery();
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const {
+    data: tasks,
+    isLoading,
+    error,
+  } = useGetTodaysTasksQuery(format(currentDate, "yyyy-MM-dd"));
   const [
     toggleTask,
     {
       isError: isToggleError,
       isSuccess: isToggleSuccess,
       isLoading: isToggleLoading,
-      data: toggleData
+      data: toggleData,
     },
   ] = useToggleTaskMutation();
-
 
   useEffect(() => {
     if (tasks) {
@@ -38,7 +47,7 @@ const ListScreen = ({ navigation }) => {
       setProgress(Math.round((completed / total) * 100) / 100);
     }
   }, [tasks]);
-  console.log("TASKS", tasks)
+  console.log("TASKS", tasks);
   const handleToggleTaskComplete = async (_task) => {
     // try {
     //   await httpClient.patch(`/task/${_task.id}`, {
@@ -49,28 +58,38 @@ const ListScreen = ({ navigation }) => {
     // } catch (err) {
     //   console.log("TOGGLE COMPLETE ERROR: ", err.response);
     // }
-    console.log("LEGGO", !_task.completed)
-    console.log("LEGGO", _task)
+    console.log("LEGGO", !_task.completed);
+    console.log("LEGGO", _task);
     // await toggleTask(_task.id, !_task.completed)
   };
-  console.log("toggleData", toggleData)
-  console.log("isToggleLoading", isToggleLoading)
+
+  const handleOnChangeDate = (direction) => () => {
+    if (direction === "back") {
+      const subDate = sub(currentDate, { days: 1 });
+      console.log("sub tract: ", subDate);
+      setCurrentDate(subDate);
+    } else {
+      const addDate = add(currentDate, { days: 1 });
+      console.log("addd: ", addDate);
+      setCurrentDate(addDate);
+    }
+  };
 
   // const handleToggleTaskFocus = async (_task) => {
-    // try {
-    //   setCurrentTask(task.id);
-    //   setIsLoadingToggle(true);
-    //   await httpClient.patch(`/task/${_task.id}`, {
-    //     focus: !_task.focus,
-    //   });
-    //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-    //   setCurrentTask("");
-    //   setIsLoadingToggle(false);
-    //   // await fetchTasks();
-    // } catch (err) {
-    //   console.log("TOGGLE FOCUS ERROR: ", err.response);
-    // }
- 
+  // try {
+  //   setCurrentTask(task.id);
+  //   setIsLoadingToggle(true);
+  //   await httpClient.patch(`/task/${_task.id}`, {
+  //     focus: !_task.focus,
+  //   });
+  //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
+  //   setCurrentTask("");
+  //   setIsLoadingToggle(false);
+  //   // await fetchTasks();
+  // } catch (err) {
+  //   console.log("TOGGLE FOCUS ERROR: ", err.response);
+  // }
+
   // };
 
   // const handleCreateNewTask = async (_title) => {
@@ -85,8 +104,12 @@ const ListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header editMode={editMode} />
-      <ProgressBar editMode={editMode} progress={progress} />
+      <Header editMode={editMode} onChangeDate={handleOnChangeDate} />
+      <ProgressBar
+        currentDate={currentDate}
+        editMode={editMode}
+        progress={progress}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}

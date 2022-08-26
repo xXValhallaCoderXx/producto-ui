@@ -3,13 +3,13 @@ import { format } from "date-fns";
 
 import { Text, useTheme, LinearProgress } from "@rneui/themed";
 
-const ProgressBar = ({ editMode, progress }) => {
+const ProgressBar = ({ currentDate, editMode, progress }) => {
   const { theme } = useTheme();
 
   return (
     <View style={{ paddingTop: 0 }}>
       <Text style={{ marginLeft: -5 }} h6>
-        {format(new Date(), "	EEE, d LLL yyyy").toUpperCase()}
+        {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
       </Text>
       <View
         style={{
