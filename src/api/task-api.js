@@ -8,13 +8,39 @@ const taskApi = api.injectEndpoints({
     }),
     toggleTask: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: (id, completed) => ({
-        url: `/task/${id}`,
+      query: ({ id, completed }) => {
+        return ({
+          url: `/task/${id}`,
+          method: "PATCH",
+          body: { completed },
+        })
+      },
+    }),
+    toggleTaskFocus: builder.mutation({
+      invalidatesTags: ["Tasks"],
+      query: ({ id, focus }) => {
+        console.log("WHAT IS THIS: ", focus)
+        return ({
+          url: `/task/${id}`,
+          method: "PATCH",
+          body: { focus },
+        })
+      },
+    }),
+    createTask: builder.mutation({
+      invalidatesTags: ["Tasks"],
+      query: ({ title }) => ({
+        url: `/task`,
         method: "POST",
-        body: { completed },
+        body: { title },
       }),
     }),
   }),
 });
 
-export const { useGetTodaysTasksQuery, useToggleTaskMutation } = taskApi;
+export const {
+  useGetTodaysTasksQuery,
+  useToggleTaskMutation,
+  useCreateTaskMutation,
+  useToggleTaskFocusMutation
+} = taskApi;

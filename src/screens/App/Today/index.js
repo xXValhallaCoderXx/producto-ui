@@ -15,6 +15,8 @@ import AddItem from "./AddItem";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
+  useCreateTaskMutation,
+  useToggleTaskFocusMutation,
 } from "../../../api/task-api";
 
 const date = new Date();
@@ -30,15 +32,9 @@ const ListScreen = ({ navigation }) => {
     isLoading,
     error,
   } = useGetTodaysTasksQuery(format(currentDate, "yyyy-MM-dd"));
-  const [
-    toggleTask,
-    {
-      isError: isToggleError,
-      isSuccess: isToggleSuccess,
-      isLoading: isToggleLoading,
-      data: toggleData,
-    },
-  ] = useToggleTaskMutation();
+  const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
+  const [createTask, createTaskResult] = useCreateTaskMutation();
+  const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
 
   useEffect(() => {
     if (tasks) {
@@ -47,20 +43,12 @@ const ListScreen = ({ navigation }) => {
       setProgress(Math.round((completed / total) * 100) / 100);
     }
   }, [tasks]);
-  console.log("TASKS", tasks);
+
   const handleToggleTaskComplete = async (_task) => {
-    // try {
-    //   await httpClient.patch(`/task/${_task.id}`, {
-    //     completed: !_task.completed,
-    //   });
-    //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-    //   // await fetchTasks();
-    // } catch (err) {
-    //   console.log("TOGGLE COMPLETE ERROR: ", err.response);
-    // }
-    console.log("LEGGO", !_task.completed);
-    console.log("LEGGO", _task);
-    // await toggleTask(_task.id, !_task.completed)
+    await toggleTask({
+      id: _task.id,
+      completed: !_task.completed,
+    });
   };
 
   const handleOnChangeDate = (direction) => () => {
@@ -75,32 +63,23 @@ const ListScreen = ({ navigation }) => {
     }
   };
 
-  // const handleToggleTaskFocus = async (_task) => {
-  // try {
-  //   setCurrentTask(task.id);
-  //   setIsLoadingToggle(true);
-  //   await httpClient.patch(`/task/${_task.id}`, {
-  //     focus: !_task.focus,
-  //   });
-  //   ToastAndroid.show(`Task ${_task.title} updated!`, ToastAndroid.SHORT);
-  //   setCurrentTask("");
-  //   setIsLoadingToggle(false);
-  //   // await fetchTasks();
-  // } catch (err) {
-  //   console.log("TOGGLE FOCUS ERROR: ", err.response);
-  // }
+  const handleToggleTaskFocus = async (_task) => {
+    console.log("TASK , ", _task)
+    await toggleTaskFocus({
+      id: _task.id,
+      focus: !_task.focus,
+    });
+  };
 
-  // };
-
-  // const handleCreateNewTask = async (_title) => {
-  //   try {
-  //     ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
-  //     // await fetchTasks();
-  //     return;
-  //   } catch (err) {
-  //     console.log("ERROR CRESATING TASK:", err.response);
-  //   }
-  // };
+  const handleCreateNewTask = async (_title) => {
+    try {
+      await createTask({ title: _title });
+      ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+      return;
+    } catch (err) {
+      console.log("ERROR CRESATING TASK:", err.response);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -117,17 +96,17 @@ const ListScreen = ({ navigation }) => {
         <TaskList
           tasks={tasks || []}
           editMode={editMode}
-          handleToggleTaskFocus={() => console.log("")}
+          handleToggleTaskFocus={handleToggleTaskFocus}
           handleToggleTaskComplete={handleToggleTaskComplete}
           currentTask={currentTask}
           isLoadingToggle={isLoadingToggle}
         />
-        {/* 
+
         <AddItem
           handleCreateNewTask={handleCreateNewTask}
           fetchTasks={() => console.log("add")}
           editMode={editMode}
-        /> */}
+        />
       </KeyboardAvoidingView>
     </View>
   );

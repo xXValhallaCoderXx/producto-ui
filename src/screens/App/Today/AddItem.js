@@ -51,7 +51,7 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
   };
 
   const onSubmitTask = async () => {
-    if (taskName.length < 3) {
+    if (taskName.length < 1) {
       setError("Task name too short");
     } else {
       try {
