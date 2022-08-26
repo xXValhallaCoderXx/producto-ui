@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { format, add, sub } from "date-fns";
+import { format, add, sub, isEqual } from "date-fns";
 import {
   StyleSheet,
   View,
@@ -19,7 +19,7 @@ import {
   useToggleTaskFocusMutation,
 } from "../../../api/task-api";
 
-const date = new Date();
+
 
 const ListScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
@@ -32,9 +32,12 @@ const ListScreen = ({ navigation }) => {
     isLoading,
     error,
   } = useGetTodaysTasksQuery(format(currentDate, "yyyy-MM-dd"));
+  const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
+
+
 
   useEffect(() => {
     if (tasks) {
@@ -83,7 +86,7 @@ const ListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header editMode={editMode} onChangeDate={handleOnChangeDate} />
+      <Header currentDate={currentDate} editMode={editMode} onChangeDate={handleOnChangeDate} />
       <ProgressBar
         currentDate={currentDate}
         editMode={editMode}

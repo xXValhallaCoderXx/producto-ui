@@ -1,14 +1,16 @@
 import { StyleSheet, View, ToastAndroid } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
+import { format, add, sub, isEqual } from "date-fns";
 import IonIcon from "react-native-vector-icons/Ionicons";
 
 import { Text, useTheme } from "@rneui/themed";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate }) => {
+const TodayHeader = ({ editMode, onChangeDate, currentDate }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+
   return (
     <View
       style={{
@@ -22,6 +24,7 @@ const TodayHeader = ({ editMode, onChangeDate }) => {
         <View>
           <View>
             <Text h4 style={{ color: theme.colors.primary }}>
+              {/* {format(currentDate, 'PPP')} */}
               Today
             </Text>
           </View>
@@ -39,8 +42,9 @@ const TodayHeader = ({ editMode, onChangeDate }) => {
               onPress={onChangeDate("back")}
             />
             <IonIcon
+
               onPress={onChangeDate("forward")}
-              style={{ fontSize: 20 }}
+              style={{ fontSize: 20}}
               name="caret-forward-sharp"
             />
           </View>

@@ -15,7 +15,7 @@ const LoginScreen = ({ navigation }) => {
   const [loginApi, loginApiResult] = useLoginMutation();
 
   useEffect(() => {
-    // handleInit();
+    handleInit();
     const unsubscribe = navigation.addListener("blur", async (e) => {
       setEmail("");
       setPassword("");

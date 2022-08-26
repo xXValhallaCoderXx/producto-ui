@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { useTheme } from "@rneui/themed";
 import { TextInput } from "react-native";
 import { useRegisterMutation } from "../../../api/auth-api";
-import { Text, Card, Input, Button } from "@rneui/themed";
+import { Text, Button } from "@rneui/themed";
 import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
-import httpClient from "../../../api/api-handler";
 
 const RegisterScreen = ({ navigation }) => {
   const { theme } = useTheme();
@@ -32,27 +31,7 @@ const RegisterScreen = ({ navigation }) => {
 
     if (email && password) {
       await registerApi({ email, password });
-      //   try {
     }
-
-    //   } catch (err) {
-    //     // setIsLoading(false);
-    //     console.log("ERR: ", err.response.data)
-    //     // ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
-    //     if (err.response.status === 400) {
-    //       if(Array.isArray(err.response.data.message)){
-    //         setError(err.response.data.message[0]);
-    //       } else {
-    //         setError(err.response.data.message);
-    //       }
-
-    //     } else {
-    //       setError("Sorry, an error occured");
-    //     }
-    //   }
-    // } else {
-    //   setError("Please fill in all required fields")
-    // }
   };
 
   useEffect(() => {
