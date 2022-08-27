@@ -18,6 +18,7 @@ import {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
+  useMoveIncompleteTasksMutation
 } from "../../../api/task-api";
 
 const ListScreen = ({ navigation }) => {
@@ -35,6 +36,7 @@ const ListScreen = ({ navigation }) => {
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
+  const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
 
   useEffect(() => {
     if (tasks) {
@@ -55,7 +57,6 @@ const ListScreen = ({ navigation }) => {
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
       const subDate = sub(currentDate, { days: 1 });
-      console.log("sub tract: ", subDate);
       setCurrentDate(subDate);
     } else {
       const addDate = add(currentDate, { days: 1 });
@@ -84,7 +85,9 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleMoveIncompleteTasks = async () => {
-
+    await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
+    const todayDate = format(new Date(), "yyyy-MM-dd");
+    ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
   }
 
   return (
@@ -114,7 +117,9 @@ const ListScreen = ({ navigation }) => {
           editMode={editMode}
         />
         <MoveIncomplete
+          tasks={tasks}
           currentDate={currentDate}
+          isLoading={moveIncompleteTasksResult.isLoading}
           onMoveIncomplete={handleMoveIncompleteTasks}
         />
       </KeyboardAvoidingView>
