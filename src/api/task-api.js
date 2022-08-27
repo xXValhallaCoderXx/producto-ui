@@ -67,11 +67,15 @@ const taskApi = api.injectEndpoints({
     }),
     createTask: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: ({ title }) => ({
-        url: `/task`,
-        method: "POST",
-        body: { title },
-      }),
+      query: ({ title, deadline }) => {
+        console.log("TITLE: ", title);
+        console.log("DEADLINE: ", deadline);
+        return {
+          url: `/task`,
+          method: "POST",
+          body: { title, deadline },
+        };
+      },
     }),
     moveIncompleteTasks: builder.mutation({
       invalidatesTags: ["Tasks"],

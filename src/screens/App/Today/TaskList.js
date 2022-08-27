@@ -41,7 +41,7 @@ const TaskList = ({
   return (
     <View style={{ maxHeight: isKeyboardVisible ? 150 : 600 }}>
       {tasks.length === 0 ? (
-        <Text>
+        <Text style={{ marginTop: 15 }}>
           Add a task to start your{" "}
           <Text style={{ color: theme.colors.primary, fontWeight: "700" }}>
             productivity!
@@ -58,7 +58,14 @@ const TaskList = ({
             })
             .map((task, index) => {
               return (
-                <ListItem key={index} containerStyle={{padding: 10, borderBottomColor: "#e7e8f0", borderBottomWidth: 1 }}>
+                <ListItem
+                  key={index}
+                  containerStyle={{
+                    padding: 10,
+                    borderBottomColor: "#e7e8f0",
+                    borderBottomWidth: 1,
+                  }}
+                >
                   <ListItem.Content style={styles.listContent}>
                     <ListItem.Title
                       style={{

@@ -80,6 +80,7 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
+        <StatusBar style="dark" backgroundColor="white" />
           <QueryClientProvider client={queryClient}>
             <NavigationContainer>
               <Stack.Navigator
@@ -94,7 +95,7 @@ export default function App() {
                 />
                 <Stack.Screen name="App" component={AppScreens} />
               </Stack.Navigator>
-              <StatusBar style="dark" />
+         
             </NavigationContainer>
           </QueryClientProvider>
         </ThemeProvider>

@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+console.log(Constants.manifest.extra.baseUrl)
 // Define a service using a base URL and expected endpoints
 const baseQuery = fetchBaseQuery({
   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,

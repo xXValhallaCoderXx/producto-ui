@@ -19,7 +19,7 @@ import {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation
+  useMoveIncompleteTasksMutation,
 } from "../../../api/task-api";
 
 const ListScreen = ({ navigation }) => {
@@ -37,11 +37,18 @@ const ListScreen = ({ navigation }) => {
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
-  const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
+  const [moveIncompleteTasks, moveIncompleteTasksResult] =
+    useMoveIncompleteTasksMutation();
 
   useEffect(() => {
     setTheme();
   }, []);
+
+  useEffect(() => {
+    if (createTaskResult.isError) {
+      ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);
+    }
+  }, [createTaskResult.isError]);
 
   const setTheme = async () => {
     await NavigationBar.setBackgroundColorAsync("white");
@@ -63,7 +70,7 @@ const ListScreen = ({ navigation }) => {
       date: format(currentDate, "yyyy-MM-dd"),
     });
   };
-
+  console.log("CREATE TASK: ", createTaskResult);
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
       const subDate = sub(currentDate, { days: 1 });
@@ -83,25 +90,23 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    try {
-      await createTask({ title: _title });
-      ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
-      return;
-    } catch (err) {
-      console.log("ERROR CRESATING TASK:", err.response);
-    }
+    await createTask({ title: _title, deadline: new Date().getTime() });
+    ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+    return;
   };
 
   const handleMoveIncompleteTasks = async () => {
-    await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
-    const todayDate = format(new Date(), "yyyy-MM-dd");
-    ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
-  }
+    console.log(endOfDay(currentDate));
+    console.log("whahah", format(currentDate, "yyyy-MM-dd"));
+    // await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
+    // const todayDate = format(new Date(), "yyyy-MM-dd");
+    // ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
+  };
 
   const handleOnPressToday = async () => {
-    console.log("LEGGO")
+    console.log("LEGGO");
     setCurrentDate(new Date());
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -127,7 +132,6 @@ const ListScreen = ({ navigation }) => {
 
         <AddItem
           handleCreateNewTask={handleCreateNewTask}
-          fetchTasks={() => console.log("add")}
           editMode={editMode}
           currentDate={currentDate}
         />
