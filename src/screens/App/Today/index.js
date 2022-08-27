@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { format, add, sub, isEqual } from "date-fns";
+import { format, add, sub } from "date-fns";
+import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
   View,
@@ -37,6 +38,16 @@ const ListScreen = ({ navigation }) => {
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
+
+
+  useEffect(() => {
+    setTheme();
+  }, []);
+
+  const setTheme = async () => {
+    await NavigationBar.setBackgroundColorAsync("white");
+    await NavigationBar.setButtonStyleAsync("dark");
+  };
 
   useEffect(() => {
     if (tasks) {
