@@ -6,7 +6,7 @@ import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate, currentDate }) => {
+const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
@@ -22,11 +22,16 @@ const TodayHeader = ({ editMode, onChangeDate, currentDate }) => {
       >
         {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
       </Text>
+
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
             <View style={styles.dateContainer}>
-              <Text h4 style={{ color: theme.colors.primary }}>
+              <Text
+                h4
+                style={{ color: theme.colors.primary }}
+                onPress={onPressToday}
+              >
                 Today
               </Text>
               <IonIcon

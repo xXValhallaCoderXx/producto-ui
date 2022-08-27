@@ -5,7 +5,7 @@ import { format } from "date-fns";
 const MoveIncomplete = ({ onMoveIncomplete, currentDate, isLoading, tasks }) => {
   const { theme } = useTheme();
 
-  if(tasks.length === 0){
+  if(!tasks || tasks.length === 0){
     return null;
   }
 

@@ -57,6 +57,7 @@ const ListScreen = ({ navigation }) => {
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
       const subDate = sub(currentDate, { days: 1 });
+      console.log("SUB ", subDate)
       setCurrentDate(subDate);
     } else {
       const addDate = add(currentDate, { days: 1 });
@@ -90,12 +91,18 @@ const ListScreen = ({ navigation }) => {
     ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
   }
 
+  const handleOnPressToday = async () => {
+    console.log("LEGGO")
+    setCurrentDate(new Date());
+  }
+
   return (
     <View style={styles.container}>
       <Header
         currentDate={currentDate}
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
+        onPressToday={handleOnPressToday}
       />
       <ProgressBar editMode={editMode} progress={progress} />
       <KeyboardAvoidingView
