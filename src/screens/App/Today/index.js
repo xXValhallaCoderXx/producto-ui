@@ -12,6 +12,7 @@ import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
+import MoveIncomplete from "./MoveIncomplete";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -47,7 +48,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
-      date: format(currentDate, "yyyy-MM-dd")
+      date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
@@ -82,6 +83,10 @@ const ListScreen = ({ navigation }) => {
     }
   };
 
+  const handleMoveIncompleteTasks = async () => {
+
+  }
+
   return (
     <View style={styles.container}>
       <Header
@@ -89,10 +94,7 @@ const ListScreen = ({ navigation }) => {
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
       />
-      <ProgressBar
-        editMode={editMode}
-        progress={progress}
-      />
+      <ProgressBar editMode={editMode} progress={progress} />
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
@@ -110,6 +112,10 @@ const ListScreen = ({ navigation }) => {
           handleCreateNewTask={handleCreateNewTask}
           fetchTasks={() => console.log("add")}
           editMode={editMode}
+        />
+        <MoveIncomplete
+          currentDate={currentDate}
+          onMoveIncomplete={handleMoveIncompleteTasks}
         />
       </KeyboardAvoidingView>
     </View>
