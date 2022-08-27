@@ -1,11 +1,9 @@
 import { api } from "./index";
-import { format, add, sub, isEqual } from "date-fns";
 
 const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
       query: ({ date }) => {
-        console.log("WHAT IS DATE: ", date);
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => {
@@ -29,7 +27,6 @@ const taskApi = api.injectEndpoints({
       ) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            console.log("DRAAAFT: ", draft);
             const optimisticTodo = draft.find((todo) => todo.id === id);
             optimisticTodo.completed = completed;
             return draft;
@@ -92,5 +89,5 @@ export const {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation
+  useMoveIncompleteTasksMutation,
 } = taskApi;

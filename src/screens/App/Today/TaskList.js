@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, ScrollView, Keyboard } from "react-native";
+import { View, ScrollView, Keyboard, StyleSheet } from "react-native";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 
 import { ListItem, Text, useTheme, CheckBox } from "@rneui/themed";
@@ -58,30 +58,19 @@ const TaskList = ({
             })
             .map((task, index) => {
               return (
-                <ListItem
-                  key={index}
-                  bottomDivider
-                  containerStyle={{ padding: 5 }}
-                >
-                  <ListItem.Content
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ListItem.Title style={{
-                      color: task.completed ? "gray" : "black",
-                      textDecorationLine: task.completed ? 'line-through' : "none"
-                      }}>{task.title}</ListItem.Title>
-                    <View
+                <ListItem key={index} containerStyle={{padding: 10, borderBottomColor: "#e7e8f0", borderBottomWidth: 1 }}>
+                  <ListItem.Content style={styles.listContent}>
+                    <ListItem.Title
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        flexDirection: "row",
+                        color: task.completed ? "gray" : "black",
+                        textDecorationLine: task.completed
+                          ? "line-through"
+                          : "none",
                       }}
                     >
+                      {task.title}
+                    </ListItem.Title>
+                    <View style={styles.listRow}>
                       {editMode && (
                         <IoniIcons
                           style={{ fontSize: 20, marginRight: 10 }}
@@ -107,5 +96,19 @@ const TaskList = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  listContent: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  listRow: {
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+});
 
 export default TaskList;

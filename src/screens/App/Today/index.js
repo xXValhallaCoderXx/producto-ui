@@ -39,7 +39,6 @@ const ListScreen = ({ navigation }) => {
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
 
-  console.log("CURRENT DATE: ", currentDate);
   useEffect(() => {
     setTheme();
   }, []);
@@ -68,21 +67,18 @@ const ListScreen = ({ navigation }) => {
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
       const subDate = sub(currentDate, { days: 1 });
-      console.log("SUB ", subDate)
       setCurrentDate(subDate);
     } else {
       const addDate = add(currentDate, { days: 1 });
-      console.log("addd: ", addDate);
       setCurrentDate(addDate);
     }
   };
 
   const handleToggleTaskFocus = async (_task) => {
-    console.log("TASK , ", _task);
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      data: format(currentDate, "yyyy-MM-dd"),
+      date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 

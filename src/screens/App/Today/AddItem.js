@@ -1,12 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  Keyboard,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { format, isBefore, endOfDay } from "date-fns";
+import { View, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { isBefore, endOfDay } from "date-fns";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
 
@@ -17,7 +11,6 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -74,7 +67,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
     return null;
   }
 
-  if(isBefore(currentDate, endOfDay(new Date()))) {
+  if (isBefore(endOfDay(currentDate), endOfDay(new Date()))) {
     return null;
   }
 
