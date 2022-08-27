@@ -88,7 +88,6 @@ const ListScreen = ({ navigation }) => {
         onChangeDate={handleOnChangeDate}
       />
       <ProgressBar
-        currentDate={currentDate}
         editMode={editMode}
         progress={progress}
       />

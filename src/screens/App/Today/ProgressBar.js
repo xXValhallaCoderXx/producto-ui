@@ -1,23 +1,17 @@
 import { View } from "react-native";
-import { format } from "date-fns";
-
 import { Text, useTheme, LinearProgress } from "@rneui/themed";
 
-const ProgressBar = ({ currentDate, editMode, progress }) => {
+const ProgressBar = ({ editMode, progress }) => {
   const { theme } = useTheme();
 
   return (
     <View style={{ paddingTop: 0 }}>
-      <Text style={{ marginLeft: -5 }} h6>
-        {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
-      </Text>
       <View
         style={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          height: 20,
-          marginTop: 5,
+          height: 15,
         }}
       >
         {editMode && (
@@ -29,6 +23,7 @@ const ProgressBar = ({ currentDate, editMode, progress }) => {
                 borderRadius: 8,
                 flex: 0.85,
               }}
+              animation={{duration: 500}}
               value={progress}
               color={theme.colors.primary}
               variant="determinate"
@@ -42,8 +37,7 @@ const ProgressBar = ({ currentDate, editMode, progress }) => {
                 fontWeight: "700",
               }}
             >
-            
-              { Math.round((parseFloat(progress || 0) * 100))}%
+              {Math.round(parseFloat(progress || 0) * 100)}%
             </Text>
           </>
         )}

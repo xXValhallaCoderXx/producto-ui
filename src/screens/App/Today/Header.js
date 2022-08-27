@@ -1,10 +1,9 @@
-import { StyleSheet, View, ToastAndroid } from "react-native";
+import { StyleSheet, View } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
-import { format, add, sub, isEqual } from "date-fns";
-import IonIcon from "react-native-vector-icons/Ionicons";
-
+import { format } from "date-fns";
+import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { Text, useTheme } from "@rneui/themed";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
 const TodayHeader = ({ editMode, onChangeDate, currentDate }) => {
@@ -12,53 +11,75 @@ const TodayHeader = ({ editMode, onChangeDate, currentDate }) => {
   const dispatch = useDispatch();
 
   return (
-    <View
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: "row",
-      }}
-    >
-      <View style={{ display: "flex", flexDirection: "row" }}>
-        <View>
+    <View>
+      <Text
+        style={{
+          marginLeft: -8,
+          fontWeight: "700",
+          color: theme.colors.primary,
+        }}
+        h6
+      >
+        {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
+      </Text>
+      <View style={styles.container}>
+        <View style={styles.row}>
           <View>
-            <Text h4 style={{ color: theme.colors.primary }}>
-              {/* {format(currentDate, 'PPP')} */}
-              Today
-            </Text>
-          </View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              marginTop: 5,
-              marginBottom: 5,
-            }}
-          >
-            <IonIcon
-              style={{ fontSize: 20, marginRight: 15 }}
-              name="caret-back-sharp"
-              onPress={onChangeDate("back")}
-            />
-            <IonIcon
-
-              onPress={onChangeDate("forward")}
-              style={{ fontSize: 20}}
-              name="caret-forward-sharp"
-            />
+            <View style={styles.dateContainer}>
+              <Text h4 style={{ color: theme.colors.primary }}>
+                Today
+              </Text>
+              <IonIcon
+                style={styles.leftArrow}
+                name="keyboard-arrow-left"
+                onPress={onChangeDate("back")}
+              />
+              <IonIcon
+                onPress={onChangeDate("forward")}
+                style={styles.rightArrow}
+                name="keyboard-arrow-right"
+              />
+            </View>
           </View>
         </View>
+        <EvilIcon
+          onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
+          style={{ fontSize: 40, paddingRight: 8 }}
+          color={theme.colors.primary}
+          name={editMode ? "unlock" : "lock"}
+        />
       </View>
-
-      <EvilIcon
-        onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
-        style={{ fontSize: 40 }}
-        color={theme.colors.primary}
-        name={editMode ? "unlock" : "lock"}
-      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+  },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  dateContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  leftArrow: {
+    fontSize: 25,
+    marginTop: 5,
+    marginLeft: 5,
+    padding: 10,
+  },
+  rightArrow: {
+    fontSize: 25,
+    marginTop: 5,
+    padding: 10,
+  },
+});
 
 export default TodayHeader;
