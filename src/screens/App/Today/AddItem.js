@@ -1,16 +1,22 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Text, Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Keyboard,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { format, isBefore, endOfDay } from "date-fns";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
 
-const AddItem = ({ handleCreateNewTask, editMode }) => {
+const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const { theme } = useTheme();
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
 
 
   useEffect(() => {
@@ -64,8 +70,11 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
       }
     }
   };
+  if (!editMode) {
+    return null;
+  }
 
-  if(!editMode){
+  if(isBefore(currentDate, endOfDay(new Date()))) {
     return null;
   }
 
@@ -84,10 +93,11 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
               justifyContent: "space-between",
             }}
           >
-            <View style={{ flex: 7 }}>
+            <View style={{ flex: 7, marginLeft: -7 }}>
               <Input
                 placeholder="Enter task name..."
                 autoFocus
+                inputContainerStyle={{ borderBottomColor: "white" }}
                 onChangeText={(value) => {
                   setError("");
                   setTaskName(value);

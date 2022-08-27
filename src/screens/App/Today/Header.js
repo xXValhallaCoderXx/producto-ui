@@ -10,6 +10,7 @@ const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
 
+
   return (
     <View>
       <Text

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { format, add, sub } from "date-fns";
+import { format, add, sub, endOfDay, formatISO } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
@@ -27,7 +27,7 @@ const ListScreen = ({ navigation }) => {
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(endOfDay(new Date()));
   const {
     data: tasks,
     isLoading,
@@ -39,7 +39,7 @@ const ListScreen = ({ navigation }) => {
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
 
-
+  console.log("CURRENT DATE: ", currentDate);
   useEffect(() => {
     setTheme();
   }, []);
@@ -133,6 +133,7 @@ const ListScreen = ({ navigation }) => {
           handleCreateNewTask={handleCreateNewTask}
           fetchTasks={() => console.log("add")}
           editMode={editMode}
+          currentDate={currentDate}
         />
         <MoveIncomplete
           tasks={tasks}
