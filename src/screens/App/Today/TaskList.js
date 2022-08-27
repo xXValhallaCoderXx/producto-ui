@@ -71,7 +71,10 @@ const TaskList = ({
                       alignItems: "center",
                     }}
                   >
-                    <ListItem.Title>{task.title}</ListItem.Title>
+                    <ListItem.Title style={{
+                      color: task.completed ? "gray" : "black",
+                      textDecorationLine: task.completed ? 'line-through' : "none"
+                      }}>{task.title}</ListItem.Title>
                     <View
                       style={{
                         display: "flex",
