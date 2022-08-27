@@ -8,21 +8,28 @@ const taskApi = api.injectEndpoints({
         console.log("WHAT IS DATE: ", date);
         return `/task?date=${date}`;
       },
-      providesTags: ["Tasks"],
+      providesTags: (result, error, arg) => {
+        return result
+          ? [...result.map(() => ({ type: "Tasks", id: arg.date })), "Tasks"]
+          : ["Tasks"];
+      },
     }),
     toggleTask: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: ({ id, completed }) => {
+      query: ({ id, completed, date }) => {
         return {
           url: `/task/${id}`,
           method: "PATCH",
           body: { completed },
         };
       },
-      async onQueryStarted({ id, completed }, { dispatch, queryFulfilled }) {
-        const date = format(new Date(), "yyyy-MM-dd");
+      async onQueryStarted(
+        { id, completed, date },
+        { dispatch, queryFulfilled }
+      ) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            console.log("DRAAAFT: ", draft);
             const optimisticTodo = draft.find((todo) => todo.id === id);
             optimisticTodo.completed = completed;
             return draft;
@@ -38,15 +45,14 @@ const taskApi = api.injectEndpoints({
     }),
     toggleTaskFocus: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: ({ id, focus }) => {
+      query: ({ id, focus, date }) => {
         return {
           url: `/task/${id}`,
           method: "PATCH",
           body: { focus },
         };
       },
-      async onQueryStarted({ id, focus }, { dispatch, queryFulfilled }) {
-        const date = format(new Date(), "yyyy-MM-dd");
+      async onQueryStarted({ id, focus, date }, { dispatch, queryFulfilled }) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
             const optimisticTodo = draft.find((todo) => todo.id === id);

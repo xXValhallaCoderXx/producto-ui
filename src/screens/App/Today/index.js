@@ -47,6 +47,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
+      date: format(currentDate, "yyyy-MM-dd")
     });
   };
 
@@ -67,6 +68,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
+      data: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
