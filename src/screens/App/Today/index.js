@@ -19,8 +19,6 @@ import {
   useToggleTaskFocusMutation,
 } from "../../../api/task-api";
 
-
-
 const ListScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
@@ -31,13 +29,11 @@ const ListScreen = ({ navigation }) => {
     data: tasks,
     isLoading,
     error,
-  } = useGetTodaysTasksQuery(format(currentDate, "yyyy-MM-dd"));
+  } = useGetTodaysTasksQuery({ date: format(currentDate, "yyyy-MM-dd") });
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
-
-
 
   useEffect(() => {
     if (tasks) {
@@ -67,7 +63,7 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleToggleTaskFocus = async (_task) => {
-    console.log("TASK , ", _task)
+    console.log("TASK , ", _task);
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
@@ -86,7 +82,11 @@ const ListScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Header currentDate={currentDate} editMode={editMode} onChangeDate={handleOnChangeDate} />
+      <Header
+        currentDate={currentDate}
+        editMode={editMode}
+        onChangeDate={handleOnChangeDate}
+      />
       <ProgressBar
         currentDate={currentDate}
         editMode={editMode}
