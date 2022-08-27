@@ -1,49 +1,36 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@rneui/themed";
 import { TextInput } from "react-native";
-import { Text, Card, Input, Button } from "@rneui/themed";
+import { useRegisterMutation } from "../../../api/auth-api";
+import { Text, Button } from "@rneui/themed";
 import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
-import httpClient from "../../../api/api-handler";
 
 const RegisterScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerApi, registerApiResult] = useRegisterMutation();
+
+  useEffect(() => {
+    if (registerApiResult.isError) {
+      ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
+    }
+  }, [registerApiResult.isError]);
+
+  useEffect(() => {
+    if (registerApiResult.isSuccess) {
+      ToastAndroid.show("Registration success", ToastAndroid.SHORT);
+      navigation.navigate("Login");
+    }
+  }, [registerApiResult.isSuccess]);
 
   const handleOnSubmit = async () => {
     setError("");
 
     if (email && password) {
-      setIsLoading(true);
-      try {
-        const response = await httpClient.post("/auth/register", {
-          email,
-          password,
-        });
-        setIsLoading(false);
-
-        ToastAndroid.show("Registration success", ToastAndroid.SHORT);
-        navigation.navigate("Login");
-      } catch (err) {
-        setIsLoading(false);
-        console.log("ERR: ", err.response.data)
-        // ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
-        if (err.response.status === 400) {
-          if(Array.isArray(err.response.data.message)){
-            setError(err.response.data.message[0]);
-          } else {
-            setError(err.response.data.message);
-          }
-       
-        } else {
-          setError("Sorry, an error occured");
-        }
-      }
-    } else {
-      setError("Please fill in all required fields")
+      await registerApi({ email, password });
     }
   };
 
@@ -125,7 +112,7 @@ const RegisterScreen = ({ navigation }) => {
       )) ||
         null} */}
       <Button
-        loading={isLoading}
+        loading={registerApiResult.isLoading}
         buttonStyle={{
           borderRadius: 8,
           padding: 10,

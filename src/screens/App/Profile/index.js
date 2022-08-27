@@ -1,6 +1,12 @@
 import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CommonActions } from "@react-navigation/native";
-import { StyleSheet, View, BackHandler, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  View,
+  BackHandler,
+  TouchableWithoutFeedback,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Text, Button, useTheme } from "@rneui/themed";
 import { Dialog } from "@rneui/themed";
@@ -13,7 +19,8 @@ const ProfileScreen = ({ navigation }) => {
     setVisible(!visible);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.setItem("@producto-jwt-token", "");
     setVisible(false);
     navigation.dispatch(
       CommonActions.reset({

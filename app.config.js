@@ -8,6 +8,6 @@ export default {
     // environment: "production",
     environment: "development",
     baseUrl: "http://10.0.2.2:3000",
-    prodBaseUrl: "https://producto-dev.herokuapp.com"
+    // baseUrl: "https://producto-dev.herokuapp.com"
   },
 };

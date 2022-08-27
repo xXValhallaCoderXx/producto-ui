@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider, createTheme } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/Auth/Login";
@@ -33,6 +34,15 @@ const theme = createTheme({
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    setTheme();
+  }, []);
+
+  const setTheme = async () => {
+    await NavigationBar.setBackgroundColorAsync("white");
+    await NavigationBar.setButtonStyleAsync("dark");
+  };
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -84,7 +94,7 @@ export default function App() {
                 />
                 <Stack.Screen name="App" component={AppScreens} />
               </Stack.Navigator>
-              <StatusBar backgroundColor="#5049e5" style="dark" />
+              <StatusBar style="dark" />
             </NavigationContainer>
           </QueryClientProvider>
         </ThemeProvider>

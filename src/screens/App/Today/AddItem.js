@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { View, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
+import { View, Text, Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
-import httpClient from "../../../api/api-handler";
 
 const AddItem = ({ handleCreateNewTask, editMode }) => {
   const { theme } = useTheme();
@@ -52,11 +51,11 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
   };
 
   const onSubmitTask = async () => {
-    if (taskName.length < 3) {
+    if (taskName.length < 1) {
       setError("Task name too short");
     } else {
       try {
-        await httpClient.post(`/task`, { title: taskName, focus: true });
+        // await httpClient.post(`/task`, { title: taskName, focus: true });
         await handleCreateNewTask(taskName);
         setTaskName("");
         setAddTask(false);
