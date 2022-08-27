@@ -39,12 +39,27 @@ const taskApi = api.injectEndpoints({
     toggleTaskFocus: builder.mutation({
       invalidatesTags: ["Tasks"],
       query: ({ id, focus }) => {
-        console.log("WHAT IS THIS: ", focus);
         return {
           url: `/task/${id}`,
           method: "PATCH",
           body: { focus },
         };
+      },
+      async onQueryStarted({ id, focus }, { dispatch, queryFulfilled }) {
+        const date = format(new Date(), "yyyy-MM-dd");
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            const optimisticTodo = draft.find((todo) => todo.id === id);
+            optimisticTodo.focus = focus;
+            return draft;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+          console.log(e);
+        }
       },
     }),
     createTask: builder.mutation({
