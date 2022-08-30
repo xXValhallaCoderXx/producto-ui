@@ -67,10 +67,6 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
     return null;
   }
 
-  if (isBefore(endOfDay(currentDate), endOfDay(new Date()))) {
-    return null;
-  }
-
   return (
     <View
       style={{
