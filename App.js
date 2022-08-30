@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import store from "./src/config/store";
 import { Image, Animated } from "react-native";
 import { StatusBar } from "expo-status-bar";
+
 const queryClient = new QueryClient({});
 const Stack = createNativeStackNavigator();
 
@@ -80,7 +81,7 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-        <StatusBar style="dark" backgroundColor="white" />
+          <StatusBar style="dark" backgroundColor="white" />
           <QueryClientProvider client={queryClient}>
             <NavigationContainer>
               <Stack.Navigator
@@ -95,7 +96,6 @@ export default function App() {
                 />
                 <Stack.Screen name="App" component={AppScreens} />
               </Stack.Navigator>
-         
             </NavigationContainer>
           </QueryClientProvider>
         </ThemeProvider>

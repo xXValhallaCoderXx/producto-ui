@@ -6,10 +6,9 @@ import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
+const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-
 
   return (
     <View>
@@ -21,13 +20,13 @@ const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
         }}
         h6
       >
-        {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
+        {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
       </Text>
 
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
-            <View style={styles.dateContainer}>
+            <View style={{...styles.dateContainer, height: 50}}>
               <Text
                 h4
                 style={{ color: theme.colors.primary }}
@@ -35,16 +34,20 @@ const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
               >
                 Today
               </Text>
-              <IonIcon
-                style={styles.leftArrow}
-                name="keyboard-arrow-left"
-                onPress={onChangeDate("back")}
-              />
-              <IonIcon
-                onPress={onChangeDate("forward")}
-                style={styles.rightArrow}
-                name="keyboard-arrow-right"
-              />
+              {editMode && (
+                <View style={styles.dateContainer}>
+                  <IonIcon
+                    style={styles.leftArrow}
+                    name="keyboard-arrow-left"
+                    onPress={onChangeDate("back")}
+                  />
+                  <IonIcon
+                    onPress={onChangeDate("forward")}
+                    style={styles.rightArrow}
+                    name="keyboard-arrow-right"
+                  />
+                </View>
+              )}
             </View>
           </View>
         </View>

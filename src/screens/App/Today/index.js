@@ -1,6 +1,7 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { format, add, sub, endOfDay, formatISO } from "date-fns";
+import * as Localization from "expo-localization";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
@@ -21,18 +22,22 @@ import {
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
 } from "../../../api/task-api";
+import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
+import { setCurrentDate as setCurrentDateStore } from "./today-slice";
 
 const ListScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
-  const [currentDate, setCurrentDate] = useState(endOfDay(new Date()));
+
+  const [utcDate, setUtcDate] = useState(new Date());
+  const [clientUtc, setClientUtc] = useState(null);
   const {
     data: tasks,
     isLoading,
     error,
-  } = useGetTodaysTasksQuery({ date: format(currentDate, "yyyy-MM-dd") });
+  } = useGetTodaysTasksQuery({ date: format(new Date(utcDate), "yyyy-MM-dd") });
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
@@ -40,7 +45,17 @@ const ListScreen = ({ navigation }) => {
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
 
+    console.log("UTC: ", format(new Date(utcDate), "yyyy-MM-dd") )
+    console.log("UTC: ", utcDate )
   useEffect(() => {
+    if (utcDate) {
+      setClientUtc(formatISO(utcDate));
+    }
+  }, [utcDate]);
+
+  useEffect(() => {
+    // dispatch(setCurrentDateStore({date: new Date().toString()}))
+
     setTheme();
   }, []);
 
@@ -70,14 +85,18 @@ const ListScreen = ({ navigation }) => {
       date: format(currentDate, "yyyy-MM-dd"),
     });
   };
-  console.log("CREATE TASK: ", createTaskResult);
+
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
-      const subDate = sub(currentDate, { days: 1 });
-      setCurrentDate(subDate);
+      const subUtcDate = sub(new Date(utcDate), { days: 1 });
+      const subLocalDate = sub(new Date(clientUtc), { days: 1 });
+      setUtcDate(subUtcDate);
+      setClientUtc(subLocalDate);
     } else {
-      const addDate = add(currentDate, { days: 1 });
-      setCurrentDate(addDate);
+      const addUtcDate = add(new Date(utcDate), { days: 1 });
+      const addLocalDate = add(new Date(clientUtc), { days: 1 });
+      setUtcDate(addUtcDate);
+      setClientUtc(addLocalDate);
     }
   };
 
@@ -85,19 +104,19 @@ const ListScreen = ({ navigation }) => {
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      date: format(currentDate, "yyyy-MM-dd"),
+      // date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
   const handleCreateNewTask = async (_title) => {
-    await createTask({ title: _title, deadline: new Date().getTime() });
+    await createTask({ title: _title, deadline: utcDate });
     ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
     return;
   };
 
   const handleMoveIncompleteTasks = async () => {
     console.log(endOfDay(currentDate));
-    console.log("whahah", format(currentDate, "yyyy-MM-dd"));
+    // console.log("whahah", format(currentDate, "yyyy-MM-dd"));
     // await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
     // const todayDate = format(new Date(), "yyyy-MM-dd");
     // ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
@@ -105,13 +124,13 @@ const ListScreen = ({ navigation }) => {
 
   const handleOnPressToday = async () => {
     console.log("LEGGO");
-    setCurrentDate(new Date());
+    // setCurrentDate(new Date());
   };
 
   return (
     <View style={styles.container}>
       <Header
-        currentDate={currentDate}
+        clientUtc={clientUtc}
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
         onPressToday={handleOnPressToday}
@@ -133,14 +152,15 @@ const ListScreen = ({ navigation }) => {
         <AddItem
           handleCreateNewTask={handleCreateNewTask}
           editMode={editMode}
-          currentDate={currentDate}
+          currentDate={utcDate}
         />
+        {/*
         <MoveIncomplete
           tasks={tasks}
-          currentDate={currentDate}
+          currentDate={utcDate}
           isLoading={moveIncompleteTasksResult.isLoading}
           onMoveIncomplete={handleMoveIncompleteTasks}
-        />
+        /> */}
       </KeyboardAvoidingView>
     </View>
   );
