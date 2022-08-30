@@ -93,7 +93,6 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleToggleCalendar = () => {
-    console.log("LALAL")
     dispatch(toggleCalendar());
   };
 
@@ -126,11 +125,9 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleMoveIncompleteTasks = async () => {
-    console.log(endOfDay(currentDate));
-    // console.log("whahah", format(currentDate, "yyyy-MM-dd"));
-    // await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
-    // const todayDate = format(new Date(), "yyyy-MM-dd");
-    // ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
+    await moveIncompleteTasks({date: format(utcDate, "yyyy-MM-dd")})
+    const todayDate = format(new Date(), "yyyy-MM-dd");
+    ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
   };
 
   const handleOnPressToday = async () => {
@@ -171,13 +168,13 @@ const ListScreen = ({ navigation }) => {
           toggleCalendar={handleToggleCalendar}
         />
      
-        {/*
+        
         <MoveIncomplete
           tasks={tasks}
           currentDate={utcDate}
           isLoading={moveIncompleteTasksResult.isLoading}
           onMoveIncomplete={handleMoveIncompleteTasks}
-        /> */}
+        />
       </KeyboardAvoidingView>
     </View>
   );
