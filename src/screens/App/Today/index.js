@@ -38,7 +38,7 @@ const ListScreen = ({ navigation }) => {
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
 
   const [utcDate, setUtcDate] = useState(new Date());
-  const [clientUtc, setClientUtc] = useState(null);
+  const [clientUtc, setClientUtc] = useState(new Date());
   const {
     data: tasks,
     isLoading,
@@ -51,8 +51,6 @@ const ListScreen = ({ navigation }) => {
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
 
-  console.log("UTC: ", format(new Date(utcDate), "yyyy-MM-dd"));
-  console.log("UTC: ", utcDate);
   useEffect(() => {
     if (utcDate) {
       setClientUtc(formatISO(utcDate));
@@ -125,14 +123,20 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleMoveIncompleteTasks = async () => {
-    await moveIncompleteTasks({date: format(utcDate, "yyyy-MM-dd")})
+    await moveIncompleteTasks({ date: format(utcDate, "yyyy-MM-dd") });
     const todayDate = format(new Date(), "yyyy-MM-dd");
     ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
   };
 
   const handleOnPressToday = async () => {
-    dispatch(toggleCalendar({calendarOpen: !calendarOpen}))
-    // setCurrentDate(new Date());
+    const currentDate = String(clientUtc).split("T")[0];
+    const todayDate = format(new Date(), "yyyy-MM-dd");
+    if (currentDate === todayDate) {
+      dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
+    } else {
+      setUtcDate(new Date());
+      setClientUtc(new Date());
+    }
   };
 
   return (
@@ -162,13 +166,12 @@ const ListScreen = ({ navigation }) => {
           editMode={editMode}
           currentDate={utcDate}
         />
-   
-      <CalendarWidget
+
+        <CalendarWidget
           calendarOpen={calendarOpen}
           toggleCalendar={handleToggleCalendar}
         />
-     
-        
+
         <MoveIncomplete
           tasks={tasks}
           currentDate={utcDate}

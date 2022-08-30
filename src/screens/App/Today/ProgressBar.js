@@ -23,7 +23,7 @@ const ProgressBar = ({ editMode, progress }) => {
                 borderRadius: 8,
                 flex: 0.85,
               }}
-              animation={{duration: 500}}
+              animation={{duration: 200}}
               value={progress}
               color={theme.colors.primary}
               variant="determinate"

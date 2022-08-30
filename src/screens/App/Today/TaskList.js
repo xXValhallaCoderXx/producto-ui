@@ -67,6 +67,15 @@ const TaskList = ({
                   }}
                 >
                   <ListItem.Content style={styles.listContent}>
+                 <View style={styles.listRow}>
+                 {editMode && (
+                        <IoniIcons
+                          style={{ fontSize: 22, marginRight: 20, transform: [{ rotate: '45deg' }], }}
+                          color={task.focus ? theme.colors.primary : "black"}
+                          name={"key-outline"}
+                          onPress={onToggleFocus(task)}
+                        />
+                      )}
                     <ListItem.Title
                       style={{
                         color: task.completed ? "gray" : "black",
@@ -77,15 +86,9 @@ const TaskList = ({
                     >
                       {task.title}
                     </ListItem.Title>
+                 </View>
                     <View style={styles.listRow}>
-                      {editMode && (
-                        <IoniIcons
-                          style={{ fontSize: 20, marginRight: 10 }}
-                          color={task.focus ? theme.colors.primary : "black"}
-                          name={"key"}
-                          onPress={onToggleFocus(task)}
-                        />
-                      )}
+                 
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}

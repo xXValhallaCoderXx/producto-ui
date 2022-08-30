@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider, createTheme } from "@rneui/themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/Auth/Login";
 import RegistrationScreen from "./src/screens/Auth/Register";
@@ -35,14 +36,22 @@ const theme = createTheme({
 export default function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [skipInit, setSkipInit] = useState(false);
 
   useEffect(() => {
-    setTheme();
+    initApp();
   }, []);
 
-  const setTheme = async () => {
+  const initApp = async () => {
     await NavigationBar.setBackgroundColorAsync("white");
     await NavigationBar.setButtonStyleAsync("dark");
+
+    // const appInit = await AsyncStorage.getItem("@producto-app-initalized");
+    // if (appInit) {
+    //   console.log("WOOOHOOO");
+    // } else {
+    //   await AsyncStorage.setItem("@producto-app-initalized", "true");
+    // }
   };
 
   useEffect(() => {

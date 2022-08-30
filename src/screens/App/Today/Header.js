@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
@@ -9,6 +10,19 @@ import { toggleEdit } from "./today-slice";
 const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const [isToday, setIsToday] = useState(false);
+
+  useEffect(() => {
+    if (clientUtc) {
+      const currentDate = String(clientUtc).split("T")[0];
+      const todayDate = format(new Date(), "yyyy-MM-dd");
+      if (currentDate === todayDate) {
+        setIsToday(true);
+      } else {
+        setIsToday(false);
+      }
+    }
+  }, [clientUtc]);
 
   return (
     <View>
@@ -16,7 +30,7 @@ const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
         style={{
           marginLeft: -8,
           fontWeight: "700",
-          color: theme.colors.primary,
+          color: isToday ? theme.colors.primary : theme.colors.grey0,
         }}
         h6
       >
@@ -26,10 +40,12 @@ const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
-            <View style={{...styles.dateContainer, height: 50}}>
+            <View style={{ ...styles.dateContainer, height: 50 }}>
               <Text
                 h4
-                style={{ color: theme.colors.primary }}
+                style={{
+                  color: isToday ? theme.colors.primary : theme.colors.grey0,
+                }}
                 onPress={onPressToday}
               >
                 Today
