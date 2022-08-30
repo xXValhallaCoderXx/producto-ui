@@ -23,13 +23,19 @@ import {
   useMoveIncompleteTasksMutation,
 } from "../../../api/task-api";
 import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
-import { setCurrentDate as setCurrentDateStore } from "./today-slice";
+import {
+  setCurrentDate as setCurrentDateStore,
+  toggleCalendar,
+} from "./today-slice";
+import CalendarWidget from "./Calendar";
 
 const ListScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
+  const calendarOpen = useSelector((state) => state.today.calendarOpen);
 
   const [utcDate, setUtcDate] = useState(new Date());
   const [clientUtc, setClientUtc] = useState(null);
@@ -45,8 +51,8 @@ const ListScreen = ({ navigation }) => {
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
 
-    console.log("UTC: ", format(new Date(utcDate), "yyyy-MM-dd") )
-    console.log("UTC: ", utcDate )
+  console.log("UTC: ", format(new Date(utcDate), "yyyy-MM-dd"));
+  console.log("UTC: ", utcDate);
   useEffect(() => {
     if (utcDate) {
       setClientUtc(formatISO(utcDate));
@@ -84,6 +90,11 @@ const ListScreen = ({ navigation }) => {
       completed: !_task.completed,
       date: format(currentDate, "yyyy-MM-dd"),
     });
+  };
+
+  const handleToggleCalendar = () => {
+    console.log("LALAL")
+    dispatch(toggleCalendar());
   };
 
   const handleOnChangeDate = (direction) => () => {
@@ -124,6 +135,7 @@ const ListScreen = ({ navigation }) => {
 
   const handleOnPressToday = async () => {
     console.log("LEGGO");
+    dispatch(toggleCalendar({calendarOpen: !calendarOpen}))
     // setCurrentDate(new Date());
   };
 
@@ -154,6 +166,12 @@ const ListScreen = ({ navigation }) => {
           editMode={editMode}
           currentDate={utcDate}
         />
+   
+      <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+        />
+     
         {/*
         <MoveIncomplete
           tasks={tasks}

@@ -5,6 +5,7 @@ export const todaySlice = createSlice({
   name: "today-slice",
   initialState: {
     editMode: true,
+    calendarOpen: false,
     dates: {
       utc: "",
       local: "",
@@ -20,9 +21,12 @@ export const todaySlice = createSlice({
         new Date(action.payload.date)
       ).toString();
     },
+    toggleCalendar: (state, action) => {
+      state.calendarOpen = !state.calendarOpen;
+    },
   },
 });
 
-export const { toggleEdit, setCurrentDate } = todaySlice.actions;
+export const { toggleEdit, setCurrentDate, toggleCalendar } = todaySlice.actions;
 
 export default todaySlice.reducer;
