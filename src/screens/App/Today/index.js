@@ -88,7 +88,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
-      date: format(currentDate, "yyyy-MM-dd"),
+      date: format(utcDate, "yyyy-MM-dd"),
     });
   };
 
@@ -115,7 +115,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      // date: format(currentDate, "yyyy-MM-dd"),
+      date: format(utcDate, "yyyy-MM-dd"),
     });
   };
 
@@ -134,7 +134,6 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleOnPressToday = async () => {
-    console.log("LEGGO");
     dispatch(toggleCalendar({calendarOpen: !calendarOpen}))
     // setCurrentDate(new Date());
   };
