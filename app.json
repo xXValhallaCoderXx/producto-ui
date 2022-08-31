@@ -4,10 +4,10 @@
     "slug": "Producto",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/producto-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,8 +22,8 @@
     },
     "android": {
       "adaptiveIcon": { 
-        "foregroundImage": "./assets/logo.png",
-        "backgroundColor": "#000000" 
+        "foregroundImage": "./assets/splash-icon.png",
+        "backgroundColor": "#ffffff" 
       }
     },
     "web": {

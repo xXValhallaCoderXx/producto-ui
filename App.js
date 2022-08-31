@@ -70,9 +70,9 @@ export default function App() {
         style={[
           {
             flex: 1,
-            backgroundColor: "#5049e5",
+            backgroundColor: "#ffffff",
             alignItems: "center",
-            paddingTop: 200,
+            justifyContent: "cener",
           },
           {
             opacity: fadeAnim,
@@ -80,8 +80,8 @@ export default function App() {
         ]}
       >
         <Image
-          style={{ height: 40, width: 220 }}
-          source={require("./src/assets/images/title-white.png")}
+          style={{ height: 60, width: 60 }}
+          source={require("./src/assets/images/splash-icon.png")}
         />
       </Animated.View>
     );
