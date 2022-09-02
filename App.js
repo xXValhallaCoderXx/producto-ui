@@ -82,7 +82,8 @@ export default function App() {
         <ThemeProvider theme={theme}>
           <StatusBar style="dark" backgroundColor="white" />
           <QueryClientProvider client={queryClient}>
-            <NavigationContainer>
+            <LoginScreen />
+            {/* <NavigationContainer>
               <Stack.Navigator
                 screenOptions={({ route }) => ({
                   headerShown: false,
@@ -93,9 +94,9 @@ export default function App() {
                   name="Registration"
                   component={RegistrationScreen}
                 />
-                <Stack.Screen name="App" component={AppScreens} />
+                {/* <Stack.Screen name="App" component={AppScreens} /> 
               </Stack.Navigator>
-            </NavigationContainer>
+            </NavigationContainer> */}
           </QueryClientProvider>
         </ThemeProvider>
       </Provider>

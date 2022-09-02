@@ -1,36 +1,41 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as NavigationBar from "expo-navigation-bar";
 import { useState, useRef, useEffect } from "react";
-import { TextInput, Animated } from "react-native";
+import { TextInput, Animated, KeyboardAvoidingView } from "react-native";
 import { Text, Button } from "@rneui/themed";
 import { useTheme } from "@rneui/themed";
 import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
 import { useLoginMutation } from "../../../api/auth-api";
+import { useKeyboard } from "../../../shared/hooks/use-keyboard";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
+  const keyboard = useKeyboard();
 
   useEffect(() => {
-    handleInit();
-    const unsubscribe = navigation.addListener("blur", async (e) => {
-      setEmail("");
-      setPassword("");
-      loginApiResult.reset();
-    });
-    // Unsubscribe to event listener when component unmount
-    return () => unsubscribe();
-  }, []);
-
-  const handleInit = async () => {
-    const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
-    if (jwtToken) {
-      navigation.dispatch(StackActions.replace("App"));
+    async function prepare() {
+      await NavigationBar.setBackgroundColorAsync("white");
+      await NavigationBar.setButtonStyleAsync("dark");
+      const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
+      // if (jwtToken) {
+      //   navigation.dispatch(StackActions.replace("App"));
+      // }
     }
-  };
+    // const unsubscribe = navigation.addListener("blur", async (e) => {
+    //   setEmail("");
+    //   setPassword("");
+    //   loginApiResult.reset();
+    // });
+
+    prepare();
+    // Unsubscribe to event listener when component unmount
+    // return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -47,16 +52,16 @@ const LoginScreen = ({ navigation }) => {
   setTokenAndRedirect = async (token) => {
     await AsyncStorage.setItem("@producto-jwt-token", token);
     ToastAndroid.show("Login success", ToastAndroid.SHORT);
-    navigation.dispatch(StackActions.replace("App"));
+    // navigation.dispatch(StackActions.replace("App"));
   };
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1000,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
+  // useEffect(() => {
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 1,
+  //     duration: 1000,
+  //     useNativeDriver: true,
+  //   }).start();
+  // }, [fadeAnim]);
 
   const handleOnSubmit = async () => {
     if (email && password) {
@@ -65,29 +70,55 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-        },
-      ]}
-    >
-      <Image
-        style={{ height: 40, width: 220, marginBottom: 40 }}
-        source={require("../../../assets/images/title-dark.png")}
-      />
+    <View style={styles.container}>
+      <View style={{ display: "flex", alignItems: "center" }}>
+        <View style={styles.titleWrapper}>
+          <Image
+            style={styles.titleImage}
+            source={require("../../../assets/images/title-dark.png")}
+          />
+        </View>
+        <Text style={{ marginTop: 19, fontSize: 14 }}>
+          Sign in, unleash your productivity!
+        </Text>
+      </View>
+      <View style={styles.inputWrapper}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(value) => {
+            setEmail(value);
+          }}
+          value={email}
+          nativeID="email"
+          placeholder="Enter your email..."
+        />
+      </View>
+      <Button
+          // containerStyle={{ width: 80, borderRadius: 8 }}
+          title="Next"
+        />
 
-      <TextInput
-        style={styles.input}
-        onChangeText={(value) => {
-          setEmail(value);
+      {/* <View
+        style={{
+          flex: 1,
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexDirection: "row",
+          padding: 25,
         }}
-        value={email}
-        nativeID="email"
-        placeholder="Email"
-      />
-      <TextInput
+      >
+        <Button type="clear" title="Create account" />
+        <Button
+          // containerStyle={{ width: 80, borderRadius: 8 }}
+          title="Next"
+        />
+      </View> */}
+    </View>
+  );
+};
+
+{
+  /* <TextInput
         style={{ ...styles.input, marginTop: 20, marginBottom: 40 }}
         onChangeText={(value) => {
           setPassword(value);
@@ -96,8 +127,10 @@ const LoginScreen = ({ navigation }) => {
         nativeID="password"
         placeholder="Password"
         secureTextEntry={true}
-      />
-      <View style={{ height: 10 }}>
+      /> */
+}
+{
+  /* <View style={{ height: 10 }}>
         {(loginApiResult.isError && (
           <Text
             style={{
@@ -112,8 +145,10 @@ const LoginScreen = ({ navigation }) => {
           </Text>
         )) ||
           null}
-      </View>
-      <Button
+      </View> */
+}
+{
+  /* <Button
         disabled={!email || !password}
         loading={loginApiResult.isLoading}
         title="Log in"
@@ -135,18 +170,32 @@ const LoginScreen = ({ navigation }) => {
         }}
       >
         Sign Up Here
-      </Text>
-    </Animated.View>
-  );
-};
+      </Text> */
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "red",
+    display: "flex",
+    justifyContent: "space-between",
+    paddingTop: 30
+  },
+  titleWrapper: {
+    height: 48,
+    width: 231,
+    marginTop: 106,
+  },
+  titleImage: {
+    flex: 1,
+    height: null,
+    resizeMode: "contain",
+    width: null,
+  },
+  inputWrapper: {
+    marginTop: 60,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
   },
   input: {
     width: 300,
