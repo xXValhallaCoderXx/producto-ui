@@ -79,10 +79,10 @@ export default function App() {
           },
         ]}
       >
-        <Image
+        {/* <Image
           style={{ height: 60, width: 60 }}
           source={require("./src/assets/images/splash-icon.png")}
-        />
+        /> */}
       </Animated.View>
     );
   }
