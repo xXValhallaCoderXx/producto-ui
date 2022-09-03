@@ -1,9 +1,8 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-import { Text } from "@rneui/themed";
+import { useState, useCallback, useEffect } from "react";
 import { format } from "date-fns";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { View, Modal, TouchableOpacity, StyleSheet } from "react-native";
-import { Calendar, CalendarUtils } from "react-native-calendars";
+import { Calendar } from "react-native-calendars";
 
 const CalendarWidget = ({
   calendarOpen,
@@ -13,9 +12,6 @@ const CalendarWidget = ({
   handleOnSelectDay,
 }) => {
   const [selected, setSelected] = useState(format(currentDate, "yyyy-MM-dd"));
-  const [currentMonth, setCurrentMonth] = useState(
-    format(currentDate, "yyyy-MM-dd")
-  );
   const [parsedIncomplete, setParsedIncomplete] = useState({});
 
   useEffect(() => {
@@ -45,26 +41,20 @@ const CalendarWidget = ({
     }
   }, [incompleteTasks]);
 
-  const getDate = (count) => {
-    const date = new Date(currentDate);
-    const newDate = date.setDate(date.getDate() + count);
-    return CalendarUtils.getCalendarDateString(newDate);
-  };
-
   const onDayPress = useCallback((day) => {
-    console.log("HMHMHM");
     setSelected(day.dateString);
     handleOnSelectDay(day);
   }, []);
 
   return (
     <Modal
+      // animationType="fade"
       transparent={true}
       visible={calendarOpen}
       onRequestClose={toggleCalendar}
     >
       <TouchableOpacity style={styles.modalContainer} onPress={toggleCalendar}>
-        <TouchableOpacity style={styles.modal} activeOpacity={1}>
+        <View style={styles.modal}>
           <Calendar
             initialDate={selected}
             onDayPress={onDayPress}
@@ -85,7 +75,7 @@ const CalendarWidget = ({
             disableAllTouchEventsForDisabledDays={true}
             enableSwipeMonths={true}
           />
-        </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     </Modal>
   );
@@ -101,14 +91,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 310,
     borderRadius: 5,
-    backgroundColor: "transparent",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
     elevation: 3,
   },
 });

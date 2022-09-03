@@ -28,8 +28,9 @@ const MoveIncomplete = ({
         onPress={onMoveIncomplete}
         disabled={isLoading}
         loading={isLoading}
+        containerStyle={{ width: 160, borderRadius: 8 }}
         color={theme.colors.primary}
-        title="Move incomplete tasks"
+        title="Move incomplete"
       />
     </View>
   );
@@ -40,6 +41,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     justifyContent: "flex-end",
+    alignItems: "center",
   },
 });
 
