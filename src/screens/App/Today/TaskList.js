@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
+import * as Haptics from 'expo-haptics';
 import { format } from "date-fns";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import { useUpdateTaskMutation } from "../../../api/task-api";
@@ -29,6 +30,7 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
 
   const handleOnLongPress = (_task) => () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     setEditTask(_task.id);
     setTaskValue(_task.title)
   };
@@ -94,14 +96,10 @@ const TaskList = ({
                         style={{
                           justifyContent: "flex-end",
                           ...styles.listRow,
+                          height: 35
                         }}
                       >
-                        <CheckBox
-                          checked={task.completed}
-                          containerStyle={{ padding: 0 }}
-                          onPress={onCheckTask(task)}
-                          disabled={task.id === currentTask && isLoadingToggle}
-                        />
+               
                       </View>
                       {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
                     </ListItem.Content>
@@ -146,12 +144,12 @@ const TaskList = ({
                     <View
                       style={{ justifyContent: "flex-end", ...styles.listRow }}
                     >
-                      <CheckBox
+                   <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
                         onPress={onCheckTask(task)}
                         disabled={task.id === currentTask && isLoadingToggle}
-                      />
+                      /> 
                     </View>
                     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
                   </ListItem.Content>

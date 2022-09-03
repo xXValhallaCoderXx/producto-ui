@@ -18,6 +18,10 @@ export default function App({ navigation, route }) {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
+        tabBarStyle: {
+          height: 60,
+          padding: 20
+        },
         // tabBarStyle: {paddingBottom: 10},
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
