@@ -14,7 +14,7 @@ import FooterActions from "./FooterAction";
 
 const titleDark = require("../../../assets/images/title-dark.png");
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
@@ -80,9 +80,8 @@ const LoginScreen = () => {
   setTokenAndRedirect = async (token) => {
     await AsyncStorage.setItem("@producto-jwt-token", token);
     ToastAndroid.show("Login success", ToastAndroid.SHORT);
-    // navigation.dispatch(StackActions.replace("App"));
+    navigation.dispatch(StackActions.replace("App"));
   };
-
 
   const handleOnPressPrimary = async () => {
     const nextStep = step === 1 ? 2 : 1;
@@ -108,7 +107,6 @@ const LoginScreen = () => {
           setStep(nextStep);
         } else if (res.error.status === 400) {
           setError(res.error.data.message[0]);
-          // setError(res.error.data.message[0])
         } else if (res.error.status === 404) {
           setError("Email address not found");
         }
@@ -120,22 +118,9 @@ const LoginScreen = () => {
     const nextStep = step === 1 ? 2 : 1;
     setError("");
     if (nextStep === 1) {
-      console.log("TO EMAIL");
       emailInputRef.current.focus();
-      // if (email === "") {
-      //   setError("Enter email address");
-      // } else {
-      //   setStep(nextStep);
-      // }
     } else {
-      console.log("TO PASSOWRD");
       passwordInputRef.current.focus();
-
-      // if (password === "") {
-      //   setError("Enter password");
-      // } else {
-      //   setStep(nextStep);
-      // }
     }
     setStep(nextStep);
   };
@@ -269,6 +254,7 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   titleContainer: {
     display: "flex",

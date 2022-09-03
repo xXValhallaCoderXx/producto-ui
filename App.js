@@ -23,11 +23,11 @@ const Stack = createNativeStackNavigator();
 const theme = createTheme({
   lightColors: {
     primary: "#5048E5",
-    secondary: "#687280"
+    secondary: "#687280",
   },
   darkColors: {
     primary: "#5048E5",
-    secondary: "#687280"
+    secondary: "#687280",
   },
   components: {
     Button: {
@@ -84,8 +84,7 @@ export default function App() {
         <ThemeProvider theme={theme}>
           <StatusBar style="dark" backgroundColor="white" />
           <QueryClientProvider client={queryClient}>
-            <LoginScreen />
-            {/* <NavigationContainer>
+            <NavigationContainer>
               <Stack.Navigator
                 screenOptions={({ route }) => ({
                   headerShown: false,
@@ -96,9 +95,9 @@ export default function App() {
                   name="Registration"
                   component={RegistrationScreen}
                 />
-                {/* <Stack.Screen name="App" component={AppScreens} /> 
+                <Stack.Screen name="App" component={AppScreens} />
               </Stack.Navigator>
-            </NavigationContainer> */}
+            </NavigationContainer>
           </QueryClientProvider>
         </ThemeProvider>
       </Provider>
