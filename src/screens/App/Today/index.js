@@ -131,12 +131,14 @@ const ListScreen = ({ navigation }) => {
   const handleOnPressToday = async () => {
     const currentDate = String(clientUtc).split("T")[0];
     const todayDate = format(new Date(), "yyyy-MM-dd");
-    if (currentDate === todayDate) {
-      dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
-    } else {
-      setUtcDate(new Date());
-      setClientUtc(new Date());
-    }
+    setUtcDate(new Date());
+    setClientUtc(new Date());
+  };
+
+  const handleOnPressDate = async () => {
+    const currentDate = String(clientUtc).split("T")[0];
+    const todayDate = format(new Date(), "yyyy-MM-dd");
+    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
   };
 
   return (
@@ -146,6 +148,7 @@ const ListScreen = ({ navigation }) => {
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
         onPressToday={handleOnPressToday}
+        onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
       <KeyboardAvoidingView

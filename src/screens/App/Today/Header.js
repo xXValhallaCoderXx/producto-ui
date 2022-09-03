@@ -7,7 +7,7 @@ import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
+const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday, onPressDate }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [isToday, setIsToday] = useState(false);
@@ -27,6 +27,7 @@ const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday }) => {
   return (
     <View>
       <Text
+        onPress={onPressDate}
         style={{
           marginLeft: -8,
           fontWeight: "700",
