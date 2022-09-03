@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
+import debounce from "lodash.debounce";
 import { View, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Input, useTheme, Button, Icon } from "@rneui/themed";
@@ -10,8 +11,18 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
 
+  // highlight-starts
+  const debouncedSave = useCallback(
+    debounce((nextValue) => console.log(nextValue), 350),
+    [] // will be created only once initially
+  );
+  // highlight-ends
 
-
+  const handleOnChange = (value) => {
+    setError("");
+    setTaskName(value);
+    debouncedSave(value);
+  };
 
   const handleOnPress = () => {
     setAddTask(true);
@@ -51,7 +62,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
         marginTop: 20,
       }}
     >
-      { addTask ? (
+      {addTask ? (
         <View>
           <View
             style={{
@@ -65,10 +76,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
                 placeholder="Enter task name..."
                 autoFocus
                 inputContainerStyle={{ borderBottomColor: "white" }}
-                onChangeText={(value) => {
-                  setError("");
-                  setTaskName(value);
-                }}
+                onChangeText={handleOnChange}
                 value={taskName}
               />
             </View>
@@ -80,9 +88,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
                 justifyContent: "space-around",
                 marginTop: 10,
               }}
-            >
-       
-            </View>
+            ></View>
           </View>
           {error ? (
             <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
