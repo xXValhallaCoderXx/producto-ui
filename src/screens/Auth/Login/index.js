@@ -2,8 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as NavigationBar from "expo-navigation-bar";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
-import { Text, Button } from "@rneui/themed";
-import { useTheme } from "@rneui/themed";
+import { Text } from "@rneui/themed";
+import { useWindowDimensions } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
 import { useLoginMutation } from "../../../api/auth-api";
@@ -11,17 +11,19 @@ import { useKeyboard } from "../../../shared/hooks/use-keyboard";
 import FormContainer from "./Form";
 import FooterActions from "./FooterAction";
 
+const titleDark = require("../../../assets/images/title-dark.png");
+
 const LoginScreen = () => {
-  const { theme } = useTheme();
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(0)).current;
-  const titlePosition = useRef(new Animated.Value(0)).current;
-  const inputPosition = useRef(new Animated.Value(0)).current;
+
   const [loginApi, loginApiResult] = useLoginMutation();
   const [step, setStep] = useState(1);
-  const keyboard = useKeyboard();
 
   useEffect(() => {
     async function prepare() {
@@ -44,41 +46,15 @@ const LoginScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (keyboard.keyboardShown) {
-      Animated.timing(titlePosition, {
-        toValue: -20,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(inputPosition, {
-        toValue: -70,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(titlePosition, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-      Animated.timing(inputPosition, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [keyboard.keyboardShown]);
-
-  useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {
-        toValue: 250,
+        toValue: windowWidth / 2,
         duration: 350,
         useNativeDriver: true,
       }).start();
     } else {
       Animated.timing(passwordInputPos, {
-        toValue: -250,
+        toValue: -(windowWidth / 2),
         duration: 350,
         useNativeDriver: true,
       }).start();
@@ -111,25 +87,50 @@ const LoginScreen = () => {
 
   const handleOnPressPrimary = () => {
     const nextStep = step === 1 ? 2 : 1;
-    setError("")
-    if (step === 1) {
-      if (email === "") {
-        setError("Enter email address");
-      } else {
-        setStep(nextStep);
-      }
+    setError("");
+
+    if (nextStep === 1) {
+      console.log("TO EMAIL")
+      emailInputRef.current.focus();
+      // if (email === "") {
+      //   setError("Enter email address");
+      // } else {
+      //   setStep(nextStep);
+      // }
     } else {
-      if (password === "") {
-        setError("Enter password");
-      } else {
-        setStep(nextStep);
-      }
+      console.log("TO PASSOWRD")
+      passwordInputRef.current.focus();
+   
+      // if (password === "") {
+      //   setError("Enter password");
+      // } else {
+      //   setStep(nextStep);
+      // }
     }
+    setStep(nextStep);
   };
 
   const handleOnPressSecondary = () => {
     const nextStep = step === 1 ? 2 : 1;
-    setError("")
+    setError("");
+    if (nextStep === 1) {
+      console.log("TO EMAIL")
+      emailInputRef.current.focus();
+      // if (email === "") {
+      //   setError("Enter email address");
+      // } else {
+      //   setStep(nextStep);
+      // }
+    } else {
+      console.log("TO PASSOWRD")
+      passwordInputRef.current.focus();
+   
+      // if (password === "") {
+      //   setError("Enter password");
+      // } else {
+      //   setStep(nextStep);
+      // }
+    }
     setStep(nextStep);
   };
 
@@ -145,14 +146,9 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={{
-          ...styles.titleContainer,
-          transform: [{ translateY: titlePosition }],
-        }}
-      >
+      <View style={styles.titleContainer}>
         <Image
-          source={require("../../../assets/images/title-dark.png")}
+          source={titleDark}
           resizeMode="contain"
           style={{
             width: 231,
@@ -164,45 +160,71 @@ const LoginScreen = () => {
             Sign in, to continue to Producto
           </Text>
         </View>
-      </Animated.View>
+      </View>
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ justifyContent: "space-around", flex: 1 }}
+        contentContainerStyle={{
+          justifyContent: "space-between",
+          flex: 1,
+        }}
       >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <Animated.View
+        <Animated.View
+          style={{
+            ...styles.inputWrapper,
+            transform: [{ translateX: passwordInputPos }],
+          }}
+        >
+          <View
             style={{
-              ...styles.inputWrapper,
-              transform: [{ translateY: inputPosition }],
+              flexDirection: "row",
             }}
           >
-            <Animated.View
+            <View
               style={{
                 display: "flex",
-                flexDirection: "row",
-                transform: [{ translateX: passwordInputPos }],
+                alignItems: "center",
+                width: windowWidth,
               }}
             >
-              <View>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={handleOnChangeEmail}
-                  value={email}
-                  nativeID="email"
-                  placeholder="Enter your email..."
-                />
-              </View>
-
               <TextInput
-                autoFocus={true}
-                style={styles.input}
+                style={{
+                  ...styles.input,
+                  width: windowWidth * 0.75,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                ref={emailInputRef}
+                onChangeText={handleOnChangeEmail}
+                value={email}
+                nativeID="email"
+                placeholder="Enter your email..."
+            
+    
+              />
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <TextInput
+       
+                style={{
+                  ...styles.input,
+                  width: windowWidth * 0.75,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                ref={passwordInputRef}
                 onChangeText={handleOnChangePassword}
                 value={password}
+              
                 nativeID="password"
                 placeholder="Enter your password..."
               />
-            </Animated.View>
-            <View style={{ height: 20, marginTop: 10 }}>
+            </View>
+            <View>
               {error ? (
                 <Text
                   style={{
@@ -215,34 +237,18 @@ const LoginScreen = () => {
                 </Text>
               ) : null}
             </View>
-          </Animated.View>
+          </View>
+        </Animated.View>
 
-          <FooterActions
-            handleOnPressPrimary={handleOnPressPrimary}
-            handleOnPressSecondary={handleOnPressSecondary}
-            step={step}
-          />
-        </View>
+        <FooterActions
+          handleOnPressPrimary={handleOnPressPrimary}
+          handleOnPressSecondary={handleOnPressSecondary}
+          step={step}
+        />
       </ScrollView>
     </View>
   );
 };
-
-{
-  /* <View style={{ height: 10 }}>
-        {(loginApiResult.isError && (
-          <Text
-            style={{
-         
-              marginBottom: 10,
-            }}
-          >
-            {loginApiResult.error.data.message}
-          </Text>
-        )) ||
-          null}
-      </View> */
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -265,11 +271,7 @@ const styles = StyleSheet.create({
     marginTop: 80,
   },
   input: {
-    width: 300,
     height: 45,
-    marginLeft: 100,
-    marginRight: 100,
-    backgroundColor: "#fff",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderColor: "#ccc",

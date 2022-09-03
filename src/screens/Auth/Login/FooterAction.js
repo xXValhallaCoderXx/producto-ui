@@ -1,4 +1,4 @@
-import { Text, Button } from "@rneui/base";
+import { Button } from "@rneui/base";
 import { View } from "react-native";
 import { useTheme } from "@rneui/themed";
 
@@ -11,7 +11,7 @@ const FooterActions = ({
   return (
     <View
       style={{
-        padding: 15,
+        padding: 25,
         justifyContent: "flex-end",
       }}
     >
