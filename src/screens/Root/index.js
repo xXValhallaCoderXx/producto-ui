@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 import * as NavigationBar from "expo-navigation-bar";
 import { StackActions } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -9,18 +10,23 @@ import AppScreens from "../App";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
+    const [init,setInit] = useState(false);
   useEffect(() => {
     async function prepare() {
       await NavigationBar.setBackgroundColorAsync("white");
       await NavigationBar.setButtonStyleAsync("dark");
       const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
+      setInit(true)
       if (jwtToken) {
         navigation.dispatch(StackActions.replace("App"));
       }
+     
     }
 
     prepare();
   }, []);
+
+ 
   return (
     <Stack.Navigator
       screenOptions={({ route }) => ({

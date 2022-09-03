@@ -1,22 +1,30 @@
 import { useState, useCallback, useRef } from "react";
 import debounce from "lodash.debounce";
-import { View, Text, Keyboard, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  Keyboard,
+  TouchableWithoutFeedback,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Input, useTheme, Button, Icon } from "@rneui/themed";
+import { Input, useTheme, Button, CheckBox } from "@rneui/themed";
+import { useKeyboard } from "../../../shared/hooks/use-keyboard";
 
 const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const { theme } = useTheme();
+  const keyboard = useKeyboard();
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
-
+  console.log("KEYBOARD: ", keyboard);
   // highlight-starts
   const debouncedSave = useCallback(
     debounce((nextValue) => console.log(nextValue), 350),
     [] // will be created only once initially
   );
-  // highlight-ends
 
   const handleOnChange = (value) => {
     setError("");
@@ -31,11 +39,14 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
     setError("");
   };
 
-  const handleOnPressCancel = () => {
-    setAddTask(true);
-    setTaskName("");
-    setError("");
-    Keyboard.dismiss();
+  const handleOnBlur = async () => {
+    if(taskName.length > 0){
+      await handleCreateNewTask(taskName);
+      setTaskName("");
+   
+    }
+    setAddTask(false);
+    
   };
 
   const onSubmitTask = async () => {
@@ -57,7 +68,8 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   }
 
   return (
-    <View
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
       style={{
         marginTop: 20,
       }}
@@ -69,15 +81,24 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              // borderBottomColor: "black",
+              // borderBottomWidth: 0.5,
             }}
           >
-            <View style={{ flex: 7, marginLeft: -7 }}>
-              <Input
+            <View style={{ flex: 7 }}>
+              <TextInput
                 placeholder="Enter task name..."
                 autoFocus
-                inputContainerStyle={{ borderBottomColor: "white" }}
+                placeholderTextColor="#808080"
                 onChangeText={handleOnChange}
                 value={taskName}
+                onBlur={handleOnBlur}
+                underlineColorAndroid="transparent"
+                style={{
+                  fontSize: 16,
+                  height: 50,
+                  backgroundColor: "white",
+                }}
               />
             </View>
             <View
@@ -85,10 +106,17 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
                 display: "flex",
                 flexDirection: "row",
                 flex: 3,
-                justifyContent: "space-around",
+                justifyContent: "flex-end",
                 marginTop: 10,
               }}
-            ></View>
+            >
+              <CheckBox
+                checked={false}
+                containerStyle={{ padding: 0 }}
+                onPress={() => console.log("LICK")}
+                disabled={true}
+              />
+            </View>
           </View>
           {error ? (
             <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
@@ -111,7 +139,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
           Add Item
         </Button>
       )}
-    </View>
+    </ScrollView>
   );
 };
 

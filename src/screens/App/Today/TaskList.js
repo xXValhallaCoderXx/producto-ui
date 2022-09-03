@@ -14,32 +14,15 @@ const TaskList = ({
 }) => {
   const { theme } = useTheme();
 
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
+
+  const handleOnLongPress = (_task) => () => {
+    console.log("HUHUHU");
+  };
+
   return (
-    <View style={{ maxHeight: isKeyboardVisible ? 150 : 600 }}>
+    <View>
       {tasks.length === 0 ? (
         <Text style={{ marginTop: 15 }}>
           Add a task to start your{" "}
@@ -60,6 +43,7 @@ const TaskList = ({
               return (
                 <ListItem
                   key={index}
+                  onLongPress={handleOnLongPress(task)}
                   containerStyle={{
                     padding: 10,
                     borderBottomColor: "#e7e8f0",
@@ -67,28 +51,31 @@ const TaskList = ({
                   }}
                 >
                   <ListItem.Content style={styles.listContent}>
-                 <View style={styles.listRow}>
-                 {editMode && (
+                    <View style={styles.listRow}>
+                      {editMode && (
                         <IoniIcons
-                          style={{ fontSize: 22, marginRight: 20, transform: [{ rotate: '45deg' }], }}
+                          style={{
+                            fontSize: 22,
+                            marginRight: 20,
+                            transform: [{ rotate: "45deg" }],
+                          }}
                           color={task.focus ? theme.colors.primary : "black"}
                           name={"key-outline"}
                           onPress={onToggleFocus(task)}
                         />
                       )}
-                    <ListItem.Title
-                      style={{
-                        color: task.completed ? "gray" : "black",
-                        textDecorationLine: task.completed
-                          ? "line-through"
-                          : "none",
-                      }}
-                    >
-                      {task.title}
-                    </ListItem.Title>
-                 </View>
+                      <ListItem.Title
+                        style={{
+                          color: task.completed ? "gray" : "black",
+                          textDecorationLine: task.completed
+                            ? "line-through"
+                            : "none",
+                        }}
+                      >
+                        {task.title}
+                      </ListItem.Title>
+                    </View>
                     <View style={styles.listRow}>
-                 
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
