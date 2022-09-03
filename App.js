@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./src/screens/Auth/Login";
 import RegistrationScreen from "./src/screens/Auth/Register";
 import AppScreens from "./src/screens/App";
+import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
@@ -90,12 +91,7 @@ export default function App() {
                   headerShown: false,
                 })}
               >
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen
-                  name="Registration"
-                  component={RegistrationScreen}
-                />
-                <Stack.Screen name="App" component={AppScreens} />
+                <Stack.Screen name="Root" component={RootScreens} />
               </Stack.Navigator>
             </NavigationContainer>
           </QueryClientProvider>

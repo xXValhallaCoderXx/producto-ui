@@ -10,10 +10,12 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Text, Button, useTheme } from "@rneui/themed";
 import { Dialog } from "@rneui/themed";
+import { useUserProfileQuery } from "../../../api/auth-api";
 
 const ProfileScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [visible, setVisible] = useState(false);
+  const { data } = useUserProfileQuery({});
 
   const toggleDialog = () => {
     setVisible(!visible);
@@ -25,10 +27,9 @@ const ProfileScreen = ({ navigation }) => {
     navigation.dispatch(
       CommonActions.reset({
         index: 1,
-        routes: [{ name: "Login" }],
+        routes: [{ name: "Root" }],
       })
     );
-    BackHandler.exitApp();
   };
 
   return (
@@ -36,7 +37,7 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.headerContainer}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <Text h4 style={{ color: theme.colors.primary }}>
-            Blooper
+            {data.email}
           </Text>
           <Text h4>'s Profile</Text>
         </View>

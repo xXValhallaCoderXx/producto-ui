@@ -1,5 +1,4 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as NavigationBar from "expo-navigation-bar";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
 import { Text } from "@rneui/themed";
@@ -29,25 +28,7 @@ const LoginScreen = ({ navigation }) => {
   });
   const [step, setStep] = useState(1);
 
-  useEffect(() => {
-    async function prepare() {
-      await NavigationBar.setBackgroundColorAsync("white");
-      await NavigationBar.setButtonStyleAsync("dark");
-      const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
-      // if (jwtToken) {
-      //   navigation.dispatch(StackActions.replace("App"));
-      // }
-    }
-    // const unsubscribe = navigation.addListener("blur", async (e) => {
-    //   setEmail("");
-    //   setPassword("");
-    //   loginApiResult.reset();
-    // });
 
-    prepare();
-    // Unsubscribe to event listener when component unmount
-    // return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     if (step === 1) {

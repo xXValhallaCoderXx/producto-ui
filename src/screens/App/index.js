@@ -3,12 +3,14 @@ import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
-import * as Haptics from "expo-haptics";
+import { useUserProfileQuery } from "../../api/auth-api";
 
 const Tab = createBottomTabNavigator();
 
 export default function App({ navigation }) {
   const { theme } = useTheme();
+  const {data} = useUserProfileQuery({});
+  console.log("dATA: ", data);
 
   return (
     <Tab.Navigator
