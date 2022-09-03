@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { format } from "date-fns";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { View, Modal, TouchableOpacity, StyleSheet, Pressable } from "react-native";
+import { View, Modal, StyleSheet, Pressable } from "react-native";
 import { Calendar } from "react-native-calendars";
 
 const CalendarWidget = ({
@@ -17,6 +17,8 @@ const CalendarWidget = ({
   useEffect(() => {
     if (incompleteTasks.length > 0) {
       const parsedData = {};
+     
+      const parsedTodayDate = currentDate.toISOString().split('T')[0]
       incompleteTasks.forEach((task) => {
         parsedData[task] = {
           // marked: true,
@@ -24,7 +26,7 @@ const CalendarWidget = ({
             container: {
               borderColor: "#5048E5",
               backgroundColor:
-                format(currentDate, "yyyy-MM-dd") === task
+              parsedTodayDate === task
                   ? "#5048E5"
                   : "white",
               borderWidth: 0.5,
@@ -32,14 +34,14 @@ const CalendarWidget = ({
             },
             text: {
               color:
-                format(currentDate, "yyyy-MM-dd") === task ? "white" : "black",
+              parsedTodayDate === task ? "white" : "black",
             },
           },
         };
       });
       setParsedIncomplete(parsedData);
     }
-  }, [incompleteTasks]);
+  }, [incompleteTasks, currentDate]);
 
   const onDayPress = useCallback((day) => {
     setSelected(day.dateString);

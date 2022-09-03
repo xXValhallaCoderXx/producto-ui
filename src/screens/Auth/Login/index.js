@@ -23,11 +23,11 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
 
   const [loginApi, loginApiResult] = useLoginMutation();
-  const [verifyTigger, verifyResult, verifyInfo] = useLazyVerifyEmailQuery({
+  const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
   const [step, setStep] = useState(1);
-
+  console.log("VERYFI LOO: ", loginApiResult)
   useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {
@@ -223,6 +223,7 @@ const LoginScreen = ({ navigation }) => {
           handleOnPressPrimary={handleOnPressPrimary}
           handleOnPressSecondary={handleOnPressSecondary}
           step={step}
+          isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
       </ScrollView>
     </View>

@@ -36,10 +36,10 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={{ display: "flex", flexDirection: "row" }}>
-          <Text h4 style={{ color: theme.colors.primary }}>
+          <Text h5 style={{ color: theme.colors.primary }}>
             {data.email}
           </Text>
-          <Text h4>'s Profile</Text>
+          <Text h5>'s Profile</Text>
         </View>
       </View>
 
