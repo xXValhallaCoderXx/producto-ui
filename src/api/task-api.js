@@ -19,7 +19,7 @@ const taskApi = api.injectEndpoints({
       providesTags: ["Tasks"],
     }),
     toggleTask: builder.mutation({
-      invalidatesTags: ["Tasks"],
+   
       query: ({ id, completed, date }) => {
         return {
           url: `/task/${id}`,
@@ -47,7 +47,7 @@ const taskApi = api.injectEndpoints({
       },
     }),
     toggleTaskFocus: builder.mutation({
-      invalidatesTags: ["Tasks"],
+
       query: ({ id, focus, date }) => {
         return {
           url: `/task/${id}`,
