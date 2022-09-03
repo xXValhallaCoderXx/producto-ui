@@ -6,9 +6,6 @@ import { useSelector } from "react-redux";
 const Stack = createNativeStackNavigator();
 
 const AuthScreens = ({ navigation, route }) => {
-    const isInit = useSelector(state => state.global)
-    console.log("ROPTE: ", isInit)
-
     // if(!route.params.init){
     //     return <View  style={{flex: 1}} />
     // }

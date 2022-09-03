@@ -4,7 +4,6 @@ const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
       query: ({ date }) => {
-        console.log("DAAATE: ", date);
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => {
@@ -17,7 +16,7 @@ const taskApi = api.injectEndpoints({
       query: () => {
         return `/task/incomplete`;
       },
-      // providesTags: ["IncompleteTags"],
+      providesTags: ["Tasks"],
     }),
     toggleTask: builder.mutation({
       invalidatesTags: ["Tasks"],
@@ -100,8 +99,6 @@ const taskApi = api.injectEndpoints({
     createTask: builder.mutation({
       invalidatesTags: ["Tasks"],
       query: ({ title, deadline }) => {
-        console.log("TITLE: ", title);
-        console.log("DEADLINE: ", deadline);
         return {
           url: `/task`,
           method: "POST",

@@ -1,7 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { Text } from "@rneui/base";
 import { format, add, sub, endOfDay, formatISO } from "date-fns";
 import * as Localization from "expo-localization";
+import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
@@ -33,6 +35,7 @@ import CalendarWidget from "./Calendar";
 
 const ListScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
@@ -40,12 +43,13 @@ const ListScreen = ({ navigation }) => {
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
 
   const [utcDate, setUtcDate] = useState(new Date());
-  const [clientUtc, setClientUtc] = useState(new Date());
+
   const {
     data: tasks,
     isLoading,
+    isFetching,
     error,
-  } = useGetTodaysTasksQuery({ date: format(new Date(utcDate), "yyyy-MM-dd") });
+  } = useGetTodaysTasksQuery({ date: utcDate.toISOString().split("T")[0] });
   const { data: incompleteTasks } = useGetIncompleteTasksQuery();
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
@@ -55,15 +59,7 @@ const ListScreen = ({ navigation }) => {
     useMoveIncompleteTasksMutation();
 
   useEffect(() => {
-    if (utcDate) {
-      setClientUtc(formatISO(utcDate));
-    }
-  }, [utcDate]);
-
-  console.log("CLIENT: ", incompleteTasks);
-  useEffect(() => {
     // dispatch(setCurrentDateStore({date: new Date().toString()}))
-
     setTheme();
   }, []);
 
@@ -90,7 +86,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
-      date: format(utcDate, "yyyy-MM-dd"),
+      date: utcDate.toISOString().split("T")[0],
     });
   };
 
@@ -101,14 +97,10 @@ const ListScreen = ({ navigation }) => {
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
       const subUtcDate = sub(new Date(utcDate), { days: 1 });
-      const subLocalDate = sub(new Date(clientUtc), { days: 1 });
       setUtcDate(subUtcDate);
-      setClientUtc(subLocalDate);
     } else {
       const addUtcDate = add(new Date(utcDate), { days: 1 });
-      const addLocalDate = add(new Date(clientUtc), { days: 1 });
       setUtcDate(addUtcDate);
-      setClientUtc(addLocalDate);
     }
   };
 
@@ -116,7 +108,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      date: format(utcDate, "yyyy-MM-dd"),
+      date: utcDate.toISOString().split("T")[0],
     });
   };
 
@@ -133,28 +125,22 @@ const ListScreen = ({ navigation }) => {
   };
 
   const handleOnPressToday = async () => {
-    const currentDate = String(clientUtc).split("T")[0];
-    const todayDate = format(new Date(), "yyyy-MM-dd");
     setUtcDate(new Date());
-    setClientUtc(new Date());
   };
 
   const handleOnPressDate = async () => {
-    const currentDate = String(clientUtc).split("T")[0];
-    const todayDate = format(new Date(), "yyyy-MM-dd");
     dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
   };
 
   const handleOnSelectDay = (_day) => {
     setUtcDate(new Date(_day.dateString));
-    setClientUtc(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
 
   return (
     <View style={styles.container}>
       <Header
-        clientUtc={clientUtc}
+        clientUtc={utcDate}
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
         onPressToday={handleOnPressToday}
@@ -163,23 +149,41 @@ const ListScreen = ({ navigation }) => {
       <ProgressBar editMode={editMode} progress={progress} />
       <ScrollView
         // behavior={Platform.OS === "ios" ? "padding" : null}
+        contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
       >
-        <TaskList
-          tasks={tasks || []}
-          editMode={editMode}
-          handleToggleTaskFocus={handleToggleTaskFocus}
-          handleToggleTaskComplete={handleToggleTaskComplete}
-          currentTask={currentTask}
-          isLoadingToggle={isLoadingToggle}
-          utcDate={utcDate}
-        />
+        <View>
+          {isLoading || isFetching ? (
+            <View style={{ marginTop: 30 }}>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: 16,
+                }}
+              >
+                Fetching Tasks...
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <TaskList
+                tasks={tasks || []}
+                editMode={editMode}
+                handleToggleTaskFocus={handleToggleTaskFocus}
+                handleToggleTaskComplete={handleToggleTaskComplete}
+                currentTask={currentTask}
+                isLoadingToggle={isLoadingToggle}
+                utcDate={utcDate}
+              />
 
-        <AddItem
-          handleCreateNewTask={handleCreateNewTask}
-          editMode={editMode}
-          currentDate={utcDate}
-        />
+              <AddItem
+                handleCreateNewTask={handleCreateNewTask}
+                editMode={editMode}
+                currentDate={utcDate}
+              />
+            </View>
+          )}
+        </View>
 
         <CalendarWidget
           calendarOpen={calendarOpen}
@@ -189,12 +193,14 @@ const ListScreen = ({ navigation }) => {
           handleOnSelectDay={handleOnSelectDay}
         />
 
-        <MoveIncomplete
-          tasks={tasks}
-          currentDate={utcDate}
-          isLoading={moveIncompleteTasksResult.isLoading}
-          onMoveIncomplete={handleMoveIncompleteTasks}
-        />
+        {isFetching ? null : (
+          <MoveIncomplete
+            tasks={tasks}
+            currentDate={utcDate}
+            isLoading={moveIncompleteTasksResult.isLoading}
+            onMoveIncomplete={handleMoveIncompleteTasks}
+          />
+        )}
       </ScrollView>
     </View>
   );

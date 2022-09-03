@@ -22,7 +22,7 @@ const RootScreen = ({ navigation }) => {
       if (jwtToken) {
         navigation.dispatch(StackActions.replace("App"));
       }
-      console.log("GOOO")
+
       dispatch(toggleInit());
     }
 

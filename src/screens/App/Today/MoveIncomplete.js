@@ -38,9 +38,7 @@ const MoveIncomplete = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    flex: 1,
-    justifyContent: "flex-end",
+
     alignItems: "center",
   },
 });

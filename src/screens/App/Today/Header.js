@@ -14,8 +14,8 @@ const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday, onPressD
 
   useEffect(() => {
     if (clientUtc) {
-      const currentDate = String(clientUtc).split("T")[0];
-      const todayDate = format(new Date(), "yyyy-MM-dd");
+      const currentDate = clientUtc.toISOString().split('T')[0];
+      const todayDate = new Date().toISOString().split('T')[0];
       if (currentDate === todayDate) {
         setIsToday(true);
       } else {

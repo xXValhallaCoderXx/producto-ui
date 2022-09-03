@@ -67,6 +67,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
 
   return (
     <View
+    style={{marginTop: 15}}
     // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (

@@ -7,7 +7,6 @@ export const globalSlice = createSlice({
   },
   reducers: {
     toggleInit: (state, action) => {
-    console.log("STATE")
       state.editMode = !state.editMode;
     },
   },
