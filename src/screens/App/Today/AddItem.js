@@ -9,30 +9,9 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-        setAddTask(false);
-        setTaskName("");
-        setError("");
-      }
-    );
 
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+
 
   const handleOnPress = () => {
     setAddTask(true);
@@ -72,7 +51,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
         marginTop: 20,
       }}
     >
-      {isKeyboardVisible || addTask ? (
+      { addTask ? (
         <View>
           <View
             style={{
@@ -102,18 +81,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
                 marginTop: 10,
               }}
             >
-              <Icon
-                name="check"
-                color={theme.colors.primary}
-                type="material-icons"
-                onPress={onSubmitTask}
-              />
-              <Icon
-                name={"clear"}
-                color="#D14343"
-                type="material-icons"
-                onPress={handleOnPressCancel}
-              />
+       
             </View>
           </View>
           {error ? (
