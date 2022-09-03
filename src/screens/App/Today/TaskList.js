@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import { View, ScrollView, Keyboard, StyleSheet } from "react-native";
+import {
+  View,
+  ScrollView,
+  Keyboard,
+  StyleSheet,
+  TextInput,
+} from "react-native";
+import { format } from "date-fns";
 import IoniIcons from "react-native-vector-icons/Ionicons";
+import { useUpdateTaskMutation } from "../../../api/task-api";
 
 import { ListItem, Text, useTheme, CheckBox } from "@rneui/themed";
 
@@ -11,15 +19,29 @@ const TaskList = ({
   handleToggleTaskComplete,
   currentTask,
   isLoadingToggle,
+  utcDate,
 }) => {
   const { theme } = useTheme();
-
+  const [editTask, setEditTask] = useState(null);
+  const [value, setTaskValue] = useState("");
+  const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
 
   const handleOnLongPress = (_task) => () => {
-    console.log("HUHUHU");
+    setEditTask(_task.id);
+    setTaskValue(_task.title)
   };
+
+  const handleOnChange = (_value) => {
+    setTaskValue(_value)
+  }
+
+  const handleOnBlur = async () => {
+    await updateTaskApi({id: editTask, title: value, date:format(utcDate, "yyyy-MM-dd")  })
+    setEditTask(null)
+  }
+
 
   return (
     <View>
@@ -40,6 +62,52 @@ const TaskList = ({
               return task;
             })
             .map((task, index) => {
+              if (task.id === editTask) {
+                return (
+                  <ListItem
+                    key={index}
+                    onLongPress={handleOnLongPress(task)}
+                    containerStyle={{
+                      padding: 10,
+                      borderBottomColor: "#e7e8f0",
+                      borderBottomWidth: 1,
+                    }}
+                  >
+                    <ListItem.Content style={styles.listContent}>
+                      <View style={styles.listRow}>
+                        <TextInput
+                        
+                          autoFocus
+                        
+                          onChangeText={handleOnChange}
+                          value={value}
+                          onBlur={handleOnBlur}
+                          underlineColorAndroid="transparent"
+                          style={{
+                            fontSize: 16,
+                        
+                            backgroundColor: "white",
+                          }}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          justifyContent: "flex-end",
+                          ...styles.listRow,
+                        }}
+                      >
+                        <CheckBox
+                          checked={task.completed}
+                          containerStyle={{ padding: 0 }}
+                          onPress={onCheckTask(task)}
+                          disabled={task.id === currentTask && isLoadingToggle}
+                        />
+                      </View>
+                      {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
+                    </ListItem.Content>
+                  </ListItem>
+                );
+              }
               return (
                 <ListItem
                   key={index}
@@ -75,7 +143,9 @@ const TaskList = ({
                         {task.title}
                       </ListItem.Title>
                     </View>
-                    <View style={{justifyContent:"flex-end", ...styles.listRow}}>
+                    <View
+                      style={{ justifyContent: "flex-end", ...styles.listRow }}
+                    >
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}

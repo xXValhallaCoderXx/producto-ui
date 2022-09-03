@@ -9,6 +9,7 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -160,36 +161,41 @@ const ListScreen = ({ navigation }) => {
         onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
+      <ScrollView
+        // behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
+      >
+        <TaskList
+          tasks={tasks || []}
+          editMode={editMode}
+          handleToggleTaskFocus={handleToggleTaskFocus}
+          handleToggleTaskComplete={handleToggleTaskComplete}
+          currentTask={currentTask}
+          isLoadingToggle={isLoadingToggle}
+          utcDate={utcDate}
+        />
 
-      <TaskList
-        tasks={tasks || []}
-        editMode={editMode}
-        handleToggleTaskFocus={handleToggleTaskFocus}
-        handleToggleTaskComplete={handleToggleTaskComplete}
-        currentTask={currentTask}
-        isLoadingToggle={isLoadingToggle}
-      />
+        <AddItem
+          handleCreateNewTask={handleCreateNewTask}
+          editMode={editMode}
+          currentDate={utcDate}
+        />
 
-      <AddItem
-        handleCreateNewTask={handleCreateNewTask}
-        editMode={editMode}
-        currentDate={utcDate}
-      />
+        <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
+        />
 
-      <CalendarWidget
-        calendarOpen={calendarOpen}
-        toggleCalendar={handleToggleCalendar}
-        incompleteTasks={incompleteTasks}
-        currentDate={utcDate}
-        handleOnSelectDay={handleOnSelectDay}
-      />
-
-      <MoveIncomplete
-        tasks={tasks}
-        currentDate={utcDate}
-        isLoading={moveIncompleteTasksResult.isLoading}
-        onMoveIncomplete={handleMoveIncompleteTasks}
-      />
+        <MoveIncomplete
+          tasks={tasks}
+          currentDate={utcDate}
+          isLoading={moveIncompleteTasksResult.isLoading}
+          onMoveIncomplete={handleMoveIncompleteTasks}
+        />
+      </ScrollView>
     </View>
   );
 };

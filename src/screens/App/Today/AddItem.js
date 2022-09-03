@@ -66,11 +66,8 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   }
 
   return (
-    <ScrollView
-      keyboardShouldPersistTaps="handled"
-      style={{
-        marginTop: 20,
-      }}
+    <View
+    // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (
         <View>
@@ -135,7 +132,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
           Add Item
         </Button>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
