@@ -8,18 +8,21 @@ import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
 import { useLoginMutation } from "../../../api/auth-api";
 import { useKeyboard } from "../../../shared/hooks/use-keyboard";
+import FormContainer from "./Form";
+import FooterActions from "./FooterAction";
 
 const LoginScreen = () => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(0)).current;
   const titlePosition = useRef(new Animated.Value(0)).current;
   const inputPosition = useRef(new Animated.Value(0)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
   const [step, setStep] = useState(1);
   const keyboard = useKeyboard();
-  console.log("KEYBOARD: ", keyboard);
+
   useEffect(() => {
     async function prepare() {
       await NavigationBar.setBackgroundColorAsync("white");
@@ -48,7 +51,7 @@ const LoginScreen = () => {
         useNativeDriver: true,
       }).start();
       Animated.timing(inputPosition, {
-        toValue: -50,
+        toValue: -70,
         duration: 300,
         useNativeDriver: true,
       }).start();
@@ -106,23 +109,45 @@ const LoginScreen = () => {
     }
   };
 
-  const handleOnPressNext = () => {
+  const handleOnPressPrimary = () => {
     const nextStep = step === 1 ? 2 : 1;
-    setStep(nextStep);
+    setError("")
+    if (step === 1) {
+      if (email === "") {
+        setError("Enter email address");
+      } else {
+        setStep(nextStep);
+      }
+    } else {
+      if (password === "") {
+        setError("Enter password");
+      } else {
+        setStep(nextStep);
+      }
+    }
   };
 
   const handleOnPressSecondary = () => {
     const nextStep = step === 1 ? 2 : 1;
+    setError("")
     setStep(nextStep);
+  };
+
+  const handleOnChangeEmail = (value) => {
+    setError("");
+    setEmail(value);
+  };
+
+  const handleOnChangePassword = (value) => {
+    setError("");
+    setPassword(value);
   };
 
   return (
     <View style={styles.container}>
       <Animated.View
         style={{
-          display: "flex",
-          alignItems: "center",
-          marginTop: 106,
+          ...styles.titleContainer,
           transform: [{ translateY: titlePosition }],
         }}
       >
@@ -135,14 +160,7 @@ const LoginScreen = () => {
           }}
         ></Image>
         <View style={{ marginTop: 19 }}>
-          <Text
-            style={{
-              fontSize: 14,
-              color: theme.colors.secondary,
-              textAlign: "center",
-              marginLeft: -10,
-            }}
-          >
+          <Text style={styles.secondaryTitle}>
             Sign in, to continue to Producto
           </Text>
         </View>
@@ -151,7 +169,7 @@ const LoginScreen = () => {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ justifyContent: "space-around", flex: 1 }}
       >
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
           <Animated.View
             style={{
               ...styles.inputWrapper,
@@ -165,49 +183,45 @@ const LoginScreen = () => {
                 transform: [{ translateX: passwordInputPos }],
               }}
             >
-              <TextInput
-                style={styles.input}
-                onChangeText={(value) => {
-                  setEmail(value);
-                }}
-                value={email}
-                nativeID="email"
-                placeholder="Enter your email..."
-              />
+              <View>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={handleOnChangeEmail}
+                  value={email}
+                  nativeID="email"
+                  placeholder="Enter your email..."
+                />
+              </View>
 
               <TextInput
                 autoFocus={true}
                 style={styles.input}
-                onChangeText={(value) => {
-                  setPassword(value);
-                }}
+                onChangeText={handleOnChangePassword}
                 value={password}
                 nativeID="password"
                 placeholder="Enter your password..."
               />
             </Animated.View>
+            <View style={{ height: 20, marginTop: 10 }}>
+              {error ? (
+                <Text
+                  style={{
+                    color: "#D14343",
+                    textAlign: "center",
+                    fontWeight: "700",
+                  }}
+                >
+                  {error}
+                </Text>
+              ) : null}
+            </View>
           </Animated.View>
 
-          <View
-            style={{
-              flex: 1,
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              flexDirection: "row",
-              padding: 25,
-            }}
-          >
-            <Button
-              onPress={handleOnPressSecondary}
-              type="clear"
-              title={step === 1 ? "Create Account" : "Change Email"}
-            />
-            <Button
-              onPress={handleOnPressNext}
-              containerStyle={{ width: 80, borderRadius: 8 }}
-              title={step === 1 ? "Next" : "Log in"}
-            />
-          </View>
+          <FooterActions
+            handleOnPressPrimary={handleOnPressPrimary}
+            handleOnPressSecondary={handleOnPressSecondary}
+            step={step}
+          />
         </View>
       </ScrollView>
     </View>
@@ -215,26 +229,11 @@ const LoginScreen = () => {
 };
 
 {
-  /* <TextInput
-        style={{ ...styles.input, marginTop: 20, marginBottom: 40 }}
-        onChangeText={(value) => {
-          setPassword(value);
-        }}
-        value={password}
-        nativeID="password"
-        placeholder="Password"
-        secureTextEntry={true}
-      /> */
-}
-{
   /* <View style={{ height: 10 }}>
         {(loginApiResult.isError && (
           <Text
             style={{
-              color: "#D14343",
-              textAlign: "center",
-              fontWeight: "700",
-              marginTop: -25,
+         
               marginBottom: 10,
             }}
           >
@@ -244,35 +243,21 @@ const LoginScreen = () => {
           null}
       </View> */
 }
-{
-  /* <Button
-        disabled={!email || !password}
-        loading={loginApiResult.isLoading}
-        title="Log in"
-        buttonStyle={{ borderRadius: 8, padding: 10, minWidth: 200 }}
-        onPress={handleOnSubmit}
-        color={theme.colors.primary}
-      />
-
-      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
-        Not boosting your productivity?
-      </Text>
-      <Text
-        h6
-        onPress={() => navigation.navigate("Registration")}
-        style={{
-          color: "black",
-          marginTop: 5,
-          fontWeight: "700",
-        }}
-      >
-        Sign Up Here
-      </Text> */
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: 106,
+  },
+  secondaryTitle: {
+    fontSize: 14,
+    color: "gray",
+    textAlign: "center",
+    marginLeft: -10,
   },
   inputWrapper: {
     display: "flex",
