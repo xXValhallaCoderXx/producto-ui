@@ -20,7 +20,12 @@ const authApi = api.injectEndpoints({
         body: { email, password },
       }),
     }),
+    verifyEmail: builder.query({
+      query: ({ email }) => {
+        return `/auth/verify-email?email=${email}`;
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLazyVerifyEmailQuery } = authApi;

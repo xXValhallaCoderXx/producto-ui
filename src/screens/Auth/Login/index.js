@@ -6,9 +6,10 @@ import { Text } from "@rneui/themed";
 import { useWindowDimensions } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
-import { useLoginMutation } from "../../../api/auth-api";
-import { useKeyboard } from "../../../shared/hooks/use-keyboard";
-import FormContainer from "./Form";
+import {
+  useLoginMutation,
+  useLazyVerifyEmailQuery,
+} from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
 
 const titleDark = require("../../../assets/images/title-dark.png");
@@ -23,6 +24,9 @@ const LoginScreen = () => {
   const passwordInputPos = useRef(new Animated.Value(0)).current;
 
   const [loginApi, loginApiResult] = useLoginMutation();
+  const [verifyTigger, verifyResult, verifyInfo] = useLazyVerifyEmailQuery({
+    email,
+  });
   const [step, setStep] = useState(1);
 
   useEffect(() => {
@@ -79,42 +83,44 @@ const LoginScreen = () => {
     // navigation.dispatch(StackActions.replace("App"));
   };
 
-  const handleOnSubmit = async () => {
-    if (email && password) {
-      const res = await loginApi({ email, password });
-    }
-  };
 
-  const handleOnPressPrimary = () => {
+  const handleOnPressPrimary = async () => {
     const nextStep = step === 1 ? 2 : 1;
     setError("");
-
     if (nextStep === 1) {
-      console.log("TO EMAIL")
-      emailInputRef.current.focus();
-      // if (email === "") {
-      //   setError("Enter email address");
-      // } else {
-      //   setStep(nextStep);
-      // }
+      if (password === "") {
+        setError("Please enter a password");
+      } else {
+        const res = await loginApi({ email, password });
+        if (res.data) {
+          setTokenAndRedirect(res.data.access_token);
+        } else if (res.error.status === 400) {
+          setError(res.error.data.message);
+        }
+      }
     } else {
-      console.log("TO PASSOWRD")
+      const res = await verifyTigger({ email });
       passwordInputRef.current.focus();
-   
-      // if (password === "") {
-      //   setError("Enter password");
-      // } else {
-      //   setStep(nextStep);
-      // }
+      if (res.isSuccess) {
+        setStep(nextStep);
+      } else {
+        if (res.error.status === 200) {
+          setStep(nextStep);
+        } else if (res.error.status === 400) {
+          setError(res.error.data.message[0]);
+          // setError(res.error.data.message[0])
+        } else if (res.error.status === 404) {
+          setError("Email address not found");
+        }
+      }
     }
-    setStep(nextStep);
   };
 
   const handleOnPressSecondary = () => {
     const nextStep = step === 1 ? 2 : 1;
     setError("");
     if (nextStep === 1) {
-      console.log("TO EMAIL")
+      console.log("TO EMAIL");
       emailInputRef.current.focus();
       // if (email === "") {
       //   setError("Enter email address");
@@ -122,9 +128,9 @@ const LoginScreen = () => {
       //   setStep(nextStep);
       // }
     } else {
-      console.log("TO PASSOWRD")
+      console.log("TO PASSOWRD");
       passwordInputRef.current.focus();
-   
+
       // if (password === "") {
       //   setError("Enter password");
       // } else {
@@ -189,7 +195,7 @@ const LoginScreen = () => {
               <TextInput
                 style={{
                   ...styles.input,
-                  width: windowWidth * 0.75,
+                  width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
                 ref={emailInputRef}
@@ -197,9 +203,21 @@ const LoginScreen = () => {
                 value={email}
                 nativeID="email"
                 placeholder="Enter your email..."
-            
-    
               />
+
+              {error ? (
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: "#D14343",
+                    alignSelf: "flex-start",
+                    fontWeight: "700",
+                    paddingLeft: windowWidth - windowWidth * 0.9,
+                  }}
+                >
+                  {error}
+                </Text>
+              ) : null}
             </View>
 
             <View
@@ -210,27 +228,25 @@ const LoginScreen = () => {
               }}
             >
               <TextInput
-       
                 style={{
                   ...styles.input,
-                  width: windowWidth * 0.75,
+                  width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
                 ref={passwordInputRef}
                 onChangeText={handleOnChangePassword}
                 value={password}
-              
                 nativeID="password"
                 placeholder="Enter your password..."
               />
-            </View>
-            <View>
               {error ? (
                 <Text
                   style={{
+                    marginTop: 10,
                     color: "#D14343",
-                    textAlign: "center",
+                    alignSelf: "flex-start",
                     fontWeight: "700",
+                    paddingLeft: windowWidth - windowWidth * 0.9,
                   }}
                 >
                   {error}
