@@ -13,6 +13,12 @@ const taskApi = api.injectEndpoints({
           : ["Tasks"];
       },
     }),
+    getIncompleteTasks: builder.query({
+      query: () => {
+        return `/task/incomplete`;
+      },
+      // providesTags: ["IncompleteTags"],
+    }),
     toggleTask: builder.mutation({
       invalidatesTags: ["Tasks"],
       query: ({ id, completed, date }) => {
@@ -95,4 +101,5 @@ export const {
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
+  useGetIncompleteTasksQuery,
 } = taskApi;

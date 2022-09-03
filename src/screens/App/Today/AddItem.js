@@ -19,7 +19,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
-  console.log("KEYBOARD: ", keyboard);
+
   // highlight-starts
   const debouncedSave = useCallback(
     debounce((nextValue) => console.log(nextValue), 350),
@@ -40,13 +40,11 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   };
 
   const handleOnBlur = async () => {
-    if(taskName.length > 0){
+    if (taskName.length > 0) {
       await handleCreateNewTask(taskName);
       setTaskName("");
-   
     }
     setAddTask(false);
-    
   };
 
   const onSubmitTask = async () => {
@@ -81,8 +79,6 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              // borderBottomColor: "black",
-              // borderBottomWidth: 0.5,
             }}
           >
             <View style={{ flex: 7 }}>
@@ -108,12 +104,12 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
                 flex: 3,
                 justifyContent: "flex-end",
                 marginTop: 10,
+                paddingRight: 10,
               }}
             >
               <CheckBox
                 checked={false}
                 containerStyle={{ padding: 0 }}
-                onPress={() => console.log("LICK")}
                 disabled={true}
               />
             </View>

@@ -21,6 +21,7 @@ import {
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
+  useGetIncompleteTasksQuery,
 } from "../../../api/task-api";
 import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
 import {
@@ -44,6 +45,7 @@ const ListScreen = ({ navigation }) => {
     isLoading,
     error,
   } = useGetTodaysTasksQuery({ date: format(new Date(utcDate), "yyyy-MM-dd") });
+  const { data: incompleteTasks } = useGetIncompleteTasksQuery();
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
@@ -57,6 +59,7 @@ const ListScreen = ({ navigation }) => {
     }
   }, [utcDate]);
 
+  console.log("CLIENT: ", incompleteTasks);
   useEffect(() => {
     // dispatch(setCurrentDateStore({date: new Date().toString()}))
 
@@ -141,6 +144,12 @@ const ListScreen = ({ navigation }) => {
     dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
   };
 
+  const handleOnSelectDay = (_day) => {
+    setUtcDate(new Date(_day.dateString));
+    setClientUtc(new Date(_day.dateString));
+    dispatch(toggleCalendar({ calendarOpen: false }));
+  };
+
   return (
     <View style={styles.container}>
       <Header
@@ -173,6 +182,9 @@ const ListScreen = ({ navigation }) => {
         <CalendarWidget
           calendarOpen={calendarOpen}
           toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
         />
 
         <MoveIncomplete
