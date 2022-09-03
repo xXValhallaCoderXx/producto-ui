@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as NavigationBar from "expo-navigation-bar";
 import { useState, useRef, useEffect } from "react";
-import { TextInput, Animated, KeyboardAvoidingView } from "react-native";
+import { TextInput, Animated, ScrollView } from "react-native";
 import { Text, Button } from "@rneui/themed";
 import { useTheme } from "@rneui/themed";
 import { StackActions } from "@react-navigation/native";
@@ -13,10 +13,13 @@ const LoginScreen = () => {
   const { theme } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const passwordInputPos = useRef(new Animated.Value(0)).current;
+  const titlePosition = useRef(new Animated.Value(0)).current;
+  const inputPosition = useRef(new Animated.Value(0)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
+  const [step, setStep] = useState(1);
   const keyboard = useKeyboard();
-
+  console.log("KEYBOARD: ", keyboard);
   useEffect(() => {
     async function prepare() {
       await NavigationBar.setBackgroundColorAsync("white");
@@ -38,6 +41,48 @@ const LoginScreen = () => {
   }, []);
 
   useEffect(() => {
+    if (keyboard.keyboardShown) {
+      Animated.timing(titlePosition, {
+        toValue: -20,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(inputPosition, {
+        toValue: -50,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(titlePosition, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+      Animated.timing(inputPosition, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [keyboard.keyboardShown]);
+
+  useEffect(() => {
+    if (step === 1) {
+      Animated.timing(passwordInputPos, {
+        toValue: 250,
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(passwordInputPos, {
+        toValue: -250,
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [step]);
+
+  useEffect(() => {
     if (loginApiResult.isError) {
       ToastAndroid.show("Incorrect Credentials", ToastAndroid.SHORT);
     }
@@ -55,64 +100,116 @@ const LoginScreen = () => {
     // navigation.dispatch(StackActions.replace("App"));
   };
 
-  // useEffect(() => {
-  //   Animated.timing(fadeAnim, {
-  //     toValue: 1,
-  //     duration: 1000,
-  //     useNativeDriver: true,
-  //   }).start();
-  // }, [fadeAnim]);
-
   const handleOnSubmit = async () => {
     if (email && password) {
       const res = await loginApi({ email, password });
     }
   };
 
+  const handleOnPressNext = () => {
+    const nextStep = step === 1 ? 2 : 1;
+    setStep(nextStep);
+  };
+
+  const handleOnPressSecondary = () => {
+    const nextStep = step === 1 ? 2 : 1;
+    setStep(nextStep);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={{ display: "flex", alignItems: "center" }}>
-        <View style={styles.titleWrapper}>
-          <Image
-            style={styles.titleImage}
-            source={require("../../../assets/images/title-dark.png")}
-          />
-        </View>
-        <Text style={{ marginTop: 19, fontSize: 14 }}>
-          Sign in, unleash your productivity!
-        </Text>
-      </View>
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          onChangeText={(value) => {
-            setEmail(value);
-          }}
-          value={email}
-          nativeID="email"
-          placeholder="Enter your email..."
-        />
-      </View>
-      <Button
-          // containerStyle={{ width: 80, borderRadius: 8 }}
-          title="Next"
-        />
-
-      {/* <View
+      <Animated.View
         style={{
-          flex: 1,
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          flexDirection: "row",
-          padding: 25,
+          display: "flex",
+          alignItems: "center",
+          marginTop: 106,
+          transform: [{ translateY: titlePosition }],
         }}
       >
-        <Button type="clear" title="Create account" />
-        <Button
-          // containerStyle={{ width: 80, borderRadius: 8 }}
-          title="Next"
-        />
-      </View> */}
+        <Image
+          source={require("../../../assets/images/title-dark.png")}
+          resizeMode="contain"
+          style={{
+            width: 231,
+            height: 42,
+          }}
+        ></Image>
+        <View style={{ marginTop: 19 }}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: theme.colors.secondary,
+              textAlign: "center",
+              marginLeft: -10,
+            }}
+          >
+            Sign in, to continue to Producto
+          </Text>
+        </View>
+      </Animated.View>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ justifyContent: "space-around", flex: 1 }}
+      >
+        <View style={{ flex: 1 }}>
+          <Animated.View
+            style={{
+              ...styles.inputWrapper,
+              transform: [{ translateY: inputPosition }],
+            }}
+          >
+            <Animated.View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                transform: [{ translateX: passwordInputPos }],
+              }}
+            >
+              <TextInput
+                style={styles.input}
+                onChangeText={(value) => {
+                  setEmail(value);
+                }}
+                value={email}
+                nativeID="email"
+                placeholder="Enter your email..."
+              />
+
+              <TextInput
+                autoFocus={true}
+                style={styles.input}
+                onChangeText={(value) => {
+                  setPassword(value);
+                }}
+                value={password}
+                nativeID="password"
+                placeholder="Enter your password..."
+              />
+            </Animated.View>
+          </Animated.View>
+
+          <View
+            style={{
+              flex: 1,
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              flexDirection: "row",
+              padding: 25,
+            }}
+          >
+            <Button
+              onPress={handleOnPressSecondary}
+              type="clear"
+              title={step === 1 ? "Create Account" : "Change Email"}
+            />
+            <Button
+              onPress={handleOnPressNext}
+              containerStyle={{ width: 80, borderRadius: 8 }}
+              title={step === 1 ? "Next" : "Log in"}
+            />
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -176,30 +273,17 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "red",
-    display: "flex",
-    justifyContent: "space-between",
-    paddingTop: 30
-  },
-  titleWrapper: {
-    height: 48,
-    width: 231,
-    marginTop: 106,
-  },
-  titleImage: {
-    flex: 1,
-    height: null,
-    resizeMode: "contain",
-    width: null,
   },
   inputWrapper: {
-    marginTop: 60,
     display: "flex",
     alignItems: "center",
+    marginTop: 80,
   },
   input: {
     width: 300,
     height: 45,
+    marginLeft: 100,
+    marginRight: 100,
     backgroundColor: "#fff",
     paddingVertical: 10,
     paddingHorizontal: 15,

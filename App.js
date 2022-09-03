@@ -23,9 +23,11 @@ const Stack = createNativeStackNavigator();
 const theme = createTheme({
   lightColors: {
     primary: "#5048E5",
+    secondary: "#687280"
   },
   darkColors: {
     primary: "#5048E5",
+    secondary: "#687280"
   },
   components: {
     Button: {
