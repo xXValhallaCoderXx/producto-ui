@@ -1,16 +1,16 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
+import { View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
 import { useUserProfileQuery } from "../../api/auth-api";
 
 const Tab = createBottomTabNavigator();
 
-export default function App({ navigation }) {
+export default function App({ navigation, route }) {
   const { theme } = useTheme();
   const {data} = useUserProfileQuery({});
-  console.log("dATA: ", data);
 
   return (
     <Tab.Navigator
