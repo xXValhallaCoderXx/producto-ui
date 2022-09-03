@@ -20,15 +20,13 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const passwordInputPos = useRef(new Animated.Value(0)).current;
+  const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
 
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult, verifyInfo] = useLazyVerifyEmailQuery({
     email,
   });
   const [step, setStep] = useState(1);
-
-
 
   useEffect(() => {
     if (step === 1) {
@@ -96,14 +94,13 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleOnPressSecondary = () => {
-    const nextStep = step === 1 ? 2 : 1;
     setError("");
-    if (nextStep === 1) {
-      emailInputRef.current.focus();
+    if (step === 1) {
+      navigation.navigate("Registration");
     } else {
-      passwordInputRef.current.focus();
+      emailInputRef.current.focus();
+      setStep(nextStep);
     }
-    setStep(nextStep);
   };
 
   const handleOnChangeEmail = (value) => {

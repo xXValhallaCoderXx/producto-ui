@@ -75,7 +75,7 @@ const TaskList = ({
                         {task.title}
                       </ListItem.Title>
                     </View>
-                    <View style={styles.listRow}>
+                    <View style={{justifyContent:"flex-end", ...styles.listRow}}>
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}

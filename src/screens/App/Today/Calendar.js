@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { format } from "date-fns";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { View, Modal, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Modal, TouchableOpacity, StyleSheet, Pressable } from "react-native";
 import { Calendar } from "react-native-calendars";
 
 const CalendarWidget = ({
@@ -53,7 +53,7 @@ const CalendarWidget = ({
       visible={calendarOpen}
       onRequestClose={toggleCalendar}
     >
-      <TouchableOpacity style={styles.modalContainer} onPress={toggleCalendar}>
+      <Pressable style={styles.modalContainer} onPress={toggleCalendar}>
         <View style={styles.modal}>
           <Calendar
             initialDate={selected}
@@ -76,7 +76,7 @@ const CalendarWidget = ({
             enableSwipeMonths={true}
           />
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 };

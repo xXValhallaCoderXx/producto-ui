@@ -18,7 +18,7 @@ export default function App({ navigation }) {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
-
+        // tabBarStyle: {paddingBottom: 10},
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "Today") {
@@ -26,9 +26,6 @@ export default function App({ navigation }) {
           } else if (route.name === "Account") {
             return (
               <Ionicons
-                // onPress={() =>
-                //   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-                // }
                 name="person"
                 size={size}
                 color={color}
@@ -37,9 +34,7 @@ export default function App({ navigation }) {
           }
           return (
             <Feather
-              // onPress={() =>
-              //   Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-              // }
+      
               name={iconName}
               size={size}
               color={color}

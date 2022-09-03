@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 import {
   View,
   Text,
-  Keyboard,
+  KeyboardAvoidingView,
   TouchableWithoutFeedback,
   TextInput,
   ScrollView,

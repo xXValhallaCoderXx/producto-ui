@@ -160,40 +160,36 @@ const ListScreen = ({ navigation }) => {
         onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <TaskList
-          tasks={tasks || []}
-          editMode={editMode}
-          handleToggleTaskFocus={handleToggleTaskFocus}
-          handleToggleTaskComplete={handleToggleTaskComplete}
-          currentTask={currentTask}
-          isLoadingToggle={isLoadingToggle}
-        />
 
-        <AddItem
-          handleCreateNewTask={handleCreateNewTask}
-          editMode={editMode}
-          currentDate={utcDate}
-        />
+      <TaskList
+        tasks={tasks || []}
+        editMode={editMode}
+        handleToggleTaskFocus={handleToggleTaskFocus}
+        handleToggleTaskComplete={handleToggleTaskComplete}
+        currentTask={currentTask}
+        isLoadingToggle={isLoadingToggle}
+      />
 
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
-          currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
-        />
+      <AddItem
+        handleCreateNewTask={handleCreateNewTask}
+        editMode={editMode}
+        currentDate={utcDate}
+      />
 
-        <MoveIncomplete
-          tasks={tasks}
-          currentDate={utcDate}
-          isLoading={moveIncompleteTasksResult.isLoading}
-          onMoveIncomplete={handleMoveIncompleteTasks}
-        />
-      </KeyboardAvoidingView>
+      <CalendarWidget
+        calendarOpen={calendarOpen}
+        toggleCalendar={handleToggleCalendar}
+        incompleteTasks={incompleteTasks}
+        currentDate={utcDate}
+        handleOnSelectDay={handleOnSelectDay}
+      />
+
+      <MoveIncomplete
+        tasks={tasks}
+        currentDate={utcDate}
+        isLoading={moveIncompleteTasksResult.isLoading}
+        onMoveIncomplete={handleMoveIncompleteTasks}
+      />
     </View>
   );
 };
