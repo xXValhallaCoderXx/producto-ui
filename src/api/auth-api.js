@@ -4,8 +4,6 @@ const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation({
       query: ({ email, password }) => {
-        console.log("EMAIL: ", email);
-        console.log("PASSWORD", password);
         return {
           url: "/auth/login",
           method: "POST",
@@ -20,7 +18,22 @@ const authApi = api.injectEndpoints({
         body: { email, password },
       }),
     }),
+    verifyEmail: builder.query({
+      query: ({ email }) => {
+        return `/auth/verify-email?email=${email}`;
+      },
+    }),
+    userProfile: builder.query({
+      query: ({ email }) => {
+        return `/auth/profile`;
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useLazyVerifyEmailQuery,
+  useUserProfileQuery,
+} = authApi;

@@ -1,6 +1,9 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { format, add, sub } from "date-fns";
+import { Text } from "@rneui/base";
+import { format, add, sub, endOfDay, formatISO } from "date-fns";
+import * as Localization from "expo-localization";
+import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
@@ -8,6 +11,7 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -19,30 +23,51 @@ import {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation
+  useMoveIncompleteTasksMutation,
+  useGetIncompleteTasksQuery,
 } from "../../../api/task-api";
+import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
+import {
+  setCurrentDate as setCurrentDateStore,
+  toggleCalendar,
+} from "./today-slice";
+import CalendarWidget from "./Calendar";
 
 const ListScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
+  const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const calendarOpen = useSelector((state) => state.today.calendarOpen);
+
+  const [utcDate, setUtcDate] = useState(new Date());
+
   const {
     data: tasks,
     isLoading,
+    isFetching,
     error,
-  } = useGetTodaysTasksQuery({ date: format(currentDate, "yyyy-MM-dd") });
+  } = useGetTodaysTasksQuery({ date: utcDate.toISOString().split("T")[0] });
+  const { data: incompleteTasks } = useGetIncompleteTasksQuery();
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
-  const [moveIncompleteTasks, moveIncompleteTasksResult] = useMoveIncompleteTasksMutation();
-
+  const [moveIncompleteTasks, moveIncompleteTasksResult] =
+    useMoveIncompleteTasksMutation();
 
   useEffect(() => {
+    // dispatch(setCurrentDateStore({date: new Date().toString()}))
     setTheme();
   }, []);
+
+  useEffect(() => {
+    if (createTaskResult.isError) {
+      ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);
+    }
+  }, [createTaskResult.isError]);
 
   const setTheme = async () => {
     await NavigationBar.setBackgroundColorAsync("white");
@@ -61,86 +86,122 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
-      date: format(currentDate, "yyyy-MM-dd"),
+      date: utcDate.toISOString().split("T")[0],
     });
+  };
+
+  const handleToggleCalendar = () => {
+    dispatch(toggleCalendar());
   };
 
   const handleOnChangeDate = (direction) => () => {
     if (direction === "back") {
-      const subDate = sub(currentDate, { days: 1 });
-      console.log("SUB ", subDate)
-      setCurrentDate(subDate);
+      const subUtcDate = sub(new Date(utcDate), { days: 1 });
+      setUtcDate(subUtcDate);
     } else {
-      const addDate = add(currentDate, { days: 1 });
-      console.log("addd: ", addDate);
-      setCurrentDate(addDate);
+      const addUtcDate = add(new Date(utcDate), { days: 1 });
+      setUtcDate(addUtcDate);
     }
   };
 
   const handleToggleTaskFocus = async (_task) => {
-    console.log("TASK , ", _task);
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      data: format(currentDate, "yyyy-MM-dd"),
+      date: utcDate.toISOString().split("T")[0],
     });
   };
 
   const handleCreateNewTask = async (_title) => {
-    try {
-      await createTask({ title: _title });
-      ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
-      return;
-    } catch (err) {
-      console.log("ERROR CRESATING TASK:", err.response);
-    }
+    await createTask({ title: _title, deadline: utcDate });
+    ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+    return;
   };
 
   const handleMoveIncompleteTasks = async () => {
-    await moveIncompleteTasks({date: format(currentDate, "yyyy-MM-dd")})
+    await moveIncompleteTasks({ date: format(utcDate, "yyyy-MM-dd") });
     const todayDate = format(new Date(), "yyyy-MM-dd");
     ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
-  }
+  };
 
   const handleOnPressToday = async () => {
-    console.log("LEGGO")
-    setCurrentDate(new Date());
-  }
+    setUtcDate(new Date());
+  };
+
+  const handleOnPressDate = async () => {
+    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
+  };
+
+  const handleOnSelectDay = (_day) => {
+    setUtcDate(new Date(_day.dateString));
+    dispatch(toggleCalendar({ calendarOpen: false }));
+  };
 
   return (
     <View style={styles.container}>
       <Header
-        currentDate={currentDate}
+        clientUtc={utcDate}
         editMode={editMode}
         onChangeDate={handleOnChangeDate}
         onPressToday={handleOnPressToday}
+        onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
+      <ScrollView
+        // behavior={Platform.OS === "ios" ? "padding" : null}
+        contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
       >
-        <TaskList
-          tasks={tasks || []}
-          editMode={editMode}
-          handleToggleTaskFocus={handleToggleTaskFocus}
-          handleToggleTaskComplete={handleToggleTaskComplete}
-          currentTask={currentTask}
-          isLoadingToggle={isLoadingToggle}
+        <View>
+          {isLoading || isFetching ? (
+            <View style={{ marginTop: 30 }}>
+              <Text
+                style={{
+                  color: theme.colors.primary,
+                  fontSize: 16,
+                }}
+              >
+                Fetching Tasks...
+              </Text>
+            </View>
+          ) : (
+            <View>
+              <TaskList
+                tasks={tasks || []}
+                editMode={editMode}
+                handleToggleTaskFocus={handleToggleTaskFocus}
+                handleToggleTaskComplete={handleToggleTaskComplete}
+                currentTask={currentTask}
+                isLoadingToggle={isLoadingToggle}
+                utcDate={utcDate}
+              />
+
+              <AddItem
+                handleCreateNewTask={handleCreateNewTask}
+                editMode={editMode}
+                currentDate={utcDate}
+              />
+            </View>
+          )}
+        </View>
+
+        <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
         />
 
-        <AddItem
-          handleCreateNewTask={handleCreateNewTask}
-          fetchTasks={() => console.log("add")}
-          editMode={editMode}
-        />
-        <MoveIncomplete
-          tasks={tasks}
-          currentDate={currentDate}
-          isLoading={moveIncompleteTasksResult.isLoading}
-          onMoveIncomplete={handleMoveIncompleteTasks}
-        />
-      </KeyboardAvoidingView>
+        {isFetching ? null : (
+          <MoveIncomplete
+            tasks={tasks}
+            currentDate={utcDate}
+            isLoading={moveIncompleteTasksResult.isLoading}
+            onMoveIncomplete={handleMoveIncompleteTasks}
+          />
+        )}
+      </ScrollView>
     </View>
   );
 };

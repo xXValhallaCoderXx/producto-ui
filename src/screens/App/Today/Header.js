@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
@@ -6,44 +7,64 @@ import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate, currentDate, onPressToday }) => {
+const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday, onPressDate }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const [isToday, setIsToday] = useState(false);
+
+  useEffect(() => {
+    if (clientUtc) {
+      const currentDate = clientUtc.toISOString().split('T')[0];
+      const todayDate = new Date().toISOString().split('T')[0];
+      if (currentDate === todayDate) {
+        setIsToday(true);
+      } else {
+        setIsToday(false);
+      }
+    }
+  }, [clientUtc]);
 
   return (
     <View>
       <Text
+        onPress={onPressDate}
         style={{
           marginLeft: -8,
           fontWeight: "700",
-          color: theme.colors.primary,
+          color: isToday ? theme.colors.primary : theme.colors.grey0,
         }}
         h6
       >
-        {format(currentDate, "	EEE, d LLL yyyy").toUpperCase()}
+        {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
       </Text>
 
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
-            <View style={styles.dateContainer}>
+            <View style={{ ...styles.dateContainer, height: 50 }}>
               <Text
                 h4
-                style={{ color: theme.colors.primary }}
+                style={{
+                  color: isToday ? theme.colors.primary : theme.colors.grey0,
+                }}
                 onPress={onPressToday}
               >
                 Today
               </Text>
-              <IonIcon
-                style={styles.leftArrow}
-                name="keyboard-arrow-left"
-                onPress={onChangeDate("back")}
-              />
-              <IonIcon
-                onPress={onChangeDate("forward")}
-                style={styles.rightArrow}
-                name="keyboard-arrow-right"
-              />
+              {editMode && (
+                <View style={styles.dateContainer}>
+                  <IonIcon
+                    style={styles.leftArrow}
+                    name="keyboard-arrow-left"
+                    onPress={onChangeDate("back")}
+                  />
+                  <IonIcon
+                    onPress={onChangeDate("forward")}
+                    style={styles.rightArrow}
+                    name="keyboard-arrow-right"
+                  />
+                </View>
+              )}
             </View>
           </View>
         </View>

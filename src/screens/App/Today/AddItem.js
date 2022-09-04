@@ -1,40 +1,36 @@
-import { useState, useEffect, useRef } from "react";
-import { View, Text, Keyboard, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import { useState, useCallback, useRef } from "react";
+import debounce from "lodash.debounce";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Input, useTheme, Button, Icon } from "@rneui/themed";
+import { Input, useTheme, Button, CheckBox } from "@rneui/themed";
+import { useKeyboard } from "../../../shared/hooks/use-keyboard";
 
-const AddItem = ({ handleCreateNewTask, editMode }) => {
+const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const { theme } = useTheme();
+  const keyboard = useKeyboard();
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
+  // highlight-starts
+  const debouncedSave = useCallback(
+    debounce((nextValue) => console.log(nextValue), 350),
+    [] // will be created only once initially
+  );
 
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true); // or some other action
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false); // or some other action
-        setAddTask(false);
-        setTaskName("");
-        setError("");
-      }
-    );
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
+  const handleOnChange = (value) => {
+    setError("");
+    setTaskName(value);
+    debouncedSave(value);
+  };
 
   const handleOnPress = () => {
     setAddTask(true);
@@ -43,11 +39,12 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
     setError("");
   };
 
-  const handleOnPressCancel = () => {
-    setAddTask(true);
-    setTaskName("");
-    setError("");
-    Keyboard.dismiss();
+  const handleOnBlur = async () => {
+    if (taskName.length > 0) {
+      await handleCreateNewTask(taskName);
+      setTaskName("");
+    }
+    setAddTask(false);
   };
 
   const onSubmitTask = async () => {
@@ -64,18 +61,16 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
       }
     }
   };
-
-  if(!editMode){
+  if (!editMode) {
     return null;
   }
 
   return (
     <View
-      style={{
-        marginTop: 20,
-      }}
+    style={{marginTop: 15}}
+    // keyboardShouldPersistTaps="handled"
     >
-      {isKeyboardVisible || addTask ? (
+      {addTask ? (
         <View>
           <View
             style={{
@@ -85,14 +80,19 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
             }}
           >
             <View style={{ flex: 7 }}>
-              <Input
+              <TextInput
                 placeholder="Enter task name..."
                 autoFocus
-                onChangeText={(value) => {
-                  setError("");
-                  setTaskName(value);
-                }}
+                placeholderTextColor="#808080"
+                onChangeText={handleOnChange}
                 value={taskName}
+                onBlur={handleOnBlur}
+                underlineColorAndroid="transparent"
+                style={{
+                  fontSize: 16,
+                  height: 50,
+                  backgroundColor: "white",
+                }}
               />
             </View>
             <View
@@ -100,21 +100,15 @@ const AddItem = ({ handleCreateNewTask, editMode }) => {
                 display: "flex",
                 flexDirection: "row",
                 flex: 3,
-                justifyContent: "space-around",
+                justifyContent: "flex-end",
                 marginTop: 10,
+                paddingRight: 10,
               }}
             >
-              <Icon
-                name="check"
-                color={theme.colors.primary}
-                type="material-icons"
-                onPress={onSubmitTask}
-              />
-              <Icon
-                name={"clear"}
-                color="#D14343"
-                type="material-icons"
-                onPress={handleOnPressCancel}
+              <CheckBox
+                checked={false}
+                containerStyle={{ padding: 0 }}
+                disabled={true}
               />
             </View>
           </View>

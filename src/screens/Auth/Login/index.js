@@ -1,36 +1,48 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useRef, useEffect } from "react";
-import { TextInput, Animated } from "react-native";
-import { Text, Button } from "@rneui/themed";
-import { useTheme } from "@rneui/themed";
+import { TextInput, Animated, ScrollView } from "react-native";
+import { Text } from "@rneui/themed";
+import { useWindowDimensions } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
-import { useLoginMutation } from "../../../api/auth-api";
+import {
+  useLoginMutation,
+  useLazyVerifyEmailQuery,
+} from "../../../api/auth-api";
+import FooterActions from "./FooterAction";
+
+const titleDark = require("../../../assets/images/title-dark.png");
 
 const LoginScreen = ({ navigation }) => {
-  const { theme } = useTheme();
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [error, setError] = useState("");
+  const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
+
   const [loginApi, loginApiResult] = useLoginMutation();
-
+  const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
+    email,
+  });
+  const [step, setStep] = useState(1);
+  console.log("VERYFI LOO: ", loginApiResult)
   useEffect(() => {
-    handleInit();
-    const unsubscribe = navigation.addListener("blur", async (e) => {
-      setEmail("");
-      setPassword("");
-      loginApiResult.reset();
-    });
-    // Unsubscribe to event listener when component unmount
-    return () => unsubscribe();
-  }, []);
-
-  const handleInit = async () => {
-    const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
-    if (jwtToken) {
-      navigation.dispatch(StackActions.replace("App"));
+    if (step === 1) {
+      Animated.timing(passwordInputPos, {
+        toValue: windowWidth / 2,
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(passwordInputPos, {
+        toValue: -(windowWidth / 2),
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
     }
-  };
+  }, [step]);
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -50,93 +62,171 @@ const LoginScreen = ({ navigation }) => {
     navigation.dispatch(StackActions.replace("App"));
   };
 
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
-
-  const handleOnSubmit = async () => {
-    if (email && password) {
-      const res = await loginApi({ email, password });
+  const handleOnPressPrimary = async () => {
+    const nextStep = step === 1 ? 2 : 1;
+    setError("");
+    if (nextStep === 1) {
+      if (password === "") {
+        setError("Please enter a password");
+      } else {
+        const res = await loginApi({ email, password });
+        if (res.data) {
+          setTokenAndRedirect(res.data.access_token);
+        } else if (res.error.status === 400) {
+          setError(res.error.data.message);
+        }
+      }
+    } else {
+      const res = await verifyTigger({ email });
+      passwordInputRef.current.focus();
+      if (res.isSuccess) {
+        setStep(nextStep);
+      } else {
+        if (res.error.status === 200) {
+          setStep(nextStep);
+        } else if (res.error.status === 400) {
+          setError(res.error.data.message[0]);
+        } else if (res.error.status === 404) {
+          setError("Email address not found");
+        }
+      }
     }
   };
 
+  const handleOnPressSecondary = () => {
+    setError("");
+    if (step === 1) {
+      navigation.navigate("Registration");
+    } else {
+      emailInputRef.current.focus();
+      setStep(nextStep);
+    }
+  };
+
+  const handleOnChangeEmail = (value) => {
+    setError("");
+    setEmail(value);
+  };
+
+  const handleOnChangePassword = (value) => {
+    setError("");
+    setPassword(value);
+  };
+
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-        },
-      ]}
-    >
-      <Image
-        style={{ height: 40, width: 220, marginBottom: 40 }}
-        source={require("../../../assets/images/title-dark.png")}
-      />
-
-      <TextInput
-        style={styles.input}
-        onChangeText={(value) => {
-          setEmail(value);
-        }}
-        value={email}
-        nativeID="email"
-        placeholder="Email"
-      />
-      <TextInput
-        style={{ ...styles.input, marginTop: 20, marginBottom: 40 }}
-        onChangeText={(value) => {
-          setPassword(value);
-        }}
-        value={password}
-        nativeID="password"
-        placeholder="Password"
-        secureTextEntry={true}
-      />
-      <View style={{ height: 10 }}>
-        {(loginApiResult.isError && (
-          <Text
-            style={{
-              color: "#D14343",
-              textAlign: "center",
-              fontWeight: "700",
-              marginTop: -25,
-              marginBottom: 10,
-            }}
-          >
-            {loginApiResult.error.data.message}
+    <View style={styles.container}>
+      <View style={styles.titleContainer}>
+        <Image
+          source={titleDark}
+          resizeMode="contain"
+          style={{
+            width: 231,
+            height: 42,
+          }}
+        ></Image>
+        <View style={{ marginTop: 19 }}>
+          <Text style={styles.secondaryTitle}>
+            Sign in, to continue to Producto
           </Text>
-        )) ||
-          null}
+        </View>
       </View>
-      <Button
-        disabled={!email || !password}
-        loading={loginApiResult.isLoading}
-        title="Log in"
-        buttonStyle={{ borderRadius: 8, padding: 10, minWidth: 200 }}
-        onPress={handleOnSubmit}
-        color={theme.colors.primary}
-      />
-
-      <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
-        Not boosting your productivity?
-      </Text>
-      <Text
-        h6
-        onPress={() => navigation.navigate("Registration")}
-        style={{
-          color: "black",
-          marginTop: 5,
-          fontWeight: "700",
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{
+          justifyContent: "space-between",
+          flex: 1,
         }}
       >
-        Sign Up Here
-      </Text>
-    </Animated.View>
+        <Animated.View
+          style={{
+            ...styles.inputWrapper,
+            transform: [{ translateX: passwordInputPos }],
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <TextInput
+                style={{
+                  ...styles.input,
+                  width: windowWidth * 0.85,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                ref={emailInputRef}
+                onChangeText={handleOnChangeEmail}
+                value={email}
+                nativeID="email"
+                placeholder="Enter your email..."
+              />
+
+              {error ? (
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: "#D14343",
+                    alignSelf: "flex-start",
+                    fontWeight: "700",
+                    paddingLeft: windowWidth - windowWidth * 0.9,
+                  }}
+                >
+                  {error}
+                </Text>
+              ) : null}
+            </View>
+
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <TextInput
+                style={{
+                  ...styles.input,
+                  width: windowWidth * 0.85,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                ref={passwordInputRef}
+                onChangeText={handleOnChangePassword}
+                value={password}
+                nativeID="password"
+                placeholder="Enter your password..."
+              />
+              {error ? (
+                <Text
+                  style={{
+                    marginTop: 10,
+                    color: "#D14343",
+                    alignSelf: "flex-start",
+                    fontWeight: "700",
+                    paddingLeft: windowWidth - windowWidth * 0.9,
+                  }}
+                >
+                  {error}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+        </Animated.View>
+
+        <FooterActions
+          handleOnPressPrimary={handleOnPressPrimary}
+          handleOnPressSecondary={handleOnPressSecondary}
+          step={step}
+          isLoading={verifyResult.isFetching || loginApiResult.isLoading}
+        />
+      </ScrollView>
+    </View>
   );
 };
 
@@ -144,14 +234,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  titleContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 106,
+  },
+  secondaryTitle: {
+    fontSize: 14,
+    color: "gray",
+    textAlign: "center",
+    marginLeft: -10,
+  },
+  inputWrapper: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: 80,
   },
   input: {
-    width: 300,
     height: 45,
-    backgroundColor: "#fff",
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderColor: "#ccc",
