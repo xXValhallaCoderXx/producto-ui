@@ -1,19 +1,17 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CommonActions } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Button, useTheme } from "@rneui/themed";
-import { Switch } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
+import { Button, useTheme, Switch } from "@rneui/themed";
 import { useUserProfileQuery } from "../../../api/auth-api";
 import { Text } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import PasswordModal from "./components/PasswordModal";
+import AutoTaskModal from "./components/AutoTaskModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
@@ -30,12 +28,12 @@ const ProfileScreen = ({ navigation }) => {
     setIsPasswordModalVisable(!isPasswordModalVisable);
   };
 
-  const toggleSwitchAuto = () => {
-    setToggleSwitch(!toggleSwitch);
+  const toggleAutoTaskModal = () => {
+    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
   };
 
-  const toggleAutoTaskModal = () => {
-    console.log("lsl");
+  const toggleSwitchAuto = () => {
+    setToggleSwitch(!toggleSwitch);
   };
 
   const handleLogout = async () => {
@@ -45,8 +43,12 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleChangePassword = () => {
-    console.log("CHANGE pass")
-  }
+    console.log("CHANGE pass");
+  };
+
+  const handleSubmitAutoTask = () => {
+    console.log("SUBMIT AUTO");
+  };
 
   return (
     <View style={styles.screenContainer}>
@@ -119,7 +121,12 @@ const ProfileScreen = ({ navigation }) => {
         onPress={handleLogout}
         onCancel={toggleLogoutModal}
       />
-       <PasswordModal
+      <AutoTaskModal
+        isVisible={isAutoTaskModalVisible}
+        onPress={handleSubmitAutoTask}
+        onCancel={toggleAutoTaskModal}
+      />
+      <PasswordModal
         isVisible={isPasswordModalVisable}
         onPress={handleChangePassword}
         onCancel={togglePasswordModal}
