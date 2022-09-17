@@ -15,7 +15,7 @@ import { useUserProfileQuery } from "../../../api/auth-api";
 const ProfileScreen = ({ navigation }) => {
   const { theme } = useTheme();
   const [visible, setVisible] = useState(false);
-  const { data } = useUserProfileQuery({});
+  const { isLoading, data } = useUserProfileQuery({});
 
   const toggleDialog = () => {
     setVisible(!visible);
@@ -32,12 +32,21 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+console.log("IS LOADING: ", isLoading);
+console.log("DATA: ", data);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <Text h5 style={{ color: theme.colors.primary }}>
-            {data.email}
+            {data?.email}
           </Text>
           <Text h5>'s Profile</Text>
         </View>

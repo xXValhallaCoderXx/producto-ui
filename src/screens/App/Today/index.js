@@ -63,6 +63,8 @@ const ListScreen = ({ navigation }) => {
     setTheme();
   }, []);
 
+    console.log("TASKS: ", tasks);
+    console.log("HSHS", isLoading)
   useEffect(() => {
     if (createTaskResult.isError) {
       ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);

@@ -4,6 +4,7 @@ const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
       query: ({ date }) => {
+        console.log("GET TASKS")
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => {
