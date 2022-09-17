@@ -8,7 +8,7 @@ export const globalSlice = createSlice({
   },
   reducers: {
     toggleInit: (state, action) => {
-      state.editMode = !state.editMode;
+      state.init = action.payload.isInit;
     },
     toggleIsAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload.isAuthenticated;

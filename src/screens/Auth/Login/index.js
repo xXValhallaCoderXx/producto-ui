@@ -2,9 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
 import { Text } from "@rneui/themed";
+import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
 import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
+import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
@@ -15,6 +17,7 @@ const titleDark = require("../../../assets/images/title-dark.png");
 import { useUserProfileQuery } from "../../../api/auth-api";
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
+  const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
@@ -58,7 +61,8 @@ const LoginScreen = ({ navigation }) => {
   setTokenAndRedirect = async (token) => {
     await AsyncStorage.setItem("@producto-jwt-token", token);
     ToastAndroid.show("Login success", ToastAndroid.SHORT);
-    navigation.dispatch(StackActions.replace("App"));
+    // navigation.dispatch(StackActions.replace("App"));
+    dispatch(toggleIsAuthenticated({ isAuthenticated: true }));
   };
 
   const handleOnPressPrimary = async () => {

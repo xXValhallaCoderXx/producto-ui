@@ -47,20 +47,20 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
     setAddTask(false);
   };
 
-  const onSubmitTask = async () => {
-    if (taskName.length < 1) {
-      setError("Task name too short");
-    } else {
-      try {
-        // await httpClient.post(`/task`, { title: taskName, focus: true });
-        await handleCreateNewTask(taskName);
-        setTaskName("");
-        setAddTask(false);
-      } catch (err) {
-        console.log("err: ", err);
-      }
-    }
-  };
+  // const onSubmitTask = async () => {
+  //   if (taskName.length < 1) {
+  //     setError("Task name too short");
+  //   } else {
+  //     try {
+  //       // await httpClient.post(`/task`, { title: taskName, focus: true });
+  //       await handleCreateNewTask(taskName);
+  //       setTaskName("");
+  //       setAddTask(false);
+  //     } catch (err) {
+  //       console.log("err: ", err);
+  //     }
+  //   }
+  // };
   if (!editMode) {
     return null;
   }

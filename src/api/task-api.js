@@ -42,7 +42,6 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           optimisticUpdate.undo();
-          console.log(e);
         }
       },
     }),
@@ -67,7 +66,6 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           optimisticUpdate.undo();
-          console.log(e);
         }
       },
     }),
@@ -91,7 +89,6 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           optimisticUpdate.undo();
-          console.log(e);
         }
       },
     }),
