@@ -19,6 +19,7 @@ import { globalSlice } from "../shared/slice/global-slice";
 
 const customBaseQuery = async (args, api, extraOptions) => {
   let result;
+  console.log("HMMM")
   try {
     result = await baseQuery(args, api, extraOptions);
   
@@ -26,22 +27,20 @@ const customBaseQuery = async (args, api, extraOptions) => {
     const isAuthenticated = api.getState().global.isAuthenticated;
     const isInit = api.getState().global.init;
 
-    console.log("API: ", api);
-
+    console.log("ARGS", result.meta.response.status);
     if(!isAuthenticated && !isInit){
       if(args === "/auth/profile" && result.meta.response.status === 200){
       // Remounting App
+     
       api.dispatch(globalSlice.actions.toggleInit({isInit: true}))
-        api.dispatch(globalSlice.actions.toggleIsAuthenticated({isAuthenticated: true}))
-      console.log("REMOIUNTING")
-      console.log("isAuthenticated", isAuthenticated)
-      console.log("isInit : ", isInit);
+      api.dispatch(globalSlice.actions.toggleIsAuthenticated({isAuthenticated: true}))
       }
 
     }
    
     // Handle unauthorized
-    if (result?.error?.status === 401) {
+    if (result.meta.response.status === 401) {
+      api.dispatch(globalSlice.actions.toggleInit({isInit: true}))
       api.dispatch(
         globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: false })
       );
@@ -59,7 +58,6 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
-    console.log("JWT : ", jwtToken)
     if (jwtToken) {
       headers.set("authorization", `Bearer ${jwtToken}`);
     }
