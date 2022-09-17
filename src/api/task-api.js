@@ -104,9 +104,9 @@ const taskApi = api.injectEndpoints({
       // async onQueryStarted({ title, deadline, date }, { dispatch, queryFulfilled }) {
       //   const optimisticUpdate = dispatch(
       //     api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-      //       // const optimisticTodo = draft.find((todo) => todo.id === id);
-      //       // optimisticTodo.title = title;
-      //       draft.push({})
+      //       const optimisticTodo = draft.find((todo) => todo.id === id);
+      //       optimisticTodo.title = title;
+      //       draft.push(optimisticTodo)
       //       return draft;
       //     })
       //   );

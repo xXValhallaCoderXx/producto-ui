@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
-import { View } from "react-native";
+import { Text } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
 import { useUserProfileQuery } from "../../api/auth-api";
@@ -10,7 +11,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App({ navigation, route }) {
   const { theme } = useTheme();
-  const {data} = useUserProfileQuery({});
+  const { data } = useUserProfileQuery({});
 
   return (
     <Tab.Navigator
@@ -20,30 +21,24 @@ export default function App({ navigation, route }) {
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
           height: 60,
-          padding: 20
+          // padding: 20,
+          paddingTop: 10,
+          paddingBottom: 8
         },
-        // tabBarStyle: {paddingBottom: 10},
+        // tabBarStyle: { height: 50, margin: 10},
+        tabBarButton: (props) => {
+          return (
+            <TouchableOpacity {...props}>{props.children}</TouchableOpacity>
+          );
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "Today") {
             iconName = "list";
           } else if (route.name === "Account") {
-            return (
-              <Ionicons
-                name="person"
-                size={size}
-                color={color}
-              />
-            );
+            return <Ionicons name="person" size={size} color={color} />;
           }
-          return (
-            <Feather
-      
-              name={iconName}
-              size={size}
-              color={color}
-            />
-          );
+          return <Feather name={iconName} size={size} color={color} />;
         },
       })}
     >
