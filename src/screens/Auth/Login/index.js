@@ -12,7 +12,7 @@ import {
 import FooterActions from "./FooterAction";
 
 const titleDark = require("../../../assets/images/title-dark.png");
-
+import { useUserProfileQuery } from "../../../api/auth-api";
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
@@ -21,13 +21,12 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
-
+  const x = useUserProfileQuery({});
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
   const [step, setStep] = useState(1);
-  console.log("VERYFI LOO: ", loginApiResult)
   useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {

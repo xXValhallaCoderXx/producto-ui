@@ -1,9 +1,36 @@
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-console.log(Constants.manifest.extra.baseUrl)
+// import { store } from "../config/store";
+import { globalSlice } from "../shared/slice/global-slice";
+console.log(Constants.manifest.extra.baseUrl);
 // Define a service using a base URL and expected endpoints
+// const baseQuery = fetchBaseQuery({
+//   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
+//   prepareHeaders: async (headers) => {
+//     // If we have a token set in state, let's assume that we should be passing it.
+//     const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
+//     if (jwtToken) {
+//       headers.set("authorization", `Bearer ${jwtToken}`);
+//     }
+//     headers.set("Content-Type", "application/json");
+//     return headers;
+//   },
+// });
+
+const customBaseQuery = async (args, api, extraOptions) => {
+  const result = await baseQuery(args, api, extraOptions);
+
+  // Handle unauthorized
+  if (result.error.status === 401) {
+    api.dispatch(
+      globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: false })
+    );
+  }
+
+  return result;
+};
+
 const baseQuery = fetchBaseQuery({
   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
@@ -19,7 +46,7 @@ const baseQuery = fetchBaseQuery({
 
 export const api = createApi({
   reducerPath: "api",
-  baseQuery: baseQuery,
+  baseQuery: customBaseQuery,
   endpoints: () => ({}),
   tagTypes: ["Tasks"],
 });
