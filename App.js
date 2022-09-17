@@ -1,43 +1,20 @@
 import { useState, useCallback, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
-import { ThemeProvider, createTheme } from "@rneui/themed";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemeProvider } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./src/screens/Auth/Login";
-import RegistrationScreen from "./src/screens/Auth/Register";
-import AppScreens from "./src/screens/App";
 import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./src/config/store";
-import { Image, Animated } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
-
+import theme from "./src/shared/styles/theme";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({});
 const Stack = createNativeStackNavigator();
-
-const theme = createTheme({
-  lightColors: {
-    primary: "#5048E5",
-    secondary: "#687280",
-  },
-  darkColors: {
-    primary: "#5048E5",
-    secondary: "#687280",
-  },
-  components: {
-    Button: {
-      titleStyle: {
-        color: "red",
-      },
-    },
-  },
-});
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
