@@ -18,7 +18,20 @@ const userApi = api.injectEndpoints({
         };
       },
     }),
+    updatePassword: builder.mutation({
+      query: ({ oldPassword, newPassword }) => {
+        return {
+          url: `/user/update-password`,
+          method: "PATCH",
+          body: { oldPassword, newPassword },
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetProfileQuery, useUpdatePrefsMutation } = userApi;
+export const {
+  useGetProfileQuery,
+  useUpdatePrefsMutation,
+  useUpdatePasswordMutation,
+} = userApi;

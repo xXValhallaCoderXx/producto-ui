@@ -11,18 +11,21 @@ import PasswordModal from "./components/PasswordModal";
 import AutoTaskModal from "./components/AutoTaskModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { useMoveSpecificTasksMutation } from "../../../api/task-api";
-import { useUpdatePrefsMutation } from "../../../api/user-api";
+import {
+  useUpdatePrefsMutation,
+  useUpdatePasswordMutation,
+} from "../../../api/user-api";
 
 const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
+  const [updatePasswordApi, setUpdatePasswordApi] = useUpdatePasswordMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
-
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -88,7 +91,10 @@ const ProfileScreen = () => {
               </Text>
             </View>
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Switch onChange={toggleSwitchAuto} value={data?.prefs?.autoMove} />
+              <Switch
+                onChange={toggleSwitchAuto}
+                value={data?.prefs?.autoMove}
+              />
             </View>
           </TouchableOpacity>
         </View>
