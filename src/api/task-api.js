@@ -134,10 +134,10 @@ const taskApi = api.injectEndpoints({
     }),
     moveIncompleteTasks: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: ({ date }) => ({
+      query: ({ from, to }) => ({
         url: `/task/move-incomplete`,
         method: "POST",
-        body: { date },
+        body: { from, to },
       }),
     }),
   }),

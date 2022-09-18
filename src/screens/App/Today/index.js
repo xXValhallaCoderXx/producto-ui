@@ -1,18 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Text } from "@rneui/base";
-import { format, add, sub, endOfDay, formatISO } from "date-fns";
-import * as Localization from "expo-localization";
+import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import {
-  StyleSheet,
-  View,
-  ToastAndroid,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, View, ToastAndroid, ScrollView } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -26,14 +18,10 @@ import {
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
 } from "../../../api/task-api";
-import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
-import {
-  setCurrentDate as setCurrentDateStore,
-  toggleCalendar,
-} from "./today-slice";
+import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 
-const ListScreen = ({ navigation }) => {
+const ListScreen = () => {
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
@@ -49,7 +37,7 @@ const ListScreen = ({ navigation }) => {
     isLoading,
     isFetching,
     error,
-  } = useGetTodaysTasksQuery({ date: utcDate.toISOString().split("T")[0] });
+  } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
   const { data: incompleteTasks } = useGetIncompleteTasksQuery();
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
@@ -59,7 +47,6 @@ const ListScreen = ({ navigation }) => {
     useMoveIncompleteTasksMutation();
 
   useEffect(() => {
-    // dispatch(setCurrentDateStore({date: new Date().toString()}))
     setTheme();
   }, []);
 
@@ -86,7 +73,7 @@ const ListScreen = ({ navigation }) => {
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
-      date: utcDate.toISOString().split("T")[0],
+      date: format(utcDate, "yyyy-MM-dd"),
     });
   };
 
@@ -108,20 +95,24 @@ const ListScreen = ({ navigation }) => {
     await toggleTaskFocus({
       id: _task.id,
       focus: !_task.focus,
-      date: utcDate.toISOString().split("T")[0],
+      date: format(utcDate, "yyyy-MM-dd"),
     });
   };
 
   const handleCreateNewTask = async (_title) => {
-    await createTask({ title: _title, deadline: utcDate });
+    await createTask({
+      title: _title,
+      deadline: format(utcDate, "yyyy-MM-dd"),
+    });
     ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
     return;
   };
 
   const handleMoveIncompleteTasks = async () => {
-    await moveIncompleteTasks({ date: format(utcDate, "yyyy-MM-dd") });
-    const todayDate = format(new Date(), "yyyy-MM-dd");
-    ToastAndroid.show(`Tasks moved to ${todayDate}!`, ToastAndroid.SHORT);
+    const from = format(utcDate, "yyyy-MM-dd");
+    const to = format(new Date(), "yyyy-MM-dd");
+    await moveIncompleteTasks({ from, to });
+    ToastAndroid.show(`Tasks moved to ${to}!`, ToastAndroid.SHORT);
   };
 
   const handleOnPressToday = async () => {
@@ -148,7 +139,6 @@ const ListScreen = ({ navigation }) => {
       />
       <ProgressBar editMode={editMode} progress={progress} />
       <ScrollView
-        // behavior={Platform.OS === "ios" ? "padding" : null}
         contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
       >
