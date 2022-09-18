@@ -1,21 +1,28 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableHighlight } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
+
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { toggleEdit } from "./today-slice";
 
-const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday, onPressDate }) => {
+const TodayHeader = ({
+  editMode,
+  onChangeDate,
+  clientUtc,
+  onPressToday,
+  onPressDate,
+}) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [isToday, setIsToday] = useState(false);
 
   useEffect(() => {
     if (clientUtc) {
-      const currentDate = clientUtc.toISOString().split('T')[0];
-      const todayDate = new Date().toISOString().split('T')[0];
+      const currentDate = clientUtc.toISOString().split("T")[0];
+      const todayDate = new Date().toISOString().split("T")[0];
       if (currentDate === todayDate) {
         setIsToday(true);
       } else {
@@ -26,43 +33,47 @@ const TodayHeader = ({ editMode, onChangeDate, clientUtc, onPressToday, onPressD
 
   return (
     <View>
-      <Text
-        onPress={onPressDate}
-        style={{
-          marginLeft: -8,
-          fontWeight: "700",
-          color: isToday ? theme.colors.primary : theme.colors.grey0,
-        }}
-        h6
-      >
-        {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
-      </Text>
+      <TouchableOpacity onPress={onPressDate}>
+        <Text
+          style={{
+            marginLeft: -8,
+            fontWeight: "700",
+            color: isToday ? theme.colors.primary : theme.colors.grey0,
+          }}
+          h6
+        >
+          {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
+        </Text>
+      </TouchableOpacity>
 
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>
-              <Text
-                h4
-                style={{
-                  color: isToday ? theme.colors.primary : theme.colors.grey0,
-                }}
-                onPress={onPressToday}
-              >
-                Today
-              </Text>
+              <TouchableOpacity onPress={onPressToday}>
+                <Text
+                  h4
+                  style={{
+                    color: isToday ? theme.colors.primary : theme.colors.grey0,
+                  }}
+                >
+                  Today
+                </Text>
+              </TouchableOpacity>
               {editMode && (
                 <View style={styles.dateContainer}>
-                  <IonIcon
-                    style={styles.leftArrow}
-                    name="keyboard-arrow-left"
-                    onPress={onChangeDate("back")}
-                  />
-                  <IonIcon
-                    onPress={onChangeDate("forward")}
-                    style={styles.rightArrow}
-                    name="keyboard-arrow-right"
-                  />
+                  <TouchableOpacity onPress={onChangeDate("back")}>
+                    <IonIcon
+                      style={styles.leftArrow}
+                      name="keyboard-arrow-left"
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={onChangeDate("forward")}>
+                    <IonIcon
+                      style={styles.rightArrow}
+                      name="keyboard-arrow-right"
+                    />
+                  </TouchableOpacity>
                 </View>
               )}
             </View>
