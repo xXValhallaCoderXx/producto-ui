@@ -38,16 +38,15 @@ const ListScreen = () => {
     isFetching,
     error,
   } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const { data: incompleteTasks, isLoading: incompleteIsLoading } = useGetIncompleteTasksQuery({});
+  const { data: incompleteTasks, isLoading: incompleteIsLoading, error: incError } = useGetIncompleteTasksQuery({});
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
-  console.log("nnkk:" , incompleteTasks)
-  console.log("incompleteIsLoading:" , incompleteIsLoading)
-  useEffect(() => {
+  console.log("INC RROR:" , incError);
+  useEffect(() => { 
     setTheme();
   }, []);
 
@@ -184,7 +183,7 @@ const ListScreen = () => {
           handleOnSelectDay={handleOnSelectDay}
         />
 
-        {isFetching ? null : (
+        {isFetching || !editMode ? null : (
           <MoveIncomplete
             tasks={tasks}
             currentDate={utcDate}

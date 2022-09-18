@@ -21,8 +21,8 @@ const TodayHeader = ({
 
   useEffect(() => {
     if (clientUtc) {
-      const currentDate = clientUtc.toISOString().split("T")[0];
-      const todayDate = new Date().toISOString().split("T")[0];
+      const currentDate =format(clientUtc, "yyyy-MM-dd");
+      const todayDate = format(new Date(), "yyyy-MM-dd")
       if (currentDate === todayDate) {
         setIsToday(true);
       } else {

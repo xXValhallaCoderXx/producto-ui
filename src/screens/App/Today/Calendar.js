@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { View, Modal, StyleSheet, Pressable } from "react-native";
 import { Calendar } from "react-native-calendars";
-
+import { format } from "date-fns";
 const CalendarWidget = ({
   calendarOpen,
   toggleCalendar,
@@ -10,28 +10,23 @@ const CalendarWidget = ({
   currentDate,
   handleOnSelectDay,
 }) => {
-  const [selected, setSelected] = useState(
-    currentDate.toISOString().split("T")[0]
-  );
+  const [selected, setSelected] = useState(format(currentDate, "yyyy-MM-dd"));
   const [parsedIncomplete, setParsedIncomplete] = useState({});
-    console.log("INCOMLETE: ", incompleteTasks)
   useEffect(() => {
     if (incompleteTasks.length > 0) {
       const parsedData = {};
-
-      const parsedTodayDate = currentDate.toISOString().split("T")[0];
       incompleteTasks.forEach((task) => {
         parsedData[task] = {
           // marked: true,
           customStyles: {
             container: {
               borderColor: "#5048E5",
-              backgroundColor: parsedTodayDate === task ? "#5048E5" : "white",
+              backgroundColor: selected === task ? "#5048E5" : "white",
               borderWidth: 0.5,
               borderRadius: 30,
             },
             text: {
-              color: parsedTodayDate === task ? "white" : "black",
+              color: selected === task ? "white" : "black",
             },
           },
         };

@@ -14,7 +14,6 @@ const taskApi = api.injectEndpoints({
     }),
     getIncompleteTasks: builder.query({
       query: () => {
-        console.log("GET INCOMPLETE");
         return `/task/incomplete`;
       },
       providesTags: ["IncompleteTasks"],

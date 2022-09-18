@@ -67,6 +67,7 @@ const TaskList = ({
 
   const toggleDeleteModal = () => {
     setIsDeleteModalVisible(!isDeleteModalVisible);
+    setEditTask(null);
   };
 
   const handleDeleteTask = async () => {
