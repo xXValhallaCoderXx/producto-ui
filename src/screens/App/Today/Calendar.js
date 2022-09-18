@@ -14,7 +14,7 @@ const CalendarWidget = ({
     currentDate.toISOString().split("T")[0]
   );
   const [parsedIncomplete, setParsedIncomplete] = useState({});
-
+    console.log("INCOMLETE: ", incompleteTasks)
   useEffect(() => {
     if (incompleteTasks.length > 0) {
       const parsedData = {};

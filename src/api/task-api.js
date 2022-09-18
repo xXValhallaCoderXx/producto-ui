@@ -14,9 +14,10 @@ const taskApi = api.injectEndpoints({
     }),
     getIncompleteTasks: builder.query({
       query: () => {
+        console.log("GET INCOMPLETE")
         return `/task/incomplete`;
       },
-      providesTags: ["Tasks"],
+      providesTags: ["IncompleteTasks"],
     }),
     moveSpecificTasks: builder.mutation({
       invalidatesTags: ["Tasks"],
@@ -32,7 +33,7 @@ const taskApi = api.injectEndpoints({
       query: () => {
         return `/task/incomplete-detail`;
       },
-      // providesTags: ["Tasks"],
+      providesTags: ["IncompleteTasks"],
     }),
     toggleTask: builder.mutation({
       query: ({ id, completed, date }) => {
@@ -107,7 +108,7 @@ const taskApi = api.injectEndpoints({
       },
     }),
     createTask: builder.mutation({
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ title, deadline }) => {
         return {
           url: `/task`,

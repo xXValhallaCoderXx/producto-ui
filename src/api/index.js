@@ -24,7 +24,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
     const isAuthenticated = api.getState().global.isAuthenticated;
     const isInit = api.getState().global.init;
-
+   
     if (!isAuthenticated && !isInit) {
       if (args === "/user/profile" && result.meta.response.status === 200) {
         // Remounting App
@@ -34,6 +34,12 @@ const customBaseQuery = async (args, api, extraOptions) => {
           globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: true })
         );
       }
+    }
+    if(!isInit && result.meta.response.status  === 404) {
+      api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
+      api.dispatch(
+        globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: false })
+      );
     }
 
     // Handle unauthorized
@@ -67,5 +73,5 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: customBaseQuery,
   endpoints: () => ({}),
-  tagTypes: ["Tasks", "User"],
+  tagTypes: ["Tasks", "User", "IncompleteTasks"],
 });
