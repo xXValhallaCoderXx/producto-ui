@@ -13,21 +13,25 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
   const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
   useEffect(() => {
-    if(isVisible){
-      refetch()
+    if (isVisible) {
+      refetch();
     }
-  }, [isVisible])
+  }, [isVisible]);
 
   useEffect(() => {
     if (data?.length > 0) {
       const dates = {};
+      const today = format(new Date(), "yyyy-MM-dd");
+
       data?.forEach((item) => {
-        if (dates[item.deadline]) {
-          dates[item.deadline].push(item);
-        } else {
-          const tempArray = new Array();
-          tempArray.push(item);
-          dates[item.deadline] = tempArray;
+        if (format(new Date(item.deadline), "yyyy-MM-dd") !== today) {
+          if (dates[item.deadline]) {
+            dates[item.deadline].push(item);
+          } else {
+            const tempArray = new Array();
+            tempArray.push(item);
+            dates[item.deadline] = tempArray;
+          }
         }
       });
       setParsedDates(dates);
@@ -67,14 +71,16 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
       >
         Select incomplete tasks that you want to move to Today.
       </Text>
-      {Object.keys(parsedDates).length === 0 && <Text type="h4">No Overdue Tasks</Text>}
+      {Object.keys(parsedDates).length === 0 && (
+        <Text type="h4">No Overdue Tasks</Text>
+      )}
       <ScrollView style={{ maxHeight: 350 }}>
         {Object.keys(parsedDates).map((k) => {
           return (
             <View key={k}>
               <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
                 <Text type="h3" color="secondary">
-                  {k.toString()}
+                  {format(new Date(k), "EEE, d LLL yyyy")}
                 </Text>
               </View>
 
