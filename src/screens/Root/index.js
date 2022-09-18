@@ -1,16 +1,17 @@
 import { useEffect } from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "../../components";
 import { useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthScreens from "../Auth";
 import AppScreens from "../App";
-import { useUserProfileQuery } from "../../api/auth-api";
+import { useGetProfileQuery } from "../../api/user-api";
 
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-  const { data } = useUserProfileQuery({});
+  useGetProfileQuery({});
   const { isAuthenticated, init } = useSelector((state) => state.global);
 
   useEffect(() => {
@@ -23,8 +24,15 @@ const RootScreen = ({ navigation }) => {
 
   if (!init) {
     return (
-      <View>
-        <Text>Hello</Text>
+      <View
+        style={{
+          display: "flex",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text type="h2">Loading...</Text>
       </View>
     );
   }

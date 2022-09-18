@@ -5,13 +5,13 @@ import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
-import { useUserProfileQuery } from "../../api/auth-api";
+import { useGetProfileQuery } from "../../api/user-api";
 
 const Tab = createBottomTabNavigator();
 
 export default function App({ navigation, route }) {
   const { theme } = useTheme();
-  const { data } = useUserProfileQuery({});
+  const { data } = useGetProfileQuery({});
 
   return (
     <Tab.Navigator

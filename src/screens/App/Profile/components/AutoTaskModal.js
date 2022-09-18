@@ -49,7 +49,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     setCheckedDates({});
     onCancel();
   };
-
+  console.log("OBJECT KETS: ", )
   return (
     <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
       <Text type="h2" color="black">
@@ -62,8 +62,8 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
       >
         Select incomplete tasks that you want to move to Today.
       </Text>
-
-      <ScrollView style={{ height: 350 }}>
+      {Object.keys(parsedDates).length === 0 && <Text type="h4">You currently do not have any overdue tasks</Text>}
+      <ScrollView style={{ maxHeight: 350 }}>
         {Object.keys(parsedDates).map((k) => {
           return (
             <View key={k}>
@@ -105,6 +105,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
         <Button
           onPress={onClickConfirm}
           title="Confirm"
+          disabled={Object.keys(parsedDates).length === 0}
           containerStyle={{ paddingLeft: 25 }}
           titleStyle={{ color: theme.colors.primary }}
           type="clear"

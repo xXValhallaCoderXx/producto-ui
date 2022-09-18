@@ -4,23 +4,25 @@ import { useDispatch } from "react-redux";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme, Switch } from "@rneui/themed";
-import { useUserProfileQuery } from "../../../api/auth-api";
+import { useGetProfileQuery } from "../../../api/user-api";
 import { Text } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import PasswordModal from "./components/PasswordModal";
 import AutoTaskModal from "./components/AutoTaskModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { useMoveSpecificTasksMutation } from "../../../api/task-api";
+import { useUpdatePrefsMutation } from "../../../api/user-api";
 
 const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
+  const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
-  const [toggleSwitch, setToggleSwitch] = useState(false);
-  const { data } = useUserProfileQuery({});
+  const { data } = useGetProfileQuery({});
+
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -34,8 +36,9 @@ const ProfileScreen = () => {
     setisAutoTaskModalVisible(!isAutoTaskModalVisible);
   };
 
-  const toggleSwitchAuto = () => {
-    setToggleSwitch(!toggleSwitch);
+  const toggleSwitchAuto = async () => {
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+    // setToggleSwitch(!toggleSwitch);
   };
 
   const handleLogout = async () => {
@@ -48,8 +51,8 @@ const ProfileScreen = () => {
     console.log("CHANGE pass");
   };
 
-  const handleSubmitAutoTask =  async (dates) => {
-    await moveTasksApi({tasks: Object.keys(dates)})
+  const handleSubmitAutoTask = async (dates) => {
+    await moveTasksApi({ tasks: Object.keys(dates) });
   };
 
   return (
@@ -85,7 +88,7 @@ const ProfileScreen = () => {
               </Text>
             </View>
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Switch onChange={toggleSwitchAuto} value={toggleSwitch} />
+              <Switch onChange={toggleSwitchAuto} value={data?.prefs?.autoMove} />
             </View>
           </TouchableOpacity>
         </View>

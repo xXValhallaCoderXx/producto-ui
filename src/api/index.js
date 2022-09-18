@@ -21,25 +21,24 @@ const customBaseQuery = async (args, api, extraOptions) => {
   let result;
   try {
     result = await baseQuery(args, api, extraOptions);
-  
 
     const isAuthenticated = api.getState().global.isAuthenticated;
     const isInit = api.getState().global.init;
 
-    console.log("ARGS", result.meta.response.status);
-    if(!isAuthenticated && !isInit){
-      if(args === "/auth/profile" && result.meta.response.status === 200){
-      // Remounting App
-     
-      api.dispatch(globalSlice.actions.toggleInit({isInit: true}))
-      api.dispatch(globalSlice.actions.toggleIsAuthenticated({isAuthenticated: true}))
-      }
+    if (!isAuthenticated && !isInit) {
+      if (args === "/user/profile" && result.meta.response.status === 200) {
+        // Remounting App
 
+        api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
+        api.dispatch(
+          globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: true })
+        );
+      }
     }
-   
+
     // Handle unauthorized
     if (result.meta.response.status === 401) {
-      api.dispatch(globalSlice.actions.toggleInit({isInit: true}))
+      api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
       api.dispatch(
         globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: false })
       );
@@ -68,5 +67,5 @@ export const api = createApi({
   reducerPath: "api",
   baseQuery: customBaseQuery,
   endpoints: () => ({}),
-  tagTypes: ["Tasks"],
+  tagTypes: ["Tasks", "User"],
 });

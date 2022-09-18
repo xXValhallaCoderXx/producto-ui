@@ -23,11 +23,6 @@ const authApi = api.injectEndpoints({
         return `/auth/verify-email?email=${email}`;
       },
     }),
-    userProfile: builder.query({
-      query: ({ email }) => {
-        return `/auth/profile`;
-      },
-    }),
   }),
 });
 
@@ -35,5 +30,4 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLazyVerifyEmailQuery,
-  useUserProfileQuery,
 } = authApi;
