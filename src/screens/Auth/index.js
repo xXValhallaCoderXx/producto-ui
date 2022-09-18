@@ -9,7 +9,6 @@ import splashIcon from "../../assets/images/splash-icon.png";
 const Stack = createNativeStackNavigator();
 
 const AuthScreens = () => {
-  console.log("MOUNT SCREEN");
   const [fadeAnim] = useState(new Animated.Value(0));
   const [init, setInit] = useState(false);
 

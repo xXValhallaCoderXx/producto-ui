@@ -50,8 +50,10 @@ const PasswordModal = ({
   }, [formik.values]);
 
   useEffect(() => {
-    formik.resetForm();
-    onCancel();
+    if (isSuccess) {
+      formik.resetForm();
+      onCancel();
+    }
   }, [isSuccess]);
 
   const handleOnSubmit = () => {

@@ -21,15 +21,15 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const [error, setError] = useState("");
 
   // highlight-starts
-  const debouncedSave = useCallback(
-    debounce((nextValue) => console.log(nextValue), 350),
-    [] // will be created only once initially
-  );
+  // const debouncedSave = useCallback(
+  //   debounce((nextValue) => console.log(nextValue), 350),
+  //   [] // will be created only once initially
+  // );
 
   const handleOnChange = (value) => {
     setError("");
     setTaskName(value);
-    debouncedSave(value);
+    // debouncedSave(value);
   };
 
   const handleOnPress = () => {
