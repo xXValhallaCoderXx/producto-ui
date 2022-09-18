@@ -62,7 +62,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
       >
         Select incomplete tasks that you want to move to Today.
       </Text>
-      {Object.keys(parsedDates).length === 0 && <Text type="h4">You currently do not have any overdue tasks</Text>}
+      {Object.keys(parsedDates).length === 0 && <Text type="h4">No Overdue Tasks</Text>}
       <ScrollView style={{ maxHeight: 350 }}>
         {Object.keys(parsedDates).map((k) => {
           return (

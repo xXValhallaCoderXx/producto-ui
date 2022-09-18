@@ -17,6 +17,8 @@ const TextComponent = ({
         return theme.colors.secondary;
       case "black":
         return theme.colors.black;
+      case "error":
+        return theme.colors.error;
       default:
         return theme.colors.primary;
     }

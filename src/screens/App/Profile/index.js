@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme, Switch } from "@rneui/themed";
 import { useGetProfileQuery } from "../../../api/user-api";
@@ -21,11 +21,21 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
-  const [updatePasswordApi, setUpdatePasswordApi] = useUpdatePasswordMutation();
+  const [updatePasswordApi, updatePasswordApiResult] =
+    useUpdatePasswordMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
+
+  useEffect(() => {
+    if (updatePasswordApiResult.isSuccess) {
+      ToastAndroid.show(`Password updated!`, ToastAndroid.SHORT);
+    }
+    if (updatePrefsApiResult.isSuccess) {
+      ToastAndroid.show(`Auto move tasks updated!`, ToastAndroid.SHORT);
+    }
+  }, [updatePasswordApiResult, updatePrefsApiResult]);
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -50,8 +60,11 @@ const ProfileScreen = () => {
     dispatch(toggleIsAuthenticated({ isAuthenticared: false }));
   };
 
-  const handleChangePassword = () => {
-    console.log("CHANGE pass");
+  const handleChangePassword = async (values) => {
+    await updatePasswordApi({
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword,
+    });
   };
 
   const handleSubmitAutoTask = async (dates) => {
@@ -136,11 +149,16 @@ const ProfileScreen = () => {
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
         onCancel={toggleAutoTaskModal}
+        isLoading={updatePrefsApiResult.isLoading}
+        isSuccess={updatePrefsApiResult.isSuccess}
       />
       <PasswordModal
         isVisible={isPasswordModalVisable}
         onPress={handleChangePassword}
         onCancel={togglePasswordModal}
+        isLoading={updatePasswordApiResult.isLoading}
+        isSuccess={updatePasswordApiResult.isSuccess}
+        serverError={updatePasswordApiResult.error?.data.message}
       />
     </View>
   );
