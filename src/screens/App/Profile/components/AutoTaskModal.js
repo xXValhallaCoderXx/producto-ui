@@ -9,9 +9,14 @@ import { useEffect, useState } from "react";
 
 const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
   const { theme } = useTheme();
-  const { isLoading, data } = useGetIncompleteDetailTasksQuery({});
+  const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
   const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
+  useEffect(() => {
+    if(isVisible){
+      refetch()
+    }
+  }, [isVisible])
 
   useEffect(() => {
     if (data?.length > 0) {
@@ -49,7 +54,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     setCheckedDates({});
     onCancel();
   };
-  console.log("OBJECT KETS: ", )
+
   return (
     <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
       <Text type="h2" color="black">

@@ -30,9 +30,10 @@ const taskApi = api.injectEndpoints({
     }),
     getIncompleteDetailTasks: builder.query({
       query: () => {
+        console.log("LETS GET THEM")
         return `/task/incomplete-detail`;
       },
-      providesTags: ["Tasks"],
+      // providesTags: ["Tasks"],
     }),
     toggleTask: builder.mutation({
       query: ({ id, completed, date }) => {
