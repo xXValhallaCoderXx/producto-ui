@@ -38,7 +38,7 @@ const ListScreen = () => {
     isFetching,
     error,
   } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const { data: incompleteTasks, isLoading: incompleteIsLoading } = useGetIncompleteTasksQuery();
+  const { data: incompleteTasks, isLoading: incompleteIsLoading } = useGetIncompleteTasksQuery({});
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
