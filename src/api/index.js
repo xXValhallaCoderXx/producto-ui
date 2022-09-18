@@ -19,7 +19,6 @@ import { globalSlice } from "../shared/slice/global-slice";
 
 const customBaseQuery = async (args, api, extraOptions) => {
   let result;
-  console.log("HMMM")
   try {
     result = await baseQuery(args, api, extraOptions);
   
@@ -48,7 +47,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
     return result;
   } catch (err) {
-    console.log("hm")
     return err;
   }
 };

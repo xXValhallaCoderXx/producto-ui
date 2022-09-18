@@ -15,7 +15,6 @@ const RegisterScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (registerApiResult.isError) {
-      console.log("REGISTER API: ", registerApiResult);
       ToastAndroid.show("Error registering user", ToastAndroid.SHORT);
     }
   }, [registerApiResult.isError]);

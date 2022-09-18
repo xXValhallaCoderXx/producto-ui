@@ -10,10 +10,12 @@ import LogoutModal from "./components/LogoutModal";
 import PasswordModal from "./components/PasswordModal";
 import AutoTaskModal from "./components/AutoTaskModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+import { useMoveSpecificTasksMutation } from "../../../api/task-api";
 
 const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
@@ -46,8 +48,8 @@ const ProfileScreen = () => {
     console.log("CHANGE pass");
   };
 
-  const handleSubmitAutoTask = () => {
-    console.log("SUBMIT AUTO");
+  const handleSubmitAutoTask =  async (dates) => {
+    await moveTasksApi({tasks: Object.keys(dates)})
   };
 
   return (
