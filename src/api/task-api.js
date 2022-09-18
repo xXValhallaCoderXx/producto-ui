@@ -14,7 +14,7 @@ const taskApi = api.injectEndpoints({
     }),
     getIncompleteTasks: builder.query({
       query: () => {
-        console.log("GET INCOMPLETE")
+        console.log("GET INCOMPLETE");
         return `/task/incomplete`;
       },
       providesTags: ["IncompleteTasks"],
@@ -141,6 +141,15 @@ const taskApi = api.injectEndpoints({
         body: { from, to },
       }),
     }),
+    deleteTask: builder.mutation({
+      invalidatesTags: ["Tasks"],
+      query: ({ id }) => {
+        return {
+          url: `/task/${id}`,
+          method: "DELETE",
+        };
+      },
+    }),
   }),
 });
 
@@ -153,5 +162,6 @@ export const {
   useGetIncompleteTasksQuery,
   useUpdateTaskMutation,
   useGetIncompleteDetailTasksQuery,
-  useMoveSpecificTasksMutation
+  useMoveSpecificTasksMutation,
+  useDeleteTaskMutation
 } = taskApi;

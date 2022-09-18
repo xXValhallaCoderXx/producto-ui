@@ -4,7 +4,7 @@ import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, ToastAndroid, ScrollView } from "react-native";
+import { StyleSheet, View, ToastAndroid, ScrollView, KeyboardAvoidingView } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
