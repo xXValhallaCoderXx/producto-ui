@@ -6,11 +6,13 @@ import * as NavigationBar from "expo-navigation-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthScreens from "../Auth";
 import AppScreens from "../App";
+import { useRoute } from "@react-navigation/native";
 import { useGetProfileQuery } from "../../api/user-api";
 
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
+
   useGetProfileQuery({});
   const { isAuthenticated, init } = useSelector((state) => state.global);
 
@@ -32,7 +34,6 @@ const RootScreen = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        <Text type="h2">Loading...</Text>
       </View>
     );
   }
