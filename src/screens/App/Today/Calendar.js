@@ -10,23 +10,44 @@ const CalendarWidget = ({
   currentDate,
   handleOnSelectDay,
 }) => {
-  const [selected, setSelected] = useState(format(currentDate, "yyyy-MM-dd"));
   const [parsedIncomplete, setParsedIncomplete] = useState({});
   useEffect(() => {
     if (incompleteTasks.length > 0) {
       const parsedData = {};
+
+      if (!incompleteTasks.includes(format(currentDate, "yyyy-MM-dd"))) {
+        parsedData[format(currentDate, "yyyy-MM-dd")] = {
+          // marked: true,
+          customStyles: {
+            container: {
+              borderColor: "#5048E5",
+              backgroundColor: "#5048E5",
+              borderWidth: 0.5,
+              borderRadius: 30,
+            },
+            text: {
+              color: "white",
+            },
+          },
+        };
+      }
+
       incompleteTasks.forEach((task) => {
         parsedData[task] = {
           // marked: true,
           customStyles: {
             container: {
               borderColor: "#5048E5",
-              backgroundColor: selected === task ? "#5048E5" : "white",
+              backgroundColor:
+                format(currentDate, "yyyy-MM-dd") === task
+                  ? "#5048E5"
+                  : "white",
               borderWidth: 0.5,
               borderRadius: 30,
             },
             text: {
-              color: selected === task ? "white" : "black",
+              color:
+                format(currentDate, "yyyy-MM-dd") === task ? "white" : "black",
             },
           },
         };
@@ -34,9 +55,9 @@ const CalendarWidget = ({
       setParsedIncomplete(parsedData);
     }
   }, [incompleteTasks, currentDate]);
-
+  // console.log("PARSED: ", parsedIncomplete);
   const onDayPress = useCallback((day) => {
-    setSelected(day.dateString);
+    // setSelected(day.dateString);
     handleOnSelectDay(day);
   }, []);
 
@@ -50,7 +71,7 @@ const CalendarWidget = ({
       <Pressable style={styles.modalContainer} onPress={toggleCalendar}>
         <View style={styles.modal}>
           <Calendar
-            initialDate={selected}
+            initialDate={format(currentDate, "yyyy-MM-dd")}
             onDayPress={onDayPress}
             markingType={"custom"}
             // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
