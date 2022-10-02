@@ -1,12 +1,21 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
-import { TouchableOpacity } from "react-native";
+import { TouchableNativeFeedback, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
 // import { useGetProfileQuery } from "../../api/user-api";
 
 const Tab = createBottomTabNavigator();
+
+const buttonNativeFeedback = ({ children, style, ...props }) => (
+  <TouchableNativeFeedback
+    {...props}
+    background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
+  >
+    <View style={style}>{children}</View>
+  </TouchableNativeFeedback>
+);
 
 export default function App({ navigation, route }) {
   const { theme } = useTheme();
@@ -23,11 +32,7 @@ export default function App({ navigation, route }) {
           paddingBottom: 8,
         },
         // tabBarStyle: { height: 50, margin: 10},
-        tabBarButton: (props) => {
-          return (
-            <TouchableOpacity {...props}>{props.children}</TouchableOpacity>
-          );
-        },
+        tabBarButton: buttonNativeFeedback,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
           if (route.name === "Today") {
