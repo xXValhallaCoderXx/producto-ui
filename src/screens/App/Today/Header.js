@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+} from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
 
@@ -60,8 +65,12 @@ const TodayHeader = ({
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>
-              <TouchableOpacity onPress={onPressToday}>
-                <Text
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
+                onPress={onPressToday}
+              >
+               <View>
+               <Text
                   h4
                   style={{
                     color: theme.colors.primary,
@@ -69,10 +78,11 @@ const TodayHeader = ({
                 >
                   Today
                 </Text>
-              </TouchableOpacity>
+               </View>
+              </TouchableNativeFeedback>
               {editMode && (
                 <View style={styles.dateContainer}>
-                  <TouchableOpacity onPress={onChangeDate("back")}>
+                  <TouchableOpacity   background={TouchableNativeFeedback.Ripple("#2962ff1f", true)} onPress={onChangeDate("back")}>
                     <IonIcon
                       style={styles.leftArrow}
                       name="keyboard-arrow-left"
