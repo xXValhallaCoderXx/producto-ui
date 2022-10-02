@@ -1,29 +1,21 @@
 import { Animated, Image } from "react-native";
-import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthScreens from "../Auth";
 import AppScreens from "../App";
 import splashIcon from "../../assets/images/splash-icon.png";
-import {
-  toggleInit,
-  toggleIsAuthenticated,
-} from "../../shared/slice/global-slice";
-import { useLazyRefreshTokenQuery } from "../../api/auth-api";
-// import { useRoute } from "@react-navigation/native";
 import { useGetProfileQuery } from "../../api/user-api";
 
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  useGetProfileQuery()
-  // const [refreshApi, refreshApiResult] = useLazyRefreshTokenQuery();
+  useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
+  const [animatedEnded, setAnimatedEnded] = useState(false);
   const { isAuthenticated, init } = useSelector((state) => state.global);
 
   useEffect(() => {
@@ -53,16 +45,13 @@ const RootScreen = ({ navigation }) => {
     scaleAnimation.start((result) => {
       if (result.finished) {
         fadeAnimation2.start();
-        dispatch(toggleInit(true))
+        setAnimatedEnded(true);
       }
     });
     prepare();
-    // handleInitialAuth();
   }, []);
 
-  console.log("INIT WHAT: ", init);
-  console.log("IS AUTH: ", isAuthenticated);
-  if (!init) {
+  if (!init && !animatedEnded) {
     return (
       <Animated.View
         style={{
@@ -84,25 +73,22 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-  return (
-    <Animated.View
-      style={{
-        flex: 1,
-        opacity: fadeAnim2,
-      }}
+  return isAuthenticated ? (
+    <Stack.Navigator
+      screenOptions={() => ({
+        headerShown: false,
+      })}
     >
-      <Stack.Navigator
-        screenOptions={() => ({
-          headerShown: false,
-        })}
-      >
-        {isAuthenticated ? (
-          <Stack.Screen name="App" component={AppScreens} />
-        ) : (
-          <Stack.Screen name="Auth" component={AuthScreens} />
-        )}
-      </Stack.Navigator>
-    </Animated.View>
+      <Stack.Screen name="App" component={AppScreens} />
+    </Stack.Navigator>
+  ) : (
+    <Stack.Navigator
+      screenOptions={() => ({
+        headerShown: false,
+      })}
+    >
+      <Stack.Screen name="Auth" component={AuthScreens} />
+    </Stack.Navigator>
   );
 };
 
