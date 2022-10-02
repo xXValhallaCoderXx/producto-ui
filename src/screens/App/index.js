@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 
 export default function App({ navigation, route }) {
   const { theme } = useTheme();
-
+  console.log("APP SCREENS")
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

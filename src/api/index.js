@@ -2,6 +2,8 @@ import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
+import { ToastAndroid } from "react-native";
+
 // import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
 import axios from "axios";
@@ -33,6 +35,7 @@ const refetchBaseQuery = fetchBaseQuery({
 
 const customBaseQuery = async (args, api, extraOptions) => {
   let result;
+  // 
   try {
     console.log("ARGS", args);
     result = await baseQuery(args, api, extraOptions);
@@ -62,6 +65,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
       const refreshToken = await SecureStore.getItemAsync(
         REFRESH_JWT_KEY_STORE
       );
+      console.log("LALAL: ", refreshToken)
       if (refreshToken) {
         try {
           const res = await refetchBaseQuery(
@@ -79,10 +83,16 @@ const customBaseQuery = async (args, api, extraOptions) => {
           await SecureStore.setItemAsync("producto-jwt-token", "");
           await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
           api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
+          ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
+      } else {
+        console.log("REMOVE ALL")
+        await SecureStore.setItemAsync("producto-jwt-token", "");
+        await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
+        api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
       }
 
-      api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
+      api.dispatch(globalSlice.actions.toggleInit(true));
     }
 
     return result;

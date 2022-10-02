@@ -60,18 +60,8 @@ const RootScreen = ({ navigation }) => {
     // handleInitialAuth();
   }, []);
 
-  // const handleInitialAuth = async () => {
-  //   const refreshToken = await SecureStore.getItemAsync(
-  //     "producto-jwt-refresh-token"
-  //   );
-  //   if (!refreshToken) {
-  //     dispatch(toggleIsAuthenticated(false));
-  //   } else {
-  //     console.log("WE HAVE A REFRESH TOKEN LETS CALL API");
-  //     await refreshApi({ refreshToken });
-  //   }
-  // };
-
+  console.log("INIT WHAT: ", init);
+  console.log("IS AUTH: ", isAuthenticated);
   if (!init) {
     return (
       <Animated.View

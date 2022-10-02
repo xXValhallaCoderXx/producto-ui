@@ -22,6 +22,7 @@ import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 
 const ListScreen = () => {
+  console.log("DASHBOARD SCREEN")
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
