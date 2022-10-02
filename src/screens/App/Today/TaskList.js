@@ -99,7 +99,7 @@ const TaskList = ({
                     key={index}
                     onLongPress={handleOnLongPress(task)}
                     containerStyle={{
-                      padding: 10,
+                      padding: 15,
                       borderBottomColor: "#e7e8f0",
                       borderBottomWidth: 1,
                     }}
@@ -144,7 +144,7 @@ const TaskList = ({
                   key={index}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
-                    padding: 10,
+                    padding: 15,
                     borderBottomColor: "#e7e8f0",
                     borderBottomWidth: 1,
                   }}
