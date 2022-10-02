@@ -195,6 +195,7 @@ const TaskList = ({
         isVisible={isDeleteModalVisible}
         onPress={handleDeleteTask}
         onCancel={toggleDeleteModal}
+        isLoading={deleteTaskApiResults.isLoading}
       />
     </View>
   );
