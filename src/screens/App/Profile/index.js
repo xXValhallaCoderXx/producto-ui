@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
+import * as Localization from 'expo-localization';
 import { format } from "date-fns";
 import {
   JWT_KEY_STORE,
@@ -98,7 +99,7 @@ const ProfileScreen = () => {
             <Text customStyle={{ marginTop: 16 }}>Change Password</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ flex: 6 }}>
+        <View style={{ flex: 9 }}>
           <Text type="h4" color="secondary">
             APP SETTINGS
           </Text>
@@ -107,7 +108,7 @@ const ProfileScreen = () => {
             style={{ display: "flex", flexDirection: "row" }}
           >
             <View style={{ flex: 3 }}>
-              <Text customStyle={{ marginTop: 16, marginBottom: 10 }}>
+              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10}}>
                 Auto Move Tasks
               </Text>
               <Text type="h4" color="secondary">
@@ -121,9 +122,17 @@ const ProfileScreen = () => {
               />
             </View>
           </TouchableOpacity>
+          <View style={{ flex: 3 }}>
+              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10 }}>
+                Timezone
+              </Text>
+              <Text type="h4" color="secondary">
+                {Localization.timezone}
+              </Text>
+            </View>
         </View>
 
-        <View style={{ flex: 8 }}>
+        <View style={{ flex: 5 }}>
           <Button
             type="clear"
             TouchableComponent={TouchableOpacity}

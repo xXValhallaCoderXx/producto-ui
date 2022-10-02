@@ -19,6 +19,8 @@ const TextComponent = ({
         return theme.colors.black;
       case "error":
         return theme.colors.error;
+      case "dark":
+        return "#111827";
       default:
         return theme.colors.primary;
     }
