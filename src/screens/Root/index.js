@@ -42,16 +42,12 @@ const RootScreen = ({ navigation }) => {
     });
 
     fadeAnimation.start();
-    scaleAnimation.start((result) => {
-      if (result.finished) {
-        fadeAnimation2.start();
-        setAnimatedEnded(true);
-      }
-    });
+    scaleAnimation.start();
+    fadeAnimation2.start();
     prepare();
   }, []);
 
-  if (!init && !animatedEnded) {
+  if (!init) {
     return (
       <Animated.View
         style={{
@@ -73,7 +69,8 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-  return isAuthenticated ? (
+
+  return (init && isAuthenticated) ? (
     <Stack.Navigator
       screenOptions={() => ({
         headerShown: false,
