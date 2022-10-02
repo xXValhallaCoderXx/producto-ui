@@ -1,6 +1,7 @@
 import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
 // import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
 import axios from "axios";
@@ -22,9 +23,7 @@ const refetchBaseQuery = fetchBaseQuery({
   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
-    const jwtToken = await SecureStore.getItemAsync(
-      "producto-jwt-refresh-token"
-    );
+    const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
 
     headers.set("authorization", `Bearer ${jwtToken}`);
     headers.set("Content-Type", "application/json");
@@ -60,41 +59,26 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
     // Handle unauthorized
     if (result.meta.response.status === 401) {
-      console.log("internal base query 401");
       const refreshToken = await SecureStore.getItemAsync(
-        "producto-jwt-refresh-token"
+        REFRESH_JWT_KEY_STORE
       );
-
       if (refreshToken) {
-        console.log("DO I HAVE A REFRESH TOKEN")
         try {
-          const res = await axios.get(
-            `${Constants.manifest.extra.baseUrl}/api/v1/auth/refresh-jwt`,
-            {
-              headers: {
-                authorization: `Bearer ${refreshToken}`,
-              },
-            }
+          const res = await refetchBaseQuery(
+            "/auth/refresh-jwt",
+            api,
+            extraOptions
           );
-          console.log("X", res.data);
           const { accessToken, refreshToken } = res.data;
-          await SecureStore.setItemAsync("producto-jwt-token", accessToken);
-          await SecureStore.setItemAsync(
-            "producto-jwt-refresh-token",
-            refreshToken
-          );
-          api.dispatch(
-            globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: true })
-          );
+          await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+          await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
+          api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
+          result = await baseQuery(args, api, extraOptions);
+          console.log("REFRESHED");
         } catch (err) {
-          console.log("REFAUTH ERROR AXIOS", err);
           await SecureStore.setItemAsync("producto-jwt-token", "");
           await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
-          api.dispatch(
-            globalSlice.actions.toggleIsAuthenticated({
-              isAuthenticated: false,
-            })
-          );
+          api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
         }
       }
 
@@ -111,8 +95,7 @@ const baseQuery = fetchBaseQuery({
   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
-    const jwtToken = await SecureStore.getItemAsync("producto-jwt-token");
-    console.log("WHAT IS THIS: ", jwtToken);
+    const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
     if (jwtToken) {
       headers.set("authorization", `Bearer ${jwtToken}`);
     }

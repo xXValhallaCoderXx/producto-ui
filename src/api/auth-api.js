@@ -23,6 +23,17 @@ const authApi = api.injectEndpoints({
         return `/auth/verify-email?email=${email}`;
       },
     }),
+    refreshToken: builder.query({
+      query: ({ refreshToken }) => {
+        return {
+          url: "/auth/refresh-jwt",
+          method: "GET",
+          headers: {
+            authorization: refreshToken,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -30,4 +41,5 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLazyVerifyEmailQuery,
+  useLazyRefreshTokenQuery
 } = authApi;

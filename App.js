@@ -64,7 +64,7 @@ export default function App() {
           <QueryClientProvider client={queryClient}>
             <NavigationContainer>
               <Stack.Navigator
-                screenOptions={({ route }) => ({
+                screenOptions={() => ({
                   headerShown: false,
                 })}
               >

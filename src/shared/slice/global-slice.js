@@ -8,10 +8,10 @@ export const globalSlice = createSlice({
   },
   reducers: {
     toggleInit: (state, action) => {
-      state.init = action.payload.isInit;
+      state.init = action.payload;
     },
     toggleIsAuthenticated: (state, action) => {
-      state.isAuthenticated = action.payload.isAuthenticated;
+      state.isAuthenticated = action.payload;
     },
   },
 });

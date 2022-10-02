@@ -1,17 +1,15 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import ProfileScreen from "./Profile";
-import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
-import { useGetProfileQuery } from "../../api/user-api";
+// import { useGetProfileQuery } from "../../api/user-api";
 
 const Tab = createBottomTabNavigator();
 
 export default function App({ navigation, route }) {
   const { theme } = useTheme();
-  const { data } = useGetProfileQuery({});
 
   return (
     <Tab.Navigator
@@ -23,7 +21,7 @@ export default function App({ navigation, route }) {
           height: 60,
           // padding: 20,
           paddingTop: 10,
-          paddingBottom: 8
+          paddingBottom: 8,
         },
         // tabBarStyle: { height: 50, margin: 10},
         tabBarButton: (props) => {
