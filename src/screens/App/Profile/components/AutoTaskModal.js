@@ -39,7 +39,6 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
   }, [data]);
 
   const onClickCheckbox = (task) => () => {
-    console.log("TASK:  ", task);
     const updatedDates = {
       ...checkedDates,
     };
@@ -59,7 +58,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     setCheckedDates({});
     onCancel();
   };
-  console.log("CHECKED: ", checkedDates)
+
   return (
     <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
       <Text type="h2" color="black">

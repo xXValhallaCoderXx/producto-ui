@@ -21,8 +21,8 @@ const TodayHeader = ({
 
   useEffect(() => {
     if (clientUtc) {
-      const currentDate =format(clientUtc, "yyyy-MM-dd");
-      const todayDate = format(new Date(), "yyyy-MM-dd")
+      const currentDate = format(clientUtc, "yyyy-MM-dd");
+      const todayDate = format(new Date(), "yyyy-MM-dd");
       if (currentDate === todayDate) {
         setIsToday(true);
       } else {
@@ -31,20 +31,30 @@ const TodayHeader = ({
     }
   }, [clientUtc]);
 
+  useEffect(() => {
+    if (!isToday) {
+      dispatch(toggleEdit({ editMode: true }));
+    }
+  }, [isToday]);
+
   return (
     <View>
-      <TouchableOpacity onPress={onPressDate}>
-        <Text
-          style={{
-            marginLeft: -8,
-            fontWeight: "700",
-            color: isToday ? theme.colors.primary : theme.colors.grey0,
-          }}
-          h6
-        >
-          {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
-        </Text>
-      </TouchableOpacity>
+      <View style={{ height: 18 }}>
+        {!editMode ? null : (
+          <TouchableOpacity onPress={onPressDate}>
+            <Text
+              style={{
+                marginLeft: -8,
+                fontWeight: "700",
+                color: isToday ? theme.colors.primary : theme.colors.grey0,
+              }}
+              h6
+            >
+              {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
       <View style={styles.container}>
         <View style={styles.row}>
@@ -54,7 +64,7 @@ const TodayHeader = ({
                 <Text
                   h4
                   style={{
-                    color: isToday ? theme.colors.primary : theme.colors.grey0,
+                    color: theme.colors.primary,
                   }}
                 >
                   Today
@@ -79,12 +89,14 @@ const TodayHeader = ({
             </View>
           </View>
         </View>
-        <EvilIcon
-          onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
-          style={{ fontSize: 40, paddingRight: 8 }}
-          color={theme.colors.primary}
-          name={editMode ? "unlock" : "lock"}
-        />
+        {isToday ? (
+          <EvilIcon
+            onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
+            style={{ fontSize: 40, paddingRight: 8 }}
+            color={theme.colors.primary}
+            name={editMode ? "unlock" : "lock"}
+          />
+        ) : null}
       </View>
     </View>
   );

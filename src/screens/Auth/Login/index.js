@@ -52,7 +52,6 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
-      console.log("LOGIN SUCCESS")
       setTokenAndRedirect(loginApiResult.data);
     }
   }, [loginApiResult.isSuccess]);
@@ -75,7 +74,6 @@ const LoginScreen = ({ navigation }) => {
       } else {
         const res = await loginApi({ email, password });
         if (res.data) {
-          console.log("API DONE: ")
           // setTokenAndRedirect(res.data);
         } else if (res.error.status === 400) {
           setError(res.error.data.message);

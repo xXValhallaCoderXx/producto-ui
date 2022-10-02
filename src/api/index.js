@@ -37,7 +37,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
   let result;
   // 
   try {
-    console.log("ARGS", args);
     result = await baseQuery(args, api, extraOptions);
 
     const isAuthenticated = api.getState().global.isAuthenticated;
@@ -65,7 +64,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
       const refreshToken = await SecureStore.getItemAsync(
         REFRESH_JWT_KEY_STORE
       );
-      console.log("LALAL: ", refreshToken)
+
       if (refreshToken) {
         try {
           const res = await refetchBaseQuery(
@@ -78,7 +77,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
           await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
           api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
           result = await baseQuery(args, api, extraOptions);
-          console.log("REFRESHED");
         } catch (err) {
           await SecureStore.setItemAsync("producto-jwt-token", "");
           await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
@@ -86,7 +84,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
           ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
       } else {
-        console.log("REMOVE ALL")
         await SecureStore.setItemAsync("producto-jwt-token", "");
         await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
@@ -94,11 +91,10 @@ const customBaseQuery = async (args, api, extraOptions) => {
 
     
     }
-    console.log("HIT")
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
-    console.log("ERR: ", err);
+    console.log("API ERROR: ", err);
     return err;
   }
 };
