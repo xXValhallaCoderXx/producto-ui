@@ -46,7 +46,7 @@ const TodayHeader = ({
               style={{
                 marginLeft: -8,
                 fontWeight: "700",
-                color: isToday ? theme.colors.primary : theme.colors.grey0,
+                color: "#6B7280",
               }}
               h6
             >
