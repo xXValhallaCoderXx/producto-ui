@@ -156,7 +156,7 @@ const ListScreen = () => {
               </Text>
             </View>
           ) : (
-            <View>
+            <View style={{marginTop: 15}}>
               <TaskList
                 tasks={tasks || []}
                 editMode={editMode}
