@@ -144,7 +144,7 @@ const TaskList = ({
                   key={index}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
-                    padding: 15,
+                    padding: 5,
                     borderBottomColor: "#e7e8f0",
                     borderBottomWidth: 1,
                   }}
@@ -174,9 +174,7 @@ const TaskList = ({
                         {task.title}
                       </ListItem.Title>
                     </View>
-                    <View
-                      style={{ justifyContent: "flex-end", ...styles.listRow }}
-                    >
+                    <View>
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
