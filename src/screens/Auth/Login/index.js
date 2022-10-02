@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
+import * as SecureStore from 'expo-secure-store';
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
@@ -52,14 +53,18 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
-      setTokenAndRedirect(loginApiResult.data.access_token);
+      console.log("LOGIN SUCCESS")
+      setTokenAndRedirect(loginApiResult.data);
     }
   }, [loginApiResult.isSuccess]);
 
   setTokenAndRedirect = async (token) => {
-    await AsyncStorage.setItem("@producto-jwt-token", token);
+    const {accessToken, refreshToken} = token;
+
+    await SecureStore.setItemAsync("producto-jwt-token", accessToken);
+    await SecureStore.setItemAsync("producto-jwt-refresh-token", refreshToken);
+
     ToastAndroid.show("Login success", ToastAndroid.SHORT);
-    // navigation.dispatch(StackActions.replace("App"));
     dispatch(toggleIsAuthenticated({ isAuthenticated: true }));
   };
 
@@ -72,7 +77,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         const res = await loginApi({ email, password });
         if (res.data) {
-          setTokenAndRedirect(res.data.access_token);
+          setTokenAndRedirect(res.data);
         } else if (res.error.status === 400) {
           setError(res.error.data.message);
         }

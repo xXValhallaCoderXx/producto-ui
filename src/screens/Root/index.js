@@ -12,9 +12,8 @@ import { useGetProfileQuery } from "../../api/user-api";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-
   useGetProfileQuery({});
-  const { isAuthenticated, init } = useSelector((state) => state.global);
+  const { isAuthenticated } = useSelector((state) => state.global);
 
   useEffect(() => {
     async function prepare() {
@@ -23,20 +22,6 @@ const RootScreen = ({ navigation }) => {
     }
     prepare();
   }, []);
-
-  if (!init) {
-    return (
-      <View
-        style={{
-          display: "flex",
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-      </View>
-    );
-  }
 
   return (
     <Stack.Navigator

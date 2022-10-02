@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Animated, Image } from "react-native";
 import { useState, useEffect } from "react";
-import TextComponent from "../../components/Text";
+import { useSelector } from "react-redux";
 import LoginScreen from "./Login";
 import RegistrationScreen from "./Register";
 import splashIcon from "../../assets/images/splash-icon.png";
@@ -9,21 +9,26 @@ import splashIcon from "../../assets/images/splash-icon.png";
 const Stack = createNativeStackNavigator();
 
 const AuthScreens = () => {
+  const init = useSelector(state => state.global.init);
+  console.log("X", init);
   const [fadeAnim] = useState(new Animated.Value(0));
-  const [init, setInit] = useState(false);
+  const [imageScaleAnim] = useState(new Animated.Value(4.5));
 
   useEffect(() => {
     const fadeAnimation = Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    });
+
+    const scaleAnimation = Animated.timing(imageScaleAnim, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: true,
     });
 
-    fadeAnimation.start((result) => {
-      if (result.finished) {
-        setInit(true);
-      }
-    });
+    fadeAnimation.start();
+    scaleAnimation.start();
   }, []);
 
   if (!init) {
@@ -37,7 +42,13 @@ const AuthScreens = () => {
           opacity: fadeAnim,
         }}
       >
-        <Image style={{ height: 100, width: 60 }} source={splashIcon} />
+        <Animated.View style={{ transform: [{ scale: imageScaleAnim }] }}>
+          <Image
+            resizeMode="contain"
+            style={{ height: 100 }}
+            source={splashIcon}
+          />
+        </Animated.View>
       </Animated.View>
     );
   }

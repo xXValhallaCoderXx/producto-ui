@@ -45,7 +45,7 @@ const ListScreen = () => {
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
-  console.log("INC RROR:" , incError);
+
   useEffect(() => { 
     setTheme();
   }, []);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
@@ -55,7 +56,8 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.setItem("@producto-jwt-token", "");
+    await SecureStore.setItemAsync("producto-jwt-token", "");
+    await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
     setIsLogoutModalVisible(false);
     dispatch(toggleIsAuthenticated({ isAuthenticared: false }));
   };
