@@ -129,7 +129,7 @@ const TaskList = ({
                         <TouchableOpacity onPress={handleOnPressDelete}>
                           <MaterialIcons
                             name="trash-o"
-                            color={theme.colors.error}
+                            color={"#6B7280"}
                             style={{ fontSize: 25 }}
                           />
                         </TouchableOpacity>
