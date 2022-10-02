@@ -53,7 +53,7 @@ const RootScreen = ({ navigation }) => {
     scaleAnimation.start((result) => {
       if (result.finished) {
         fadeAnimation2.start();
-        dispatch(toggleInit(true));
+        dispatch(toggleInit(true))
       }
     });
     prepare();

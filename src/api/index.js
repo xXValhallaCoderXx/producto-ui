@@ -47,16 +47,16 @@ const customBaseQuery = async (args, api, extraOptions) => {
       if (args === "/user/profile" && result.meta.response.status === 200) {
         // Remounting App
 
-        api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
+        api.dispatch(globalSlice.actions.toggleInit(true));
         api.dispatch(
-          globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: true })
+          globalSlice.actions.toggleIsAuthenticated(true)
         );
       }
     }
     if (!isInit && result.meta.response.status === 404) {
-      api.dispatch(globalSlice.actions.toggleInit({ isInit: true }));
+      api.dispatch(globalSlice.actions.toggleInit(true));
       api.dispatch(
-        globalSlice.actions.toggleIsAuthenticated({ isAuthenticated: false })
+        globalSlice.actions.toggleIsAuthenticated(false)
       );
     }
 
@@ -92,11 +92,12 @@ const customBaseQuery = async (args, api, extraOptions) => {
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
       }
 
-      api.dispatch(globalSlice.actions.toggleInit(true));
+    
     }
-
+    api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
+    console.log("ERR: ", err);
     return err;
   }
 };

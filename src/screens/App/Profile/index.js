@@ -59,7 +59,7 @@ const ProfileScreen = () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
     setIsLogoutModalVisible(false);
-    dispatch(toggleIsAuthenticated({ isAuthenticared: false }));
+    dispatch(toggleIsAuthenticated(false));
   };
 
   const handleChangePassword = async (values) => {
