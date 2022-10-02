@@ -38,14 +38,15 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     }
   }, [data]);
 
-  const onClickCheckbox = (taskId) => () => {
+  const onClickCheckbox = (task) => () => {
+    console.log("TASK:  ", task);
     const updatedDates = {
       ...checkedDates,
     };
-    if (updatedDates[taskId]) {
-      delete updatedDates[taskId];
+    if (updatedDates[task.id]) {
+      delete updatedDates[task.id];
     } else {
-      updatedDates[taskId] = true;
+      updatedDates[task.id] = true;
     }
     setCheckedDates(updatedDates);
   };
@@ -58,7 +59,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     setCheckedDates({});
     onCancel();
   };
-
+  console.log("CHECKED: ", checkedDates)
   return (
     <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
       <Text type="h2" color="black">
@@ -97,7 +98,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
                     >
                       <CheckBox
                         checked={checkedDates[item.id]}
-                        onPress={onClickCheckbox(item.id)}
+                        onPress={onClickCheckbox(item)}
                         containerStyle={{ padding: 0 }}
                       />
                       <Text type="h3" color="black">

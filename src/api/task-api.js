@@ -20,11 +20,11 @@ const taskApi = api.injectEndpoints({
     }),
     moveSpecificTasks: builder.mutation({
       invalidatesTags: ["Tasks"],
-      query: ({ tasks }) => {
+      query: ({ tasks, to }) => {
         return {
-          url: `/task/move-specfic`,
+          url: `/task/move-specific`,
           method: "POST",
-          body: { tasks },
+          body: { tasks, to },
         };
       },
     }),

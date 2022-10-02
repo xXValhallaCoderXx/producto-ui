@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../../../shared/constants";
+import { format } from "date-fns";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import { useDispatch } from "react-redux";
 import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -36,7 +40,11 @@ const ProfileScreen = () => {
     if (updatePrefsApiResult.isSuccess) {
       ToastAndroid.show(`Auto move tasks updated!`, ToastAndroid.SHORT);
     }
-  }, [updatePasswordApiResult, updatePrefsApiResult]);
+    if (moveTasksApiResult.isSuccess) {
+      setisAutoTaskModalVisible(false);
+      ToastAndroid.show(`Tasks have been moved!`, ToastAndroid.SHORT);
+    }
+  }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -70,7 +78,8 @@ const ProfileScreen = () => {
   };
 
   const handleSubmitAutoTask = async (dates) => {
-    await moveTasksApi({ tasks: Object.keys(dates) });
+    const to = format(new Date(), "yyyy-MM-dd");
+    await moveTasksApi({ tasks: Object.keys(dates), to });
   };
 
   return (
@@ -151,8 +160,8 @@ const ProfileScreen = () => {
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
         onCancel={toggleAutoTaskModal}
-        isLoading={updatePrefsApiResult.isLoading}
-        isSuccess={updatePrefsApiResult.isSuccess}
+        isLoading={moveTasksApiResult.isLoading}
+        isSuccess={moveTasksApiResult.isSuccess}
       />
       <PasswordModal
         isVisible={isPasswordModalVisable}

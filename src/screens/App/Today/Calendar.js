@@ -42,7 +42,7 @@ const CalendarWidget = ({
                 format(currentDate, "yyyy-MM-dd") === task
                   ? "#5048E5"
                   : "white",
-              borderWidth: 0.5,
+              borderWidth: 1.5,
               borderRadius: 30,
             },
             text: {

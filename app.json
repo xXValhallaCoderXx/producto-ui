@@ -18,9 +18,11 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.bloopdevstudios.producto",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.bloopdevstudios.producto",
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash-icon.png",
         "backgroundColor": "#FFFFFF"
