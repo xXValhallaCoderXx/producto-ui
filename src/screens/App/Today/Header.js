@@ -45,13 +45,14 @@ const TodayHeader = ({
   return (
     <View>
       <View style={{ height: 18 }}>
-        {!editMode ? null : (
+      {!editMode ? null : (
           <TouchableOpacity onPress={onPressDate}>
             <Text
               style={{
-                marginLeft: -8,
+                marginLeft: -6,
                 fontWeight: "700",
                 color: "#6B7280",
+                
               }}
               h6
             >
@@ -62,6 +63,7 @@ const TodayHeader = ({
       </View>
 
       <View style={styles.container}>
+        
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>

@@ -84,7 +84,7 @@ const TaskList = ({
           </Text>
         </Text>
       ) : (
-        <ScrollView style={{ maxHeight: 400, marginTop: 15 }}>
+        <ScrollView style={{ maxHeight: 400, marginTop: 15, padding: 3 }}>
           {tasks
             .filter((task) => {
               if (!editMode && !task.focus && !task.completed) {
@@ -98,9 +98,12 @@ const TaskList = ({
                   <ListItem
                     key={index}
                     onLongPress={handleOnLongPress(task)}
+                  
                     containerStyle={{
                       paddingTop: 15,
                       paddingBottom: 15,
+                      paddingLeft: 0,
+                      paddingRight: 0,
                       borderBottomColor: "#e7e8f0",
                       borderBottomWidth: 1,
                     }}
@@ -143,11 +146,14 @@ const TaskList = ({
               return (
                 <ListItem
                   key={index}
+                  style={{backgroundColor: "blue"}}
                   onPress={onCheckTask(task)}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
                     paddingTop: 15,
                     paddingBottom: 15,
+                    paddingLeft: 2,
+                    paddingRight: 0,
                     borderBottomColor: "#e7e8f0",
                     borderBottomWidth: 1,
                   }}
@@ -184,7 +190,6 @@ const TaskList = ({
                         disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>
-                    {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
                   </ListItem.Content>
                 </ListItem>
               );

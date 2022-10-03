@@ -21,6 +21,7 @@
     "axios": "^0.27.2",
     "date-fns": "^2.29.1",
     "expo": "~45.0.0",
+    "expo-font": "~10.1.0",
     "expo-haptics": "~11.2.0",
     "expo-localization": "~13.0.0",
     "expo-navigation-bar": "~1.2.0",
