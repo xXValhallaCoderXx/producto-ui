@@ -152,7 +152,7 @@ const TaskList = ({
                     borderBottomWidth: 1,
                   }}
                 >
-                  <ListItem.Content style={styles.listContent} >
+                  <ListItem.Content style={styles.listContent}>
                     <View style={styles.listRow}>
                       {editMode && (
                         <IoniIcons
@@ -181,7 +181,6 @@ const TaskList = ({
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
-                       
                         disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>
