@@ -1,10 +1,16 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, ToastAndroid, ScrollView, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ToastAndroid,
+  ScrollView,
+  Animated,
+} from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -22,7 +28,6 @@ import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 
 const ListScreen = () => {
-
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
@@ -30,7 +35,7 @@ const ListScreen = () => {
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-
+  const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -39,7 +44,12 @@ const ListScreen = () => {
     isFetching,
     error,
   } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const { data: incompleteTasks, isLoading: incompleteIsLoading, error: incError } = useGetIncompleteTasksQuery({});
+  const [posY] = useState(new Animated.Value(0));
+  const {
+    data: incompleteTasks,
+    isLoading: incompleteIsLoading,
+    error: incError,
+  } = useGetIncompleteTasksQuery({});
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
@@ -47,9 +57,17 @@ const ListScreen = () => {
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
 
-  useEffect(() => { 
+  useEffect(() => {
     setTheme();
   }, []);
+
+  useEffect(() => {
+    Animated.timing(posXanim, {
+      toValue: editMode ? 0 : -20,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [editMode]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -145,7 +163,7 @@ const ListScreen = () => {
       >
         <View>
           {isLoading || isFetching ? (
-            <View style={{ marginTop: 30 }}>
+            <View>
               <Text
                 style={{
                   color: theme.colors.primary,
@@ -156,7 +174,7 @@ const ListScreen = () => {
               </Text>
             </View>
           ) : (
-            <View style={{marginTop: 25}}>
+            <Animated.View style={{ transform: [{ translateY: posXanim }] }}>
               <TaskList
                 tasks={tasks || []}
                 editMode={editMode}
@@ -172,7 +190,7 @@ const ListScreen = () => {
                 editMode={editMode}
                 currentDate={utcDate}
               />
-            </View>
+            </Animated.View>
           )}
         </View>
 
