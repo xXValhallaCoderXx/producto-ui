@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@rneui/themed";
+import { useDispatch } from "react-redux";
 import { TextInput } from "react-native";
+import * as SecureStore from "expo-secure-store";
 import { useRegisterMutation } from "../../../api/auth-api";
 import { Text, Button } from "@rneui/themed";
+import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 
 const RegisterScreen = ({ navigation }) => {
   const { theme } = useTheme();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -22,9 +30,16 @@ const RegisterScreen = ({ navigation }) => {
   useEffect(() => {
     if (registerApiResult.isSuccess) {
       ToastAndroid.show("Registration success", ToastAndroid.SHORT);
-      navigation.navigate("Login");
+      storeCredentials();
     }
   }, [registerApiResult.isSuccess]);
+
+  const storeCredentials = async () => {
+    const { accessToken, refreshToken } = registerApiResult.data.data;
+    await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+    await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
+    dispatch(toggleIsAuthenticated(true));
+  };
 
   const handleOnSubmit = async () => {
     setError("");
