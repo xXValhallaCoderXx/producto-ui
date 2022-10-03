@@ -1,10 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
+import * as SecureStore from 'expo-secure-store';
 import { Text } from "@rneui/themed";
+import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StackActions } from "@react-navigation/native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
+import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../../../shared/constants";
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
@@ -12,22 +14,20 @@ import {
 import FooterActions from "./FooterAction";
 
 const titleDark = require("../../../assets/images/title-dark.png");
-
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
+  const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
-
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
   const [step, setStep] = useState(1);
-  console.log("VERYFI LOO: ", loginApiResult)
   useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {
@@ -52,14 +52,17 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
-      setTokenAndRedirect(loginApiResult.data.access_token);
+      setTokenAndRedirect(loginApiResult.data);
     }
   }, [loginApiResult.isSuccess]);
 
   setTokenAndRedirect = async (token) => {
-    await AsyncStorage.setItem("@producto-jwt-token", token);
+    const {accessToken, refreshToken} = token;
+    await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+    await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
+
     ToastAndroid.show("Login success", ToastAndroid.SHORT);
-    navigation.dispatch(StackActions.replace("App"));
+    dispatch(toggleIsAuthenticated(true));
   };
 
   const handleOnPressPrimary = async () => {
@@ -71,7 +74,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         const res = await loginApi({ email, password });
         if (res.data) {
-          setTokenAndRedirect(res.data.access_token);
+          // setTokenAndRedirect(res.data);
         } else if (res.error.status === 400) {
           setError(res.error.data.message);
         }

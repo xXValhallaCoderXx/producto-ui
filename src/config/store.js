@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import todaySlice from "../screens/App/Today/today-slice";
 import globalSlice from "../shared/slice/global-slice";
 import { api } from "../api";
-export default configureStore({
+export const store = configureStore({
   reducer: {
     today: todaySlice,
     global: globalSlice,
@@ -11,3 +11,5 @@ export default configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(api.middleware),
 });
+
+export default store;

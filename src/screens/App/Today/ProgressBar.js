@@ -23,6 +23,7 @@ const ProgressBar = ({ editMode, progress }) => {
                 borderRadius: 8,
                 flex: 0.85,
               }}
+              trackColor="#F2F2F2"
               animation={{duration: 200}}
               value={progress}
               color={theme.colors.primary}

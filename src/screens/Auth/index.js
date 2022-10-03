@@ -1,17 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import LoginScreen from "./Login";
-import { View } from "react-native";
 import RegistrationScreen from "./Register";
-import { useSelector } from "react-redux";
+
 const Stack = createNativeStackNavigator();
 
-const AuthScreens = ({ navigation, route }) => {
-    // if(!route.params.init){
-    //     return <View  style={{flex: 1}} />
-    // }
+const AuthScreens = () => {
   return (
     <Stack.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={() => ({
         headerShown: false,
       })}
     >
