@@ -26,10 +26,10 @@ export default function App({ navigation, route }) {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
-          height: 75,
+          height: 65,
           // padding: 20,
           paddingTop: 10,
-          paddingBottom: 15,
+          paddingBottom: 10,
         },
         // tabBarStyle: { height: 50, margin: 10},
         tabBarButton: buttonNativeFeedback,

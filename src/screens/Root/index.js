@@ -1,4 +1,5 @@
 import { Animated, Image } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
@@ -11,13 +12,14 @@ import { useGetProfileQuery } from "../../api/user-api";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-
   const x = useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
   const [animatedEnded, setAnimatedEnded] = useState(false);
-  const { isAuthenticated, init } = useSelector((state) => state.global);
+  const { isAuthenticated, init, firstLoad } = useSelector(
+    (state) => state.global
+  );
 
   useEffect(() => {
     async function prepare() {
@@ -48,7 +50,7 @@ const RootScreen = ({ navigation }) => {
     prepare();
   }, []);
 
-  if (!init) {
+  if (!init && !firstLoad) {
     return (
       <Animated.View
         style={{
@@ -70,8 +72,7 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-
-  return (init && isAuthenticated) ? (
+  return init && isAuthenticated ? (
     <Stack.Navigator
       screenOptions={() => ({
         headerShown: false,

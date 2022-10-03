@@ -21,8 +21,6 @@ const userApi = api.injectEndpoints({
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getProfile", { }, (draft) => {
             draft.prefs.autoMove = !draft.prefs.autoMove
-            // const optimisticTodo = draft.find((todo) => todo.id === id);
-            // optimisticTodo.focus = focus;
             return draft;
           })
         );
