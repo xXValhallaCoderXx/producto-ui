@@ -17,6 +17,21 @@ const userApi = api.injectEndpoints({
           body: { ...prefs },
         };
       },
+      async onQueryStarted({ ...prefs }, { dispatch, queryFulfilled }) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData("getProfile", { }, (draft) => {
+            draft.prefs.autoMove = !draft.prefs.autoMove
+            // const optimisticTodo = draft.find((todo) => todo.id === id);
+            // optimisticTodo.focus = focus;
+            return draft;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
     }),
     updatePassword: builder.mutation({
       query: ({ oldPassword, newPassword }) => {
