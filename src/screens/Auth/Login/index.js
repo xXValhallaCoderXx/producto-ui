@@ -129,7 +129,7 @@ const LoginScreen = ({ navigation }) => {
         ></Image>
         <View style={{ marginTop: 19 }}>
           <Text style={styles.secondaryTitle}>
-            Sign in, to continue to Producto
+            Sign in, to unlock your productivity
           </Text>
         </View>
       </View>
@@ -226,6 +226,7 @@ const LoginScreen = ({ navigation }) => {
           handleOnPressPrimary={handleOnPressPrimary}
           handleOnPressSecondary={handleOnPressSecondary}
           step={step}
+          email={email}
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
       </ScrollView>

@@ -7,6 +7,7 @@ const FooterActions = ({
   handleOnPressSecondary,
   isLoading,
   step,
+  email,
 }) => {
   const { theme } = useTheme();
   return (
@@ -36,7 +37,7 @@ const FooterActions = ({
           onPress={handleOnPressPrimary}
           containerStyle={{ width: 80, borderRadius: 8 }}
           title={step === 1 ? "Next" : "Log in"}
-          disabled={isLoading}
+          disabled={isLoading || (step === 1 && email === "")}
         />
       </View>
     </View>
