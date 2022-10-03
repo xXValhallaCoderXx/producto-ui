@@ -143,6 +143,7 @@ const TaskList = ({
               return (
                 <ListItem
                   key={index}
+                  onPress={onCheckTask(task)}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
                     paddingTop: 15,
@@ -151,7 +152,7 @@ const TaskList = ({
                     borderBottomWidth: 1,
                   }}
                 >
-                  <ListItem.Content style={styles.listContent}>
+                  <ListItem.Content style={styles.listContent} >
                     <View style={styles.listRow}>
                       {editMode && (
                         <IoniIcons
@@ -180,7 +181,7 @@ const TaskList = ({
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
-                        onPress={onCheckTask(task)}
+                       
                         disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>

@@ -1,4 +1,4 @@
-import Constants from "expo-constants";
+import * as Constants from 'expo-constants'
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
@@ -22,7 +22,7 @@ import axios from "axios";
 // });
 
 const refetchBaseQuery = fetchBaseQuery({
-  baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
+  baseUrl: `http://10.0.2.2:3000/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -100,7 +100,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
+  baseUrl: `http://10.0.2.2:3000/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
