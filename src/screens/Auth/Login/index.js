@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
-import { TextInput, Animated, ScrollView } from "react-native";
+import { TextInput, Animated, ScrollView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
 import { useFormik } from "formik";
+import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -133,7 +134,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LayoutView>
       <View style={styles.titleContainer}>
         <Image
           source={titleDark}
@@ -247,15 +248,11 @@ const LoginScreen = ({ navigation }) => {
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
       </ScrollView>
-    </View>
+    </LayoutView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
   titleContainer: {
     display: "flex",
     alignItems: "center",
