@@ -34,6 +34,9 @@ const TaskList = ({
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
 
+  const currentDate = format(utcDate, "yyyy-MM-dd");
+  const todayDate = format(new Date(), "yyyy-MM-dd");
+
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setIsDeleteModalVisible(false);
@@ -159,7 +162,7 @@ const TaskList = ({
                 >
                   <ListItem.Content style={styles.listContent}>
                     <View style={styles.listRow}>
-                      {editMode && (
+                      {editMode && currentDate === todayDate && (
                         <IoniIcons
                           style={{
                             fontSize: 22,
