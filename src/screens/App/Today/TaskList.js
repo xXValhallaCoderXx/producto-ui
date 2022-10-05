@@ -98,7 +98,6 @@ const TaskList = ({
                   <ListItem
                     key={index}
                     onLongPress={handleOnLongPress(task)}
-                  
                     containerStyle={{
                       paddingTop: 15,
                       paddingBottom: 15,
@@ -146,7 +145,6 @@ const TaskList = ({
               return (
                 <ListItem
                   key={index}
-                  style={{backgroundColor: "blue"}}
                   onPress={onCheckTask(task)}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
@@ -156,6 +154,7 @@ const TaskList = ({
                     paddingRight: 0,
                     borderBottomColor: "#e7e8f0",
                     borderBottomWidth: 1,
+                    borderTopWidth: 0,
                   }}
                 >
                   <ListItem.Content style={styles.listContent}>
