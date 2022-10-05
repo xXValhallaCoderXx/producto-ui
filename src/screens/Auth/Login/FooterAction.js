@@ -2,12 +2,16 @@ import { Button } from "@rneui/base";
 import { View } from "react-native";
 import { useTheme } from "@rneui/themed";
 
+const validEmailRegex =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
 const FooterActions = ({
   handleOnPressPrimary,
   handleOnPressSecondary,
   isLoading,
   step,
   email,
+  password,
 }) => {
   const { theme } = useTheme();
   return (
@@ -37,7 +41,11 @@ const FooterActions = ({
           onPress={handleOnPressPrimary}
           containerStyle={{ width: 80, borderRadius: 8 }}
           title={step === 1 ? "Next" : "Log in"}
-          disabled={isLoading || (step === 1 && email === "")}
+          disabled={
+            isLoading ||
+            (step === 1 && !email.match(validEmailRegex)) ||
+            (step === 2 && password === "")
+          }
         />
       </View>
     </View>

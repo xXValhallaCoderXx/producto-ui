@@ -1,17 +1,23 @@
 import { useState, useRef, useEffect } from "react";
 import { TextInput, Animated, ScrollView } from "react-native";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
+import { useFormik } from "formik";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../../../shared/constants";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
+
+
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
@@ -20,6 +26,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false)
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -28,6 +35,7 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
   const [step, setStep] = useState(1);
+
   useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {
@@ -45,6 +53,10 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
+
+  }, [email])
+
+  useEffect(() => {
     if (loginApiResult.isError) {
       ToastAndroid.show("Incorrect Credentials", ToastAndroid.SHORT);
     }
@@ -57,7 +69,7 @@ const LoginScreen = ({ navigation }) => {
   }, [loginApiResult.isSuccess]);
 
   setTokenAndRedirect = async (token) => {
-    const {accessToken, refreshToken} = token;
+    const { accessToken, refreshToken } = token;
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
 
@@ -67,6 +79,8 @@ const LoginScreen = ({ navigation }) => {
 
   const handleOnPressPrimary = async () => {
     const nextStep = step === 1 ? 2 : 1;
+    console.log("STEP: ", step);
+    console.log("EMAIL:",);
     setError("");
     if (nextStep === 1) {
       if (password === "") {
@@ -227,6 +241,7 @@ const LoginScreen = ({ navigation }) => {
           handleOnPressSecondary={handleOnPressSecondary}
           step={step}
           email={email}
+          password={password}
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
       </ScrollView>

@@ -5,14 +5,14 @@ module.exports = ({ config }) => {
       policy: "sdkVersion",
     },
     android: {
-      // package: "com.bloopdevstudios.producto",
+      package: "com.bloopdevstudios.producto",
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",
       },
     },
     ios: {
-      // bundleIdentifier: "com.bloopdevstudios.producto",
+      bundleIdentifier: "com.bloopdevstudios.producto",
       supportsTablet: true,
     },
     updates: {
