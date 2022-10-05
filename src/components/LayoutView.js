@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingBottom: Platform.OS === "ios" ? 40 : 0,
-    padding: 30,
   },
 });
 

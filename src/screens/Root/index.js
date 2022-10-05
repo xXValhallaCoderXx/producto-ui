@@ -1,4 +1,4 @@
-import { Animated, Image } from "react-native";
+import { Animated, Image, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -23,8 +23,8 @@ const RootScreen = ({ navigation }) => {
 
   useEffect(() => {
     async function prepare() {
-      await NavigationBar.setBackgroundColorAsync("white");
-      await NavigationBar.setButtonStyleAsync("dark");
+      Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
+      Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
     }
 
     const fadeAnimation = Animated.timing(fadeAnim, {

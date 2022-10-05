@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider } from "@rneui/themed";
@@ -24,8 +25,8 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        await NavigationBar.setBackgroundColorAsync("white");
-        await NavigationBar.setButtonStyleAsync("dark");
+        Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
+        Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
 
         // Pre-load fonts, make any API calls you need to do here
         // await Font.loadAsync(Entypo.font);

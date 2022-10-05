@@ -11,6 +11,7 @@ import {
   ToastAndroid,
   ScrollView,
   Animated,
+  Platform
 } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -77,8 +78,8 @@ const ListScreen = () => {
   }, [createTaskResult.isError]);
 
   const setTheme = async () => {
-    await NavigationBar.setBackgroundColorAsync("white");
-    await NavigationBar.setButtonStyleAsync("dark");
+    Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
+    Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
   };
 
   useEffect(() => {
@@ -150,6 +151,7 @@ const ListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+    
       <Header
         clientUtc={utcDate}
         editMode={editMode}
@@ -158,6 +160,7 @@ const ListScreen = () => {
         onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
+    
       <ScrollView
         contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
@@ -218,6 +221,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    padding: 30,
   },
 });
 

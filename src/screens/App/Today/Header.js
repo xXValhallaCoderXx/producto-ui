@@ -4,10 +4,11 @@ import {
   View,
   TouchableOpacity,
   TouchableNativeFeedback,
+  Platform,
 } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
-
+import { Text as Text2 } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { Text, useTheme } from "@rneui/themed";
 import { useDispatch } from "react-redux";
@@ -45,25 +46,20 @@ const TodayHeader = ({
   return (
     <View>
       <View style={{ height: 18 }}>
-      {!editMode ? null : (
-          <TouchableOpacity onPress={onPressDate}>
-            <Text
-              style={{
-                marginLeft: -6,
-                fontWeight: "700",
-                color: isToday ? theme.colors.primary : "#6B7280",
-                
-              }}
-              h6
-            >
-              {format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
-            </Text>
-          </TouchableOpacity>
-        )}
+        <Text2
+          style={{
+            marginLeft: Platform.OS === "ios" ? -26 : -6,
+            alignSelf: "flex-start",
+            fontWeight: "700",
+            color: isToday ? theme.colors.primary : "#6B7280",
+          }}
+        >
+          {editMode
+            ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
+            : null}
+        </Text2>
       </View>
-
       <View style={styles.container}>
-        
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>
@@ -71,20 +67,26 @@ const TodayHeader = ({
                 background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
                 onPress={onPressToday}
               >
-               <View>
-               <Text
-                  h4
-                  style={{
-                    color: theme.colors.primary,
-                  }}
-                >
-                  Today
-                </Text>
-               </View>
+                <View>
+                  <Text
+                    h4
+                    style={{
+                      color: theme.colors.primary,
+                    }}
+                  >
+                    Today
+                  </Text>
+                </View>
               </TouchableNativeFeedback>
               {editMode && (
                 <View style={styles.dateContainer}>
-                  <TouchableOpacity   background={TouchableNativeFeedback.Ripple("#2962ff1f", true)} onPress={onChangeDate("back")}>
+                  <TouchableOpacity
+                    background={TouchableNativeFeedback.Ripple(
+                      "#2962ff1f",
+                      true
+                    )}
+                    onPress={onChangeDate("back")}
+                  >
                     <IonIcon
                       style={styles.leftArrow}
                       name="keyboard-arrow-left"
