@@ -17,7 +17,7 @@ import {
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
 
-
+const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
@@ -26,7 +26,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false)
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -53,8 +53,10 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
-
-  }, [email])
+    if (!email.match(validEmailRegex)) {
+      setError("You must enter a valid email address");
+    }
+  }, [email]);
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -79,8 +81,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleOnPressPrimary = async () => {
     const nextStep = step === 1 ? 2 : 1;
-    console.log("STEP: ", step);
-    console.log("EMAIL:",);
+
     setError("");
     if (nextStep === 1) {
       if (password === "") {
@@ -111,6 +112,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleOnPressSecondary = () => {
+    const nextStep = step === 1 ? 2 : 1;
     setError("");
     if (step === 1) {
       navigation.navigate("Registration");

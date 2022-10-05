@@ -2,8 +2,7 @@ import { Button } from "@rneui/base";
 import { View } from "react-native";
 import { useTheme } from "@rneui/themed";
 
-const validEmailRegex =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const FooterActions = ({
   handleOnPressPrimary,
