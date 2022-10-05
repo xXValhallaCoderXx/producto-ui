@@ -45,7 +45,7 @@ const TodayHeader = ({
 
   return (
     <View>
-      <View style={{ height: 18 }}>
+      <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
         <Text2
           style={{
             marginLeft: Platform.OS === "ios" ? -26 : -6,
@@ -58,7 +58,7 @@ const TodayHeader = ({
             ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
             : null}
         </Text2>
-      </View>
+      </TouchableOpacity>
       <View style={styles.container}>
         <View style={styles.row}>
           <View>

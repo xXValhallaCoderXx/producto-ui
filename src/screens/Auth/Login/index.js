@@ -125,6 +125,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleOnChangeEmail = (value) => {
     setError("");
+    console.log("go")
     setEmail(value);
   };
 
@@ -141,7 +142,7 @@ const LoginScreen = ({ navigation }) => {
 
   const debouncedChangeHandler = useMemo(
     () => debounce(changeHandler, 1000),
-    []
+    [email]
   );
 
   return (
