@@ -205,7 +205,7 @@ const LoginScreen = ({ navigation }) => {
               </View>
             </View>
 
-            <View
+            {/* <View
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -237,6 +237,46 @@ const LoginScreen = ({ navigation }) => {
                   {error}
                 </Text>
               ) : null}
+            </View> */}
+                  <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <MuiTextInput
+                label="Password"
+                value={password}
+                mode="outlined"
+                error={false}
+                outlineColor="#bcc5d6"
+                ref={passwordInputRef}
+                style={{
+                  backgroundColor: "white",
+                  height: 50,
+                  width: "85%",
+                  fontSize: 14,
+                  width: windowWidth * 0.85,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                onChangeText={handleOnChangePassword}
+              />
+
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "700",
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
             </View>
           </View>
         </Animated.View>
