@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     width: 350,
-    height: 310,
+    height: 360,
     borderRadius: 5,
     elevation: 3,
   },
