@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
 import { StyleSheet, View, Image, ToastAndroid } from "react-native";
 import { useFormik } from "formik";
+import { TextInput as MuiTextInput } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
@@ -150,16 +151,11 @@ const LoginScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          justifyContent: "space-between",
-          flex: 1,
-        }}
-      >
+      <View>
         <Animated.View
           style={{
             ...styles.inputWrapper,
+            marginBottom: 30,
             transform: [{ translateX: passwordInputPos }],
           }}
         >
@@ -175,32 +171,38 @@ const LoginScreen = ({ navigation }) => {
                 width: windowWidth,
               }}
             >
-              <TextInput
+              <MuiTextInput
+                label="Email"
+                value={email}
+                mode="outlined"
+                error={false}
+                outlineColor="#bcc5d6"
+                ref={emailInputRef}
                 style={{
-                  ...styles.input,
+                  backgroundColor: "white",
+                  height: 50,
+                  width: "85%",
+                  fontSize: 14,
                   width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
-                ref={emailInputRef}
                 onChangeText={handleOnChangeEmail}
-                value={email}
-                nativeID="email"
-                placeholder="Enter your email..."
               />
 
-              {error ? (
-                <Text
-                  style={{
-                    marginTop: 10,
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "700",
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "700",
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
             </View>
 
             <View
@@ -247,14 +249,13 @@ const LoginScreen = ({ navigation }) => {
           password={password}
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
-      </ScrollView>
+      </View>
     </LayoutView>
   );
 };
 
 const styles = StyleSheet.create({
   titleContainer: {
-    display: "flex",
     alignItems: "center",
     marginTop: 106,
   },
