@@ -53,7 +53,7 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
-    if (!email.match(validEmailRegex)) {
+    if (email.match(validEmailRegex) === null && email !== "") {
       setError("You must enter a valid email address");
     }
   }, [email]);

@@ -64,7 +64,7 @@ const ListScreen = () => {
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: editMode ? 0 : -20,
+      toValue: editMode ? 20 : -20,
       duration: 350,
       useNativeDriver: true,
     }).start();
