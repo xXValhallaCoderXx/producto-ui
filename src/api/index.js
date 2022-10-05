@@ -22,8 +22,8 @@ import axios from "axios";
 // });
 
 const refetchBaseQuery = fetchBaseQuery({
-  baseUrl: `http://10.0.2.2:3000/api/v1`,
-  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  // baseUrl: `http://10.0.2.2:3000/api/v1`,
+  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -101,8 +101,8 @@ const customBaseQuery = async (args, api, extraOptions) => {
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `http://10.0.2.2:3000/api/v1`,
-  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  // baseUrl: `http://10.0.2.2:3000/api/v1`,
+  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);

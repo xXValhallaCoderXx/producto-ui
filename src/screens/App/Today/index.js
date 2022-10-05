@@ -2,9 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useRef } from "react";
 import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
-import { useTheme } from "@rneui/themed";
+import { useTheme, Skeleton } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   StyleSheet,
   View,
@@ -162,17 +162,15 @@ const ListScreen = () => {
         contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
       >
-        <View>
+        <View style={{ height: 80, display: "flex", justifyContent: "center" }}>
           {isLoading || isFetching ? (
             <View>
-              <Text
-                style={{
-                  color: theme.colors.primary,
-                  fontSize: 16,
-                }}
-              >
-                Fetching Tasks...
-              </Text>
+              <Skeleton
+                animation="wave"
+                width={180}
+                height={20}
+                skeletonStyle={{ backgroundColor: theme.colors.primary }}
+              />
             </View>
           ) : (
             <Animated.View style={{ transform: [{ translateY: posXanim }] }}>
