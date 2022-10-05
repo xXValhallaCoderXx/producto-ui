@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import * as Localization from 'expo-localization';
+import * as Localization from "expo-localization";
 import { format } from "date-fns";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import { useDispatch } from "react-redux";
-import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+  Platform,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme, Switch } from "@rneui/themed";
 import { useGetProfileQuery } from "../../../api/user-api";
@@ -47,6 +53,13 @@ const ProfileScreen = () => {
     }
   }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
 
+  useEffect(() => {
+      console.log("DATA ", data.prefs);
+      if(data?.prefs?.false){
+        setisAutoTaskModalVisible(true)
+      }
+  }, [!data?.prefs?.autoMove])
+
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
   };
@@ -55,9 +68,17 @@ const ProfileScreen = () => {
     setIsPasswordModalVisable(!isPasswordModalVisable);
   };
 
-  const toggleAutoTaskModal = () => {
-    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
+  const toggleAutoTaskModal = async () => {
+
+    if(!data?.prefs?.autoMove){
+      setisAutoTaskModalVisible(true);
+    }
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
   };
+
+  const handleCloseModal = () => {
+    setisAutoTaskModalVisible(false);
+  }
 
   const toggleSwitchAuto = async () => {
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
@@ -105,31 +126,47 @@ const ProfileScreen = () => {
           </Text>
           <TouchableOpacity
             onPress={toggleAutoTaskModal}
-            style={{ display: "flex", flexDirection: "row" }}
+            style={{
+              display: "flex",
+              // backgroundColor: "red",
+              flexDirection: "row",
+              alignContent: "space-between",
+            }}
           >
-            <View style={{ flex: 3 }}>
-              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10}}>
+            <View style={{ flex: 12 }}>
+              <Text
+                color="dark"
+                customStyle={{ marginTop: 16, marginBottom: 10 }}
+              >
                 Auto Move Tasks
               </Text>
-              <Text type="h4" color="secondary">
-                Automatically move all incompleted tasks to “today”.
-              </Text>
+              <View style={{ maxWidth: 220 }}>
+                <Text type="h4" color="secondary">
+                  Automatically move all incompleted tasks to “today”.
+                </Text>
+              </View>
             </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
-              <Switch
-                onChange={toggleSwitchAuto}
-                value={data?.prefs?.autoMove}
-              />
+            <View
+              style={{
+                flex: 2,
+                padding: 10,
+                justifyContent: "center",
+              }}
+            >
+              <Switch value={data?.prefs?.autoMove} />
             </View>
           </TouchableOpacity>
           <View style={{ flex: 3 }}>
-              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10 }}>
-                Timezone
-              </Text>
-              <Text type="h4" color="secondary">
-                {Localization.timezone}
-              </Text>
-            </View>
+            <Text
+              color="dark"
+              customStyle={{ marginTop: 16, marginBottom: 10 }}
+            >
+              Timezone
+            </Text>
+            <Text type="h4" color="secondary">
+              {Localization.timezone}
+            </Text>
+          </View>
         </View>
 
         <View style={{ flex: 5 }}>
@@ -168,7 +205,7 @@ const ProfileScreen = () => {
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
-        onCancel={toggleAutoTaskModal}
+        onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading}
         isSuccess={moveTasksApiResult.isSuccess}
       />
