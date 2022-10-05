@@ -189,6 +189,7 @@ const TaskList = ({
                       <CheckBox
                         checked={task.completed}
                         containerStyle={{ padding: 0 }}
+                        onPress={onCheckTask(task)}
                         disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>
