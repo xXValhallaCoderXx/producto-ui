@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import { TextInput, Animated, ScrollView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
@@ -55,9 +55,7 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [step]);
 
-  useEffect(() => {
-    debouncedChangeHandler();
-  }, [email]);
+
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -122,10 +120,10 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-
+  const delayedQuery = useCallback(debounce(value => checkEmail(value), 500), []);
   const handleOnChangeEmail = (value) => {
     setError("");
-    console.log("go")
+    delayedQuery(value)
     setEmail(value);
   };
 
@@ -134,16 +132,12 @@ const LoginScreen = ({ navigation }) => {
     setPassword(value);
   };
 
-  const changeHandler = () => {
-    if (email.match(validEmailRegex) === null && email !== "") {
+  const checkEmail = (_value) => {
+    if (_value.match(validEmailRegex) === null && _value !== "") {
       setError("You must enter a valid email address");
     }
   };
 
-  const debouncedChangeHandler = useMemo(
-    () => debounce(changeHandler, 1000),
-    [email]
-  );
 
   return (
     <LayoutView>
