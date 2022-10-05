@@ -3,6 +3,7 @@ import { Button } from "@rneui/themed";
 import { Dialog, Input } from "@rneui/themed";
 import { Text } from "../../../../components";
 import { useTheme } from "@rneui/themed";
+import { TextInput } from "react-native-paper";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import MaterialIcons from "react-native-vector-icons/Ionicons";
@@ -87,50 +88,62 @@ const PasswordModal = ({
       </Text>
 
       <View
-        style={{ display: "flex", height: 180, justifyContent: "space-around" }}
+        style={{ display: "flex", height: 230, justifyContent: "space-around" }}
       >
-        <Input
+        <TextInput
           onChangeText={formik.handleChange("oldPassword")}
+          autoFocus
           onBlur={formik.handleBlur("oldPassword")}
           value={formik.values.oldPassword}
+          mode="outlined"
+          label="Current password"
           placeholder="Enter current password"
+          style={{
+            backgroundColor: "white",
+          }}
           secureTextEntry={secretMap["oldPassword"] ? true : false}
-          rightIcon={
-            <MaterialIcons
-              name={secretMap["oldPassword"] ? "eye-off" : "eye"}
+          right={
+            <TextInput.Icon
               onPress={handlePassToggle("oldPassword")}
-              color="#6B7280"
-              style={{ fontSize: 22 }}
+              icon="eye"
             />
           }
         />
-        <Input
+
+        <TextInput
           onChangeText={formik.handleChange("newPassword")}
           onBlur={formik.handleBlur("newPassword")}
           value={formik.values.newPassword}
-          placeholder="Enter new password"
+          mode="outlined"
+          label="New Password"
+          placeholder="Enter a new password"
           secureTextEntry={secretMap["newPassword"] ? true : false}
-          rightIcon={
-            <MaterialIcons
-              name={secretMap["newPassword"] ? "eye-off" : "eye"}
+          style={{
+            backgroundColor: "white",
+          }}
+          right={
+            <TextInput.Icon
               onPress={handlePassToggle("newPassword")}
-              color="#6B7280"
-              style={{ fontSize: 22 }}
+              icon="eye"
             />
           }
         />
-        <Input
+
+        <TextInput
           onChangeText={formik.handleChange("comnfirmNewPassword")}
           onBlur={formik.handleBlur("comnfirmNewPassword")}
           value={formik.values.comnfirmNewPassword}
-          placeholder="Confirm new password"
+          mode="outlined"
+          label="Confirm Password"
+          placeholder="Confirm your password"
           secureTextEntry={secretMap["comnfirmNewPassword"] ? true : false}
-          rightIcon={
-            <MaterialIcons
-              name={secretMap["comnfirmNewPassword"] ? "eye-off" : "eye"}
-              onPress={handlePassToggle("confirmNewPassword")}
-              color="#6B7280"
-              style={{ fontSize: 22 }}
+          style={{
+            backgroundColor: "white",
+          }}
+          right={
+            <TextInput.Icon
+              onPress={handlePassToggle("comnfirmNewPassword")}
+              icon="eye"
             />
           }
         />

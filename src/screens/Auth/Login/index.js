@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import debounce from "lodash.debounce";
 import { TextInput, Animated, ScrollView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
@@ -55,9 +56,7 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
-    if (email.match(validEmailRegex) === null && email !== "") {
-      setError("You must enter a valid email address");
-    }
+    debouncedChangeHandler();
   }, [email]);
 
   useEffect(() => {
@@ -133,6 +132,17 @@ const LoginScreen = ({ navigation }) => {
     setError("");
     setPassword(value);
   };
+
+  const changeHandler = () => {
+    if (email.match(validEmailRegex) === null && email !== "") {
+      setError("You must enter a valid email address");
+    }
+  };
+
+  const debouncedChangeHandler = useMemo(
+    () => debounce(changeHandler, 1000),
+    []
+  );
 
   return (
     <LayoutView>
@@ -238,7 +248,7 @@ const LoginScreen = ({ navigation }) => {
                 </Text>
               ) : null}
             </View> */}
-                  <View
+            <View
               style={{
                 display: "flex",
                 alignItems: "center",

@@ -87,7 +87,7 @@ const TaskList = ({
           </Text>
         </Text>
       ) : (
-        <ScrollView style={{ maxHeight: 400, marginTop: 15, padding: 3 }}>
+        <ScrollView style={{ marginTop: 15, padding: 3 }}>
           {tasks
             .filter((task) => {
               if (!editMode && !task.focus && !task.completed) {

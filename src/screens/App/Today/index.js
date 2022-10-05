@@ -11,7 +11,7 @@ import {
   ToastAndroid,
   ScrollView,
   Animated,
-  Platform
+  Platform,
 } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -65,7 +65,7 @@ const ListScreen = () => {
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: editMode ? 20 : -20,
+      toValue: editMode ? 160 : 130,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -78,8 +78,10 @@ const ListScreen = () => {
   }, [createTaskResult.isError]);
 
   const setTheme = async () => {
-    Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
-    Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
+    Platform.OS === "android" &&
+      (await NavigationBar.setBackgroundColorAsync("white"));
+    Platform.OS === "android" &&
+      (await NavigationBar.setButtonStyleAsync("dark"));
   };
 
   useEffect(() => {
@@ -151,7 +153,6 @@ const ListScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-    
       <Header
         clientUtc={utcDate}
         editMode={editMode}
@@ -160,7 +161,7 @@ const ListScreen = () => {
         onPressDate={handleOnPressDate}
       />
       <ProgressBar editMode={editMode} progress={progress} />
-    
+
       <ScrollView
         contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
         style={{ flex: 1 }}
@@ -176,7 +177,9 @@ const ListScreen = () => {
               />
             </View>
           ) : (
-            <Animated.View style={{ transform: [{ translateY: posXanim }] }}>
+            <Animated.View
+              style={{ height: 400, transform: [{ translateY: posXanim }] }}
+            >
               <TaskList
                 tasks={tasks || []}
                 editMode={editMode}

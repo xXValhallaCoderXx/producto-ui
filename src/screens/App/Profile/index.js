@@ -54,7 +54,6 @@ const ProfileScreen = () => {
   }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
 
   useEffect(() => {
-      console.log("DATA ", data.prefs);
       if(data?.prefs?.false){
         setisAutoTaskModalVisible(true)
       }
