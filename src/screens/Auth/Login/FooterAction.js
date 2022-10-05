@@ -32,7 +32,7 @@ const FooterActions = ({
           type="clear"
           color={theme.colors.primary}
           titleStyle={{ color: theme.colors.primary }}
-          title={step === 1 ? "Create Account" : "Change Email"}
+          title={step === 1 ? "Create account" : "Change Email"}
           disabled={isLoading}
         />
         <Button
