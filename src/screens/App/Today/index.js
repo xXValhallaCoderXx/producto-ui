@@ -4,6 +4,7 @@ import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import {
   StyleSheet,
   View,
@@ -148,7 +149,7 @@ const ListScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header
         clientUtc={utcDate}
         editMode={editMode}
@@ -211,7 +212,7 @@ const ListScreen = () => {
           />
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
