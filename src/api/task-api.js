@@ -59,6 +59,7 @@ const taskApi = api.injectEndpoints({
           optimisticUpdate.undo();
         }
       },
+      invalidatesTags: ["IncompleteTasks"]
     }),
     toggleTaskFocus: builder.mutation({
       query: ({ id, focus, date }) => {
