@@ -37,6 +37,7 @@ const ProfileScreen = () => {
   const [updatePasswordApi, updatePasswordApiResult] =
     useUpdatePasswordMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
+  const [isChangeEmailModalVisable, setIsChangeEmailModalVisable] = useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
@@ -68,6 +69,10 @@ const ProfileScreen = () => {
     setIsPasswordModalVisable(!isPasswordModalVisable);
   };
 
+  const toggleChangeEmailModal = () => {
+    setIsChangeEmailModalVisable(!isPasswordModalVisable);
+  };
+
   const toggleAutoTaskModal = async () => {
     if (!data?.prefs?.autoMove) {
       setisAutoTaskModalVisible(true);
@@ -83,6 +88,10 @@ const ProfileScreen = () => {
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     // setToggleSwitch(!toggleSwitch);
   };
+
+  const handleChangeEmail = async (values) => {
+    console.log("VALUES: ", values);
+  }
 
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
@@ -119,7 +128,7 @@ const ProfileScreen = () => {
             <Text customStyle={{ marginTop: 10 }}>Change Password</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={togglePasswordModal}>
+          <TouchableOpacity onPress={toggleChangeEmailModal}>
             <Text customStyle={{ marginTop: 18 }}>Change Email</Text>
           </TouchableOpacity>
         </View>
@@ -224,8 +233,8 @@ const ProfileScreen = () => {
         serverError={updatePasswordApiResult.error?.data.message}
       />
       <ChangeEmailModal
-        isVisible={true}
-        onPress={handleChangePassword}
+        isVisible={isChangeEmailModalVisable}
+        onPress={handleChangeEmail}
         onCancel={togglePasswordModal}
         isLoading={updatePasswordApiResult.isLoading}
         isSuccess={updatePasswordApiResult.isSuccess}

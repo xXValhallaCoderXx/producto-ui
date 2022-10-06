@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     paddingBottom: Platform.OS === "ios" ? 40 : 0,
+    paddingTop: Platform.OS === "ios" ? 15 : 5,
   },
 });
 

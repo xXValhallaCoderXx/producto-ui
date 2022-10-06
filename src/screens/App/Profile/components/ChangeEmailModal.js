@@ -26,7 +26,7 @@ const ChangeEmailModal = ({
     },
     onSubmit: (values) => {
       if (values.password === "") {
-        setError("Please enter current password");
+        setError("Please enter password");
       } else if (values.password === "" || values.email === "") {
         setError("Please enter all required fields");
       } else {
@@ -102,13 +102,9 @@ const ChangeEmailModal = ({
           mode="outlined"
           label="New Email"
           placeholder="Enter a new email"
-          secureTextEntry={secretMap["email"] ? true : false}
           style={{
             backgroundColor: "white",
           }}
-          right={
-            <TextInput.Icon onPress={handlePassToggle("email")} icon="eye" />
-          }
         />
       </View>
       <View style={{ height: 20 }}>

@@ -30,7 +30,7 @@ import {
 } from "../../../api/task-api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
-
+import LayoutView from "../../../components/LayoutView";
 const ListScreen = () => {
   const dispatch = useDispatch();
   const { theme } = useTheme();
@@ -154,72 +154,76 @@ const ListScreen = () => {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Header
-        clientUtc={utcDate}
-        editMode={editMode}
-        onChangeDate={handleOnChangeDate}
-        onPressToday={handleOnPressToday}
-        onPressDate={handleOnPressDate}
-      />
-      <ProgressBar editMode={editMode} progress={progress} />
-
-      <ScrollView
-        contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
-        style={{ flex: 1 }}
-      >
-        <View style={{ height: 80, display: "flex", justifyContent: "center" }}>
-          {isLoading || isFetching ? (
-            <View>
-              <Skeleton
-                animation="wave"
-                width={180}
-                height={20}
-                skeletonStyle={{ backgroundColor: theme.colors.primary }}
-              />
-            </View>
-          ) : (
-            <Animated.View
-              style={{ height: 400, transform: [{ translateY: posXanim }] }}
-            >
-              <TaskList
-                tasks={tasks || []}
-                editMode={editMode}
-                handleToggleTaskFocus={handleToggleTaskFocus}
-                handleToggleTaskComplete={handleToggleTaskComplete}
-                currentTask={currentTask}
-                isLoadingToggle={isLoadingToggle}
-                utcDate={utcDate}
-              />
-
-              <AddItem
-                handleCreateNewTask={handleCreateNewTask}
-                editMode={editMode}
-                currentDate={utcDate}
-              />
-            </Animated.View>
-          )}
-        </View>
-
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
-          currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
+    <LayoutView>
+      <GestureHandlerRootView style={styles.container}>
+        <Header
+          clientUtc={utcDate}
+          editMode={editMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
         />
+        <ProgressBar editMode={editMode} progress={progress} />
 
-        {isFetching || !editMode ? null : (
-          <MoveIncomplete
-            tasks={tasks}
+        <ScrollView
+          contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
+          style={{ flex: 1 }}
+        >
+          <View
+            style={{ height: 80, display: "flex", justifyContent: "center" }}
+          >
+            {isLoading || isFetching ? (
+              <View>
+                <Skeleton
+                  animation="wave"
+                  width={180}
+                  height={20}
+                  skeletonStyle={{ backgroundColor: theme.colors.primary }}
+                />
+              </View>
+            ) : (
+              <Animated.View
+                style={{ height: 400, transform: [{ translateY: posXanim }] }}
+              >
+                <TaskList
+                  tasks={tasks || []}
+                  editMode={editMode}
+                  handleToggleTaskFocus={handleToggleTaskFocus}
+                  handleToggleTaskComplete={handleToggleTaskComplete}
+                  currentTask={currentTask}
+                  isLoadingToggle={isLoadingToggle}
+                  utcDate={utcDate}
+                />
+
+                <AddItem
+                  handleCreateNewTask={handleCreateNewTask}
+                  editMode={editMode}
+                  currentDate={utcDate}
+                />
+              </Animated.View>
+            )}
+          </View>
+
+          <CalendarWidget
+            calendarOpen={calendarOpen}
+            toggleCalendar={handleToggleCalendar}
+            incompleteTasks={incompleteTasks}
             currentDate={utcDate}
-            isLoading={moveIncompleteTasksResult.isLoading}
-            onMoveIncomplete={handleMoveIncompleteTasks}
+            handleOnSelectDay={handleOnSelectDay}
           />
-        )}
-      </ScrollView>
-      <IntroBottomSheet />
-    </GestureHandlerRootView>
+
+          {isFetching || !editMode ? null : (
+            <MoveIncomplete
+              tasks={tasks}
+              currentDate={utcDate}
+              isLoading={moveIncompleteTasksResult.isLoading}
+              onMoveIncomplete={handleMoveIncompleteTasks}
+            />
+          )}
+        </ScrollView>
+        <IntroBottomSheet />
+      </GestureHandlerRootView>
+    </LayoutView>
   );
 };
 
