@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
@@ -18,6 +19,7 @@ import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
+import IntroBottomSheet from "./IntroBottomSheet";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -152,7 +154,7 @@ const ListScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <Header
         clientUtc={utcDate}
         editMode={editMode}
@@ -216,7 +218,8 @@ const ListScreen = () => {
           />
         )}
       </ScrollView>
-    </SafeAreaView>
+      <IntroBottomSheet />
+    </GestureHandlerRootView>
   );
 };
 

@@ -21,6 +21,7 @@ import { Text } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import PasswordModal from "./components/PasswordModal";
 import AutoTaskModal from "./components/AutoTaskModal";
+import ChangeEmailModal from "./components/ChangeEmailModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { useMoveSpecificTasksMutation } from "../../../api/task-api";
 import {
@@ -54,10 +55,10 @@ const ProfileScreen = () => {
   }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
 
   useEffect(() => {
-      if(data?.prefs?.false){
-        setisAutoTaskModalVisible(true)
-      }
-  }, [!data?.prefs?.autoMove])
+    if (data?.prefs?.false) {
+      setisAutoTaskModalVisible(true);
+    }
+  }, [!data?.prefs?.autoMove]);
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -68,8 +69,7 @@ const ProfileScreen = () => {
   };
 
   const toggleAutoTaskModal = async () => {
-
-    if(!data?.prefs?.autoMove){
+    if (!data?.prefs?.autoMove) {
       setisAutoTaskModalVisible(true);
     }
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
@@ -77,7 +77,7 @@ const ProfileScreen = () => {
 
   const handleCloseModal = () => {
     setisAutoTaskModalVisible(false);
-  }
+  };
 
   const toggleSwitchAuto = async () => {
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
@@ -111,12 +111,16 @@ const ProfileScreen = () => {
             {data?.email}
           </Text>
         </View>
-        <View style={{ flex: 4 }}>
+        <View style={{ flex: 5 }}>
           <Text type="h4" color="secondary">
             ACCOUNT
           </Text>
           <TouchableOpacity onPress={togglePasswordModal}>
-            <Text customStyle={{ marginTop: 16 }}>Change Password</Text>
+            <Text customStyle={{ marginTop: 10 }}>Change Password</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={togglePasswordModal}>
+            <Text customStyle={{ marginTop: 18 }}>Change Email</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 9 }}>
@@ -152,7 +156,10 @@ const ProfileScreen = () => {
                 justifyContent: "center",
               }}
             >
-              <Switch  onChange={toggleAutoTaskModal} value={data?.prefs?.autoMove} />
+              <Switch
+                onChange={toggleAutoTaskModal}
+                value={data?.prefs?.autoMove}
+              />
             </View>
           </TouchableOpacity>
           <View style={{ flex: 3 }}>
@@ -210,6 +217,14 @@ const ProfileScreen = () => {
       />
       <PasswordModal
         isVisible={isPasswordModalVisable}
+        onPress={handleChangePassword}
+        onCancel={togglePasswordModal}
+        isLoading={updatePasswordApiResult.isLoading}
+        isSuccess={updatePasswordApiResult.isSuccess}
+        serverError={updatePasswordApiResult.error?.data.message}
+      />
+      <ChangeEmailModal
+        isVisible={true}
         onPress={handleChangePassword}
         onCancel={togglePasswordModal}
         isLoading={updatePasswordApiResult.isLoading}
