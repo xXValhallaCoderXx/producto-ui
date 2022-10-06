@@ -28,16 +28,19 @@ import {
   useUpdatePrefsMutation,
   useUpdatePasswordMutation,
 } from "../../../api/user-api";
+import { useUpdateEmailMutation } from "../../../api/auth-api";
 
 const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
+  const [updateEmailApi, updateEmailApiResult] = useUpdateEmailMutation();
   const [updatePasswordApi, updatePasswordApiResult] =
     useUpdatePasswordMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
-  const [isChangeEmailModalVisable, setIsChangeEmailModalVisable] = useState(false);
+  const [isChangeEmailModalVisable, setIsChangeEmailModalVisable] =
+    useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
@@ -53,7 +56,20 @@ const ProfileScreen = () => {
       setisAutoTaskModalVisible(false);
       ToastAndroid.show(`Tasks have been moved!`, ToastAndroid.SHORT);
     }
-  }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
+
+    if (updateEmailApiResult.isSuccess) {
+      setIsChangeEmailModalVisable(false);
+      ToastAndroid.show(`Email updated!`, ToastAndroid.SHORT);
+    }
+    if (updateEmailApiResult.isError) {
+      ToastAndroid.show(`Error updating email!`, ToastAndroid.SHORT);
+    }
+  }, [
+    updatePasswordApiResult,
+    updatePrefsApiResult,
+    moveTasksApiResult,
+    updateEmailApiResult,
+  ]);
 
   useEffect(() => {
     if (data?.prefs?.false) {
@@ -90,8 +106,25 @@ const ProfileScreen = () => {
   };
 
   const handleChangeEmail = async (values) => {
-    console.log("VALUES: ", values);
-  }
+    try {
+      // unwrapping will cause data to resolve, or an error to be thrown, and will narrow the types
+      const result = await updateEmailApi({
+        password: values.password,
+        email: values.email,
+      }).unwrap();
+
+      const { tokens } = result;
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+      // console.log("RESULT: ", result);
+      // refetch(); // you should most likely just use tag invalidation here instead of calling refetch
+    } catch (error) {
+      console.log("ERROR: ", error);
+    }
+  };
 
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
