@@ -152,7 +152,7 @@ const ProfileScreen = () => {
                 justifyContent: "center",
               }}
             >
-              <Switch value={data?.prefs?.autoMove} />
+              <Switch  onChange={toggleAutoTaskModal} value={data?.prefs?.autoMove} />
             </View>
           </TouchableOpacity>
           <View style={{ flex: 3 }}>
