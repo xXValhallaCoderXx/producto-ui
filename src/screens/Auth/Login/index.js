@@ -120,7 +120,7 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-  const delayedQuery = useCallback(debounce(value => checkEmail(value), 500), []);
+  const delayedQuery = useCallback(debounce(value => checkEmail(value), 1000), []);
   const handleOnChangeEmail = (value) => {
     setError("");
     delayedQuery(value)

@@ -37,7 +37,7 @@ const authApi = api.injectEndpoints({
     updateEmail: builder.mutation({
       query: ({ password, email }) => {
         return {
-          url: `/auth/update-email`,
+          url: `/user/update-email`,
           method: "PATCH",
           body: { password, email },
         };

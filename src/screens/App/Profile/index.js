@@ -86,7 +86,7 @@ const ProfileScreen = () => {
   };
 
   const toggleChangeEmailModal = () => {
-    setIsChangeEmailModalVisable(!isPasswordModalVisable);
+    setIsChangeEmailModalVisable(!isChangeEmailModalVisable);
   };
 
   const toggleAutoTaskModal = async () => {
@@ -111,15 +111,16 @@ const ProfileScreen = () => {
       const result = await updateEmailApi({
         password: values.password,
         email: values.email,
-      }).unwrap();
+      })
 
-      const { tokens } = result;
+      const { tokens } = result.data;
+      console.log("RESULT: ", result.data);
       await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
       await SecureStore.setItemAsync(
         REFRESH_JWT_KEY_STORE,
         tokens.refreshToken
       );
-      // console.log("RESULT: ", result);
+ 
       // refetch(); // you should most likely just use tag invalidation here instead of calling refetch
     } catch (error) {
       console.log("ERROR: ", error);
@@ -268,10 +269,10 @@ const ProfileScreen = () => {
       <ChangeEmailModal
         isVisible={isChangeEmailModalVisable}
         onPress={handleChangeEmail}
-        onCancel={togglePasswordModal}
-        isLoading={updatePasswordApiResult.isLoading}
-        isSuccess={updatePasswordApiResult.isSuccess}
-        serverError={updatePasswordApiResult.error?.data.message}
+        onCancel={toggleChangeEmailModal}
+        isLoading={updateEmailApiResult.isLoading}
+        isSuccess={updateEmailApiResult.isSuccess}
+        serverError={updateEmailApiResult.error?.data.message}
       />
     </View>
   );

@@ -1,11 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { Text } from "@rneui/base";
 import { format, add, sub } from "date-fns";
 import { useTheme, Skeleton } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import {
   StyleSheet,
   View,
@@ -31,6 +29,7 @@ import {
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
+
 const ListScreen = () => {
   const dispatch = useDispatch();
   const { theme } = useTheme();
