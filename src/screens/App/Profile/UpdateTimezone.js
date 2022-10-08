@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
+import * as Localization from "expo-localization";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
@@ -32,10 +33,6 @@ const UpdateTimezone = ({ route, navigation }) => {
     },
   });
 
-  //   useEffect(() => {
-  //     console.log("UPDATE EMAIL", updateEmail);
-  //   }, [updateEmailResult]);
-
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
@@ -48,20 +45,9 @@ const UpdateTimezone = ({ route, navigation }) => {
         Select which timezone, so we know when your day has ended
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("password")}
-        autoFocus
-        onBlur={formik.handleBlur("password")}
-        value={formik.values.password}
-        mode="outlined"
-        label="Timezone"
-        placeholder="Enter current timezone"
-        style={{
-          backgroundColor: "white",
-        }}
-        secureTextEntry={secretMap["password"] ? true : false}
-      />
-
+      <Text variant="bodyLarge" style={{ marginTop: 5, marginLeft: 10 }}>
+        {Localization.timezone}
+      </Text>
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
@@ -75,6 +61,7 @@ const UpdateTimezone = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
+        disabled={true}
       />
     </View>
   );

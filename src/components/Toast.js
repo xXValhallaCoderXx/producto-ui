@@ -3,7 +3,8 @@ import { Text } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const ToastContainer = ({ toast }) => {
-  const { title, description } = toast;
+    console.log("TOAST: ", toast)
+  const { title, description = "" } = toast;
   return (
     <View style={[styles.card, styles.shadowProp, styles.elevation]}>
       <View style={{ backgroundColor: "#5048E5", width: 5 }} />
@@ -14,9 +15,11 @@ const ToastContainer = ({ toast }) => {
 
             <View style={{ paddingLeft: 10 }}>
               <Text>{title}</Text>
-              <Text style={{ marginTop: 3 }} variant="bodySmall">
-                {description}
-              </Text>
+              {description ? (
+                <Text style={{ marginTop: 3 }} variant="bodySmall">
+                  {description}
+                </Text>
+              ) : null}
             </View>
           </View>
         </View>
@@ -39,6 +42,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "white",
     borderRadius: 8,
+    marginTop: Platform.OS === "android" ? 40 : 60,
     width: "85%",
     marginVertical: 10,
     flexDirection: "row",

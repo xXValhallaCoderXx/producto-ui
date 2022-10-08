@@ -4,10 +4,9 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StyleSheet, View, Image, ToastAndroid, Animated } from "react-native";
+import { StyleSheet, View, Image, Animated } from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
-import { Icon } from "@rneui/themed";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -18,12 +17,13 @@ import {
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
-
+import { useToast } from "react-native-toast-notifications";
 const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
+  const toast = useToast()
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
@@ -37,7 +37,9 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
   const [step, setStep] = useState(1);
-  const [secretMap, setSecretMap] = useState({});
+  const [secretMap, setSecretMap] = useState({
+    password: true
+  });
 
   useEffect(() => {
     if (step === 1) {
@@ -57,7 +59,14 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isError) {
-      ToastAndroid.show("Incorrect Credentials", ToastAndroid.SHORT);
+      // toast.show("Email succesffully updated", {
+      //   type: "error",
+      //   duration: 2500,
+      //   offset: 30,
+      //   animationType: "zoom-in",
+      //   placement: "bottom",
+      //   title: "Incorrect Credentials!",
+      // });
     }
   }, [loginApiResult.isError]);
 
@@ -72,7 +81,14 @@ const LoginScreen = ({ navigation }) => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
 
-    ToastAndroid.show("Login success", ToastAndroid.SHORT);
+    // toast.show("Email succesffully updated", {
+    //   type: "success",
+    //   duration: 2500,
+    //   offset: 30,
+    //   animationType: "zoom-in",
+    //   placement: "bottom",
+    //   title: "Login Success!",
+    // });
     dispatch(toggleIsAuthenticated(true));
   };
 
@@ -238,7 +254,7 @@ const LoginScreen = ({ navigation }) => {
                   maxWidth: windowWidth * 0.9,
                 }}
                 onChangeText={handleOnChangePassword}
-                secureTextEntry={secretMap["password"] ? true : false}
+                secureTextEntry={secretMap["password"]}
                 right={
                   <MuiTextInput.Icon
                     onPress={handlePassToggle("password")}

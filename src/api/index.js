@@ -2,7 +2,7 @@ import * as Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
-import { ToastAndroid } from "react-native";
+
 
 // import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
@@ -67,7 +67,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
           await SecureStore.setItemAsync(JWT_KEY_STORE, "");
           await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
           api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
-          ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
+          // ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
       } else {
         console.log("HIT")

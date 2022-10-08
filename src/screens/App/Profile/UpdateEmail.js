@@ -17,7 +17,9 @@ import {
 const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
   const toast = useToast();
-  const [secretMap, setSecretMap] = useState({});
+  const [secretMap, setSecretMap] = useState({
+    password: true
+  });
   const [updateEmail, updateEmailResult] = useUpdateEmailMutation();
 
   useEffect(() => {
@@ -70,11 +72,10 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
-      // setIsChangeEmailModalVisable(false);
-      // ToastAndroid.show(`Email updated!`, ToastAndroid.SHORT);
+ 
     }
     if (updateEmailResult.isError) {
-      // ToastAndroid.show(`Error updating email!`, ToastAndroid.SHORT);
+  
     }
   }, [updateEmailResult]);
 
@@ -112,7 +113,7 @@ const UpdateEmail = ({ route, navigation }) => {
         style={{
           backgroundColor: "white",
         }}
-        secureTextEntry={secretMap["password"] ? true : false}
+        secureTextEntry={secretMap["password"]}
         right={
           <TextInput.Icon onPress={handlePassToggle("password")} icon="eye" />
         }

@@ -8,6 +8,7 @@ import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
+import SkeletonBox from "../../../components/SkeletonBox";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -26,9 +27,9 @@ import { useToast } from "react-native-toast-notifications";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-  const toast = useToast()
+  const toast = useToast();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
-  const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
+  const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
@@ -105,37 +106,49 @@ const ProfileScreen = ({ navigation }) => {
             ACCOUNT
           </RnText>
 
-          <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-            }}
-            onPress={navigateToChangeEmail}
-            title="Email"
-            right={() => (
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{ marginBottom: 2, paddingRight: 5 }}
-                  type="h3"
-                  color="black"
-                >
-                  {data?.email}
-                </Text>
+          {updatePrefsResult.isLoading ? (
+            <View style={{ marginBottom: 10 }}>
+              <SkeletonBox height={30} width={"100%"} />
+            </View>
+          ) : (
+            <List.Item
+              titleStyle={{
+                color: colors.black,
+                fontWeight: "600",
+              }}
+              onPress={navigateToChangeEmail}
+              title="Email"
+              right={() => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{ marginBottom: 2, paddingRight: 5 }}
+                    type="h3"
+                    color="black"
+                  >
+                    {data?.email}
+                  </Text>
+                  <MaterialIcons size={24} name="keyboard-arrow-right" />
+                </View>
+              )}
+            />
+          )}
+          {updatePrefsResult.isLoading ? (
+            <View style={{ marginBottom: 10 }}>
+              <SkeletonBox height={30} width={"100%"} />
+            </View>
+          ) : (
+            <List.Item
+              titleStyle={{
+                color: colors.black,
+                fontWeight: "600",
+              }}
+              onPress={navigateToEditPassword}
+              title="Password"
+              right={() => (
                 <MaterialIcons size={24} name="keyboard-arrow-right" />
-              </View>
-            )}
-          />
-          <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-            }}
-            onPress={navigateToEditPassword}
-            title="Password"
-            right={() => (
-              <MaterialIcons size={24} name="keyboard-arrow-right" />
-            )}
-          />
+              )}
+            />
+          )}
         </View>
         <View style={{ flex: 9 }}>
           <RnText
@@ -146,44 +159,57 @@ const ProfileScreen = ({ navigation }) => {
             APP SETTINGS
           </RnText>
 
-          <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-            }}
-            onPress={navigateToChangeTimezone}
-            title="Timezone"
-            right={() => (
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{ marginBottom: 2, paddingRight: 5 }}
-                  type="h3"
-                  color="black"
-                >
-                  {Localization.timezone}
-                </Text>
-                <MaterialIcons size={24} name="keyboard-arrow-right" />
-              </View>
-            )}
-          />
-          <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-            }}
-            onPress={toggleAutoTaskModal}
-            title="Auto Move Tasks"
-            description="Automatically move all incompleted tasks to “today”."
-            descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
-            right={() => (
-              <View style={{ justifyContent: "center" }}>
-                <Switch
-                  onChange={toggleAutoTaskModal}
-                  value={data?.prefs?.autoMove}
-                />
-              </View>
-            )}
-          />
+          {updatePrefsResult.isLoading ? (
+            <View style={{ marginBottom: 10 }}>
+              <SkeletonBox height={30} width={"100%"} />
+            </View>
+          ) : (
+            <List.Item
+              titleStyle={{
+                color: colors.black,
+                fontWeight: "600",
+              }}
+              onPress={navigateToChangeTimezone}
+              title="Timezone"
+              right={() => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{ marginBottom: 2, paddingRight: 5 }}
+                    type="h3"
+                    color="black"
+                  >
+                    {Localization.timezone}
+                  </Text>
+                  <MaterialIcons size={24} name="keyboard-arrow-right" />
+                </View>
+              )}
+            />
+          )}
+
+          {updatePrefsResult.isLoading ? (
+            <View style={{ marginBottom: 10 }}>
+              <SkeletonBox height={70} width={"100%"} />
+            </View>
+          ) : (
+            <List.Item
+              titleStyle={{
+                color: colors.black,
+                fontWeight: "600",
+              }}
+              onPress={toggleAutoTaskModal}
+              title="Auto Move Tasks"
+              description="Automatically move all incompleted tasks to “today”."
+              descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
+              right={() => (
+                <View style={{ justifyContent: "center" }}>
+                  <Switch
+                    onChange={toggleAutoTaskModal}
+                    value={data?.prefs?.autoMove}
+                  />
+                </View>
+              )}
+            />
+          )}
         </View>
 
         <View style={{ flex: 5, alignItems: "flex-start" }}>
