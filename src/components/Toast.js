@@ -1,15 +1,18 @@
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 const ToastContainer = ({ toast }) => {
   const { title, description } = toast;
   return (
     <View style={[styles.card, styles.shadowProp, styles.elevation]}>
-      <View style={{ backgroundColor: "red", width: 5 }} />
+      <View style={{ backgroundColor: "#5048E5", width: 5 }} />
       <View>
         <View style={styles.content}>
           <View style={styles.titleRow}>
-            <Text style={{ marginRight: 10 }}>Success</Text>
-            <View>
+            <MaterialIcons color="#5048E5" size={24} name="check-circle" />
+
+            <View style={{ paddingLeft: 10 }}>
               <Text>{title}</Text>
               <Text style={{ marginTop: 3 }} variant="bodySmall">
                 {description}

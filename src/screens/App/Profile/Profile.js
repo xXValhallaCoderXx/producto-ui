@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { List, Switch, Button, useTheme, Text  } from "react-native-paper";
+import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
@@ -22,9 +22,11 @@ import {
   useGetProfileQuery,
   useUpdatePrefsMutation,
 } from "../../../api/user-api";
+import { useToast } from "react-native-toast-notifications";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const toast = useToast()
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
@@ -47,23 +49,19 @@ const ProfileScreen = ({ navigation }) => {
       setisAutoTaskModalVisible(true);
     }
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: "Auto Tasks Updated!",
+    });
   };
 
   const handleCloseModal = () => {
     setisAutoTaskModalVisible(false);
   };
-
-  //   const toggleSwitchAuto = async () => {
-  //     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
-  //     // setToggleSwitch(!toggleSwitch);
-  //   };
-
-//   <MaterialIcons
-//   style={styles.iconStyle}
-//   onPress={toggleLogoutModal}
-//   name="logout"
-//   color={colors.secondary}
-// />
 
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");

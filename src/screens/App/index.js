@@ -36,8 +36,10 @@ export default function App() {
   return (
     <LayoutView>
       <Tab.Navigator
+        
         screenOptions={({ route }) => ({
           headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: "gray",
           tabBarStyle: {

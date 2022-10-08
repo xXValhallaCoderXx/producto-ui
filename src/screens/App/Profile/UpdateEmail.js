@@ -40,6 +40,15 @@ const UpdateEmail = ({ route, navigation }) => {
     }),
 
     onSubmit: async ({ email, password }) => {
+      const result = await updateEmail({ email, password });
+      const { tokens } = result.data;
+
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+      navigation.navigate("Accounts");
       toast.show("Email succesffully updated", {
         type: "success",
         duration: 2500,
@@ -47,16 +56,8 @@ const UpdateEmail = ({ route, navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Succesfully updated email!",
-        description: "You may now login with your new email"
+        description: "You may now login with your new email",
       });
-      // const result = await updateEmail({ email, password });
-      // const { tokens } = result.data;
-      // console.log("RESULT: ", result.data);
-      // await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
-      // await SecureStore.setItemAsync(
-      //   REFRESH_JWT_KEY_STORE,
-      //   tokens.refreshToken
-      // );
     },
   });
 
@@ -151,6 +152,8 @@ const UpdateEmail = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={formik.handleSubmit}
+        loading={updateEmailResult.isLoading}
+        disabled={updateEmailResult.isLoading}
       />
     </View>
   );

@@ -5,11 +5,13 @@ import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
 import { useTheme } from "react-native-paper";
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
+import { useToast } from "react-native-toast-notifications";
 
 const EditPassword = ({ route, navigation }) => {
   const theme = useTheme();
+  const toast = useToast();
   const [secretMap, setSecretMap] = useState({});
   const [updatePassword, updatePasswordResult] = useUpdatePasswordMutation();
   useEffect(() => {
@@ -39,6 +41,15 @@ const EditPassword = ({ route, navigation }) => {
 
     onSubmit: async ({ confirmPassword, currentPassword, newPassword }) => {
       await updatePassword({ newPassword, currentPassword, confirmPassword });
+      toast.show("Email succesffully updated", {
+        type: "success",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Sucessfully updated password!",
+        description: "You may now login with your new password",
+      });
     },
   });
 
@@ -68,6 +79,7 @@ const EditPassword = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("currentPassword")}
         autoFocus
+        dense
         onBlur={formik.handleBlur("currentPassword")}
         value={formik.values.currentPassword}
         mode="outlined"
@@ -79,6 +91,7 @@ const EditPassword = ({ route, navigation }) => {
         secureTextEntry={secretMap["currentPassword"] ? true : false}
         right={
           <TextInput.Icon
+            style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("currentPassword")}
             icon="eye"
           />
@@ -97,6 +110,7 @@ const EditPassword = ({ route, navigation }) => {
         onChangeText={formik.handleChange("newPassword")}
         onBlur={formik.handleBlur("newPassword")}
         value={formik.values.newPassword}
+        dense
         mode="outlined"
         label="New Password"
         placeholder="Enter new password"
@@ -106,6 +120,7 @@ const EditPassword = ({ route, navigation }) => {
         secureTextEntry={secretMap["newPassword"] ? true : false}
         right={
           <TextInput.Icon
+            style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("newPassword")}
             icon="eye"
           />
@@ -122,6 +137,7 @@ const EditPassword = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("confirmPassword")}
         onBlur={formik.handleBlur("confirmPassword")}
+        dense
         value={formik.values.confirmPassword}
         mode="outlined"
         label="Confirm Password"
@@ -132,6 +148,7 @@ const EditPassword = ({ route, navigation }) => {
         secureTextEntry={secretMap["confirmPassword"] ? true : false}
         right={
           <TextInput.Icon
+            style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("confirmPassword")}
             icon="eye"
           />
