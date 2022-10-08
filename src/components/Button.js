@@ -3,7 +3,7 @@ import { Button } from "react-native-paper";
 const ProductoButton = ({
   onPress,
   title,
-  color,
+  style,
   type = "outlined",
   disabled,
   loading,
@@ -13,10 +13,11 @@ const ProductoButton = ({
       mode={type}
       size="lg"
       onPress={onPress}
-      style={{ borderRadius: 10 }}
+      style={{ borderRadius: 10, ...style }}
       labelStyle={{ fontWeight: "700" }}
       loading={loading}
       disabled={disabled}
+    
       // buttonStyle={{
       //   borderColor: "transparent",
       //   borderWidth: 0,
