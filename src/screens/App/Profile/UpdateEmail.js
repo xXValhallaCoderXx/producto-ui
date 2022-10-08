@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
+import * as SecureStore from "expo-secure-store";
+import { useToast } from "react-native-toast-notifications";
 import ProductoButton from "../../../components/Button";
-import { TextInput, Text } from "react-native-paper";
+import { TextInput, Text, useTheme } from "react-native-paper";
 import { useFormik } from "formik";
-import { useTheme } from "react-native-paper";
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 
 import { useUpdateEmailMutation } from "../../../api/auth-api";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 
 const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
+  const toast = useToast();
   const [secretMap, setSecretMap] = useState({});
   const [updateEmail, updateEmailResult] = useUpdateEmailMutation();
 
@@ -34,21 +40,22 @@ const UpdateEmail = ({ route, navigation }) => {
     }),
 
     onSubmit: async ({ email, password }) => {
-      await updateEmail({ email, password });
+      toast.show("Email succesffully updated", {
+        type: "success",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+      });
+      // const result = await updateEmail({ email, password });
+      // const { tokens } = result.data;
+      // console.log("RESULT: ", result.data);
+      // await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      // await SecureStore.setItemAsync(
+      //   REFRESH_JWT_KEY_STORE,
+      //   tokens.refreshToken
+      // );
     },
   });
-  //     formik.resetForm();
-  useEffect(() => {
-    // setError("");
-  }, [formik.values]);
-
-  useEffect(() => {
-    console.log("UPDATE EMAIL", updateEmail);
-  }, [updateEmailResult]);
-
-  const handleOnSubmit = () => {
-    formik.handleSubmit();
-  };
 
   const handlePassToggle = (key) => () => {
     setSecretMap({
@@ -56,6 +63,30 @@ const UpdateEmail = ({ route, navigation }) => {
       [key]: secretMap[key] ? false : true,
     });
   };
+
+  useEffect(() => {
+    if (updateEmailResult.isSuccess) {
+      // setIsChangeEmailModalVisable(false);
+      // ToastAndroid.show(`Email updated!`, ToastAndroid.SHORT);
+    }
+    if (updateEmailResult.isError) {
+      // ToastAndroid.show(`Error updating email!`, ToastAndroid.SHORT);
+    }
+  }, [updateEmailResult]);
+
+  //   const handleChangeEmail = async (values) => {
+  //     try {
+  //       // unwrapping will cause data to resolve, or an error to be thrown, and will narrow the types
+  //       const result = await updateEmailApi({
+  //         password: values.password,
+  //         email: values.email,
+  //       });
+
+  //       // refetch(); // you should most likely just use tag invalidation here instead of calling refetch
+  //     } catch (error) {
+  //       console.log("ERROR: ", error);
+  //     }
+  //   };
 
   return (
     <View
@@ -98,6 +129,7 @@ const UpdateEmail = ({ route, navigation }) => {
         mode="outlined"
         label="New Email"
         placeholder="Enter a new email"
+        keyboardType="email-address"
         style={{
           marginTop: 15,
           backgroundColor: "white",
@@ -115,7 +147,7 @@ const UpdateEmail = ({ route, navigation }) => {
         title="Change Email"
         type="contained"
         style={{ marginTop: 30 }}
-        onPress={handleOnSubmit}
+        onPress={formik.handleSubmit}
       />
     </View>
   );

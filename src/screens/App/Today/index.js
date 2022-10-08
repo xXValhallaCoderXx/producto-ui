@@ -18,6 +18,7 @@ import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
+import SkeletonList from "./components/SkeletonList";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -172,13 +173,14 @@ const ListScreen = () => {
             style={{ height: 80, display: "flex", justifyContent: "center" }}
           >
             {isLoading || isFetching ? (
-              <View>
-                <Skeleton
+              <View style={{flex: 1, paddingTop: 20}}>
+                <SkeletonList />
+                {/* <Skeleton
                   animation="wave"
                   width={180}
                   height={20}
                   skeletonStyle={{ backgroundColor: theme.colors.primary }}
-                />
+                /> */}
               </View>
             ) : (
               <Animated.View

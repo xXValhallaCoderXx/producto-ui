@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { List } from "react-native-paper";
+import { List, Switch, Button, useTheme, Text  } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
-import { Button, Switch } from "@rneui/themed";
+
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useTheme, Text } from "react-native-paper";
+
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
@@ -58,6 +58,13 @@ const ProfileScreen = ({ navigation }) => {
   //     // setToggleSwitch(!toggleSwitch);
   //   };
 
+//   <MaterialIcons
+//   style={styles.iconStyle}
+//   onPress={toggleLogoutModal}
+//   name="logout"
+//   color={colors.secondary}
+// />
+
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
@@ -102,7 +109,7 @@ const ProfileScreen = ({ navigation }) => {
 
           <List.Item
             titleStyle={{
-              color: colors.primary,
+              color: colors.black,
               fontWeight: "600",
             }}
             onPress={navigateToChangeEmail}
@@ -122,7 +129,7 @@ const ProfileScreen = ({ navigation }) => {
           />
           <List.Item
             titleStyle={{
-              color: colors.primary,
+              color: colors.black,
               fontWeight: "600",
             }}
             onPress={navigateToEditPassword}
@@ -143,7 +150,7 @@ const ProfileScreen = ({ navigation }) => {
 
           <List.Item
             titleStyle={{
-              color: colors.primary,
+              color: colors.black,
               fontWeight: "600",
             }}
             onPress={navigateToChangeTimezone}
@@ -163,13 +170,13 @@ const ProfileScreen = ({ navigation }) => {
           />
           <List.Item
             titleStyle={{
-              color: colors.primary,
+              color: colors.black,
               fontWeight: "600",
             }}
             onPress={toggleAutoTaskModal}
             title="Auto Move Tasks"
             description="Automatically move all incompleted tasks to “today”."
-            descriptionStyle={{ maxWidth: 240, marginLeft: -2, marginTop: 2 }}
+            descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
             right={() => (
               <View style={{ justifyContent: "center" }}>
                 <Switch
@@ -181,21 +188,14 @@ const ProfileScreen = ({ navigation }) => {
           />
         </View>
 
-        <View style={{ flex: 5 }}>
+        <View style={{ flex: 5, alignItems: "flex-start" }}>
           <Button
-            type="clear"
+            type="text"
             TouchableComponent={TouchableOpacity}
-            titleStyle={{ color: colors.secondary, fontSize: 16 }}
-            containerStyle={{ padding: 0 }}
-            buttonStyle={styles.buttonStyle}
+            labelStyle={{ color: colors.secondary, fontSize: 16 }}
             onPress={toggleLogoutModal}
+            icon={"door"}
           >
-            <MaterialIcons
-              style={styles.iconStyle}
-              onPress={toggleLogoutModal}
-              name="logout"
-              color={colors.secondary}
-            />
             Logout
           </Button>
         </View>
