@@ -108,7 +108,7 @@ const taskApi = api.injectEndpoints({
       },
     }),
     createTask: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      // invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ title, deadline }) => {
         return {
           url: `/task`,
@@ -119,6 +119,7 @@ const taskApi = api.injectEndpoints({
       // async onQueryStarted({ title, deadline, date }, { dispatch, queryFulfilled }) {
       //   const optimisticUpdate = dispatch(
       //     api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+      //       console.log("DRAFT: ", draft);
       //       const optimisticTodo = draft.find((todo) => todo.id === id);
       //       optimisticTodo.title = title;
       //       draft.push(optimisticTodo)

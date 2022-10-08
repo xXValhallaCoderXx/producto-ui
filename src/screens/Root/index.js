@@ -51,7 +51,6 @@ const RootScreen = ({ navigation }) => {
   }, []);
 
   if (!init || firstLoad) {
-    console.log("POO")
     return (
       <Animated.View
         style={{
@@ -72,7 +71,7 @@ const RootScreen = ({ navigation }) => {
       </Animated.View>
     );
   }
-  console.log("HMM")
+
   return init && isAuthenticated ? (
     <Stack.Navigator
       screenOptions={() => ({

@@ -3,7 +3,6 @@ import { Text } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const ToastContainer = ({ toast }) => {
-    console.log("TOAST: ", toast)
   const { title, description = "" } = toast;
   return (
     <View style={[styles.card, styles.shadowProp, styles.elevation]}>
