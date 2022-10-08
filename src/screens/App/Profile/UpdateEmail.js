@@ -7,7 +7,7 @@ import ProductoButton from "../../../components/Button";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import { useFormik } from "formik";
 import { View, ScrollView } from "react-native";
-
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useUpdateEmailMutation } from "../../../api/auth-api";
 import {
   JWT_KEY_STORE,
@@ -18,7 +18,7 @@ const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
   const toast = useToast();
   const [secretMap, setSecretMap] = useState({
-    password: true
+    password: true,
   });
   const [updateEmail, updateEmailResult] = useUpdateEmailMutation();
 
@@ -72,10 +72,8 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
- 
     }
     if (updateEmailResult.isError) {
-  
     }
   }, [updateEmailResult]);
 
@@ -105,6 +103,7 @@ const UpdateEmail = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("password")}
         autoFocus
+        dense
         onBlur={formik.handleBlur("password")}
         value={formik.values.password}
         mode="outlined"
@@ -114,9 +113,7 @@ const UpdateEmail = ({ route, navigation }) => {
           backgroundColor: "white",
         }}
         secureTextEntry={secretMap["password"]}
-        right={
-          <TextInput.Icon onPress={handlePassToggle("password")} icon="eye" />
-        }
+        right={<TextInput.Icon style={{paddingBottom: 2}} onPress={handlePassToggle("password")} icon="eye" /> }
       />
 
       <View style={{ height: 20 }}>
@@ -132,11 +129,12 @@ const UpdateEmail = ({ route, navigation }) => {
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
         mode="outlined"
+        dense
         label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
         style={{
-          marginTop: 15,
+          marginTop: 5,
           backgroundColor: "white",
         }}
       />

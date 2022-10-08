@@ -141,6 +141,7 @@ const RegisterScreen = ({ navigation }) => {
             mode="outlined"
             label="Password"
             placeholder="Enter Password"
+            secureTextEntry={secretMap["password"]}
             style={{
               backgroundColor: "white",
               marginTop: 10,
@@ -170,6 +171,7 @@ const RegisterScreen = ({ navigation }) => {
             onChangeText={formik.handleChange("confirmPassword")}
             dense
             onBlur={formik.handleBlur("confirmPassword")}
+            secureTextEntry={secretMap["confirmPassword"]}
             value={formik.values.confirmPassword}
             mode="outlined"
             label="Confirm Password"
