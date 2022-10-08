@@ -59,14 +59,14 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isError) {
-      // toast.show("Email succesffully updated", {
-      //   type: "error",
-      //   duration: 2500,
-      //   offset: 30,
-      //   animationType: "zoom-in",
-      //   placement: "bottom",
-      //   title: "Incorrect Credentials!",
-      // });
+      toast.show("Email succesffully updated", {
+        type: "error",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Incorrect Credentials!",
+      });
     }
   }, [loginApiResult.isError]);
 
@@ -76,19 +76,19 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [loginApiResult.isSuccess]);
 
-  setTokenAndRedirect = async (token) => {
+  const setTokenAndRedirect = async (token) => {
     const { accessToken, refreshToken } = token;
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
 
-    // toast.show("Email succesffully updated", {
-    //   type: "success",
-    //   duration: 2500,
-    //   offset: 30,
-    //   animationType: "zoom-in",
-    //   placement: "bottom",
-    //   title: "Login Success!",
-    // });
+    toast.show("Email succesffully updated", {
+      type: "success",
+      duration: 2500,
+      offset: 30,
+      animationType: "zoom-in",
+      placement: "bottom",
+      title: "Login Success!",
+    });
     dispatch(toggleIsAuthenticated(true));
   };
 
@@ -100,9 +100,7 @@ const LoginScreen = ({ navigation }) => {
         setError("Please enter a password");
       } else {
         const res = await loginApi({ email, password });
-        if (res.data) {
-          setTokenAndRedirect(res.data);
-        } else if (res.error.status === 400) {
+        if (res?.error?.status === 400) {
           setError(res.error.data.message);
         }
       }

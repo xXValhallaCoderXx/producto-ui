@@ -15,11 +15,9 @@ const ToastContainer = ({ toast }) => {
 
             <View style={{ paddingLeft: 10 }}>
               <Text>{title}</Text>
-              {description ? (
-                <Text style={{ marginTop: 3 }} variant="bodySmall">
+              <Text style={{ marginTop: 3 }} variant="bodySmall">
                   {description}
                 </Text>
-              ) : null}
             </View>
           </View>
         </View>
@@ -43,6 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     marginTop: Platform.OS === "android" ? 40 : 60,
+    marginBottom: Platform.OS === "android" ? 40 : 60,
     width: "85%",
     marginVertical: 10,
     flexDirection: "row",

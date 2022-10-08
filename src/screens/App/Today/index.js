@@ -7,7 +7,6 @@ import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
   View,
-  ToastAndroid,
   ScrollView,
   Animated,
   Platform,
@@ -30,10 +29,12 @@ import {
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
+import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
   const { theme } = useTheme();
+  const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
@@ -129,7 +130,16 @@ const ListScreen = () => {
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
     });
-    ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+    // ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: `Task ${_title} created!`,
+      description: ""
+    });
     return;
   };
 
@@ -137,7 +147,16 @@ const ListScreen = () => {
     const from = format(utcDate, "yyyy-MM-dd");
     const to = format(new Date(), "yyyy-MM-dd");
     await moveIncompleteTasks({ from, to });
-    ToastAndroid.show(`Tasks moved to ${to}!`, ToastAndroid.SHORT);
+
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: `Tasks moved to ${to}!`,
+      description: ""
+    });
   };
 
   const handleOnPressToday = async () => {

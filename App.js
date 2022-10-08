@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { Platform, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
-import Toast, { ThemeProvider } from "@rneui/themed";
+import { ThemeProvider } from "@rneui/themed";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -15,7 +15,7 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import theme from "./src/shared/styles/theme";
-
+import Toast from "./src/components/Toast";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({});
@@ -94,7 +94,6 @@ export default function App() {
               </QueryClientProvider>
             </ThemeProvider>
           </PaperProvider>
-   
         </ToastProvider>
       </Provider>
     </SafeAreaProvider>
