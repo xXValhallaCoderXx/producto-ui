@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 const AuthScreens = () => {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(toggleFirstLoad(true));
+    dispatch(toggleFirstLoad(false));
   }, [])
   return (
     <Stack.Navigator

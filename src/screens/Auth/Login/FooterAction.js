@@ -1,6 +1,5 @@
-import { Button } from "@rneui/base";
+import ProductoButton from "../../../components/Button";
 import { View } from "react-native";
-import { useTheme } from "@rneui/themed";
 
 const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
@@ -12,7 +11,6 @@ const FooterActions = ({
   email,
   password,
 }) => {
-  const { theme } = useTheme();
   return (
     <View
       style={{
@@ -27,18 +25,15 @@ const FooterActions = ({
           justifyContent: "space-between",
         }}
       >
-        <Button
+        <ProductoButton
           onPress={handleOnPressSecondary}
-          type="clear"
-          color={theme.colors.primary}
-          titleStyle={{ color: theme.colors.primary }}
           title={step === 1 ? "Create account" : "Change Email"}
+          type="text"
           disabled={isLoading}
         />
-        <Button
-          color={theme.colors.primary}
+        <ProductoButton
           onPress={handleOnPressPrimary}
-          containerStyle={{ width: 80, borderRadius: 8 }}
+          type="contained"
           title={step === 1 ? "Next" : "Log in"}
           disabled={
             isLoading ||

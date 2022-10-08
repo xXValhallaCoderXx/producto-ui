@@ -23,7 +23,8 @@ import axios from "axios";
 
 const refetchBaseQuery = fetchBaseQuery({
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -38,8 +39,9 @@ const customBaseQuery = async (args, api, extraOptions) => {
   let result;
   //
   try {
+    console.log("INCOMING API: ", args);
     result = await baseQuery(args, api, extraOptions);
-    // console.log("INCOMING API: ", JSON.stringify(result));
+   
     if (
       result?.error?.status === 401 ||
       result?.error?.status === "FETCH_ERROR"
@@ -68,6 +70,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
           ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
       } else {
+        console.log("HIT")
         await SecureStore.setItemAsync(JWT_KEY_STORE, "");
         await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
@@ -129,6 +132,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
     //   }
 
     // }
+    console.log("GO")
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
@@ -138,8 +142,9 @@ const customBaseQuery = async (args, api, extraOptions) => {
 };
 
 const baseQuery = fetchBaseQuery({
+  baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);

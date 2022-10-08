@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
-import { TextInput, Animated, ScrollView, Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StyleSheet, View, Image, ToastAndroid } from "react-native";
-import { useFormik } from "formik";
+import { StyleSheet, View, Image, ToastAndroid, Animated } from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
+import { Icon } from "@rneui/themed";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -38,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
   const [step, setStep] = useState(1);
+  const [secretMap, setSecretMap] = useState({});
 
   useEffect(() => {
     if (step === 1) {
@@ -54,8 +54,6 @@ const LoginScreen = ({ navigation }) => {
       }).start();
     }
   }, [step]);
-
-
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -80,7 +78,6 @@ const LoginScreen = ({ navigation }) => {
 
   const handleOnPressPrimary = async () => {
     const nextStep = step === 1 ? 2 : 1;
-
     setError("");
     if (nextStep === 1) {
       if (password === "") {
@@ -88,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         const res = await loginApi({ email, password });
         if (res.data) {
-          // setTokenAndRedirect(res.data);
+          setTokenAndRedirect(res.data);
         } else if (res.error.status === 400) {
           setError(res.error.data.message);
         }
@@ -110,6 +107,13 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  const handlePassToggle = (key) => () => {
+    setSecretMap({
+      ...secretMap,
+      [key]: secretMap[key] ? false : true,
+    });
+  };
+
   const handleOnPressSecondary = () => {
     const nextStep = step === 1 ? 2 : 1;
     setError("");
@@ -120,10 +124,13 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-  const delayedQuery = useCallback(debounce(value => checkEmail(value), 1000), []);
+  const delayedQuery = useCallback(
+    debounce((value) => checkEmail(value), 1000),
+    []
+  );
   const handleOnChangeEmail = (value) => {
     setError("");
-    delayedQuery(value)
+    delayedQuery(value);
     setEmail(value);
   };
 
@@ -137,7 +144,6 @@ const LoginScreen = ({ navigation }) => {
       setError("You must enter a valid email address");
     }
   };
-
 
   return (
     <LayoutView>
@@ -192,6 +198,7 @@ const LoginScreen = ({ navigation }) => {
                   maxWidth: windowWidth * 0.9,
                 }}
                 onChangeText={handleOnChangeEmail}
+                keyboardType="email-address"
               />
 
               <View style={{ width: "100%", height: 25, marginTop: 10 }}>
@@ -209,40 +216,6 @@ const LoginScreen = ({ navigation }) => {
                 ) : null}
               </View>
             </View>
-
-            {/* <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: windowWidth,
-              }}
-            >
-              <TextInput
-                style={{
-                  ...styles.input,
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
-                }}
-                ref={passwordInputRef}
-                onChangeText={handleOnChangePassword}
-                value={password}
-                nativeID="password"
-                placeholder="Enter your password..."
-              />
-              {error ? (
-                <Text
-                  style={{
-                    marginTop: 10,
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "700",
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
-            </View> */}
             <View
               style={{
                 display: "flex",
@@ -259,13 +232,20 @@ const LoginScreen = ({ navigation }) => {
                 ref={passwordInputRef}
                 style={{
                   backgroundColor: "white",
-                  height: 50,
                   width: "85%",
                   fontSize: 14,
                   width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
                 onChangeText={handleOnChangePassword}
+                secureTextEntry={secretMap["password"] ? true : false}
+                right={
+                  <MuiTextInput.Icon
+                    onPress={handlePassToggle("password")}
+                    icon="eye"
+                    color="#fff"
+                  />
+                }
               />
 
               <View style={{ width: "100%", height: 25, marginTop: 10 }}>
