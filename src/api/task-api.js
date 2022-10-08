@@ -19,7 +19,7 @@ const taskApi = api.injectEndpoints({
       providesTags: ["IncompleteTasks"],
     }),
     moveSpecificTasks: builder.mutation({
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ tasks, to }) => {
         return {
           url: `/task/move-specific`,
@@ -59,6 +59,7 @@ const taskApi = api.injectEndpoints({
           optimisticUpdate.undo();
         }
       },
+      invalidatesTags: ["IncompleteTasks"]
     }),
     toggleTaskFocus: builder.mutation({
       query: ({ id, focus, date }) => {
@@ -133,7 +134,7 @@ const taskApi = api.injectEndpoints({
       // },
     }),
     moveIncompleteTasks: builder.mutation({
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ from, to }) => ({
         url: `/task/move-incomplete`,
         method: "POST",
@@ -141,7 +142,7 @@ const taskApi = api.injectEndpoints({
       }),
     }),
     deleteTask: builder.mutation({
-      invalidatesTags: ["Tasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ id }) => {
         return {
           url: `/task/${id}`,

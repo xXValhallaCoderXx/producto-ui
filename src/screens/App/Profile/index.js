@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
-import * as Localization from 'expo-localization';
+import * as Localization from "expo-localization";
 import { format } from "date-fns";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import { useDispatch } from "react-redux";
-import { StyleSheet, View, TouchableOpacity, ToastAndroid } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ToastAndroid,
+  Platform,
+} from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme, Switch } from "@rneui/themed";
 import { useGetProfileQuery } from "../../../api/user-api";
@@ -15,21 +21,26 @@ import { Text } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import PasswordModal from "./components/PasswordModal";
 import AutoTaskModal from "./components/AutoTaskModal";
+import ChangeEmailModal from "./components/ChangeEmailModal";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { useMoveSpecificTasksMutation } from "../../../api/task-api";
 import {
   useUpdatePrefsMutation,
   useUpdatePasswordMutation,
 } from "../../../api/user-api";
+import { useUpdateEmailMutation } from "../../../api/auth-api";
 
 const ProfileScreen = () => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsApiResult] = useUpdatePrefsMutation();
+  const [updateEmailApi, updateEmailApiResult] = useUpdateEmailMutation();
   const [updatePasswordApi, updatePasswordApiResult] =
     useUpdatePasswordMutation();
   const [isPasswordModalVisable, setIsPasswordModalVisable] = useState(false);
+  const [isChangeEmailModalVisable, setIsChangeEmailModalVisable] =
+    useState(false);
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data } = useGetProfileQuery({});
@@ -45,7 +56,26 @@ const ProfileScreen = () => {
       setisAutoTaskModalVisible(false);
       ToastAndroid.show(`Tasks have been moved!`, ToastAndroid.SHORT);
     }
-  }, [updatePasswordApiResult, updatePrefsApiResult, moveTasksApiResult]);
+
+    if (updateEmailApiResult.isSuccess) {
+      setIsChangeEmailModalVisable(false);
+      ToastAndroid.show(`Email updated!`, ToastAndroid.SHORT);
+    }
+    if (updateEmailApiResult.isError) {
+      ToastAndroid.show(`Error updating email!`, ToastAndroid.SHORT);
+    }
+  }, [
+    updatePasswordApiResult,
+    updatePrefsApiResult,
+    moveTasksApiResult,
+    updateEmailApiResult,
+  ]);
+
+  useEffect(() => {
+    if (data?.prefs?.false) {
+      setisAutoTaskModalVisible(true);
+    }
+  }, [!data?.prefs?.autoMove]);
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -55,13 +85,46 @@ const ProfileScreen = () => {
     setIsPasswordModalVisable(!isPasswordModalVisable);
   };
 
-  const toggleAutoTaskModal = () => {
-    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
+  const toggleChangeEmailModal = () => {
+    setIsChangeEmailModalVisable(!isChangeEmailModalVisable);
+  };
+
+  const toggleAutoTaskModal = async () => {
+    if (!data?.prefs?.autoMove) {
+      setisAutoTaskModalVisible(true);
+    }
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+  };
+
+  const handleCloseModal = () => {
+    setisAutoTaskModalVisible(false);
   };
 
   const toggleSwitchAuto = async () => {
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     // setToggleSwitch(!toggleSwitch);
+  };
+
+  const handleChangeEmail = async (values) => {
+    try {
+      // unwrapping will cause data to resolve, or an error to be thrown, and will narrow the types
+      const result = await updateEmailApi({
+        password: values.password,
+        email: values.email,
+      })
+
+      const { tokens } = result.data;
+      console.log("RESULT: ", result.data);
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+ 
+      // refetch(); // you should most likely just use tag invalidation here instead of calling refetch
+    } catch (error) {
+      console.log("ERROR: ", error);
+    }
   };
 
   const handleLogout = async () => {
@@ -91,12 +154,16 @@ const ProfileScreen = () => {
             {data?.email}
           </Text>
         </View>
-        <View style={{ flex: 4 }}>
+        <View style={{ flex: 5 }}>
           <Text type="h4" color="secondary">
             ACCOUNT
           </Text>
           <TouchableOpacity onPress={togglePasswordModal}>
-            <Text customStyle={{ marginTop: 16 }}>Change Password</Text>
+            <Text customStyle={{ marginTop: 10 }}>Change Password</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={toggleChangeEmailModal}>
+            <Text customStyle={{ marginTop: 18 }}>Change Email</Text>
           </TouchableOpacity>
         </View>
         <View style={{ flex: 9 }}>
@@ -105,31 +172,50 @@ const ProfileScreen = () => {
           </Text>
           <TouchableOpacity
             onPress={toggleAutoTaskModal}
-            style={{ display: "flex", flexDirection: "row" }}
+            style={{
+              display: "flex",
+              // backgroundColor: "red",
+              flexDirection: "row",
+              alignContent: "space-between",
+            }}
           >
-            <View style={{ flex: 3 }}>
-              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10}}>
+            <View style={{ flex: 12 }}>
+              <Text
+                color="dark"
+                customStyle={{ marginTop: 16, marginBottom: 10 }}
+              >
                 Auto Move Tasks
               </Text>
-              <Text type="h4" color="secondary">
-                Automatically move all incompleted tasks to “today”.
-              </Text>
+              <View style={{ maxWidth: 220 }}>
+                <Text type="h4" color="secondary">
+                  Automatically move all incompleted tasks to “today”.
+                </Text>
+              </View>
             </View>
-            <View style={{ flex: 1, justifyContent: "center" }}>
+            <View
+              style={{
+                flex: 2,
+                padding: 10,
+                justifyContent: "center",
+              }}
+            >
               <Switch
-                onChange={toggleSwitchAuto}
+                onChange={toggleAutoTaskModal}
                 value={data?.prefs?.autoMove}
               />
             </View>
           </TouchableOpacity>
           <View style={{ flex: 3 }}>
-              <Text color="dark" customStyle={{ marginTop: 16, marginBottom: 10 }}>
-                Timezone
-              </Text>
-              <Text type="h4" color="secondary">
-                {Localization.timezone}
-              </Text>
-            </View>
+            <Text
+              color="dark"
+              customStyle={{ marginTop: 16, marginBottom: 10 }}
+            >
+              Timezone
+            </Text>
+            <Text type="h4" color="secondary">
+              {Localization.timezone}
+            </Text>
+          </View>
         </View>
 
         <View style={{ flex: 5 }}>
@@ -168,7 +254,7 @@ const ProfileScreen = () => {
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
-        onCancel={toggleAutoTaskModal}
+        onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading}
         isSuccess={moveTasksApiResult.isSuccess}
       />
@@ -179,6 +265,14 @@ const ProfileScreen = () => {
         isLoading={updatePasswordApiResult.isLoading}
         isSuccess={updatePasswordApiResult.isSuccess}
         serverError={updatePasswordApiResult.error?.data.message}
+      />
+      <ChangeEmailModal
+        isVisible={isChangeEmailModalVisable}
+        onPress={handleChangeEmail}
+        onCancel={toggleChangeEmailModal}
+        isLoading={updateEmailApiResult.isLoading}
+        isSuccess={updateEmailApiResult.isSuccess}
+        serverError={updateEmailApiResult.error?.data.message}
       />
     </View>
   );

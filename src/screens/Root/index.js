@@ -1,4 +1,5 @@
-import { Animated, Image } from "react-native";
+import { Animated, Image, Platform } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
@@ -11,17 +12,19 @@ import { useGetProfileQuery } from "../../api/user-api";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-  useGetProfileQuery();
+  const x = useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
   const [animatedEnded, setAnimatedEnded] = useState(false);
-  const { isAuthenticated, init } = useSelector((state) => state.global);
+  const { isAuthenticated, init, firstLoad } = useSelector(
+    (state) => state.global
+  );
 
   useEffect(() => {
     async function prepare() {
-      await NavigationBar.setBackgroundColorAsync("white");
-      await NavigationBar.setButtonStyleAsync("dark");
+      Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
+      Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
     }
 
     const fadeAnimation = Animated.timing(fadeAnim, {
@@ -47,30 +50,32 @@ const RootScreen = ({ navigation }) => {
     prepare();
   }, []);
 
-  if (!init) {
-    return (
-      <Animated.View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",
-          opacity: fadeAnim,
-        }}
-      >
-        <Animated.View style={{ transform: [{ scale: imageScaleAnim }] }}>
-          <Image
-            resizeMode="contain"
-            style={{ height: 100 }}
-            source={splashIcon}
-          />
-        </Animated.View>
-      </Animated.View>
-    );
-  }
-
-
-  return (init && isAuthenticated) ? (
+  console.log("FIRST", firstLoad);
+  console.log("INIT", init);
+  // if (!init || firstLoad) {
+  //   console.log("POO")
+  //   return (
+  //     <Animated.View
+  //       style={{
+  //         flex: 1,
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         backgroundColor: "white",
+  //         opacity: fadeAnim,
+  //       }}
+  //     >
+  //       <Animated.View style={{ transform: [{ scale: imageScaleAnim }] }}>
+  //         <Image
+  //           resizeMode="contain"
+  //           style={{ height: 100 }}
+  //           source={splashIcon}
+  //         />
+  //       </Animated.View>
+  //     </Animated.View>
+  //   );
+  // }
+  console.log("HMM")
+  return init && isAuthenticated ? (
     <Stack.Navigator
       screenOptions={() => ({
         headerShown: false,

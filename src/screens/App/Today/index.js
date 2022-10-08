@@ -1,15 +1,23 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState } from "react";
-import { Text } from "@rneui/base";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
-import { useTheme } from "@rneui/themed";
+import { useTheme, Skeleton } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, ToastAndroid, ScrollView, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ToastAndroid,
+  ScrollView,
+  Animated,
+  Platform,
+} from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
+import IntroBottomSheet from "./IntroBottomSheet";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -20,9 +28,9 @@ import {
 } from "../../../api/task-api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
+import LayoutView from "../../../components/LayoutView";
 
 const ListScreen = () => {
-
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const [progress, setProgress] = useState(0);
@@ -30,7 +38,7 @@ const ListScreen = () => {
   const [currentTask, setCurrentTask] = useState(false);
   const editMode = useSelector((state) => state.today.editMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-
+  const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -39,7 +47,12 @@ const ListScreen = () => {
     isFetching,
     error,
   } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const { data: incompleteTasks, isLoading: incompleteIsLoading, error: incError } = useGetIncompleteTasksQuery({});
+  const [posY] = useState(new Animated.Value(0));
+  const {
+    data: incompleteTasks,
+    isLoading: incompleteIsLoading,
+    error: incError,
+  } = useGetIncompleteTasksQuery({});
   const [isDisabled, setIsDisabled] = useState(true);
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
@@ -47,9 +60,17 @@ const ListScreen = () => {
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
 
-  useEffect(() => { 
+  useEffect(() => {
     setTheme();
   }, []);
+
+  useEffect(() => {
+    Animated.timing(posXanim, {
+      toValue: editMode ? 160 : 130,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [editMode]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -58,8 +79,10 @@ const ListScreen = () => {
   }, [createTaskResult.isError]);
 
   const setTheme = async () => {
-    await NavigationBar.setBackgroundColorAsync("white");
-    await NavigationBar.setButtonStyleAsync("dark");
+    Platform.OS === "android" &&
+      (await NavigationBar.setBackgroundColorAsync("white"));
+    Platform.OS === "android" &&
+      (await NavigationBar.setButtonStyleAsync("dark"));
   };
 
   useEffect(() => {
@@ -130,70 +153,76 @@ const ListScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Header
-        clientUtc={utcDate}
-        editMode={editMode}
-        onChangeDate={handleOnChangeDate}
-        onPressToday={handleOnPressToday}
-        onPressDate={handleOnPressDate}
-      />
-      <ProgressBar editMode={editMode} progress={progress} />
-      <ScrollView
-        contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
-        style={{ flex: 1 }}
-      >
-        <View>
-          {isLoading || isFetching ? (
-            <View style={{ marginTop: 30 }}>
-              <Text
-                style={{
-                  color: theme.colors.primary,
-                  fontSize: 16,
-                }}
-              >
-                Fetching Tasks...
-              </Text>
-            </View>
-          ) : (
-            <View style={{marginTop: 25}}>
-              <TaskList
-                tasks={tasks || []}
-                editMode={editMode}
-                handleToggleTaskFocus={handleToggleTaskFocus}
-                handleToggleTaskComplete={handleToggleTaskComplete}
-                currentTask={currentTask}
-                isLoadingToggle={isLoadingToggle}
-                utcDate={utcDate}
-              />
-
-              <AddItem
-                handleCreateNewTask={handleCreateNewTask}
-                editMode={editMode}
-                currentDate={utcDate}
-              />
-            </View>
-          )}
-        </View>
-
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
-          currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
+    <LayoutView>
+      <GestureHandlerRootView style={styles.container}>
+        <Header
+          clientUtc={utcDate}
+          editMode={editMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
         />
+        <ProgressBar editMode={editMode} progress={progress} />
 
-        {isFetching || !editMode ? null : (
-          <MoveIncomplete
-            tasks={tasks}
+        <ScrollView
+          contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
+          style={{ flex: 1 }}
+        >
+          <View
+            style={{ height: 80, display: "flex", justifyContent: "center" }}
+          >
+            {isLoading || isFetching ? (
+              <View>
+                <Skeleton
+                  animation="wave"
+                  width={180}
+                  height={20}
+                  skeletonStyle={{ backgroundColor: theme.colors.primary }}
+                />
+              </View>
+            ) : (
+              <Animated.View
+                style={{ height: 400, transform: [{ translateY: posXanim }] }}
+              >
+                <TaskList
+                  tasks={tasks || []}
+                  editMode={editMode}
+                  handleToggleTaskFocus={handleToggleTaskFocus}
+                  handleToggleTaskComplete={handleToggleTaskComplete}
+                  currentTask={currentTask}
+                  isLoadingToggle={isLoadingToggle}
+                  utcDate={utcDate}
+                />
+
+                <AddItem
+                  handleCreateNewTask={handleCreateNewTask}
+                  editMode={editMode}
+                  currentDate={utcDate}
+                />
+              </Animated.View>
+            )}
+          </View>
+
+          <CalendarWidget
+            calendarOpen={calendarOpen}
+            toggleCalendar={handleToggleCalendar}
+            incompleteTasks={incompleteTasks}
             currentDate={utcDate}
-            isLoading={moveIncompleteTasksResult.isLoading}
-            onMoveIncomplete={handleMoveIncompleteTasks}
+            handleOnSelectDay={handleOnSelectDay}
           />
-        )}
-      </ScrollView>
-    </View>
+
+          {isFetching || !editMode ? null : (
+            <MoveIncomplete
+              tasks={tasks}
+              currentDate={utcDate}
+              isLoading={moveIncompleteTasksResult.isLoading}
+              onMoveIncomplete={handleMoveIncompleteTasks}
+            />
+          )}
+        </ScrollView>
+        <IntroBottomSheet />
+      </GestureHandlerRootView>
+    </LayoutView>
   );
 };
 
@@ -201,8 +230,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    marginTop: 15,
-    flexDirection: "column",
     padding: 30,
   },
 });

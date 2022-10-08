@@ -34,6 +34,16 @@ const authApi = api.injectEndpoints({
         };
       },
     }),
+    updateEmail: builder.mutation({
+      query: ({ password, email }) => {
+        return {
+          url: `/user/update-email`,
+          method: "PATCH",
+          body: { password, email },
+        };
+      },
+      invalidatesTags: ["User"]
+    }),
   }),
 });
 
@@ -41,5 +51,6 @@ export const {
   useLoginMutation,
   useRegisterMutation,
   useLazyVerifyEmailQuery,
-  useLazyRefreshTokenQuery
+  useLazyRefreshTokenQuery,
+  useUpdateEmailMutation
 } = authApi;

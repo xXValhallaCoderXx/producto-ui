@@ -1,4 +1,4 @@
-import Constants from "expo-constants";
+import * as Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
@@ -22,7 +22,9 @@ import axios from "axios";
 // });
 
 const refetchBaseQuery = fetchBaseQuery({
-  baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
+  // baseUrl: `http://10.0.2.2:3000/api/v1`,
+  baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -35,36 +37,20 @@ const refetchBaseQuery = fetchBaseQuery({
 
 const customBaseQuery = async (args, api, extraOptions) => {
   let result;
-  // 
+  //
   try {
+    console.log("INCOMING API: ", args);
     result = await baseQuery(args, api, extraOptions);
-
-    const isAuthenticated = api.getState().global.isAuthenticated;
-    const isInit = api.getState().global.init;
-
-    if (!isAuthenticated && !isInit) {
-      if (args === "/user/profile" && result.meta.response.status === 200) {
-        // Remounting App
-
-        api.dispatch(globalSlice.actions.toggleInit(true));
-        api.dispatch(
-          globalSlice.actions.toggleIsAuthenticated(true)
-        );
-      }
-    }
-    if (!isInit && result.meta.response.status === 404) {
-      api.dispatch(globalSlice.actions.toggleInit(true));
-      api.dispatch(
-        globalSlice.actions.toggleIsAuthenticated(false)
-      );
-    }
-
-    // Handle unauthorized
-    if (result.meta.response.status === 401) {
+   
+    if (
+      result?.error?.status === 401 ||
+      result?.error?.status === "FETCH_ERROR"
+    ) {
+      // Unauthorized - Check Refresh Token
       const refreshToken = await SecureStore.getItemAsync(
         REFRESH_JWT_KEY_STORE
       );
-
+      console.log("API MIDDLEWARE - 401");
       if (refreshToken) {
         try {
           const res = await refetchBaseQuery(
@@ -78,32 +64,91 @@ const customBaseQuery = async (args, api, extraOptions) => {
           api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
           result = await baseQuery(args, api, extraOptions);
         } catch (err) {
-          await SecureStore.setItemAsync("producto-jwt-token", "");
-          await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
+          await SecureStore.setItemAsync(JWT_KEY_STORE, "");
+          await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
           api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
           ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
       } else {
-        await SecureStore.setItemAsync("producto-jwt-token", "");
-        await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
+        console.log("HIT")
+        await SecureStore.setItemAsync(JWT_KEY_STORE, "");
+        await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
+        // api.dispatch(globalSlice.actions.toggleInit(true));
       }
-
-    
+    } else if (result?.meta?.response?.status === 200) {
+      // const isAuthenticated = api.getState().global.isAuthenticated;
+      const isInit = api.getState().global.init;
+      if (!isInit) {
+        api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
+      }
     }
+
+    // if (!isAuthenticated && !isInit) {
+    //   if (args === "/user/profile" && result.meta.response.status === 200) {
+    //     // Remounting App
+
+    //     api.dispatch(globalSlice.actions.toggleInit(true));
+    //     api.dispatch(
+    //       globalSlice.actions.toggleIsAuthenticated(true)
+    //     );
+    //   }
+    // }
+    // if (!isInit && result.meta.response.status === 404) {
+    //   api.dispatch(globalSlice.actions.toggleInit(true));
+    //   api.dispatch(
+    //     globalSlice.actions.toggleIsAuthenticated(false)
+    //   );
+    // }
+
+    // Handle unauthorized
+    // if (result.meta.response.status === 401) {
+    //   const refreshToken = await SecureStore.getItemAsync(
+    //     REFRESH_JWT_KEY_STORE
+    //   );
+
+    //   if (refreshToken) {
+    //     try {
+    //       const res = await refetchBaseQuery(
+    //         "/auth/refresh-jwt",
+    //         api,
+    //         extraOptions
+    //       );
+    //       const { accessToken, refreshToken } = res.data;
+    //       await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+    //       await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
+    //       api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
+    //       result = await baseQuery(args, api, extraOptions);
+    //     } catch (err) {
+    //       await SecureStore.setItemAsync("producto-jwt-token", "");
+    //       await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
+    //       api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
+    //       ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
+    //     }
+    //   } else {
+    //     await SecureStore.setItemAsync("producto-jwt-token", "");
+    //     await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
+    //     api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
+    //   }
+
+    // }
+    console.log("GO")
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
-    console.log("API ERROR: ", err);
+    console.log("API ERROR: ", JSON.stringify(err));
     return err;
   }
 };
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
+  baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
+  // baseUrl: `http://10.0.2.2:3000/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
+    console.log("JWT TOKEN: ", jwtToken);
     if (jwtToken) {
       headers.set("authorization", `Bearer ${jwtToken}`);
     }

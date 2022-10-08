@@ -63,7 +63,6 @@ const CalendarWidget = ({
 
   return (
     <Modal
-      // animationType="fade"
       transparent={true}
       visible={calendarOpen}
       onRequestClose={toggleCalendar}
@@ -101,10 +100,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 1,
   },
   modal: {
     width: 350,
-    height: 310,
+    height: 360,
     borderRadius: 5,
     elevation: 3,
   },

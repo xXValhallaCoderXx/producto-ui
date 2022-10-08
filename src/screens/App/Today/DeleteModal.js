@@ -8,7 +8,8 @@ const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
   const { theme } = useTheme();
   return (
     <Dialog isVisible={isVisible} onBackdropPress={onCancel}>
-      <Text type="h2" color="black">
+
+    <Text type="h2" color="black">
         Confirm Delete
       </Text>
       <Text
@@ -39,6 +40,7 @@ const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
         />
        
       </Dialog.Actions>
+
     </Dialog>
   );
 };

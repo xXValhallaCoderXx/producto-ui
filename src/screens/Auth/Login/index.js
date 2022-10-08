@@ -1,17 +1,25 @@
-import { useState, useRef, useEffect } from "react";
-import { TextInput, Animated, ScrollView } from "react-native";
-import * as SecureStore from 'expo-secure-store';
+import { useState, useRef, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce";
+import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StyleSheet, View, Image, ToastAndroid } from "react-native";
+import { StyleSheet, View, Image, ToastAndroid, Animated } from "react-native";
+import { TextInput as MuiTextInput } from "react-native-paper";
+import LayoutView from "../../../components/LayoutView";
+import { Icon } from "@rneui/themed";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../../../shared/constants";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
+
+const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
@@ -20,6 +28,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
+  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -28,6 +37,8 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
   const [step, setStep] = useState(1);
+  const [secretMap, setSecretMap] = useState({});
+
   useEffect(() => {
     if (step === 1) {
       Animated.timing(passwordInputPos, {
@@ -57,7 +68,7 @@ const LoginScreen = ({ navigation }) => {
   }, [loginApiResult.isSuccess]);
 
   setTokenAndRedirect = async (token) => {
-    const {accessToken, refreshToken} = token;
+    const { accessToken, refreshToken } = token;
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
 
@@ -74,7 +85,7 @@ const LoginScreen = ({ navigation }) => {
       } else {
         const res = await loginApi({ email, password });
         if (res.data) {
-          // setTokenAndRedirect(res.data);
+          setTokenAndRedirect(res.data);
         } else if (res.error.status === 400) {
           setError(res.error.data.message);
         }
@@ -96,7 +107,15 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  const handlePassToggle = (key) => () => {
+    setSecretMap({
+      ...secretMap,
+      [key]: secretMap[key] ? false : true,
+    });
+  };
+
   const handleOnPressSecondary = () => {
+    const nextStep = step === 1 ? 2 : 1;
     setError("");
     if (step === 1) {
       navigation.navigate("Registration");
@@ -105,9 +124,13 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-
+  const delayedQuery = useCallback(
+    debounce((value) => checkEmail(value), 1000),
+    []
+  );
   const handleOnChangeEmail = (value) => {
     setError("");
+    delayedQuery(value);
     setEmail(value);
   };
 
@@ -116,8 +139,14 @@ const LoginScreen = ({ navigation }) => {
     setPassword(value);
   };
 
+  const checkEmail = (_value) => {
+    if (_value.match(validEmailRegex) === null && _value !== "") {
+      setError("You must enter a valid email address");
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <LayoutView>
       <View style={styles.titleContainer}>
         <Image
           source={titleDark}
@@ -129,20 +158,15 @@ const LoginScreen = ({ navigation }) => {
         ></Image>
         <View style={{ marginTop: 19 }}>
           <Text style={styles.secondaryTitle}>
-            Sign in, to continue to Producto
+            Sign in, to unlock your productivity
           </Text>
         </View>
       </View>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{
-          justifyContent: "space-between",
-          flex: 1,
-        }}
-      >
+      <View>
         <Animated.View
           style={{
             ...styles.inputWrapper,
+            marginBottom: 30,
             transform: [{ translateX: passwordInputPos }],
           }}
         >
@@ -158,34 +182,40 @@ const LoginScreen = ({ navigation }) => {
                 width: windowWidth,
               }}
             >
-              <TextInput
+              <MuiTextInput
+                label="Email"
+                value={email}
+                mode="outlined"
+                error={false}
+                outlineColor="#bcc5d6"
+                ref={emailInputRef}
                 style={{
-                  ...styles.input,
+                  backgroundColor: "white",
+                  height: 50,
+                  width: "85%",
+                  fontSize: 14,
                   width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
-                ref={emailInputRef}
                 onChangeText={handleOnChangeEmail}
-                value={email}
-                nativeID="email"
-                placeholder="Enter your email..."
+                keyboardType="email-address"
               />
 
-              {error ? (
-                <Text
-                  style={{
-                    marginTop: 10,
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "700",
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "700",
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
             </View>
-
             <View
               style={{
                 display: "flex",
@@ -193,31 +223,45 @@ const LoginScreen = ({ navigation }) => {
                 width: windowWidth,
               }}
             >
-              <TextInput
+              <MuiTextInput
+                label="Password"
+                value={password}
+                mode="outlined"
+                error={false}
+                outlineColor="#bcc5d6"
+                ref={passwordInputRef}
                 style={{
-                  ...styles.input,
+                  backgroundColor: "white",
+                  width: "85%",
+                  fontSize: 14,
                   width: windowWidth * 0.85,
                   maxWidth: windowWidth * 0.9,
                 }}
-                ref={passwordInputRef}
                 onChangeText={handleOnChangePassword}
-                value={password}
-                nativeID="password"
-                placeholder="Enter your password..."
+                secureTextEntry={secretMap["password"] ? true : false}
+                right={
+                  <MuiTextInput.Icon
+                    onPress={handlePassToggle("password")}
+                    icon="eye"
+                    color="#fff"
+                  />
+                }
               />
-              {error ? (
-                <Text
-                  style={{
-                    marginTop: 10,
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "700",
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
+
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "700",
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
             </View>
           </View>
         </Animated.View>
@@ -226,20 +270,17 @@ const LoginScreen = ({ navigation }) => {
           handleOnPressPrimary={handleOnPressPrimary}
           handleOnPressSecondary={handleOnPressSecondary}
           step={step}
+          email={email}
+          password={password}
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
-      </ScrollView>
-    </View>
+      </View>
+    </LayoutView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
   titleContainer: {
-    display: "flex",
     alignItems: "center",
     marginTop: 106,
   },

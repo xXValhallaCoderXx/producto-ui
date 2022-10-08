@@ -5,6 +5,7 @@ export const globalSlice = createSlice({
   initialState: {
     init: false,
     isAuthenticated: false,
+    firstLoad: false,
   },
   reducers: {
     toggleInit: (state, action) => {
@@ -13,9 +14,12 @@ export const globalSlice = createSlice({
     toggleIsAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload;
     },
+    toggleFirstLoad: (state, action) => {
+      state.firstLoad = action.payload;
+    },
   },
 });
 
-export const { toggleInit, toggleIsAuthenticated } = globalSlice.actions;
+export const { toggleInit, toggleIsAuthenticated, toggleFirstLoad } = globalSlice.actions;
 
 export default globalSlice.reducer;

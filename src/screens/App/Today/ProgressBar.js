@@ -5,7 +5,7 @@ const ProgressBar = ({ editMode, progress }) => {
   const { theme } = useTheme();
 
   return (
-    <View style={{ paddingTop: 0 }}>
+    <View style={{ paddingTop: 0, height: 20 }}>
       <View
         style={{
           display: "flex",

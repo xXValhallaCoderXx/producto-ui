@@ -34,6 +34,9 @@ const TaskList = ({
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
 
+  const currentDate = format(utcDate, "yyyy-MM-dd");
+  const todayDate = format(new Date(), "yyyy-MM-dd");
+
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setIsDeleteModalVisible(false);
@@ -84,7 +87,7 @@ const TaskList = ({
           </Text>
         </Text>
       ) : (
-        <ScrollView style={{ maxHeight: 400, marginTop: 15 }}>
+        <ScrollView style={{ marginTop: 15, padding: 3 }}>
           {tasks
             .filter((task) => {
               if (!editMode && !task.focus && !task.completed) {
@@ -99,7 +102,10 @@ const TaskList = ({
                     key={index}
                     onLongPress={handleOnLongPress(task)}
                     containerStyle={{
-                      padding: 15,
+                      paddingTop: 15,
+                      paddingBottom: 15,
+                      paddingLeft: 0,
+                      paddingRight: 0,
                       borderBottomColor: "#e7e8f0",
                       borderBottomWidth: 1,
                     }}
@@ -142,16 +148,21 @@ const TaskList = ({
               return (
                 <ListItem
                   key={index}
+                  onPress={onCheckTask(task)}
                   onLongPress={handleOnLongPress(task)}
                   containerStyle={{
-                    padding: 5,
+                    paddingTop: 15,
+                    paddingBottom: 15,
+                    paddingLeft: 2,
+                    paddingRight: 0,
                     borderBottomColor: "#e7e8f0",
                     borderBottomWidth: 1,
+                    borderTopWidth: 0,
                   }}
                 >
                   <ListItem.Content style={styles.listContent}>
                     <View style={styles.listRow}>
-                      {editMode && (
+                      {editMode && currentDate === todayDate && (
                         <IoniIcons
                           style={{
                             fontSize: 22,
@@ -182,7 +193,6 @@ const TaskList = ({
                         disabled={task.id === currentTask && isLoadingToggle}
                       />
                     </View>
-                    {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
                   </ListItem.Content>
                 </ListItem>
               );
