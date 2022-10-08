@@ -12,7 +12,11 @@ import { useToast } from "react-native-toast-notifications";
 const EditPassword = ({ route, navigation }) => {
   const theme = useTheme();
   const toast = useToast();
-  const [secretMap, setSecretMap] = useState({});
+  const [secretMap, setSecretMap] = useState({
+    newPassword: true,
+    currentPassword: true,
+    confirmPassword: true
+  });
   const [updatePassword, updatePasswordResult] = useUpdatePasswordMutation();
   useEffect(() => {
     navigation.setOptions({ title: "Update Password" });
@@ -88,7 +92,7 @@ const EditPassword = ({ route, navigation }) => {
         style={{
           backgroundColor: "white",
         }}
-        secureTextEntry={secretMap["currentPassword"] ? true : false}
+        secureTextEntry={secretMap["currentPassword"]}
         right={
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
@@ -117,7 +121,7 @@ const EditPassword = ({ route, navigation }) => {
         style={{
           backgroundColor: "white",
         }}
-        secureTextEntry={secretMap["newPassword"] ? true : false}
+        secureTextEntry={secretMap["newPassword"]}
         right={
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
@@ -145,7 +149,7 @@ const EditPassword = ({ route, navigation }) => {
         style={{
           backgroundColor: "white",
         }}
-        secureTextEntry={secretMap["confirmPassword"] ? true : false}
+        secureTextEntry={secretMap["confirmPassword"]}
         right={
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
