@@ -15,6 +15,7 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import theme from "./src/shared/styles/theme";
+import Toast from "./src/components/Toast";
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({});
@@ -75,11 +76,7 @@ export default function App() {
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <Provider store={store}>
         <ToastProvider
-          renderToast={(toastOptions) => (
-            <View style={{ padding: 15, backgroundColor: "grey" }}>
-              <Text>sss</Text>
-            </View>
-          )}
+          renderToast={(toastOptions) => <Toast toast={toastOptions} />}
         >
           <PaperProvider theme={theme2}>
             <ThemeProvider theme={theme}>

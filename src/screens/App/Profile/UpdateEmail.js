@@ -45,6 +45,9 @@ const UpdateEmail = ({ route, navigation }) => {
         duration: 2500,
         offset: 30,
         animationType: "zoom-in",
+        placement: "bottom",
+        title: "Succesfully updated email!",
+        description: "You may now login with your new email"
       });
       // const result = await updateEmail({ email, password });
       // const { tokens } = result.data;
