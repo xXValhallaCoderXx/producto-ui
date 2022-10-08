@@ -32,7 +32,7 @@ const ProfileScreen = ({ navigation }) => {
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
-  const { data } = useGetProfileQuery({});
+  const { data, isLoading } = useGetProfileQuery({});
   const { colors } = useTheme();
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const ProfileScreen = ({ navigation }) => {
             ACCOUNT
           </RnText>
 
-          {updatePrefsResult.isLoading ? (
+          {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
@@ -132,7 +132,7 @@ const ProfileScreen = ({ navigation }) => {
               )}
             />
           )}
-          {updatePrefsResult.isLoading ? (
+          {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
@@ -159,7 +159,7 @@ const ProfileScreen = ({ navigation }) => {
             APP SETTINGS
           </RnText>
 
-          {updatePrefsResult.isLoading ? (
+          {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
@@ -186,7 +186,7 @@ const ProfileScreen = ({ navigation }) => {
             />
           )}
 
-          {updatePrefsResult.isLoading ? (
+          {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={70} width={"100%"} />
             </View>
