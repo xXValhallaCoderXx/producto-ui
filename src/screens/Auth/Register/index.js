@@ -34,13 +34,14 @@ const RegisterScreen = ({ navigation }) => {
     validationSchema: Yup.object().shape({
       email: Yup.string().required("Email field is required").email(),
       password: Yup.string()
+        .required("Password is required")
         .min(6, "Please enter a minimum of 6 characters")
-        .max(50, "Password exceeded 50 characters")
-        .required("Password field is required"),
+        .max(50, "Password exceeded 50 characters"),
       confirmPassword: Yup.string()
+        .oneOf([Yup.ref("password"), null], "Passwords don't match")
+        .required("Confirm Password is required")
         .min(6, "Please enter a minimum of 6 characters")
-        .max(50, "Password exceeded 50 characters")
-        .required("Confirm Password field is required"),
+        .max(50, "Password exceeded 50 characters"),
     }),
 
     onSubmit: async ({ email, password }) => {
@@ -89,7 +90,6 @@ const RegisterScreen = ({ navigation }) => {
     }
   }, [registerApiResult.isSuccess]);
 
-  console.log("FORMIK: ", formik);
   return (
     <LayoutView>
       <View
