@@ -30,7 +30,6 @@ const FooterActions = ({
           title={step === 1 ? "Create account" : "Change Email"}
           type="text"
           disabled={isLoading}
-          loading={isLoading}
         />
         <ProductoButton
           onPress={handleOnPressPrimary}

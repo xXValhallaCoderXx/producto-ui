@@ -58,6 +58,13 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
+  
+    if(verifyResult.isError){
+      setError(verifyResult?.error?.data?.message);
+    }
+  }, [verifyResult])
+
+  useEffect(() => {
     if (loginApiResult.isError) {
       toast.show("Email succesffully updated", {
         type: "error",
