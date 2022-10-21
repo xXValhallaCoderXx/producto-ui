@@ -90,6 +90,7 @@ const ListScreen = () => {
   }, [tasks]);
 
   const handleToggleTaskComplete = async (_task) => {
+    console.log('BALLAAL')
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,

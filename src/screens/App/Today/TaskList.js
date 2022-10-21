@@ -74,7 +74,7 @@ const TaskList = ({
          
         </View>
       ) : (
-        <DraggbleList tasks={tasks} handleOnPressDelete={handleOnPressDelete} utcDate={utcDate} />
+        <DraggbleList tasks={tasks} handleOnPressDelete={handleOnPressDelete} utcDate={utcDate} onCheckTask={onCheckTask} />
         // <ScrollView style={{ marginTop: 15, padding: 3 }}>
         //   {tasks
         //     .filter((task) => {

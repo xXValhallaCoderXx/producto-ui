@@ -18,7 +18,12 @@ import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 
-const DraggableListContainer = ({ tasks, handleOnPressDelete, utcDate }) => {
+const DraggableListContainer = ({
+  tasks,
+  handleOnPressDelete,
+  utcDate,
+  onCheckTask,
+}) => {
   const [data, setData] = useState(tasks);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
@@ -104,6 +109,7 @@ const DraggableListContainer = ({ tasks, handleOnPressDelete, utcDate }) => {
       <ScaleDecorator>
         <ListItem
           onLongPress={drag}
+          onPressIn={onCheckTask(item)}
           onPress={() => {
             countRef++;
             if (countRef == 2) {
@@ -116,6 +122,7 @@ const DraggableListContainer = ({ tasks, handleOnPressDelete, utcDate }) => {
             } else {
               countTimer.current = setTimeout(() => {
                 console.log("Clicked Once");
+
                 countRef = 0;
               }, 250);
             }
@@ -142,7 +149,7 @@ const DraggableListContainer = ({ tasks, handleOnPressDelete, utcDate }) => {
                   }}
                   color={item.focus ? theme.colors.primary : "black"}
                   name={"key-outline"}
-                //   onPress={onToggleFocus(task)}
+                  //   onPress={onToggleFocus(task)}
                 />
               )}
               <ListItem.Title
@@ -154,27 +161,16 @@ const DraggableListContainer = ({ tasks, handleOnPressDelete, utcDate }) => {
                 {item.title}
               </ListItem.Title>
             </View>
-            <View style={{marginRight: -10}}>
+            <View style={{ marginRight: -10 }}>
               <CheckBox
                 checked={item.completed}
                 containerStyle={{ padding: 0 }}
-                // onPress={onCheckTask(task)}
+                onPress={onCheckTask(item)}
                 // disabled={isLoadingToggle}
               />
             </View>
           </ListItem.Content>
         </ListItem>
-        {/* <TouchableOpacity
-            onLongPress={drag}
-       
-            disabled={isActive}
-            style={[
-              styles.rowItem,
-              { backgroundColor: isActive ? "red" : item.backgroundColor },
-            ]}
-          >
-            <Text style={styles.text}>{item.label}</Text>
-          </TouchableOpacity> */}
       </ScaleDecorator>
     );
   };
