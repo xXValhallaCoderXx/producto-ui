@@ -40,11 +40,13 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   };
 
   const handleOnBlur = async () => {
-    if (taskName.length > 0) {
-      await handleCreateNewTask(taskName);
-      setTaskName("");
-    }
     setAddTask(false);
+    if (taskName.length > 0) {
+      setTaskName("");
+      await handleCreateNewTask(taskName);
+    
+    }
+   
   };
 
   // const onSubmitTask = async () => {
