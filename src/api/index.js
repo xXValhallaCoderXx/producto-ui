@@ -132,7 +132,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
     //   }
 
     // }
-    console.log("GO")
+
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {

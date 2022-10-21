@@ -4,13 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import { useTheme, Skeleton } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Animated,
-  Platform,
-} from "react-native";
+import { StyleSheet, View, ScrollView, Animated, Platform } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -26,6 +20,7 @@ import {
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
 } from "../../../api/task-api";
+import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
@@ -61,7 +56,6 @@ const ListScreen = () => {
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
-
   useEffect(() => {
     setTheme();
   }, []);
@@ -126,11 +120,23 @@ const ListScreen = () => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    await createTask({
+    const res = await createTask({
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
+      date: format(utcDate, "yyyy-MM-dd"),
     });
-    // ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+
+    dispatch(
+      api.util.updateQueryData(
+        "getTodaysTasks",
+        { date: format(utcDate, "yyyy-MM-dd") },
+        (draft) => {
+          const task = draft.find((todo) => todo.title === res.data.title);
+          task.id = res.data.id;
+          return draft;
+        }
+      )
+    );
     toast.show("", {
       type: "success",
       duration: 2500,
@@ -138,7 +144,7 @@ const ListScreen = () => {
       animationType: "zoom-in",
       placement: "top",
       title: `Task ${_title} created!`,
-      description: ""
+      description: "",
     });
     return;
   };
@@ -155,7 +161,7 @@ const ListScreen = () => {
       animationType: "zoom-in",
       placement: "top",
       title: `Tasks moved to ${to}!`,
-      description: ""
+      description: "",
     });
   };
 
@@ -184,7 +190,7 @@ const ListScreen = () => {
         />
         <ProgressBar editMode={editMode} progress={progress} />
 
-        <ScrollView
+        <View
           contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
           style={{ flex: 1 }}
         >
@@ -192,14 +198,8 @@ const ListScreen = () => {
             style={{ height: 80, display: "flex", justifyContent: "center" }}
           >
             {isLoading || isFetching ? (
-              <View style={{flex: 1, paddingTop: 20}}>
+              <View style={{ flex: 1, paddingTop: 20 }}>
                 <SkeletonList />
-                {/* <Skeleton
-                  animation="wave"
-                  width={180}
-                  height={20}
-                  skeletonStyle={{ backgroundColor: theme.colors.primary }}
-                /> */}
               </View>
             ) : (
               <Animated.View
@@ -240,7 +240,7 @@ const ListScreen = () => {
               onMoveIncomplete={handleMoveIncompleteTasks}
             />
           )}
-        </ScrollView>
+        </View>
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>
