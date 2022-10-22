@@ -41,13 +41,14 @@ const DraggableListContainer = ({
   let countTimer = useRef(null);
 
   const handleOnBlur = async () => {
+    setEditTask(null);
+    setTaskValue("");
     await updateTaskApi({
       id: editTask,
       title: value,
       date: format(utcDate, "yyyy-MM-dd"),
     });
-    setEditTask(null);
-    setTaskValue("");
+
   };
 
   const handleOnChange = (_value) => {
@@ -109,7 +110,7 @@ const DraggableListContainer = ({
       <ScaleDecorator>
         <ListItem
           onLongPress={drag}
-          onPressIn={onCheckTask(item)}
+
           onPress={() => {
             countRef++;
             if (countRef == 2) {
@@ -122,6 +123,8 @@ const DraggableListContainer = ({
             } else {
               countTimer.current = setTimeout(() => {
                 console.log("Clicked Once");
+                () => onCheckTask(item)
+              
 
                 countRef = 0;
               }, 250);
@@ -161,7 +164,7 @@ const DraggableListContainer = ({
                 {item.title}
               </ListItem.Title>
             </View>
-            <View style={{ marginRight: -10 }}>
+            <View style={{ marginRight: -13 }}>
               <CheckBox
                 checked={item.completed}
                 containerStyle={{ padding: 0 }}

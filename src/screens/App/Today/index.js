@@ -90,7 +90,6 @@ const ListScreen = () => {
   }, [tasks]);
 
   const handleToggleTaskComplete = async (_task) => {
-    console.log('BALLAAL')
     await toggleTask({
       id: _task.id,
       completed: !_task.completed,
@@ -144,7 +143,7 @@ const ListScreen = () => {
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: `Task ${_title} created!`,
+      title: `Task created!`,
       description: "",
     });
     return;
