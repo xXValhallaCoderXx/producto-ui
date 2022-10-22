@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Haptics from "expo-haptics";
 import { useSelector } from "react-redux";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -29,13 +30,30 @@ const DraggableListContainer = ({
   const [value, setTaskValue] = useState("");
   const [updateTaskApi] = useUpdateTaskMutation();
   const editMode = useSelector((state) => state.today.editMode);
-
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    setData(tasks);
+    sortData();
   }, [tasks]);
+
+
+  const sortData = async () => {
+    const hasData = await AsyncStorage.getItem(currentDate);
+ 
+    if (hasData) {
+      let tempResult = [];
+      JSON.parse(hasData).forEach((item) => {
+        const x = data.find((task) => task.id === item);
+        tempResult.push(x);
+      });
+      setData(tempResult);
+    } else {
+      setData(tasks);
+    }
+  };
+
+
 
   let countRef = useRef(0).current;
   let countTimer = useRef(null);
@@ -48,7 +66,6 @@ const DraggableListContainer = ({
       title: value,
       date: format(utcDate, "yyyy-MM-dd"),
     });
-
   };
 
   const handleOnChange = (_value) => {
@@ -110,7 +127,6 @@ const DraggableListContainer = ({
       <ScaleDecorator>
         <ListItem
           onLongPress={drag}
-
           onPress={() => {
             countRef++;
             if (countRef == 2) {
@@ -123,8 +139,7 @@ const DraggableListContainer = ({
             } else {
               countTimer.current = setTimeout(() => {
                 console.log("Clicked Once");
-                () => onCheckTask(item)
-              
+                () => onCheckTask(item);
 
                 countRef = 0;
               }, 250);
@@ -177,10 +192,14 @@ const DraggableListContainer = ({
       </ScaleDecorator>
     );
   };
+
   return (
     <DraggableFlatList
       data={data}
-      onDragEnd={({ data }) => {
+      onDragEnd={async ({ data }) => {
+        const itemSort = data.map((item) => item.id);
+        const objectToStore = JSON.stringify(itemSort);
+        AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
       }}
       keyExtractor={(item) => item.id}
