@@ -25,7 +25,7 @@ const DraggableListContainer = ({
   utcDate,
   onCheckTask,
 }) => {
-  const [data, setData] = useState(tasks);
+  const [data, setData] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
   const [updateTaskApi] = useUpdateTaskMutation();
@@ -34,24 +34,25 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    sortData();
+    // sortData();
+    setData(tasks);
   }, [tasks]);
 
 
-  const sortData = async () => {
-    const hasData = await AsyncStorage.getItem(currentDate);
+  // const sortData = async () => {
+  //   const hasData = await AsyncStorage.getItem(currentDate);
  
-    if (hasData) {
-      let tempResult = [];
-      JSON.parse(hasData).forEach((item) => {
-        const x = data.find((task) => task.id === item);
-        tempResult.push(x);
-      });
-      setData(tempResult);
-    } else {
-      setData(tasks);
-    }
-  };
+  //   if (hasData && hasData.length > 0) {
+  //     let tempResult = [];
+  //     JSON.parse(hasData).forEach((item) => {
+  //       const x = data.find((task) => task?.id === item);
+  //       tempResult.push(x);
+  //     });
+  //     setData(tempResult);
+  //   } else {
+  //     setData(tasks);
+  //   }
+  // };
 
 
 
@@ -73,7 +74,8 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive }) => {
-    if (item.id === editTask) {
+    console.log("iTEM: ", item);
+    if (item && item.id === editTask) {
       return (
         <ListItem
           key={item.id}
@@ -193,13 +195,14 @@ const DraggableListContainer = ({
     );
   };
 
+
   return (
     <DraggableFlatList
       data={data}
       onDragEnd={async ({ data }) => {
-        const itemSort = data.map((item) => item.id);
-        const objectToStore = JSON.stringify(itemSort);
-        AsyncStorage.setItem(currentDate, objectToStore);
+        // const itemSort = data.map((item) => item.id);
+        // const objectToStore = JSON.stringify(itemSort);
+        // AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
       }}
       keyExtractor={(item) => item.id}
