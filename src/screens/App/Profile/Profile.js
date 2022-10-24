@@ -74,6 +74,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleSubmitAutoTask = async (dates) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
+    setisAutoTaskModalVisible(false);
   };
 
   const navigateToEditPassword = () => {
