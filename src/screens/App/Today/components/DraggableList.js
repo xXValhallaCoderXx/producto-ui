@@ -1,22 +1,15 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ToastAndroid,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useSelector } from "react-redux";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
-import { ListItem, Text, useTheme, CheckBox } from "@rneui/themed";
+import { ListItem, CheckBox } from "@rneui/themed";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
+import { useTheme } from "@rneui/themed";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 
 const DraggableListContainer = ({
@@ -24,24 +17,25 @@ const DraggableListContainer = ({
   handleOnPressDelete,
   utcDate,
   onCheckTask,
+  onToggleFocus,
 }) => {
   const [data, setData] = useState([]);
+  const { theme } = useTheme();
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
+
   const [updateTaskApi] = useUpdateTaskMutation();
   const editMode = useSelector((state) => state.today.editMode);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    // sortData();
     setData(tasks);
   }, [tasks]);
 
-
   // const sortData = async () => {
   //   const hasData = await AsyncStorage.getItem(currentDate);
- 
+
   //   if (hasData && hasData.length > 0) {
   //     let tempResult = [];
   //     JSON.parse(hasData).forEach((item) => {
@@ -53,8 +47,6 @@ const DraggableListContainer = ({
   //     setData(tasks);
   //   }
   // };
-
-
 
   let countRef = useRef(0).current;
   let countTimer = useRef(null);
@@ -74,21 +66,9 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive }) => {
-    console.log("iTEM: ", item);
     if (item && item.id === editTask) {
       return (
-        <ListItem
-          key={item.id}
-          onLongPress={drag}
-          //   containerStyle={{
-          //     paddingTop: 15,
-          //     paddingBottom: 15,
-          //     paddingLeft: 0,
-          //     paddingRight: 0,
-          //     borderBottomColor: "#e7e8f0",
-          //     borderBottomWidth: 1,
-          //   }}
-        >
+        <ListItem key={item.id} onLongPress={drag}>
           <ListItem.Content style={styles.listContent}>
             <View style={styles.listRow}>
               <TextInput
@@ -99,7 +79,6 @@ const DraggableListContainer = ({
                 underlineColorAndroid="transparent"
                 style={{
                   fontSize: 16,
-
                   backgroundColor: "white",
                 }}
               />
@@ -134,29 +113,17 @@ const DraggableListContainer = ({
             if (countRef == 2) {
               clearTimeout(countTimer.current);
               countRef = 0;
-              console.log("Clicked twice");
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               setEditTask(item.id);
               setTaskValue(item.title);
             } else {
               countTimer.current = setTimeout(() => {
-                console.log("Clicked Once");
                 () => onCheckTask(item);
-
                 countRef = 0;
               }, 250);
             }
           }}
           key={item.id}
-          //   onLongPress={handleOnLongPress(task)}
-          // containerStyle={{
-          //   paddingTop: 15,
-          //   paddingBottom: 15,
-          //   paddingLeft: 0,
-          //   paddingRight: 0,
-          //   borderBottomColor: "#e7e8f0",
-          //   borderBottomWidth: 1,
-          // }}
         >
           <ListItem.Content style={styles.listContent}>
             <View style={styles.listRow}>
@@ -169,7 +136,7 @@ const DraggableListContainer = ({
                   }}
                   color={item.focus ? theme.colors.primary : "black"}
                   name={"key-outline"}
-                  //   onPress={onToggleFocus(task)}
+                  onPress={onToggleFocus(item)}
                 />
               )}
               <ListItem.Title
@@ -194,7 +161,6 @@ const DraggableListContainer = ({
       </ScaleDecorator>
     );
   };
-
 
   return (
     <DraggableFlatList

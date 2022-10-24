@@ -36,6 +36,7 @@ const LoginScreen = ({ navigation }) => {
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
+  console.log("LOGIN API: ", verifyResult);
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true

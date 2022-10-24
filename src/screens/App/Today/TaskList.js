@@ -1,29 +1,16 @@
 import { useEffect, useState } from "react";
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ToastAndroid,
-} from "react-native";
-import * as Haptics from "expo-haptics";
-import { format } from "date-fns";
+import { View, StyleSheet, ToastAndroid } from "react-native";
 
 import { useUpdateTaskMutation } from "../../../api/task-api";
-import MaterialIcons from "react-native-vector-icons/FontAwesome";
 import DeleteTaskModal from "./DeleteModal";
-import { ListItem, Text, useTheme, CheckBox } from "@rneui/themed";
+import { Text, useTheme } from "@rneui/themed";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 
 const TaskList = ({
-  editMode,
   tasks,
   handleToggleTaskFocus,
   handleToggleTaskComplete,
-  currentTask,
-  isLoadingToggle,
   utcDate,
 }) => {
   const { theme } = useTheme();
@@ -35,8 +22,6 @@ const TaskList = ({
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
 
-
-
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setIsDeleteModalVisible(false);
@@ -45,10 +30,9 @@ const TaskList = ({
     }
   }, [deleteTaskApiResults]);
 
-
   const handleOnPressDelete = () => (_id) => {
     setIsDeleteModalVisible(true);
-    setEditTask(_id)
+    setEditTask(_id);
   };
 
   const toggleDeleteModal = () => {
@@ -71,10 +55,15 @@ const TaskList = ({
               productivity!
             </Text>
           </Text>
-         
         </View>
       ) : (
-        <DraggbleList tasks={tasks} handleOnPressDelete={handleOnPressDelete} utcDate={utcDate} onCheckTask={onCheckTask} />
+        <DraggbleList
+          tasks={tasks}
+          handleOnPressDelete={handleOnPressDelete}
+          utcDate={utcDate}
+          onCheckTask={onCheckTask}
+          onToggleFocus={onToggleFocus}
+        />
         // <ScrollView style={{ marginTop: 15, padding: 3 }}>
         //   {tasks
         //     .filter((task) => {
@@ -149,38 +138,38 @@ const TaskList = ({
         //           }}
         //         >
         //           <ListItem.Content style={styles.listContent}>
-                    // <View style={styles.listRow}>
-                    //   {editMode && currentDate === todayDate && (
-                    //     <IoniIcons
-                    //       style={{
-                    //         fontSize: 22,
-                    //         marginRight: 20,
-                    //         transform: [{ rotate: "45deg" }],
-                    //       }}
-                    //       color={task.focus ? theme.colors.primary : "black"}
-                    //       name={"key-outline"}
-                    //       onPress={onToggleFocus(task)}
-                    //     />
-                    //   )}
-                    //   <ListItem.Title
-                    //     style={{
-                    //       color: task.completed ? "gray" : "black",
-                    //       textDecorationLine: task.completed
-                    //         ? "line-through"
-                    //         : "none",
-                    //     }}
-                    //   >
-                    //     {task.title}
-                    //   </ListItem.Title>
-                    // </View>
-                    // <View>
-                    //   <CheckBox
-                    //     checked={task.completed}
-                    //     containerStyle={{ padding: 0 }}
-                    //     onPress={onCheckTask(task)}
-                    //     disabled={task.id === currentTask && isLoadingToggle}
-                    //   />
-                    // </View>
+        // <View style={styles.listRow}>
+        //   {editMode && currentDate === todayDate && (
+        //     <IoniIcons
+        //       style={{
+        //         fontSize: 22,
+        //         marginRight: 20,
+        //         transform: [{ rotate: "45deg" }],
+        //       }}
+        //       color={task.focus ? theme.colors.primary : "black"}
+        //       name={"key-outline"}
+        //       onPress={onToggleFocus(task)}
+        //     />
+        //   )}
+        //   <ListItem.Title
+        //     style={{
+        //       color: task.completed ? "gray" : "black",
+        //       textDecorationLine: task.completed
+        //         ? "line-through"
+        //         : "none",
+        //     }}
+        //   >
+        //     {task.title}
+        //   </ListItem.Title>
+        // </View>
+        // <View>
+        //   <CheckBox
+        //     checked={task.completed}
+        //     containerStyle={{ padding: 0 }}
+        //     onPress={onCheckTask(task)}
+        //     disabled={task.id === currentTask && isLoadingToggle}
+        //   />
+        // </View>
         //           </ListItem.Content>
         //         </ListItem>
         //       );

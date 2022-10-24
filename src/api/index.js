@@ -3,7 +3,6 @@ import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
 
-
 // import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
 import axios from "axios";
@@ -24,7 +23,7 @@ import axios from "axios";
 const refetchBaseQuery = fetchBaseQuery({
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
   // baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `${Constants.default.manifest2.extra.expoClient.extra.baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -140,11 +139,12 @@ const customBaseQuery = async (args, api, extraOptions) => {
     return err;
   }
 };
-
+// console.log("LALLALA: ", Constants.default.manifest2.extra.expoClient.extra.baseUrl)
 const baseQuery = fetchBaseQuery({
+  
   // baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `${Constants.default.manifest2.extra.expoClient.extra.baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);

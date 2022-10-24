@@ -21,7 +21,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "http://10.0.2.2:3000",
+      baseUrl: "https://social-corners-speak-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

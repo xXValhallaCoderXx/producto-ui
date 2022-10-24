@@ -8,7 +8,8 @@ import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { StyleSheet, Platform, View, ToastAndroid, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
+import * as Localization from "expo-localization";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
@@ -45,9 +46,10 @@ const RegisterScreen = ({ navigation }) => {
     }),
 
     onSubmit: async ({ email, password }) => {
-      const result = await registerApi({ email, password });
+      const timezone = Localization.timezone;
+      const result = await registerApi({ email, password, timezone });
       if (result?.data?.data) {
-        const { accessToken, refreshToken } = result.data.data;
+        const { accessToken, refreshToken } = result?.data?.data;
         await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
         await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
         dispatch(toggleIsAuthenticated(true));
@@ -96,11 +98,12 @@ const RegisterScreen = ({ navigation }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 50,
+          marginTop: 106,
+          marginBottom: 40,
         }}
       >
         <Image
-          style={{ height: 40, width: 220, marginBottom: 40 }}
+          style={{ height: 40, width: 220 }}
           source={require("../../../assets/images/title-dark.png")}
         />
       </View>
@@ -110,7 +113,6 @@ const RegisterScreen = ({ navigation }) => {
           <TextInput
             onChangeText={formik.handleChange("email")}
             autoFocus
-            dense
             onBlur={formik.handleBlur("email")}
             value={formik.values.email}
             mode="outlined"
@@ -135,7 +137,6 @@ const RegisterScreen = ({ navigation }) => {
 
           <TextInput
             onChangeText={formik.handleChange("password")}
-            dense
             onBlur={formik.handleBlur("password")}
             value={formik.values.password}
             mode="outlined"
@@ -146,7 +147,6 @@ const RegisterScreen = ({ navigation }) => {
               backgroundColor: "white",
               marginTop: 10,
             }}
-            // secureTextEntry={secretMap["password"]}
             right={
               <TextInput.Icon
                 style={{ paddingBottom: 4 }}
@@ -169,7 +169,6 @@ const RegisterScreen = ({ navigation }) => {
 
           <TextInput
             onChangeText={formik.handleChange("confirmPassword")}
-            dense
             onBlur={formik.handleBlur("confirmPassword")}
             secureTextEntry={secretMap["confirmPassword"]}
             value={formik.values.confirmPassword}
@@ -180,7 +179,6 @@ const RegisterScreen = ({ navigation }) => {
               backgroundColor: "white",
               marginTop: 10,
             }}
-            // secureTextEntry={secretMap["confirmPassword"]}
             right={
               <TextInput.Icon
                 style={{ paddingBottom: 4 }}

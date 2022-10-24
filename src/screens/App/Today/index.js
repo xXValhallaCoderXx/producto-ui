@@ -2,9 +2,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
-import { useTheme, Skeleton } from "@rneui/themed";
+import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, ScrollView, Animated, Platform } from "react-native";
+import { StyleSheet, View, Animated, Platform } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -28,7 +28,6 @@ import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
-  const { theme } = useTheme();
   const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
@@ -43,14 +42,16 @@ const ListScreen = () => {
     isLoading,
     isFetching,
     error,
-  } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
+  } = useGetTodaysTasksQuery(
+    { date: format(utcDate, "yyyy-MM-dd") }
+  );
   const [posY] = useState(new Animated.Value(0));
   const {
     data: incompleteTasks,
     isLoading: incompleteIsLoading,
     error: incError,
   } = useGetIncompleteTasksQuery({});
-  const [isDisabled, setIsDisabled] = useState(true);
+
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();

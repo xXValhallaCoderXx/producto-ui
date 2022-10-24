@@ -12,10 +12,10 @@ const authApi = api.injectEndpoints({
       },
     }),
     register: builder.mutation({
-      query: ({ email, password }) => ({
+      query: ({ email, password , timezone}) => ({
         url: "/auth/register",
         method: "POST",
-        body: { email, password },
+        body: { email, password, timezone },
       }),
     }),
     verifyEmail: builder.query({
