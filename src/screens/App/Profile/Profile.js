@@ -75,6 +75,14 @@ const ProfileScreen = ({ navigation }) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
     setisAutoTaskModalVisible(false);
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: "Tasks have been moved!",
+    });
   };
 
   const navigateToEditPassword = () => {
