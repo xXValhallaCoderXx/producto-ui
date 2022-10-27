@@ -28,7 +28,6 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -36,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
-  console.log("LOGIN API: ", verifyResult);
+
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true

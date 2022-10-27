@@ -35,9 +35,7 @@ export default function App() {
           (await NavigationBar.setButtonStyleAsync("dark"));
 
         const isFirstLoad = await AsyncStorage.getItem("@first-load");
-        console.log("WHAT IS FIRST LOAD: ", typeof isFirstLoad);
         if (isFirstLoad === "true") {
-          console.log("DISPATCH")
           store.dispatch({
             type: "global/toggleFirstLoad",
             payload: true,

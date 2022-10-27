@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
-import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
 import { useTheme } from "react-native-paper";
-import { View, ScrollView } from "react-native";
+import { View } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
 
-const EditPassword = ({ route, navigation }) => {
+const EditPassword = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
   const [secretMap, setSecretMap] = useState({
     newPassword: true,
     currentPassword: true,
-    confirmPassword: true
+    confirmPassword: true,
   });
   const [updatePassword, updatePasswordResult] = useUpdatePasswordMutation();
   useEffect(() => {
@@ -43,9 +42,15 @@ const EditPassword = ({ route, navigation }) => {
         .required("Password field is required"),
     }),
 
-    onSubmit: async ({ confirmPassword, currentPassword, newPassword }) => {
-      await updatePassword({ newPassword, currentPassword, confirmPassword });
-      toast.show("Email succesffully updated", {
+    onSubmit: async ({ currentPassword, newPassword }) => {
+      await updatePassword({ newPassword, currentPassword });
+    },
+  });
+
+  useEffect(() => {
+    if (updatePasswordResult.isSuccess) {
+      formik.resetForm();
+      toast.show("Password succesffully updated", {
         type: "success",
         duration: 2500,
         offset: 30,
@@ -54,11 +59,22 @@ const EditPassword = ({ route, navigation }) => {
         title: "Sucessfully updated password!",
         description: "You may now login with your new password",
       });
-    },
-  });
-
-  useEffect(() => {
-    console.log("UPDATE EMAIL", updatePasswordResult);
+      navigation.navigate("Accounts");
+    }
+    if (updatePasswordResult.isError) {
+      const message = Array.isArray(updatePasswordResult?.error?.data?.message)
+        ? updatePasswordResult?.error?.data?.message[0]
+        : updatePasswordResult?.error?.data?.message;
+      toast.show("Password succesffully updated", {
+        type: "success",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Error updating password!",
+        description: message ?? "Sorry an error occured",
+      });
+    }
   }, [updatePasswordResult]);
 
   const handlePassToggle = (key) => () => {
@@ -71,19 +87,19 @@ const EditPassword = ({ route, navigation }) => {
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
-
+  console.log("FORMIK: ", formik.isValid)
   return (
     <View
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
     >
       <Text style={{ marginBottom: 15 }}>
-        Enter your current password, and your new password you wish to change to.
+        Enter your current password, and your new password you wish to change
+        to.
       </Text>
 
       <TextInput
         onChangeText={formik.handleChange("currentPassword")}
         autoFocus
-        
         onBlur={formik.handleBlur("currentPassword")}
         value={formik.values.currentPassword}
         mode="outlined"
@@ -114,7 +130,6 @@ const EditPassword = ({ route, navigation }) => {
         onChangeText={formik.handleChange("newPassword")}
         onBlur={formik.handleBlur("newPassword")}
         value={formik.values.newPassword}
-        
         mode="outlined"
         label="New Password"
         placeholder="Enter new password"
@@ -141,7 +156,6 @@ const EditPassword = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("confirmPassword")}
         onBlur={formik.handleBlur("confirmPassword")}
-        
         value={formik.values.confirmPassword}
         mode="outlined"
         label="Confirm Password"
@@ -171,6 +185,8 @@ const EditPassword = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
+        disabled={updatePasswordResult.isLoading || !formik.isValid || !formik.dirty}
+        loading={updatePasswordResult.isLoading}
       />
     </View>
   );

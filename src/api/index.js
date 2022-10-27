@@ -38,7 +38,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
   let result;
   //
   try {
-    console.log("INCOMING API: ", args);
     result = await baseQuery(args, api, extraOptions);
    
     if (
@@ -69,7 +68,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
           // ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
         }
       } else {
-        console.log("HIT")
         await SecureStore.setItemAsync(JWT_KEY_STORE, "");
         await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
@@ -139,7 +137,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
     return err;
   }
 };
-// console.log("LALLALA: ", Constants.default.manifest2.extra.expoClient.extra.baseUrl)
 const baseQuery = fetchBaseQuery({
   
   // baseUrl: `https://rude-chicken-attack-116-86-1-104.loca.lt/api/v1`,

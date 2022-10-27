@@ -72,8 +72,10 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
+      console.log("UPDATE SUCCESS: ", updateEmailResult)
     }
     if (updateEmailResult.isError) {
+      console.log("UPDATE ERROR: ", updateEmailResult)
     }
   }, [updateEmailResult]);
 
