@@ -77,13 +77,13 @@ const EditPassword = ({ route, navigation }) => {
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
     >
       <Text style={{ marginBottom: 15 }}>
-        Enter your current password, and your new one.
+        Enter your current password, and your new password you wish to change to.
       </Text>
 
       <TextInput
         onChangeText={formik.handleChange("currentPassword")}
         autoFocus
-        dense
+        
         onBlur={formik.handleBlur("currentPassword")}
         value={formik.values.currentPassword}
         mode="outlined"
@@ -114,7 +114,7 @@ const EditPassword = ({ route, navigation }) => {
         onChangeText={formik.handleChange("newPassword")}
         onBlur={formik.handleBlur("newPassword")}
         value={formik.values.newPassword}
-        dense
+        
         mode="outlined"
         label="New Password"
         placeholder="Enter new password"
@@ -141,7 +141,7 @@ const EditPassword = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("confirmPassword")}
         onBlur={formik.handleBlur("confirmPassword")}
-        dense
+        
         value={formik.values.confirmPassword}
         mode="outlined"
         label="Confirm Password"

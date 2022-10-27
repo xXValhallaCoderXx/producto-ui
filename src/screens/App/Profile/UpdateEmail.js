@@ -35,10 +35,10 @@ const UpdateEmail = ({ route, navigation }) => {
       password: Yup.string()
         .min(6, "Please enter a minimum of 6 characters")
         .max(50, "Password exceeded 50 characters")
-        .required("Password field is required"),
+        .required("Please enter your current password"),
       email: Yup.string()
         .email("Please enter a valid email address")
-        .required("Email address is required"),
+        .required("Your new e-mail address is required"),
     }),
 
     onSubmit: async ({ email, password }) => {
@@ -103,7 +103,7 @@ const UpdateEmail = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("password")}
         autoFocus
-        dense
+   
         onBlur={formik.handleBlur("password")}
         value={formik.values.password}
         mode="outlined"
@@ -116,7 +116,7 @@ const UpdateEmail = ({ route, navigation }) => {
         right={<TextInput.Icon style={{paddingBottom: 2}} onPress={handlePassToggle("password")} icon="eye" /> }
       />
 
-      <View style={{ height: 20 }}>
+      <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
@@ -129,7 +129,7 @@ const UpdateEmail = ({ route, navigation }) => {
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
         mode="outlined"
-        dense
+
         label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
