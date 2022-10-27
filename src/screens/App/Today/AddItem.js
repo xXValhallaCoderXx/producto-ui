@@ -1,20 +1,11 @@
-import { useState, useCallback, useRef } from "react";
-import debounce from "lodash.debounce";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { useState, useRef } from "react";
+import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Input, useTheme, Button, CheckBox } from "@rneui/themed";
-import { useKeyboard } from "../../../shared/hooks/use-keyboard";
+import { useTheme, Button, CheckBox } from "@rneui/themed";
 
 const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   const { theme } = useTheme();
-  const keyboard = useKeyboard();
+
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -33,10 +24,11 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   };
 
   const handleOnPress = () => {
-    setAddTask(true);
-    addTaskInputRef.current && addTaskInputRef.current.focus();
-    setTaskName("");
-    setError("");
+    console.log("WEEJEJEJJE");
+    // setAddTask(true);
+    // addTaskInputRef.current && addTaskInputRef.current.focus();
+    // setTaskName("");
+    // setError("");
   };
 
   const handleOnBlur = async () => {
@@ -44,9 +36,7 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
     if (taskName.length > 0) {
       setTaskName("");
       await handleCreateNewTask(taskName);
-    
     }
-   
   };
 
   // const onSubmitTask = async () => {
@@ -66,11 +56,11 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   if (!editMode) {
     return null;
   }
-
+  console.log("waaaa", editMode)
   return (
     <View
-    style={{marginTop: 15}}
-    // keyboardShouldPersistTaps="handled"
+      style={{ marginTop: 35 }}
+      // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (
         <View>
@@ -125,7 +115,10 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
           type="clear"
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}
-          buttonStyle={{ display: "flex", justifyContent: "flex-start" }}
+          buttonStyle={{
+            display: "flex",
+            justifyContent: "flex-start",
+          }}
           onPress={handleOnPress}
         >
           <MaterialIcons

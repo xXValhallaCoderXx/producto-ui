@@ -118,11 +118,8 @@ const taskApi = api.injectEndpoints({
         };
       },
       async onQueryStarted({ title, deadline, date }, { dispatch, queryFulfilled }) {
-        console.log("HMMMM")
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            console.log("DRAFT: ", draft);
-      
             draft.push({
               completed: false,
               focus: false,

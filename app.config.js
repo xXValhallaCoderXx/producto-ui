@@ -21,7 +21,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://chubby-aliens-lose-116-86-1-104.loca.lt",
+      baseUrl: "https://clean-lies-end-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },
