@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import * as Localization from "expo-localization";
 import {
   JWT_KEY_STORE,
@@ -32,15 +32,24 @@ const RegisterScreen = ({ navigation }) => {
       password: "",
       confirmPassword: "",
     },
+    // validate: (values) => {
+    //   const errors = {
+    //     ...(Boolean(passwordCheck(values.password)) && {password: passwordCheck(values.password)}),
+    //     ...(Boolean(passwordCheck(values.password)) && {confirmPassword: passwordCheck(values.confirmPassword)})
+    //   };
+    //   return errors;
+    // },
     validationSchema: Yup.object().shape({
-      email: Yup.string().required("Email field is required").email(),
+      email: Yup.string()
+        .required("Email field is required")
+        .email("Please enter a valid e-mail address"),
       password: Yup.string()
         .required("Password is required")
         .min(6, "Please enter a minimum of 6 characters")
         .max(50, "Password exceeded 50 characters"),
       confirmPassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Passwords don't match")
-        .required("Confirm Password is required")
+        .oneOf([Yup.ref("password"), null], "Passwords do not match")
+        .required("Password confirmation is required")
         .min(6, "Please enter a minimum of 6 characters")
         .max(50, "Password exceeded 50 characters"),
     }),
@@ -116,7 +125,7 @@ const RegisterScreen = ({ navigation }) => {
             onBlur={formik.handleBlur("email")}
             value={formik.values.email}
             mode="outlined"
-            label="Email"
+            label="E-mail"
             keyboardType="email-address"
             placeholder="Enter Email"
             style={{
@@ -207,25 +216,30 @@ const RegisterScreen = ({ navigation }) => {
         <ProductoButton
           loading={registerApiResult.isLoading}
           type="contained"
-          // disabled={!email || !password || (!confirmPassword && !error)}
+          disabled={registerApiResult.isLoading || !formik.isValid}
           title="Register"
           onPress={formik.handleSubmit}
           color="primary"
         />
-        <Text style={{ color: theme.colors.primary, marginTop: 20 }} h5>
-          Already have an account?
-        </Text>
-        <Text
-          h6
+        <TouchableOpacity
+          style={{ marginTop: 20 }}
           onPress={() => navigation.navigate("Login")}
-          style={{
-            color: "black",
-            marginTop: 5,
-            fontWeight: "700",
-          }}
         >
-          Log-in Here
-        </Text>
+          <Text style={{ color: theme.colors.primary }} h5>
+            Already have an account?
+          </Text>
+          <Text
+            h6
+            style={{
+              color: "black",
+              marginTop: 5,
+              fontWeight: "700",
+              textAlign: "center",
+            }}
+          >
+            Log-in Here
+          </Text>
+        </TouchableOpacity>
       </View>
     </LayoutView>
   );
