@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { useToast } from "react-native-toast-notifications";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import { useFormik } from "formik";
-import { View, ScrollView } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { View } from "react-native";
 import { useUpdateEmailMutation } from "../../../api/auth-api";
 import {
   JWT_KEY_STORE,
