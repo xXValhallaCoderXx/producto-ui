@@ -32,7 +32,7 @@ const ListScreen = () => {
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
-  const editMode = useSelector((state) => state.today.editMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
@@ -61,11 +61,11 @@ const ListScreen = () => {
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: editMode ? 160 : 130,
+      toValue: focusMode ? 160 : 130,
       duration: 350,
       useNativeDriver: true,
     }).start();
-  }, [editMode]);
+  }, [focusMode]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -176,18 +176,18 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-  console.log("EDIT MODE: ", editMode);
+  console.log("FOCUS MODE: ", focusMode);
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
         <Header
           clientUtc={utcDate}
-          editMode={editMode}
+          focusMode={focusMode}
           onChangeDate={handleOnChangeDate}
           onPressToday={handleOnPressToday}
           onPressDate={handleOnPressDate}
         />
-        <ProgressBar editMode={editMode} progress={progress} />
+        <ProgressBar focusMode={focusMode} progress={progress} />
 
         <View
           contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
@@ -229,7 +229,7 @@ const ListScreen = () => {
             handleOnSelectDay={handleOnSelectDay}
           />
 
-          {isFetching || !editMode ? null : (
+          {isFetching || !focusMode ? null : (
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}

@@ -1,15 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { convertUTCDateToLocalDate } from "../../../shared/utils/date-utils";
 
 export const todaySlice = createSlice({
   name: "today-slice",
   initialState: {
-    editMode: true,
+    focusMode: true,
     calendarOpen: false,
   },
   reducers: {
-    toggleEdit: (state, action) => {
-      state.editMode = action.payload.editMode ?? !state.editMode;
+    toggleFocusMode: (state, action) => {
+      state.focusMode = action.payload.focusMode ?? !state.focusMode;
     },
     toggleCalendar: (state, action) => {
       state.calendarOpen = !state.calendarOpen;
@@ -17,6 +16,6 @@ export const todaySlice = createSlice({
   },
 });
 
-export const { toggleEdit, toggleCalendar } = todaySlice.actions;
+export const { toggleFocusMode, toggleCalendar } = todaySlice.actions;
 
 export default todaySlice.reducer;

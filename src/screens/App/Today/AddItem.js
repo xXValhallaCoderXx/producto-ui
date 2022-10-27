@@ -3,18 +3,12 @@ import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme, Button, CheckBox } from "@rneui/themed";
 
-const AddItem = ({ handleCreateNewTask, currentDate }) => {
+const AddItem = ({ handleCreateNewTask }) => {
   const { theme } = useTheme();
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
-
-  // highlight-starts
-  // const debouncedSave = useCallback(
-  //   debounce((nextValue) => console.log(nextValue), 350),
-  //   [] // will be created only once initially
-  // );
 
   const handleOnChange = (value) => {
     setError("");
@@ -37,24 +31,6 @@ const AddItem = ({ handleCreateNewTask, currentDate }) => {
       await handleCreateNewTask(taskName);
     }
   };
-
-  // const onSubmitTask = async () => {
-  //   if (taskName.length < 1) {
-  //     setError("Task name too short");
-  //   } else {
-  //     try {
-  //       // await httpClient.post(`/task`, { title: taskName, focus: true });
-  //       await handleCreateNewTask(taskName);
-  //       setTaskName("");
-  //       setAddTask(false);
-  //     } catch (err) {
-  //       console.log("err: ", err);
-  //     }
-  //   }
-  // };
-  // if (!editMode) {
-  //   return null;
-  // }
 
   return (
     <View

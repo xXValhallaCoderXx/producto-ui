@@ -25,7 +25,7 @@ const DraggableListContainer = ({
   const [value, setTaskValue] = useState("");
 
   const [updateTaskApi] = useUpdateTaskMutation();
-  const editMode = useSelector((state) => state.today.editMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
@@ -127,7 +127,7 @@ const DraggableListContainer = ({
         >
           <ListItem.Content style={styles.listContent}>
             <View style={styles.listRow}>
-              {editMode && currentDate === todayDate && (
+              {focusMode && currentDate === todayDate && (
                 <IoniIcons
                   style={{
                     fontSize: 22,
