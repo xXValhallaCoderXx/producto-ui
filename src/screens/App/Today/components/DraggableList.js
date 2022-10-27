@@ -108,6 +108,7 @@ const DraggableListContainer = ({
       <ScaleDecorator>
         <ListItem
           onLongPress={drag}
+
           onPress={() => {
             countRef++;
             if (countRef == 2) {
@@ -148,7 +149,7 @@ const DraggableListContainer = ({
                 {item.title}
               </ListItem.Title>
             </View>
-            <View style={{ marginRight: -13 }}>
+            <View style={{ marginRight: -10 }}>
               <CheckBox
                 checked={item.completed}
                 containerStyle={{ padding: 0 }}
@@ -178,12 +179,6 @@ const DraggableListContainer = ({
 };
 
 const styles = StyleSheet.create({
-  rowItem: {
-    height: 100,
-    width: 100,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   text: {
     color: "white",
     fontSize: 24,

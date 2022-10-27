@@ -15,22 +15,27 @@ const AddItem = ({ handleCreateNewTask }) => {
   const handleOnChange = (value) => {
     setError("");
     setTaskName(value);
-    // debouncedSave(value);
   };
 
   const handleOnPress = () => {
-    console.log("WEEJEJEJJE", Math.random());
-    // setAddTask(true);
-    // addTaskInputRef.current && addTaskInputRef.current.focus();
-    // setTaskName("");
+  
+    if(!addTask){
+      console.log("WEEJEJEJJE", Math.random());
+      setTaskName("");
+      setAddTask(true);
+      addTaskInputRef.current && addTaskInputRef.current.focus();
+    }
     // setError("");
   };
 
   const handleOnBlur = async () => {
     setAddTask(false);
     if (taskName.length > 0) {
+      const newValue = taskName;
       setTaskName("");
-      await handleCreateNewTask(taskName);
+      console.log("NEW VALUE: ", newValue)
+      await handleCreateNewTask(newValue);
+
     }
   };
 
