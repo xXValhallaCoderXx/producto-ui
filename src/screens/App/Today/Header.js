@@ -11,8 +11,8 @@ import { format } from "date-fns";
 import { Text as Text2 } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { Text, useTheme } from "@rneui/themed";
-import { useDispatch } from "react-redux";
-import { toggleFocusMode } from "./today-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFocusMode, toggleIsToday } from "./today-slice";
 
 const TodayHeader = ({
   focusMode,
@@ -23,16 +23,16 @@ const TodayHeader = ({
 }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-  const [isToday, setIsToday] = useState(false);
+  const isToday = useSelector((state) => state.today.isToday);
 
   useEffect(() => {
     if (clientUtc) {
       const currentDate = format(clientUtc, "yyyy-MM-dd");
       const todayDate = format(new Date(), "yyyy-MM-dd");
       if (currentDate === todayDate) {
-        setIsToday(true);
+        dispatch(toggleIsToday(true));
       } else {
-        setIsToday(false);
+        dispatch(toggleIsToday(false));
       }
     }
   }, [clientUtc]);

@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
+import { useSelector } from "react-redux";
 import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme, Button, CheckBox } from "@rneui/themed";
 
 const AddItem = ({ handleCreateNewTask }) => {
   const { theme } = useTheme();
+  const isToday = useSelector((state) => state.today.isToday);
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -31,6 +33,10 @@ const AddItem = ({ handleCreateNewTask }) => {
       await handleCreateNewTask(taskName);
     }
   };
+
+  if (!isToday) {
+    return null;
+  }
 
   return (
     <View

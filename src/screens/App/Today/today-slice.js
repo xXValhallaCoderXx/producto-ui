@@ -5,6 +5,7 @@ export const todaySlice = createSlice({
   initialState: {
     focusMode: true,
     calendarOpen: false,
+    isToday: true,
   },
   reducers: {
     toggleFocusMode: (state, action) => {
@@ -13,9 +14,13 @@ export const todaySlice = createSlice({
     toggleCalendar: (state, action) => {
       state.calendarOpen = !state.calendarOpen;
     },
+    toggleIsToday: (state, action) => {
+      state.isToday = action.payload;
+    },
   },
 });
 
-export const { toggleFocusMode, toggleCalendar } = todaySlice.actions;
+export const { toggleFocusMode, toggleCalendar, toggleIsToday } =
+  todaySlice.actions;
 
 export default todaySlice.reducer;
