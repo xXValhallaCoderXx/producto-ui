@@ -43,23 +43,15 @@ const UpdateEmail = ({ route, navigation }) => {
 
     onSubmit: async ({ email, password }) => {
       const result = await updateEmail({ email, password });
-      const { tokens } = result.data;
 
-      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
-      await SecureStore.setItemAsync(
-        REFRESH_JWT_KEY_STORE,
-        tokens.refreshToken
-      );
-      navigation.navigate("Accounts");
-      toast.show("Email succesffully updated", {
-        type: "success",
-        duration: 2500,
-        offset: 30,
-        animationType: "zoom-in",
-        placement: "bottom",
-        title: "Succesfully updated email!",
-        description: "You may now login with your new email",
-      });
+      if (!result.error) {
+        const { tokens } = result?.data;
+        await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+        await SecureStore.setItemAsync(
+          REFRESH_JWT_KEY_STORE,
+          tokens.refreshToken
+        );
+      }
     },
   });
 
@@ -72,26 +64,34 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
-      console.log("UPDATE SUCCESS: ", updateEmailResult)
+      navigation.navigate("Accounts");
+      toast.show("Email succesfully updated", {
+        type: "success",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Succesfully updated email!",
+        description: "You may now login with your new email",
+      });
     }
     if (updateEmailResult.isError) {
-      console.log("UPDATE ERROR: ", updateEmailResult)
+      const message = Array.isArray(updateEmailResult?.error?.data?.message)
+      ? updateEmailResult?.error?.data?.message[0]
+      : updateEmailResult?.error?.data?.message;
+
+      toast.show("Email update error", {
+        type: "error",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Error updating email!",
+        description: message ?? "Sorry, an error occured"
+      });
+
     }
   }, [updateEmailResult]);
-
-  //   const handleChangeEmail = async (values) => {
-  //     try {
-  //       // unwrapping will cause data to resolve, or an error to be thrown, and will narrow the types
-  //       const result = await updateEmailApi({
-  //         password: values.password,
-  //         email: values.email,
-  //       });
-
-  //       // refetch(); // you should most likely just use tag invalidation here instead of calling refetch
-  //     } catch (error) {
-  //       console.log("ERROR: ", error);
-  //     }
-  //   };
 
   return (
     <View
@@ -105,7 +105,6 @@ const UpdateEmail = ({ route, navigation }) => {
       <TextInput
         onChangeText={formik.handleChange("password")}
         autoFocus
-   
         onBlur={formik.handleBlur("password")}
         value={formik.values.password}
         mode="outlined"
@@ -115,7 +114,13 @@ const UpdateEmail = ({ route, navigation }) => {
           backgroundColor: "white",
         }}
         secureTextEntry={secretMap["password"]}
-        right={<TextInput.Icon style={{paddingBottom: 2}} onPress={handlePassToggle("password")} icon="eye" /> }
+        right={
+          <TextInput.Icon
+            style={{ paddingBottom: 2 }}
+            onPress={handlePassToggle("password")}
+            icon="eye"
+          />
+        }
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
@@ -131,7 +136,6 @@ const UpdateEmail = ({ route, navigation }) => {
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
         mode="outlined"
-
         label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
@@ -153,8 +157,10 @@ const UpdateEmail = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={formik.handleSubmit}
+        disabled={
+          updateEmailResult.isLoading || !formik.isValid || !formik.dirty
+        }
         loading={updateEmailResult.isLoading}
-        disabled={updateEmailResult.isLoading}
       />
     </View>
   );

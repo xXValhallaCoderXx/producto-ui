@@ -87,7 +87,7 @@ const EditPassword = ({ navigation }) => {
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
-  console.log("FORMIK: ", formik.isValid)
+  console.log("FORMIK: ", formik.isValid);
   return (
     <View
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
@@ -185,7 +185,9 @@ const EditPassword = ({ navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
-        disabled={updatePasswordResult.isLoading || !formik.isValid || !formik.dirty}
+        disabled={
+          updatePasswordResult.isLoading || !formik.isValid || !formik.dirty
+        }
         loading={updatePasswordResult.isLoading}
       />
     </View>
