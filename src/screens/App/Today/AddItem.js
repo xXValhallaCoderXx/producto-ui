@@ -23,7 +23,7 @@ const AddItem = ({ handleCreateNewTask, currentDate }) => {
   };
 
   const handleOnPress = () => {
-    console.log("WEEJEJEJJE");
+    console.log("WEEJEJEJJE", Math.random());
     // setAddTask(true);
     // addTaskInputRef.current && addTaskInputRef.current.focus();
     // setTaskName("");
