@@ -3,9 +3,8 @@ import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme, Button, CheckBox } from "@rneui/themed";
 
-const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
+const AddItem = ({ handleCreateNewTask, currentDate }) => {
   const { theme } = useTheme();
-
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -53,10 +52,10 @@ const AddItem = ({ handleCreateNewTask, editMode, currentDate }) => {
   //     }
   //   }
   // };
-  if (!editMode) {
-    return null;
-  }
-  console.log("waaaa", editMode)
+  // if (!editMode) {
+  //   return null;
+  // }
+
   return (
     <View
       style={{ marginTop: 35 }}

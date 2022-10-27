@@ -42,9 +42,7 @@ const ListScreen = () => {
     isLoading,
     isFetching,
     error,
-  } = useGetTodaysTasksQuery(
-    { date: format(utcDate, "yyyy-MM-dd") }
-  );
+  } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
   const [posY] = useState(new Animated.Value(0));
   const {
     data: incompleteTasks,
@@ -178,7 +176,7 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-
+  console.log("EDIT MODE: ", editMode);
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
@@ -208,7 +206,6 @@ const ListScreen = () => {
               >
                 <TaskList
                   tasks={tasks || []}
-                  editMode={editMode}
                   handleToggleTaskFocus={handleToggleTaskFocus}
                   handleToggleTaskComplete={handleToggleTaskComplete}
                   currentTask={currentTask}
@@ -218,7 +215,6 @@ const ListScreen = () => {
 
                 <AddItem
                   handleCreateNewTask={handleCreateNewTask}
-                  editMode={editMode}
                   currentDate={utcDate}
                 />
               </Animated.View>

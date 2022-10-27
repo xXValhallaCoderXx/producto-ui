@@ -1,11 +1,13 @@
 import React, { useCallback, useMemo, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { View, Text, StyleSheet, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import productoLogo from "../../../assets/images/title-dark.png";
+import { toggleFirstLoad } from "../../../shared/slice/global-slice";
 
 const IntroBottomSheet = () => {
+  const dispatch = useDispatch();
   const { firstLoad } = useSelector((state) => state.global);
 
   const bottomSheetRef = useRef(null);
@@ -20,9 +22,9 @@ const IntroBottomSheet = () => {
 
   // callbacks
   const handleSheetChanges = useCallback(async (index) => {
-    console.log("handleSheetChanges", index);
     if (index === -1) {
-      await AsyncStorage.setItem("@first-load", "true");
+      await AsyncStorage.setItem("@first-load", "false");
+      dispatch(toggleFirstLoad(false));
     }
   }, []);
 
@@ -30,7 +32,6 @@ const IntroBottomSheet = () => {
     return null;
   }
 
-  // renders
   return (
     <BottomSheet
       ref={bottomSheetRef}
@@ -67,6 +68,12 @@ const IntroBottomSheet = () => {
         <Text style={{ color: "#6B7280", fontSize: 12 }}>
           Regain clarity with your life, by getting all those little things
           done, with Producto you have all the tools you need.
+        </Text>
+
+        <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 15 }}>
+          Get started by adding tasks, and choose which ones you want to focus
+          on first, by toggling their "key", these are the only tasks you will
+          see, when locked into focus mode
         </Text>
       </View>
     </BottomSheet>

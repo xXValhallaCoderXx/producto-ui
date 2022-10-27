@@ -1,17 +1,10 @@
-import { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useDispatch } from "react-redux";
 import LoginScreen from "./Login";
 import RegistrationScreen from "./Register";
-import { toggleFirstLoad } from "../../shared/slice/global-slice";
 
 const Stack = createNativeStackNavigator();
 
 const AuthScreens = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(toggleFirstLoad(false));
-  }, [])
   return (
     <Stack.Navigator
       screenOptions={() => ({

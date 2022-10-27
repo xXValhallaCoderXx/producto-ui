@@ -12,9 +12,11 @@ export const globalSlice = createSlice({
       state.init = action.payload;
     },
     toggleIsAuthenticated: (state, action) => {
+      console.log("ACTION: ", action);
       state.isAuthenticated = action.payload;
     },
     toggleFirstLoad: (state, action) => {
+      console.log("WHATSS", action)
       state.firstLoad = action.payload;
     },
   },

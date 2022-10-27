@@ -50,7 +50,7 @@ const RootScreen = ({ navigation }) => {
     prepare();
   }, []);
 
-  if (!init || firstLoad) {
+  if (!init) {
     return (
       <Animated.View
         style={{
