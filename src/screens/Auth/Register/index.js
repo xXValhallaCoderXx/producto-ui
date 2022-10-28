@@ -3,7 +3,6 @@ import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { useRegisterMutation } from "../../../api/auth-api";
-import ProductoButton from "../../../components/Button";
 import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
@@ -113,7 +112,6 @@ const RegisterScreen = ({ navigation }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={50}
       >
         <View
           style={{
