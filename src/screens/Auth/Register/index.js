@@ -129,11 +129,15 @@ const RegisterScreen = ({ navigation }) => {
             label="E-mail"
             keyboardType="email-address"
             placeholder="Enter Email"
+            theme={{ roundness: 8 }}
+            
             style={{
               backgroundColor: "white",
+              height: 55,
+              fontSize: 17
             }}
           />
-          <View style={{ height: 20 }}>
+          <View style={{ height: 25 }}>
             <Text
               style={{
                 marginTop: 5,
@@ -153,24 +157,28 @@ const RegisterScreen = ({ navigation }) => {
             label="Password"
             placeholder="Enter Password"
             secureTextEntry={secretMap["password"]}
+            theme={{ roundness: 8 }}
             style={{
               backgroundColor: "white",
               marginTop: 10,
+              height: 55,
+              fontSize: 17
             }}
             right={
               <TextInput.Icon
-                style={{ paddingBottom: 4 }}
+                style={{ paddingTop: 8 }}
                 onPress={handlePassToggle("password")}
                 icon={secretMap["password"] ? "eye-off" : "eye"}
               />
             }
           />
-          <View style={{ height: 20 }}>
+          <View style={{ height: 25 }}>
             <Text
               style={{
                 marginTop: 5,
                 marginLeft: 10,
                 color: theme.colors.error,
+                
               }}
             >
               {(formik.touched["password"] && formik?.errors?.password) || ""}
@@ -185,13 +193,16 @@ const RegisterScreen = ({ navigation }) => {
             mode="outlined"
             label="Confirm Password"
             placeholder="Confirm Password"
+            theme={{ roundness: 8 }}
             style={{
               backgroundColor: "white",
               marginTop: 10,
+              height: 55,
+              fontSize: 17
             }}
             right={
               <TextInput.Icon
-                style={{ paddingBottom: 4 }}
+              style={{ paddingTop: 8 }}
                 onPress={handlePassToggle("confirmPassword")}
                 icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
               />
@@ -245,7 +256,9 @@ const RegisterScreen = ({ navigation }) => {
       <FooterActions
         handleOnPressPrimary={formik.handleSubmit}
         handleOnPressSecondary={() => navigation.navigate("Login")}
-        disabledPrimary={registerApiResult.isLoading || !formik.isValid || !formik.dirty}
+        disabledPrimary={
+          registerApiResult.isLoading || !formik.isValid || !formik.dirty
+        }
         isLoading={registerApiResult.isLoading}
       />
     </LayoutView>

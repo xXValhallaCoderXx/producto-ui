@@ -1,13 +1,21 @@
-import { View, StyleSheet, Platform } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 
 const LayoutView = ({ children }) => {
   return (
-    <View
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      {children}
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        {children}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

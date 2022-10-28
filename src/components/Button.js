@@ -13,20 +13,10 @@ const ProductoButton = ({
       mode={type}
       size="sm"
       onPress={onPress}
-      style={{ borderRadius: 10, ...style }}
-      labelStyle={{ fontWeight: "700" }}
+      style={{ borderRadius: 10, paddingTop: 4, paddingBottom: 4, ...style }}
+      labelStyle={{ fontWeight: "700", fontSize: 15 }}
       loading={loading}
       disabled={disabled}
-      // buttonStyle={{
-      //   borderColor: "transparent",
-      //   borderWidth: 0,
-      //   borderRadius: 30,
-      // }}
-      // containerStyle={{
-      //   width: "70%",
-      //   marginHorizontal: 50,
-      //   marginVertical: 10,
-      // }}
     >
       {title}
     </Button>
