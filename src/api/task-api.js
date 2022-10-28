@@ -109,7 +109,7 @@ const taskApi = api.injectEndpoints({
       },
     }),
     createTask: builder.mutation({
-      // invalidatesTags: ["Tasks", "IncompleteTasks"],
+      invalidatesTags: ["IncompleteTasks"],
       query: ({ title, deadline, date }) => {
         return {
           url: `/task`,
