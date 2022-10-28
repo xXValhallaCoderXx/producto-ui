@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, Animated, Platform } from "react-native";
+import { StyleSheet, View, Animated, Platform, KeyboardAvoidingView } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -204,7 +204,8 @@ const ListScreen = () => {
               <Animated.View
                 style={{ height: 400, transform: [{ translateY: posXanim }] }}
               >
-                <TaskList
+               <KeyboardAvoidingView>
+               <TaskList
                   tasks={tasks || []}
                   handleToggleTaskFocus={handleToggleTaskFocus}
                   handleToggleTaskComplete={handleToggleTaskComplete}
@@ -217,6 +218,7 @@ const ListScreen = () => {
                   handleCreateNewTask={handleCreateNewTask}
                   currentDate={utcDate}
                 />
+               </KeyboardAvoidingView>
               </Animated.View>
             )}
           </View>

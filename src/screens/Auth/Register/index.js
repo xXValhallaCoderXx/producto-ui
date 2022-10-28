@@ -225,13 +225,13 @@ const RegisterScreen = ({ navigation }) => {
           style={{ marginTop: 20 }}
           onPress={() => navigation.navigate("Login")}
         >
-          <Text style={{ color: theme.colors.primary }} h5>
+          <Text style={{ color: "black" }} h5>
             Already have an account?
           </Text>
           <Text
             h6
             style={{
-              color: "black",
+              color: theme.colors.primary,
               marginTop: 5,
               fontWeight: "700",
               textAlign: "center",

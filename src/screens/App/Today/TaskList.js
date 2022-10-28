@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { View, StyleSheet, ToastAndroid } from "react-native";
 
 import { useUpdateTaskMutation } from "../../../api/task-api";
@@ -15,6 +16,7 @@ const TaskList = ({
 }) => {
   const { theme } = useTheme();
   const [editTask, setEditTask] = useState(null);
+  const focusMode = useSelector(state => state.today.focusMode);
   const [value, setTaskValue] = useState("");
   const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
@@ -58,7 +60,12 @@ const TaskList = ({
         </View>
       ) : (
         <DraggbleList
-          tasks={tasks}
+          tasks={tasks.filter((task) => {
+            if (!focusMode && !task.focus && !task.completed) {
+              return false;
+            }
+            return task;
+          })}
           handleOnPressDelete={handleOnPressDelete}
           utcDate={utcDate}
           onCheckTask={onCheckTask}

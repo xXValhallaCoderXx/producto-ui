@@ -23,7 +23,7 @@ const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
-  const toast = useToast()
+  const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
 
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
-    password: true
+    password: true,
   });
 
   useEffect(() => {
@@ -58,11 +58,10 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
-  
-    if(verifyResult.isError){
+    if (verifyResult.isError) {
       setError(verifyResult?.error?.data?.message);
     }
-  }, [verifyResult])
+  }, [verifyResult]);
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -210,6 +209,7 @@ const LoginScreen = ({ navigation }) => {
                 error={false}
                 outlineColor="#bcc5d6"
                 ref={emailInputRef}
+                theme={{ roundness: 10 }}
                 style={{
                   backgroundColor: "white",
                   height: 50,
@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
     color: "gray",
     textAlign: "center",
     marginLeft: -10,
+    fontWeight: "500",
   },
   inputWrapper: {
     display: "flex",
