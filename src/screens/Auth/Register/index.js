@@ -78,9 +78,10 @@ const RegisterScreen = ({ navigation }) => {
       [key]: secretMap[key] ? false : true,
     });
   };
-
+  console.log("register: ", registerApiResult)
   useEffect(() => {
     if (registerApiResult.isError) {
+      const message = registerApiResult.error.data.message ?? "Sorry an error has occured"
       toast.show("Email succesffully updated", {
         type: "success",
         duration: 2500,
@@ -88,7 +89,7 @@ const RegisterScreen = ({ navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Error Registering User!",
-        description: "Please try something else",
+        description: message
       });
     }
   }, [registerApiResult.isError]);
