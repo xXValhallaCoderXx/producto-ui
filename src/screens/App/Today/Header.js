@@ -72,6 +72,7 @@ const TodayHeader = ({
                     h4
                     style={{
                       color: theme.colors.primary,
+                      fontWeight: "600",
                     }}
                   >
                     Today

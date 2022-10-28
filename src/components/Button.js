@@ -11,13 +11,12 @@ const ProductoButton = ({
   return (
     <Button
       mode={type}
-      size="lg"
+      size="sm"
       onPress={onPress}
       style={{ borderRadius: 10, ...style }}
       labelStyle={{ fontWeight: "700" }}
       loading={loading}
       disabled={disabled}
-    
       // buttonStyle={{
       //   borderColor: "transparent",
       //   borderWidth: 0,

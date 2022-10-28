@@ -4,7 +4,14 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StyleSheet, View, Image, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Animated,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
@@ -59,6 +66,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
+      console.log("MESMSMS: ", verifyResult.error?.data?.message);
       setError(verifyResult?.error?.data?.message);
     }
   }, [verifyResult]);
@@ -166,6 +174,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
+    <TouchableWithoutFeedback
+    onPress={Keyboard.dismiss}
+    accessible={false}
+  
+  >
     <LayoutView>
       <View style={styles.titleContainer}>
         <Image
@@ -202,25 +215,27 @@ const LoginScreen = ({ navigation }) => {
                 width: windowWidth,
               }}
             >
-              <MuiTextInput
-                label="Email"
-                value={email}
-                mode="outlined"
-                error={false}
-                outlineColor="#bcc5d6"
-                ref={emailInputRef}
-                theme={{ roundness: 10 }}
-                style={{
-                  backgroundColor: "white",
-                  height: 50,
-                  width: "85%",
-                  fontSize: 14,
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
-                }}
-                onChangeText={handleOnChangeEmail}
-                keyboardType="email-address"
-              />
+          
+                <MuiTextInput
+                  label="Email"
+                  value={email}
+                  mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
+                  ref={emailInputRef}
+                  theme={{ roundness: 10 }}
+                  style={{
+                    backgroundColor: "white",
+                    height: 50,
+                    width: "85%",
+                    fontSize: 14,
+                    width: windowWidth * 0.85,
+                    maxWidth: windowWidth * 0.9,
+                  }}
+                  onChangeText={handleOnChangeEmail}
+                  keyboardType="email-address"
+                />
+           
 
               <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                 {error ? (
@@ -297,6 +312,7 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
     </LayoutView>
+    </TouchableWithoutFeedback>
   );
 };
 

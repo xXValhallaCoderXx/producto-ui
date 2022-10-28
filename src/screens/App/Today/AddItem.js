@@ -20,7 +20,6 @@ const AddItem = ({ handleCreateNewTask }) => {
   const handleOnPress = () => {
   
     if(!addTask){
-      console.log("WEEJEJEJJE", Math.random());
       setTaskName("");
       setAddTask(true);
       addTaskInputRef.current && addTaskInputRef.current.focus();
@@ -33,9 +32,7 @@ const AddItem = ({ handleCreateNewTask }) => {
     if (taskName.length > 0) {
       const newValue = taskName;
       setTaskName("");
-      console.log("NEW VALUE: ", newValue)
       await handleCreateNewTask(newValue);
-
     }
   };
 
@@ -104,7 +101,10 @@ const AddItem = ({ handleCreateNewTask }) => {
           buttonStyle={{
             display: "flex",
             justifyContent: "flex-start",
+          
           }}
+     
+          
           onPress={handleOnPress}
         >
           <MaterialIcons

@@ -10,6 +10,7 @@ import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import * as Localization from "expo-localization";
+import FooterActions from "./FooterAction";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
@@ -160,7 +161,7 @@ const RegisterScreen = ({ navigation }) => {
               <TextInput.Icon
                 style={{ paddingBottom: 4 }}
                 onPress={handlePassToggle("password")}
-                icon="eye"
+                icon={secretMap["password"] ? "eye-off" : "eye"}
               />
             }
           />
@@ -192,7 +193,7 @@ const RegisterScreen = ({ navigation }) => {
               <TextInput.Icon
                 style={{ paddingBottom: 4 }}
                 onPress={handlePassToggle("confirmPassword")}
-                icon="eye"
+                icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
               />
             }
           />
@@ -212,7 +213,7 @@ const RegisterScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={{ alignItems: "center", marginTop: 20 }}>
+      {/* <View style={{ alignItems: "center", marginTop: 20 }}>
         <ProductoButton
           loading={registerApiResult.isLoading}
           type="contained"
@@ -240,7 +241,13 @@ const RegisterScreen = ({ navigation }) => {
             Log-in Here
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
+      <FooterActions
+        handleOnPressPrimary={formik.handleSubmit}
+        handleOnPressSecondary={() => navigation.navigate("Login")}
+        disabledPrimary={registerApiResult.isLoading || !formik.isValid || !formik.dirty}
+        isLoading={registerApiResult.isLoading}
+      />
     </LayoutView>
   );
 };
