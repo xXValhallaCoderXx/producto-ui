@@ -116,7 +116,7 @@ const UpdateEmail = ({ route, navigation }) => {
           <TextInput.Icon
             style={{ paddingBottom: 2 }}
             onPress={handlePassToggle("password")}
-            icon="eye"
+            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />

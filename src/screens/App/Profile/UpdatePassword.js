@@ -113,7 +113,7 @@ const EditPassword = ({ navigation }) => {
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("currentPassword")}
-            icon="eye"
+            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />
@@ -141,7 +141,7 @@ const EditPassword = ({ navigation }) => {
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("newPassword")}
-            icon="eye"
+            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />
@@ -168,7 +168,7 @@ const EditPassword = ({ navigation }) => {
           <TextInput.Icon
             style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("confirmPassword")}
-            icon="eye"
+            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />

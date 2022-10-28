@@ -66,7 +66,6 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
-      console.log("MESMSMS: ", verifyResult.error?.data?.message);
       setError(verifyResult?.error?.data?.message);
     }
   }, [verifyResult]);
@@ -278,7 +277,7 @@ const LoginScreen = ({ navigation }) => {
                 right={
                   <MuiTextInput.Icon
                     onPress={handlePassToggle("password")}
-                    icon="eye"
+                    icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
                     color="#fff"
                   />
                 }
