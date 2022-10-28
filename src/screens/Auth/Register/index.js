@@ -8,7 +8,13 @@ import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import * as Localization from "expo-localization";
 import FooterActions from "./FooterAction";
 import {
@@ -104,127 +110,130 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <LayoutView>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 106,
-          marginBottom: 40,
-        }}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        keyboardVerticalOffset={50}
       >
-        <Image
-          style={{ height: 40, width: 220 }}
-          source={require("../../../assets/images/title-dark.png")}
-        />
-      </View>
-
-      <View style={{ alignItems: "center" }}>
-        <View style={{ width: "85%" }}>
-          <TextInput
-            onChangeText={formik.handleChange("email")}
-            autoFocus
-            onBlur={formik.handleBlur("email")}
-            value={formik.values.email}
-            mode="outlined"
-            label="E-mail"
-            keyboardType="email-address"
-            placeholder="Enter Email"
-            theme={{ roundness: 8 }}
-            
-            style={{
-              backgroundColor: "white",
-              height: 55,
-              fontSize: 17
-            }}
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 86,
+            marginBottom: 40,
+          }}
+        >
+          <Image
+            style={{ height: 40, width: 220 }}
+            source={require("../../../assets/images/title-dark.png")}
           />
-          <View style={{ height: 25 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik.touched["email"] && formik?.errors?.email) || ""}
-            </Text>
-          </View>
+        </View>
 
-          <TextInput
-            onChangeText={formik.handleChange("password")}
-            onBlur={formik.handleBlur("password")}
-            value={formik.values.password}
-            mode="outlined"
-            label="Password"
-            placeholder="Enter Password"
-            secureTextEntry={secretMap["password"]}
-            theme={{ roundness: 8 }}
-            style={{
-              backgroundColor: "white",
-              marginTop: 10,
-              height: 55,
-              fontSize: 17
-            }}
-            right={
-              <TextInput.Icon
-                style={{ paddingTop: 8 }}
-                onPress={handlePassToggle("password")}
-                icon={secretMap["password"] ? "eye-off" : "eye"}
-              />
-            }
-          />
-          <View style={{ height: 25 }}>
-            <Text
+        <View style={{ alignItems: "center", flexGrow: 1 }}>
+          <View style={{ width: "85%" }}>
+            <TextInput
+              onChangeText={formik.handleChange("email")}
+              autoFocus
+              onBlur={formik.handleBlur("email")}
+              value={formik.values.email}
+              mode="outlined"
+              label="E-mail"
+              keyboardType="email-address"
+              placeholder="Enter Email"
+              theme={{ roundness: 8 }}
               style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-                
+                backgroundColor: "white",
+                height: 55,
+                fontSize: 17,
               }}
-            >
-              {(formik.touched["password"] && formik?.errors?.password) || ""}
-            </Text>
-          </View>
+            />
+            <View style={{ height: 25 }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginLeft: 10,
+                  color: theme.colors.error,
+                }}
+              >
+                {(formik.touched["email"] && formik?.errors?.email) || ""}
+              </Text>
+            </View>
 
-          <TextInput
-            onChangeText={formik.handleChange("confirmPassword")}
-            onBlur={formik.handleBlur("confirmPassword")}
-            secureTextEntry={secretMap["confirmPassword"]}
-            value={formik.values.confirmPassword}
-            mode="outlined"
-            label="Confirm Password"
-            placeholder="Confirm Password"
-            theme={{ roundness: 8 }}
-            style={{
-              backgroundColor: "white",
-              marginTop: 10,
-              height: 55,
-              fontSize: 17
-            }}
-            right={
-              <TextInput.Icon
-              style={{ paddingTop: 8 }}
-                onPress={handlePassToggle("confirmPassword")}
-                icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-              />
-            }
-          />
-          <View style={{ height: 20 }}>
-            <Text
+            <TextInput
+              onChangeText={formik.handleChange("password")}
+              onBlur={formik.handleBlur("password")}
+              value={formik.values.password}
+              mode="outlined"
+              label="Password"
+              placeholder="Enter Password"
+              secureTextEntry={secretMap["password"]}
+              theme={{ roundness: 8 }}
               style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
+                backgroundColor: "white",
+                marginTop: 10,
+                height: 55,
+                fontSize: 17,
               }}
-            >
-              {(formik.touched["confirmPassword"] &&
-                formik?.errors?.confirmPassword) ||
-                ""}
-            </Text>
+              right={
+                <TextInput.Icon
+                  style={{ paddingTop: 8 }}
+                  onPress={handlePassToggle("password")}
+                  icon={secretMap["password"] ? "eye-off" : "eye"}
+                />
+              }
+            />
+            <View style={{ height: 25 }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginLeft: 10,
+                  color: theme.colors.error,
+                }}
+              >
+                {(formik.touched["password"] && formik?.errors?.password) || ""}
+              </Text>
+            </View>
+
+            <TextInput
+              onChangeText={formik.handleChange("confirmPassword")}
+              onBlur={formik.handleBlur("confirmPassword")}
+              secureTextEntry={secretMap["confirmPassword"]}
+              value={formik.values.confirmPassword}
+              mode="outlined"
+              label="Confirm Password"
+              placeholder="Confirm Password"
+              theme={{ roundness: 8 }}
+              style={{
+                backgroundColor: "white",
+                marginTop: 10,
+                height: 55,
+                fontSize: 17,
+              }}
+              right={
+                <TextInput.Icon
+                  style={{ paddingTop: 8 }}
+                  onPress={handlePassToggle("confirmPassword")}
+                  icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                />
+              }
+            />
+            <View style={{ height: 20 }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginLeft: 10,
+                  color: theme.colors.error,
+                }}
+              >
+                {(formik.touched["confirmPassword"] &&
+                  formik?.errors?.confirmPassword) ||
+                  ""}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* <View style={{ alignItems: "center", marginTop: 20 }}>
+        {/* <View style={{ alignItems: "center", marginTop: 20 }}>
         <ProductoButton
           loading={registerApiResult.isLoading}
           type="contained"
@@ -253,14 +262,16 @@ const RegisterScreen = ({ navigation }) => {
           </Text>
         </TouchableOpacity>
       </View> */}
-      <FooterActions
-        handleOnPressPrimary={formik.handleSubmit}
-        handleOnPressSecondary={() => navigation.navigate("Login")}
-        disabledPrimary={
-          registerApiResult.isLoading || !formik.isValid || !formik.dirty
-        }
-        isLoading={registerApiResult.isLoading}
-      />
+
+        <FooterActions
+          handleOnPressPrimary={formik.handleSubmit}
+          handleOnPressSecondary={() => navigation.navigate("Login")}
+          disabledPrimary={
+            registerApiResult.isLoading || !formik.isValid || !formik.dirty
+          }
+          isLoading={registerApiResult.isLoading}
+        />
+      </KeyboardAvoidingView>
     </LayoutView>
   );
 };
