@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Text, useTheme, LinearProgress } from "@rneui/themed";
 
-const ProgressBar = ({ editMode, progress }) => {
+const ProgressBar = ({ focusMode, progress }) => {
   const { theme } = useTheme();
 
   return (
@@ -14,7 +14,7 @@ const ProgressBar = ({ editMode, progress }) => {
           height: 15,
         }}
       >
-        {editMode && (
+        {focusMode && (
           <>
             <LinearProgress
               style={{

@@ -2,22 +2,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
-import { useTheme, Skeleton } from "@rneui/themed";
+import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import {
-  StyleSheet,
-  View,
-  ToastAndroid,
-  ScrollView,
-  Animated,
-  Platform,
-} from "react-native";
+import { StyleSheet, View, Animated, Platform, KeyboardAvoidingView } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
+import SkeletonList from "./components/SkeletonList";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -26,17 +20,19 @@ import {
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
 } from "../../../api/task-api";
+import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
+import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
-  const { theme } = useTheme();
+  const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
-  const editMode = useSelector((state) => state.today.editMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
@@ -53,24 +49,23 @@ const ListScreen = () => {
     isLoading: incompleteIsLoading,
     error: incError,
   } = useGetIncompleteTasksQuery({});
-  const [isDisabled, setIsDisabled] = useState(true);
+
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
-
   useEffect(() => {
     setTheme();
   }, []);
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: editMode ? 160 : 130,
+      toValue: focusMode ? 160 : 130,
       duration: 350,
       useNativeDriver: true,
     }).start();
-  }, [editMode]);
+  }, [focusMode]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -124,11 +119,32 @@ const ListScreen = () => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    await createTask({
+    const res = await createTask({
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
+      date: format(utcDate, "yyyy-MM-dd"),
     });
-    ToastAndroid.show(`Task ${_title} created!`, ToastAndroid.SHORT);
+
+    dispatch(
+      api.util.updateQueryData(
+        "getTodaysTasks",
+        { date: format(utcDate, "yyyy-MM-dd") },
+        (draft) => {
+          const task = draft.find((todo) => todo.title === res.data.title);
+          task.id = res.data.id;
+          return draft;
+        }
+      )
+    );
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: `Task created!`,
+      description: "",
+    });
     return;
   };
 
@@ -136,7 +152,16 @@ const ListScreen = () => {
     const from = format(utcDate, "yyyy-MM-dd");
     const to = format(new Date(), "yyyy-MM-dd");
     await moveIncompleteTasks({ from, to });
-    ToastAndroid.show(`Tasks moved to ${to}!`, ToastAndroid.SHORT);
+
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: `Tasks moved to ${to}!`,
+      description: "",
+    });
   };
 
   const handleOnPressToday = async () => {
@@ -151,20 +176,20 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-
+  console.log("FOCUS MODE: ", focusMode);
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
         <Header
           clientUtc={utcDate}
-          editMode={editMode}
+          focusMode={focusMode}
           onChangeDate={handleOnChangeDate}
           onPressToday={handleOnPressToday}
           onPressDate={handleOnPressDate}
         />
-        <ProgressBar editMode={editMode} progress={progress} />
+        <ProgressBar focusMode={focusMode} progress={progress} />
 
-        <ScrollView
+        <View
           contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
           style={{ flex: 1 }}
         >
@@ -172,21 +197,16 @@ const ListScreen = () => {
             style={{ height: 80, display: "flex", justifyContent: "center" }}
           >
             {isLoading || isFetching ? (
-              <View>
-                <Skeleton
-                  animation="wave"
-                  width={180}
-                  height={20}
-                  skeletonStyle={{ backgroundColor: theme.colors.primary }}
-                />
+              <View style={{ flex: 1, paddingTop: 20 }}>
+                <SkeletonList />
               </View>
             ) : (
               <Animated.View
                 style={{ height: 400, transform: [{ translateY: posXanim }] }}
               >
-                <TaskList
+               <KeyboardAvoidingView>
+               <TaskList
                   tasks={tasks || []}
-                  editMode={editMode}
                   handleToggleTaskFocus={handleToggleTaskFocus}
                   handleToggleTaskComplete={handleToggleTaskComplete}
                   currentTask={currentTask}
@@ -196,9 +216,9 @@ const ListScreen = () => {
 
                 <AddItem
                   handleCreateNewTask={handleCreateNewTask}
-                  editMode={editMode}
                   currentDate={utcDate}
                 />
+               </KeyboardAvoidingView>
               </Animated.View>
             )}
           </View>
@@ -211,7 +231,7 @@ const ListScreen = () => {
             handleOnSelectDay={handleOnSelectDay}
           />
 
-          {isFetching || !editMode ? null : (
+          {isFetching || !focusMode ? null : (
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
@@ -219,7 +239,7 @@ const ListScreen = () => {
               onMoveIncomplete={handleMoveIncompleteTasks}
             />
           )}
-        </ScrollView>
+        </View>
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>

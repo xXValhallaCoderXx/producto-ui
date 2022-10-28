@@ -1,14 +1,13 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
-import { useRef } from "react";
 import { Animated } from "react-native";
 import ProfileScreen from "./Profile";
-import { TouchableNativeFeedback, View, Easing, TouchableOpacity } from "react-native";
+import { TouchableNativeFeedback, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
 import LayoutView from "../../components/LayoutView";
-// import { useGetProfileQuery } from "../../api/user-api";
 
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const Tab = createBottomTabNavigator();
 
 const buttonNativeFeedback = ({ children, style, ...props }) => (
@@ -22,17 +21,6 @@ const buttonNativeFeedback = ({ children, style, ...props }) => (
 
 export default function App() {
   const { theme } = useTheme();
-  const squish = useRef(new Animated.Value(20)).current;
-
-  const handleOnClick = () => {
-    Animated.timing(squish, {
-      toValue: 25,
-      duration: 1000,
-      useNativeDriver: true,
-      easing: Easing.bounce
-    }).start();
-  }
-  console.log("QUSHGN : ", squish);
   return (
     <LayoutView>
       <Tab.Navigator
@@ -46,14 +34,18 @@ export default function App() {
             paddingBottom: 10,
           },
           tabBarButton: buttonNativeFeedback,
-          tabBarIcon: ({ focused, color, size }) => {
+          tabBarIcon: ({ focused, color, size, ...rest }) => {
             let iconName;
             if (route.name === "Today") {
               iconName = "list";
             } else if (route.name === "Account") {
-              return <Ionicons onPress={handleOnClick} name="person" size={20} color={color} />;
+              return (
+                <AnimatedIcon {...rest} name="person" size={20} color={color} />
+              );
             }
-            return <Feather name={iconName} size={size} color={color} />;
+            return (
+              <Feather {...rest} name={iconName} size={size} color={color} />
+            );
           },
         })}
       >

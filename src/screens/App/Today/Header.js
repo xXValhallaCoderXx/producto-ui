@@ -11,11 +11,11 @@ import { format } from "date-fns";
 import { Text as Text2 } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { Text, useTheme } from "@rneui/themed";
-import { useDispatch } from "react-redux";
-import { toggleEdit } from "./today-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleFocusMode, toggleIsToday } from "./today-slice";
 
 const TodayHeader = ({
-  editMode,
+  focusMode,
   onChangeDate,
   clientUtc,
   onPressToday,
@@ -23,23 +23,23 @@ const TodayHeader = ({
 }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
-  const [isToday, setIsToday] = useState(false);
+  const isToday = useSelector((state) => state.today.isToday);
 
   useEffect(() => {
     if (clientUtc) {
       const currentDate = format(clientUtc, "yyyy-MM-dd");
       const todayDate = format(new Date(), "yyyy-MM-dd");
       if (currentDate === todayDate) {
-        setIsToday(true);
+        dispatch(toggleIsToday(true));
       } else {
-        setIsToday(false);
+        dispatch(toggleIsToday(false));
       }
     }
   }, [clientUtc]);
 
   useEffect(() => {
     if (!isToday) {
-      dispatch(toggleEdit({ editMode: true }));
+      dispatch(toggleFocusMode({ focusMode: true }));
     }
   }, [isToday]);
 
@@ -54,7 +54,7 @@ const TodayHeader = ({
             color: isToday ? theme.colors.primary : "#6B7280",
           }}
         >
-          {editMode
+          {focusMode
             ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
             : null}
         </Text2>
@@ -72,13 +72,14 @@ const TodayHeader = ({
                     h4
                     style={{
                       color: theme.colors.primary,
+                      fontWeight: "600",
                     }}
                   >
                     Today
                   </Text>
                 </View>
               </TouchableNativeFeedback>
-              {editMode && (
+              {focusMode && (
                 <View style={styles.dateContainer}>
                   <TouchableOpacity
                     background={TouchableNativeFeedback.Ripple(
@@ -105,10 +106,10 @@ const TodayHeader = ({
         </View>
         {isToday ? (
           <EvilIcon
-            onPress={() => dispatch(toggleEdit({ editMode: !editMode }))}
+            onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
             style={{ fontSize: 40, paddingRight: 8 }}
             color={theme.colors.primary}
-            name={editMode ? "unlock" : "lock"}
+            name={focusMode ? "unlock" : "lock"}
           />
         ) : null}
       </View>

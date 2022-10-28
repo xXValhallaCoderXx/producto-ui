@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider } from "@rneui/themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -11,9 +12,12 @@ import { Provider } from "react-redux";
 import store from "./src/config/store";
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
+import { ToastProvider } from "react-native-toast-notifications";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import theme from "./src/shared/styles/theme";
+import Toast from "./src/components/Toast";
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({});
@@ -25,8 +29,18 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
-        Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
+        Platform.OS === "android" &&
+          (await NavigationBar.setBackgroundColorAsync("white"));
+        Platform.OS === "android" &&
+          (await NavigationBar.setButtonStyleAsync("dark"));
+
+        const isFirstLoad = await AsyncStorage.getItem("@first-load");
+        if (isFirstLoad === "true") {
+          store.dispatch({
+            type: "global/toggleFirstLoad",
+            payload: true,
+          });
+        }
 
         // Pre-load fonts, make any API calls you need to do here
         // await Font.loadAsync(Entypo.font);
@@ -71,22 +85,26 @@ export default function App() {
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <Provider store={store}>
-        <PaperProvider theme={theme2}>
-          <ThemeProvider theme={theme}>
-            <StatusBar style="dark" backgroundColor="white" />
-            <QueryClientProvider client={queryClient}>
-              <NavigationContainer>
-                <Stack.Navigator
-                  screenOptions={() => ({
-                    headerShown: false,
-                  })}
-                >
-                  <Stack.Screen name="Root" component={RootScreens} />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </PaperProvider>
+        <ToastProvider
+          renderToast={(toastOptions) => <Toast toast={toastOptions} />}
+        >
+          <PaperProvider theme={theme2}>
+            <ThemeProvider theme={theme}>
+              <StatusBar style="dark" backgroundColor="white" />
+              <QueryClientProvider client={queryClient}>
+                <NavigationContainer>
+                  <Stack.Navigator
+                    screenOptions={() => ({
+                      headerShown: false,
+                    })}
+                  >
+                    <Stack.Screen name="Root" component={RootScreens} />
+                  </Stack.Navigator>
+                </NavigationContainer>
+              </QueryClientProvider>
+            </ThemeProvider>
+          </PaperProvider>
+        </ToastProvider>
       </Provider>
     </SafeAreaProvider>
   );

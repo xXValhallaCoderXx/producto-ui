@@ -4,10 +4,16 @@ import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { useWindowDimensions } from "react-native";
-import { StyleSheet, View, Image, ToastAndroid, Animated } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Animated,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
-import { Icon } from "@rneui/themed";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -18,17 +24,17 @@ import {
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
-
+import { useToast } from "react-native-toast-notifications";
 const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
+  const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const [email, setEmail] = useState("");
-  const [isEmailValid, setIsEmailValid] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -36,8 +42,11 @@ const LoginScreen = ({ navigation }) => {
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
   });
+
   const [step, setStep] = useState(1);
-  const [secretMap, setSecretMap] = useState({});
+  const [secretMap, setSecretMap] = useState({
+    password: true,
+  });
 
   useEffect(() => {
     if (step === 1) {
@@ -56,8 +65,21 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
+    if (verifyResult.isError) {
+      setError(verifyResult?.error?.data?.message);
+    }
+  }, [verifyResult]);
+
+  useEffect(() => {
     if (loginApiResult.isError) {
-      ToastAndroid.show("Incorrect Credentials", ToastAndroid.SHORT);
+      toast.show("Email succesffully updated", {
+        type: "error",
+        duration: 2500,
+        offset: 30,
+        animationType: "zoom-in",
+        placement: "bottom",
+        title: "Incorrect Credentials!",
+      });
     }
   }, [loginApiResult.isError]);
 
@@ -67,12 +89,19 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [loginApiResult.isSuccess]);
 
-  setTokenAndRedirect = async (token) => {
+  const setTokenAndRedirect = async (token) => {
     const { accessToken, refreshToken } = token;
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
 
-    ToastAndroid.show("Login success", ToastAndroid.SHORT);
+    toast.show("Email succesffully updated", {
+      type: "success",
+      duration: 2500,
+      offset: 30,
+      animationType: "zoom-in",
+      placement: "bottom",
+      title: "Login Success!",
+    });
     dispatch(toggleIsAuthenticated(true));
   };
 
@@ -84,9 +113,7 @@ const LoginScreen = ({ navigation }) => {
         setError("Please enter a password");
       } else {
         const res = await loginApi({ email, password });
-        if (res.data) {
-          setTokenAndRedirect(res.data);
-        } else if (res.error.status === 400) {
+        if (res?.error?.status === 400) {
           setError(res.error.data.message);
         }
       }
@@ -146,6 +173,11 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
+    <TouchableWithoutFeedback
+    onPress={Keyboard.dismiss}
+    accessible={false}
+  
+  >
     <LayoutView>
       <View style={styles.titleContainer}>
         <Image
@@ -182,24 +214,27 @@ const LoginScreen = ({ navigation }) => {
                 width: windowWidth,
               }}
             >
-              <MuiTextInput
-                label="Email"
-                value={email}
-                mode="outlined"
-                error={false}
-                outlineColor="#bcc5d6"
-                ref={emailInputRef}
-                style={{
-                  backgroundColor: "white",
-                  height: 50,
-                  width: "85%",
-                  fontSize: 14,
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
-                }}
-                onChangeText={handleOnChangeEmail}
-                keyboardType="email-address"
-              />
+          
+                <MuiTextInput
+                  label="Email"
+                  value={email}
+                  mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
+                  ref={emailInputRef}
+                  theme={{ roundness: 10 }}
+                  style={{
+                    backgroundColor: "white",
+                    height: 50,
+                    width: "85%",
+                    fontSize: 14,
+                    width: windowWidth * 0.85,
+                    maxWidth: windowWidth * 0.9,
+                  }}
+                  onChangeText={handleOnChangeEmail}
+                  keyboardType="email-address"
+                />
+           
 
               <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                 {error ? (
@@ -238,11 +273,11 @@ const LoginScreen = ({ navigation }) => {
                   maxWidth: windowWidth * 0.9,
                 }}
                 onChangeText={handleOnChangePassword}
-                secureTextEntry={secretMap["password"] ? true : false}
+                secureTextEntry={secretMap["password"]}
                 right={
                   <MuiTextInput.Icon
                     onPress={handlePassToggle("password")}
-                    icon="eye"
+                    icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
                     color="#fff"
                   />
                 }
@@ -276,6 +311,7 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
     </LayoutView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -289,6 +325,7 @@ const styles = StyleSheet.create({
     color: "gray",
     textAlign: "center",
     marginLeft: -10,
+    fontWeight: "500",
   },
   inputWrapper: {
     display: "flex",

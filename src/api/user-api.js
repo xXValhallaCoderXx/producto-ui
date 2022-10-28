@@ -32,11 +32,11 @@ const userApi = api.injectEndpoints({
       },
     }),
     updatePassword: builder.mutation({
-      query: ({ oldPassword, newPassword }) => {
+      query: ({ currentPassword, newPassword }) => {
         return {
           url: `/user/update-password`,
           method: "PATCH",
-          body: { oldPassword, newPassword },
+          body: { currentPassword, newPassword },
         };
       },
     }),

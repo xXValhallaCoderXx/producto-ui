@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import { useTheme, Button } from "@rneui/themed";
+import ProductoButton from "../../../components/Button";
 import { format } from "date-fns";
 
 const MoveIncomplete = ({
@@ -8,8 +8,6 @@ const MoveIncomplete = ({
   isLoading,
   tasks,
 }) => {
-  const { theme } = useTheme();
-
   if (format(currentDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")) {
     return null;
   }
@@ -24,13 +22,13 @@ const MoveIncomplete = ({
 
   return (
     <View style={styles.container}>
-      <Button
+      <ProductoButton
         onPress={onMoveIncomplete}
         disabled={isLoading}
         loading={isLoading}
         containerStyle={{ width: 160, borderRadius: 8 }}
-        color={theme.colors.primary}
-        title="Move incomplete"
+        type="contained"
+        title="Move Incomplete"
       />
     </View>
   );
@@ -38,8 +36,9 @@ const MoveIncomplete = ({
 
 const styles = StyleSheet.create({
   container: {
-
     alignItems: "center",
+    flex: 1,
+    justifyContent: "flex-end"
   },
 });
 

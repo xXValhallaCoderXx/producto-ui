@@ -7,10 +7,9 @@ const FooterActions = ({
   handleOnPressPrimary,
   handleOnPressSecondary,
   isLoading,
-  step,
-  email,
-  password,
+  disabledPrimary,
 }) => {
+  console.log("DISB: ", disabledPrimary)
   return (
     <View
       style={{
@@ -27,7 +26,7 @@ const FooterActions = ({
       >
         <ProductoButton
           onPress={handleOnPressSecondary}
-          title={step === 1 ? "Create account" : "Change Email"}
+          title={"Sign in instead"}
           type="text"
           disabled={isLoading}
         />
@@ -35,12 +34,8 @@ const FooterActions = ({
           onPress={handleOnPressPrimary}
           type="contained"
           loading={isLoading}
-          title={step === 1 ? "Next" : "Log in"}
-          disabled={
-            isLoading ||
-            (step === 1 && !email.match(validEmailRegex)) ||
-            (step === 2 && password === "")
-          }
+          title={"Create"}
+          disabled={isLoading || disabledPrimary}
         />
       </View>
     </View>

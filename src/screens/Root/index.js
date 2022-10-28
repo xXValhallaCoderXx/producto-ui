@@ -50,31 +50,28 @@ const RootScreen = ({ navigation }) => {
     prepare();
   }, []);
 
-  console.log("FIRST", firstLoad);
-  console.log("INIT", init);
-  // if (!init || firstLoad) {
-  //   console.log("POO")
-  //   return (
-  //     <Animated.View
-  //       style={{
-  //         flex: 1,
-  //         justifyContent: "center",
-  //         alignItems: "center",
-  //         backgroundColor: "white",
-  //         opacity: fadeAnim,
-  //       }}
-  //     >
-  //       <Animated.View style={{ transform: [{ scale: imageScaleAnim }] }}>
-  //         <Image
-  //           resizeMode="contain"
-  //           style={{ height: 100 }}
-  //           source={splashIcon}
-  //         />
-  //       </Animated.View>
-  //     </Animated.View>
-  //   );
-  // }
-  console.log("HMM")
+  if (!init) {
+    return (
+      <Animated.View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+          opacity: fadeAnim,
+        }}
+      >
+        <Animated.View style={{ transform: [{ scale: imageScaleAnim }] }}>
+          <Image
+            resizeMode="contain"
+            style={{ height: 100 }}
+            source={splashIcon}
+          />
+        </Animated.View>
+      </Animated.View>
+    );
+  }
+
   return init && isAuthenticated ? (
     <Stack.Navigator
       screenOptions={() => ({
