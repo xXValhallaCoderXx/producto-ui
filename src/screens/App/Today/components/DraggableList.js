@@ -108,7 +108,7 @@ const DraggableListContainer = ({
       <ScaleDecorator>
         <ListItem
           onLongPress={drag}
-
+          style={{ borderBottomWidth: 0.5, borderBottomColor: "grey" }}
           onPress={() => {
             countRef++;
             if (countRef == 2) {
