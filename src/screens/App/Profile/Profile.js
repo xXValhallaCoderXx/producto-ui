@@ -125,6 +125,7 @@ const ProfileScreen = ({ navigation }) => {
                 color: colors.black,
                 fontWeight: "600",
               }}
+              style={{ padding: 0, marginLeft: -7 }}
               onPress={navigateToChangeEmail}
               title="Email"
               right={() => (
@@ -147,6 +148,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           ) : (
             <List.Item
+              style={{ padding: 0, marginTop: 15, marginLeft: -7 }}
               titleStyle={{
                 color: colors.black,
                 fontWeight: "600",
@@ -174,6 +176,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           ) : (
             <List.Item
+              style={{ padding: 0, marginLeft: -7 }}
               titleStyle={{
                 color: colors.black,
                 fontWeight: "600",
@@ -201,6 +204,7 @@ const ProfileScreen = ({ navigation }) => {
             </View>
           ) : (
             <List.Item
+              style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
               titleStyle={{
                 color: colors.black,
                 fontWeight: "600",

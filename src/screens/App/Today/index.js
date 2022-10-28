@@ -176,7 +176,7 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-  console.log("FOCUS MODE: ", focusMode);
+
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
