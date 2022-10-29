@@ -130,7 +130,6 @@ const UpdateEmail = ({ route, navigation }) => {
         placeholder="Enter a new email"
         keyboardType="email-address"
         onChange={formik.handleChange("email")}
-        autoFocus
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
         secureTextEntry={secretMap["password"]}

@@ -105,13 +105,20 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <RnText customStyle={{ marginBottom: 10 }} type="h2" color="secondary">
+      <Text
+        style={{
+          marginBottom: 10,
+          color: "#111827",
+          fontSize: 22,
+          fontWeight: "600",
+        }}
+      >
         My Account
-      </RnText>
+      </Text>
       <View style={styles.container}>
-        <View style={{ flex: 5 }}>
+        <View>
           <RnText
-            customStyle={{ marginBottom: 10 }}
+            customStyle={{ marginBottom: 10, letterSpacing: 0.8 }}
             type="h4"
             color="secondary"
           >
@@ -125,8 +132,9 @@ const ProfileScreen = ({ navigation }) => {
           ) : (
             <List.Item
               titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
+                color: "#111827",
+                fontWeight: "500",
+                letterSpacing: 0.9,
               }}
               style={{ padding: 0, marginLeft: -7 }}
               onPress={navigateToChangeEmail}
@@ -153,8 +161,9 @@ const ProfileScreen = ({ navigation }) => {
             <List.Item
               style={{ padding: 0, marginTop: 15, marginLeft: -7 }}
               titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
+                color: "#111827",
+                fontWeight: "500",
+                letterSpacing: 0.9,
               }}
               onPress={navigateToEditPassword}
               title="Password"
@@ -164,7 +173,7 @@ const ProfileScreen = ({ navigation }) => {
             />
           )}
         </View>
-        <View style={{ flex: 9 }}>
+        <View style={{ marginTop: 50 }}>
           <RnText
             type="h4"
             color="secondary"
@@ -181,8 +190,9 @@ const ProfileScreen = ({ navigation }) => {
             <List.Item
               style={{ padding: 0, marginLeft: -7 }}
               titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
+                color: "#111827",
+                fontWeight: "500",
+                letterSpacing: 0.9,
               }}
               onPress={navigateToChangeTimezone}
               title="Timezone"
@@ -210,8 +220,9 @@ const ProfileScreen = ({ navigation }) => {
               <List.Item
                 style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
                 titleStyle={{
-                  color: colors.black,
-                  fontWeight: "600",
+                  color: "#111827",
+                  fontWeight: "500",
+                  letterSpacing: 0.9,
                 }}
                 title="Auto Move Tasks"
                 descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
@@ -233,6 +244,22 @@ const ProfileScreen = ({ navigation }) => {
               </RnText>
             </TouchableOpacity>
           )}
+        </View>
+
+        <View style={{ flexGrow: 1, marginTop: 50 }}>
+          <RnText
+            type="h4"
+            color="secondary"
+            customStyle={{ marginBottom: 20 }}
+          >
+            APP INFORMATION
+          </RnText>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{ fontSize: 16 }}>App Version No.</Text>
+            <Text style={{ color: "gray" }}>v0.2</Text>
+          </View>
         </View>
 
         <TouchableOpacity onPress={toggleLogoutModal} style={{ flex: 2 }}>

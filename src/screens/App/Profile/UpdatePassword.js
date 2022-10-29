@@ -18,7 +18,7 @@ const EditPassword = ({ navigation }) => {
   });
   const [updatePassword, updatePasswordResult] = useUpdatePasswordMutation();
   useEffect(() => {
-    navigation.setOptions({ title: "Update Password" });
+    navigation.setOptions({ title: "Change Password" });
   }, []);
 
   const formik = useFormik({
@@ -92,13 +92,13 @@ const EditPassword = ({ navigation }) => {
     <View
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
     >
-      <Text style={{ marginBottom: 15 }}>
+      <Text style={{ marginBottom: 15, fontSize: 18, lineHeight: 28 }}>
         Enter your current password, and your new password you wish to change
         to.
       </Text>
 
       <ProductoInput
-        label="Password"
+        label="Current Password"
         placeholder="Enter current password"
         value={formik.values.currentPassword}
         onChange={formik.handleChange("currentPassword")}
@@ -127,7 +127,6 @@ const EditPassword = ({ navigation }) => {
         placeholder="Enter new password"
         value={formik.values.newPassword}
         onChange={formik.handleChange("newPassword")}
-        autoFocus
         onBlur={formik.handleBlur("newPassword")}
         secureTextEntry={secretMap["newPassword"]}
         right={
@@ -148,11 +147,10 @@ const EditPassword = ({ navigation }) => {
       </View>
 
       <ProductoInput
-        label="Confirm Password"
+        label="Confirm New Password"
         placeholder="Confirm new password"
         value={formik.values.confirmPassword}
         onChange={formik.handleChange("confirmPassword")}
-        autoFocus
         onBlur={formik.handleBlur("confirmPassword")}
         secureTextEntry={secretMap["confirmPassword"]}
         right={
