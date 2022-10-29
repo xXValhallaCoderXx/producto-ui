@@ -21,6 +21,7 @@ import {
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import { useToast } from "react-native-toast-notifications";
+import ProductoInput from "../../../components/Input";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -47,7 +48,7 @@ const RegisterScreen = ({ navigation }) => {
     // },
     validationSchema: Yup.object().shape({
       email: Yup.string()
-        .required("Email field is required")
+        .required("E-mail field is required")
         .email("Please enter a valid e-mail address"),
       password: Yup.string()
         .required("Password is required")
@@ -78,10 +79,11 @@ const RegisterScreen = ({ navigation }) => {
       [key]: secretMap[key] ? false : true,
     });
   };
-  console.log("register: ", registerApiResult)
+  console.log("register: ", registerApiResult);
   useEffect(() => {
     if (registerApiResult.isError) {
-      const message = registerApiResult.error.data.message ?? "Sorry an error has occured"
+      const message =
+        registerApiResult.error.data.message ?? "Sorry an error has occured";
       toast.show("Email succesffully updated", {
         type: "success",
         duration: 2500,
@@ -89,7 +91,7 @@ const RegisterScreen = ({ navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Error Registering User!",
-        description: message
+        description: message,
       });
     }
   }, [registerApiResult.isError]);
@@ -130,22 +132,16 @@ const RegisterScreen = ({ navigation }) => {
 
         <View style={{ alignItems: "center", flexGrow: 1 }}>
           <View style={{ width: "85%" }}>
-            <TextInput
-              onChangeText={formik.handleChange("email")}
+            <ProductoInput
+              label="E-mail"
+              value={formik.values.email}
+              placeholder="Enter Email"
+              onChange={formik.handleChange("email")}
+              keyboardType="email-address"
               autoFocus
               onBlur={formik.handleBlur("email")}
-              value={formik.values.email}
-              mode="outlined"
-              label="E-mail"
-              keyboardType="email-address"
-              placeholder="Enter Email"
-              theme={{ roundness: 8 }}
-              style={{
-                backgroundColor: "white",
-                height: 55,
-                fontSize: 17,
-              }}
             />
+
             <View style={{ height: 25 }}>
               <Text
                 style={{
@@ -158,29 +154,25 @@ const RegisterScreen = ({ navigation }) => {
               </Text>
             </View>
 
-            <TextInput
-              onChangeText={formik.handleChange("password")}
-              onBlur={formik.handleBlur("password")}
-              value={formik.values.password}
-              mode="outlined"
+      <View style={{marginTop: 10, marginBottom: 10}}>
+      <ProductoInput
               label="Password"
+              value={formik.values.password}
               placeholder="Enter Password"
+              onChange={formik.handleChange("password")}
+              keyboardType="email-address"
+              autoFocus
+              onBlur={formik.handleBlur("password")}
               secureTextEntry={secretMap["password"]}
-              theme={{ roundness: 8 }}
-              style={{
-                backgroundColor: "white",
-                marginTop: 10,
-                height: 55,
-                fontSize: 17,
-              }}
               right={
                 <TextInput.Icon
-                  style={{ paddingTop: 8 }}
+                  style={{ paddingTop: 15 }}
                   onPress={handlePassToggle("password")}
                   icon={secretMap["password"] ? "eye-off" : "eye"}
                 />
               }
             />
+
             <View style={{ height: 25 }}>
               <Text
                 style={{
@@ -192,22 +184,17 @@ const RegisterScreen = ({ navigation }) => {
                 {(formik.touched["password"] && formik?.errors?.password) || ""}
               </Text>
             </View>
+      </View>
 
-            <TextInput
-              onChangeText={formik.handleChange("confirmPassword")}
+            <ProductoInput
+              label="Confirm Password"
+              value={formik.values.confirmPassword}
+              placeholder="Confirm Password"
+              onChange={formik.handleChange("confirmPassword")}
+              keyboardType="email-address"
+              autoFocus
               onBlur={formik.handleBlur("confirmPassword")}
               secureTextEntry={secretMap["confirmPassword"]}
-              value={formik.values.confirmPassword}
-              mode="outlined"
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              theme={{ roundness: 8 }}
-              style={{
-                backgroundColor: "white",
-                marginTop: 10,
-                height: 55,
-                fontSize: 17,
-              }}
               right={
                 <TextInput.Icon
                   style={{ paddingTop: 8 }}
@@ -216,6 +203,7 @@ const RegisterScreen = ({ navigation }) => {
                 />
               }
             />
+
             <View style={{ height: 20 }}>
               <Text
                 style={{

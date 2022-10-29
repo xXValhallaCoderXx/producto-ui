@@ -206,16 +206,14 @@ const ProfileScreen = ({ navigation }) => {
               <SkeletonBox height={70} width={"100%"} />
             </View>
           ) : (
-            <View>
+            <TouchableOpacity onPress={toggleAutoTaskModal}>
               <List.Item
                 style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
                 titleStyle={{
                   color: colors.black,
                   fontWeight: "600",
                 }}
-                onPress={toggleAutoTaskModal}
                 title="Auto Move Tasks"
-                // description="Automatically move all incompleted tasks to “today”."
                 descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
                 right={() => (
                   <View style={{ justifyContent: "center" }}>
@@ -233,7 +231,7 @@ const ProfileScreen = ({ navigation }) => {
               >
                 Automatically move all incompleted tasks to “today”.
               </RnText>
-            </View>
+            </TouchableOpacity>
           )}
         </View>
 

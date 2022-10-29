@@ -8,15 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import {
-  StyleSheet,
-  View,
-  Image,
-  Animated,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, View, Image, Animated } from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
+import ProductoInput from "../../../components/Input";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
@@ -71,7 +65,8 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
-      const message = verifyResult?.error?.data?.message ?? "Sorry an error has occured"
+      const message =
+        verifyResult?.error?.data?.message ?? "Sorry an error has occured";
       setError(message);
     }
   }, [verifyResult]);
@@ -219,24 +214,16 @@ const LoginScreen = ({ navigation }) => {
                   width: windowWidth,
                 }}
               >
-                <MuiTextInput
+                <ProductoInput
                   label="Email"
                   value={email}
-                  mode="outlined"
-                  error={false}
-                  outlineColor="#bcc5d6"
                   ref={emailInputRef}
-                  theme={{ roundness: 10 }}
                   style={{
-                    backgroundColor: "white",
-                    height: 55,
-                    fontSize: 17,
                     width: "85%",
-
                     width: windowWidth * 0.85,
                     maxWidth: windowWidth * 0.9,
                   }}
-                  onChangeText={handleOnChangeEmail}
+                  onChange={handleOnChangeEmail}
                   keyboardType="email-address"
                 />
 
@@ -262,25 +249,20 @@ const LoginScreen = ({ navigation }) => {
                   width: windowWidth,
                 }}
               >
-                <MuiTextInput
+                <ProductoInput
                   label="Password"
                   value={password}
-                  mode="outlined"
-                  error={false}
-                  outlineColor="#bcc5d6"
                   ref={passwordInputRef}
                   style={{
-                    backgroundColor: "white",
                     width: "85%",
-                    height: 55,
-                    fontSize: 17,
                     width: windowWidth * 0.85,
                     maxWidth: windowWidth * 0.9,
                   }}
-                  onChangeText={handleOnChangePassword}
+                  onChange={handleOnChangePassword}
                   secureTextEntry={secretMap["password"]}
                   right={
                     <MuiTextInput.Icon
+                      style={{ paddingTop: 8 }}
                       onPress={handlePassToggle("password")}
                       icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
                       color="#fff"
