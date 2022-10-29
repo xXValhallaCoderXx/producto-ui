@@ -70,22 +70,6 @@ const AddItem = ({ handleCreateNewTask }) => {
                 }}
               />
             </View>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flex: 3,
-                justifyContent: "flex-end",
-                marginTop: 10,
-                paddingRight: 10,
-              }}
-            >
-              <CheckBox
-                checked={false}
-                containerStyle={{ padding: 0 }}
-                disabled={true}
-              />
-            </View>
           </View>
           {error ? (
             <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>

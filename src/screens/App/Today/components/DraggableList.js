@@ -70,40 +70,6 @@ const DraggableListContainer = ({
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item.id === editTask) {
       return (
-        // <ListItem key={item.id} onLongPress={drag}>
-        //   <ListItem.Content style={styles.listContent}>
-        //     <View style={styles.listRow}>
-        // <TextInput
-        //   onChangeText={handleOnChange}
-        //   value={value}
-        //   onBlur={handleOnBlur}
-        //   autoFocus
-        //   underlineColorAndroid="transparent"
-        //   style={{
-        //     fontSize: 16,
-        //     backgroundColor: "white",
-        //   }}
-        // />
-        //     </View>
-        // <View
-        //   style={{
-        //     justifyContent: "flex-end",
-        //     ...styles.listRow,
-        //     marginRight: 15,
-        //     height: 35,
-        //   }}
-        // >
-        //   <TouchableOpacity onPress={handleOnPressDelete(item.id)}>
-        //     <MaterialIcons
-        //       name="trash-o"
-        //       color={"#6B7280"}
-        //       style={{ fontSize: 25 }}
-        //     />
-        //   </TouchableOpacity>
-        // </View>
-        //     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
-        //   </ListItem.Content>
-        // </ListItem>
         <View key={item.id} style={styles.listRow}>
           <View style={{ justifyContent: "center" }}>
             <TextInput
@@ -138,8 +104,9 @@ const DraggableListContainer = ({
     return (
       <ScaleDecorator>
         <TouchableWithoutFeedback
+          onLongPress={drag}
+          disabled={isActive}
           onPress={() => {
-            console.log("hmmmmm");
             countRef++;
             if (countRef == 2) {
               clearTimeout(countTimer.current);
@@ -149,7 +116,6 @@ const DraggableListContainer = ({
               setTaskValue(item.title);
             } else {
               countTimer.current = setTimeout(() => {
-                console.log("WHAT");
                 onCheckTaskRow(item);
                 countRef = 0;
               }, 150);
@@ -186,7 +152,7 @@ const DraggableListContainer = ({
                 {item.title}sss
               </Text>
             </View>
-            <View style={{justifyContent: "center"}}>
+            <View style={{ justifyContent: "center" }}>
               <CheckBox
                 checked={item.completed}
                 containerStyle={{ padding: 0 }}
