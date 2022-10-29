@@ -16,15 +16,15 @@ const MoveIncomplete = ({
     return null;
   }
 
-  if (tasks.every((task) => task.completed === true)) {
-    return null;
-  }
+  // if (tasks.every((task) => task.completed === true)) {
+  //   return null;
+  // }
 
   return (
     <View style={styles.container}>
       <ProductoButton
         onPress={onMoveIncomplete}
-        disabled={isLoading}
+        disabled={isLoading || tasks.every((task) => task.completed === true)}
         loading={isLoading}
         containerStyle={{ width: 160, borderRadius: 8 }}
         type="contained"

@@ -202,7 +202,7 @@ const ListScreen = () => {
           onPressToday={handleOnPressToday}
           onPressDate={handleOnPressDate}
         />
-        <View style={{ height: 20 }}>
+        <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
           <ProgressBar focusMode={focusMode} progress={progress} />
         </View>
 
@@ -250,7 +250,7 @@ const ListScreen = () => {
             handleOnSelectDay={handleOnSelectDay}
           />
 
-          {isFetching || !focusMode ? null : (
+          {isFetching ? null : (
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
