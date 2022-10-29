@@ -41,7 +41,7 @@ const AddItem = ({ handleCreateNewTask }) => {
 
   return (
     <View
-      style={{ marginTop: 35 }}
+      style={{ marginTop: 25 }}
       // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (
@@ -84,6 +84,8 @@ const AddItem = ({ handleCreateNewTask }) => {
           buttonStyle={{
             display: "flex",
             justifyContent: "flex-start",
+        
+          
           }}
           onPress={handleOnPress}
         >
@@ -91,14 +93,16 @@ const AddItem = ({ handleCreateNewTask }) => {
             style={{
               paddingRight: 4,
               color: theme.colors.primary,
-              fontSize: 18,
+              fontSize: 20,
+        
             }}
             name={"add"}
           />
           <Text
             style={{
               color: theme.colors.primary,
-              fontSize: 18,
+              fontSize: 17,
+              marginLeft: 5,
               fontWeight: "600",
             }}
           >

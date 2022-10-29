@@ -49,10 +49,13 @@ const DraggableListContainer = ({
 
   const sortData = useMemo(() => {
     if (tasks.length > 0) {
-      const taskSortId = sortedTaskMap.data[currentDate];
-      tasks.sort(function (a, b) {
-        return taskSortId.indexOf(a.id) - taskSortId.indexOf(b.id);
-      });
+      const taskSortId = sortedTaskMap?.data[currentDate];
+      if (taskSortId) {
+        tasks.sort(function (a, b) {
+          return taskSortId.indexOf(a.id) - taskSortId.indexOf(b.id);
+        });
+      }
+
       return tasks;
     } else {
       return [];
@@ -148,22 +151,23 @@ const DraggableListContainer = ({
               {focusMode && currentDate === todayDate && (
                 <IoniIcons
                   style={{
-                    fontSize: 22,
-                    marginRight: 20,
-                    transform: [{ rotate: "45deg" }],
+                    fontSize: 25,
+                    marginRight: 15,
+                    transform: [{ rotate: "315deg" }, {scaleX: -1}],
                   }}
-                  color={item.focus ? theme.colors.primary : "black"}
+                  color={item.focus ? theme.colors.primary : "#111827"}
                   name={"key-outline"}
                   onPress={onToggleFocus(item)}
                 />
               )}
               <Text
                 style={{
-                  color: item.completed ? "gray" : "black",
+                  color: item.completed ? "gray" : "#111827",
                   textDecorationLine: item.completed ? "line-through" : "none",
+                  fontSize: 18,
                 }}
               >
-                {item.title}sss
+                {item.title}
               </Text>
             </View>
             <View style={{ justifyContent: "center" }}>
@@ -215,9 +219,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     // paddingTop: 15,
     // paddingBottom: 15,
-    height: 60,
+    height: 65,
     borderBottomWidth: 0.5,
-    borderBottomColor: "gray",
+    borderBottomColor: "#c6c6c6",
   },
 });
 
