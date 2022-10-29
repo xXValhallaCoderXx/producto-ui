@@ -177,7 +177,7 @@ const ProfileScreen = ({ navigation }) => {
           <RnText
             type="h4"
             color="secondary"
-            customStyle={{ marginBottom: 20 , letterSpacing: 0.8}}
+            customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
           >
             APP SETTINGS
           </RnText>
@@ -211,39 +211,40 @@ const ProfileScreen = ({ navigation }) => {
             />
           )}
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={70} width={"100%"} />
-            </View>
-          ) : (
-            <TouchableOpacity onPress={toggleAutoTaskModal}>
-              <List.Item
-                style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
-                titleStyle={{
-                  color: "#111827",
-                  fontWeight: "500",
-                  letterSpacing: 0.9,
-                }}
-                title="Auto Move Tasks"
-                descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
-                right={() => (
-                  <View style={{ justifyContent: "center" }}>
-                    <Switch
-                      onChange={toggleAutoTaskModal}
-                      value={data?.prefs?.autoMove}
-                    />
-                  </View>
-                )}
-              />
-              <RnText
-                color="secondary"
-                type="h4"
-                customStyle={{ marginTop: 15 }}
-              >
-                Automatically move all incompleted tasks to “today”.
-              </RnText>
-            </TouchableOpacity>
-          )}
+          <View style={{ marginTop: 10 }}>
+            {isLoading ? (
+              <View style={{ marginBottom: 10 }}>
+                <SkeletonBox height={70} width={"100%"} />
+              </View>
+            ) : (
+              <TouchableOpacity onPress={toggleAutoTaskModal}>
+                <List.Item
+                  style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
+                  titleStyle={{
+                    color: "#111827",
+                    fontWeight: "500",
+                    letterSpacing: 0.9,
+                  }}
+                  title="Auto Move Tasks"
+                  right={() => (
+                    <View style={{ justifyContent: "center" }}>
+                      <Switch
+                        onChange={toggleAutoTaskModal}
+                        value={data?.prefs?.autoMove}
+                      />
+                    </View>
+                  )}
+                />
+                <RnText
+                  color="secondary"
+                  type="h4"
+                  customStyle={{ marginTop: 15, maxWidth: 240 }}
+                >
+                  Automatically move all incompleted tasks to “today”.
+                </RnText>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         <View style={{ flexGrow: 1, marginTop: 50 }}>
