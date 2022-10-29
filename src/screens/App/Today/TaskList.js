@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { format } from "date-fns";
 import { View, StyleSheet } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import { useUpdateTaskMutation } from "../../../api/task-api";
@@ -53,8 +54,7 @@ const TaskList = ({
   };
 
   const handleDeleteTask = async () => {
-    console.log('EDIT DAKS: ', editTask);
-    await deleteTaskApi({ id: editTask });
+    await deleteTaskApi({ id: editTask, date: format(utcDate, "yyyy-MM-dd") });
     setEditTask(null);
   };
 
@@ -93,6 +93,5 @@ const TaskList = ({
     </View>
   );
 };
-
 
 export default TaskList;

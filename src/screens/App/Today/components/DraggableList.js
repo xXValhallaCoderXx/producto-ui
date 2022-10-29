@@ -74,7 +74,6 @@ const DraggableListContainer = ({
   };
 
   const onKeyboardDidHide = (event) => {
-    console.log("WOOWO");
     setEditTask(null);
     setTaskValue("");
   };

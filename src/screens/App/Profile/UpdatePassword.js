@@ -87,7 +87,7 @@ const EditPassword = ({ navigation }) => {
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
-  console.log("FORMIK: ", formik.isValid);
+
   return (
     <View
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
@@ -115,11 +115,13 @@ const EditPassword = ({ navigation }) => {
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
-        <Text
-          style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-        >
-          {formik?.errors?.currentPassword || ""}
-        </Text>
+        {formik.touched.confirmPassword && (
+          <Text
+            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
+          >
+            {formik?.errors?.currentPassword || ""}
+          </Text>
+        )}
       </View>
 
       <ProductoInput
@@ -139,11 +141,13 @@ const EditPassword = ({ navigation }) => {
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
-        <Text
-          style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-        >
-          {formik?.errors?.newPassword || ""}
-        </Text>
+        {formik.touched.newPassword && (
+          <Text
+            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
+          >
+            {formik?.errors?.newPassword || ""}
+          </Text>
+        )}
       </View>
 
       <ProductoInput
@@ -163,11 +167,13 @@ const EditPassword = ({ navigation }) => {
       />
 
       <View style={{ height: 20 }}>
-        <Text
-          style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-        >
-          {formik?.errors?.confirmPassword || ""}
-        </Text>
+        {formik.touched.confirmPassword && (
+          <Text
+            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
+          >
+            {formik?.errors?.confirmPassword || ""}
+          </Text>
+        )}
       </View>
 
       <ProductoButton

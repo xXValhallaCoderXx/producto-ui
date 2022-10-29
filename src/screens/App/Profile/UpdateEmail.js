@@ -118,11 +118,13 @@ const UpdateEmail = ({ route, navigation }) => {
       />
 
       <View style={{ height: 20, marginBottom: 15 }}>
-        <Text
-          style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-        >
-          {formik?.errors?.password || ""}
-        </Text>
+        {formik.touched.password && (
+          <Text
+            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
+          >
+            {formik?.errors?.password || ""}
+          </Text>
+        )}
       </View>
 
       <ProductoInput
@@ -143,11 +145,13 @@ const UpdateEmail = ({ route, navigation }) => {
       />
 
       <View style={{ height: 20 }}>
-        <Text
-          style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-        >
-          {formik?.errors?.email || ""}
-        </Text>
+        {formik.touched.email && (
+          <Text
+            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
+          >
+            {formik?.errors?.email || ""}
+          </Text>
+        )}
       </View>
 
       <ProductoButton

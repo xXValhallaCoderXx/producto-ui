@@ -148,12 +148,26 @@ const taskApi = api.injectEndpoints({
       }),
     }),
     deleteTask: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      invalidatesTags: ["IncompleteTasks"],
       query: ({ id }) => {
         return {
           url: `/task/${id}`,
           method: "DELETE",
         };
+      },
+      async onQueryStarted({ id, date }, { dispatch, queryFulfilled }) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            const newTaks = draft.filter((todo) => todo.id !== id);
+            return newTaks;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+          console.log(e);
+        }
       },
     }),
   }),
