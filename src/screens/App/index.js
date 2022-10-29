@@ -61,8 +61,8 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
       <View style={style}>
         <Animated.View style={[{ transform: [{ scale }] }]}>
           {iconName === "Today" ? (
-            <Feather
-              name={"list"}
+            <Ionicons
+              name={"home-sharp"}
               size={25}
               color={focused ? theme.colors.primary : theme.colors.secondary}
             />
@@ -76,12 +76,12 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
         </Animated.View>
         <Text
           style={{
-            fontSize: 12,
+            fontSize: 16,
             marginTop: 2,
             color: focused ? theme.colors.primary : theme.colors.secondary,
           }}
         >
-          {iconName === "Today" ? "Today" : "Settings"}
+          {iconName === "Today" ? "Home" : "Account"}
         </Text>
       </View>
     </TouchableNativeFeedback>
@@ -98,8 +98,7 @@ export default function App() {
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: "gray",
           tabBarStyle: {
-            height: 65,
-            paddingTop: 10,
+            height: 70,
             paddingBottom: 10,
           },
           tabBarButton: buttonNativeFeedback,

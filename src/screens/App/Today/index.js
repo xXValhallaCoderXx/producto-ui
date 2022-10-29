@@ -202,7 +202,9 @@ const ListScreen = () => {
           onPressToday={handleOnPressToday}
           onPressDate={handleOnPressDate}
         />
-        <ProgressBar focusMode={focusMode} progress={progress} />
+        <View style={{ height: 20 }}>
+          <ProgressBar focusMode={focusMode} progress={progress} />
+        </View>
 
         <View
           contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
@@ -229,10 +231,12 @@ const ListScreen = () => {
                     utcDate={utcDate}
                   />
 
-                  <AddItem
-                    handleCreateNewTask={handleCreateNewTask}
-                    currentDate={utcDate}
-                  />
+                  {!focusMode ? null : (
+                    <AddItem
+                      handleCreateNewTask={handleCreateNewTask}
+                      currentDate={utcDate}
+                    />
+                  )}
                 </KeyboardAvoidingView>
               </Animated.View>
             )}

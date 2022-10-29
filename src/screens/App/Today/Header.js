@@ -44,42 +44,46 @@ const TodayHeader = ({
   }, [isToday]);
 
   return (
-    <View>
-      <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
-        <Text2
-          style={{
-            marginLeft: Platform.OS === "ios" ? -26 : -6,
-            alignSelf: "flex-start",
-            fontWeight: "700",
-            color: isToday ? theme.colors.primary : "#6B7280",
-          }}
-        >
-          {focusMode
-            ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
-            : null}
-        </Text2>
-      </TouchableOpacity>
-      <View style={styles.container}>
-        <View style={styles.row}>
+    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View>
+        <TouchableOpacity onPress={onPressDate} style={{height: 18}}>
+          <Text2
+            style={{
+              marginLeft: Platform.OS === "ios" ? -28 : -6,
+              alignSelf: "flex-start",
+              fontWeight: "700",
+              letterSpacing: 1.2,
+              color: isToday ? theme.colors.primary : "#6B7280",
+            }}
+          >
+            {focusMode
+              ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
+              : null}
+          </Text2>
+        </TouchableOpacity>
+        <View style={{ ...styles.row, marginTop: 5 }}>
           <View>
-            <View style={{ ...styles.dateContainer, height: 50 }}>
+            <View style={{ ...styles.dateContainer }}>
               <TouchableNativeFeedback
                 background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
                 onPress={onPressToday}
               >
                 <View>
                   <Text
-                    h4
+                    h3
                     style={{
                       color: theme.colors.primary,
-                      fontWeight: "600",
+                      letterSpacing: 1,
+
+                      fontWeight: "700",
                     }}
                   >
                     Today
                   </Text>
                 </View>
               </TouchableNativeFeedback>
-              {focusMode && (
+       <View style={{ height: 55}}>
+       {focusMode && (
                 <View style={styles.dateContainer}>
                   <TouchableOpacity
                     background={TouchableNativeFeedback.Ripple(
@@ -101,9 +105,12 @@ const TodayHeader = ({
                   </TouchableOpacity>
                 </View>
               )}
+       </View>
             </View>
           </View>
         </View>
+      </View>
+      <View style={{ justifyContent: "center" }}>
         {isToday ? (
           <EvilIcon
             onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
@@ -113,6 +120,13 @@ const TodayHeader = ({
           />
         ) : null}
       </View>
+      {/* 
+     
+
+      <View style={styles.container}>
+      
+       
+      </View> */}
     </View>
   );
 };
@@ -134,13 +148,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   leftArrow: {
-    fontSize: 25,
+    fontSize: 30,
     marginTop: 5,
     marginLeft: 5,
     padding: 10,
   },
   rightArrow: {
-    fontSize: 25,
+    fontSize: 30,
     marginTop: 5,
     padding: 10,
   },
