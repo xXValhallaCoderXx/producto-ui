@@ -16,10 +16,11 @@ const TaskList = ({
 }) => {
   const { theme } = useTheme();
   const [editTask, setEditTask] = useState(null);
-  const focusMode = useSelector(state => state.today.focusMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const [value, setTaskValue] = useState("");
   const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
+  const onCheckTaskRow = (_task) => handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
@@ -77,6 +78,7 @@ const TaskList = ({
           handleOnPressDelete={handleOnPressDelete}
           utcDate={utcDate}
           onCheckTask={onCheckTask}
+          onCheckTaskRow={onCheckTaskRow}
           onToggleFocus={onToggleFocus}
         />
         // <ScrollView style={{ marginTop: 15, padding: 3 }}>
