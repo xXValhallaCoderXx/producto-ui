@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { List, Switch, Button, useTheme, Text } from "react-native-paper";
+import { List, Switch, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
@@ -105,6 +105,9 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screenContainer}>
+      <RnText customStyle={{ marginBottom: 10 }} type="h2" color="secondary">
+        My Account
+      </RnText>
       <View style={styles.container}>
         <View style={{ flex: 5 }}>
           <RnText
@@ -112,7 +115,7 @@ const ProfileScreen = ({ navigation }) => {
             type="h4"
             color="secondary"
           >
-            ACCOUNT
+            ACCOUNT INFORMATION
           </RnText>
 
           {isLoading ? (
@@ -203,48 +206,42 @@ const ProfileScreen = ({ navigation }) => {
               <SkeletonBox height={70} width={"100%"} />
             </View>
           ) : (
-            <List.Item
-              style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={toggleAutoTaskModal}
-              title="Auto Move Tasks"
-              description="Automatically move all incompleted tasks to “today”."
-              descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
-              right={() => (
-                <View style={{ justifyContent: "center" }}>
-                  <Switch
-                    onChange={toggleAutoTaskModal}
-                    value={data?.prefs?.autoMove}
-                  />
-                </View>
-              )}
-            />
+            <View>
+              <List.Item
+                style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
+                titleStyle={{
+                  color: colors.black,
+                  fontWeight: "600",
+                }}
+                onPress={toggleAutoTaskModal}
+                title="Auto Move Tasks"
+                // description="Automatically move all incompleted tasks to “today”."
+                descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
+                right={() => (
+                  <View style={{ justifyContent: "center" }}>
+                    <Switch
+                      onChange={toggleAutoTaskModal}
+                      value={data?.prefs?.autoMove}
+                    />
+                  </View>
+                )}
+              />
+              <RnText
+                color="secondary"
+                type="h4"
+                customStyle={{ marginTop: 15 }}
+              >
+                Automatically move all incompleted tasks to “today”.
+              </RnText>
+            </View>
           )}
         </View>
 
-        <View style={{ flex: 5, alignItems: "flex-start" }}>
-          <Button
-            type="text"
-            TouchableComponent={TouchableOpacity}
-            labelStyle={{ color: colors.secondary, fontSize: 16 }}
-            onPress={toggleLogoutModal}
-            icon={"door"}
-          >
-            Logout
-          </Button>
-        </View>
-        <View style={{ flex: 2 }}>
-          <RnText
-            type="h4"
-            color="secondary"
-            customStyle={{ textAlign: "center" }}
-          >
-            v0.0.1
+        <TouchableOpacity onPress={toggleLogoutModal} style={{ flex: 2 }}>
+          <RnText type="h3" color="error" customStyle={{ textAlign: "center" }}>
+            Log out
           </RnText>
-        </View>
+        </TouchableOpacity>
       </View>
       <LogoutModal
         isVisible={isLogoutModalVisible}
@@ -275,6 +272,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     flexDirection: "column",
+    marginTop: 30,
   },
   iconStyle: {
     paddingRight: 5,
