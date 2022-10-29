@@ -21,7 +21,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://six-queens-mix-116-86-1-104.loca.lt",
+      baseUrl: "https://hungry-ducks-unite-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

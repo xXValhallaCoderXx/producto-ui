@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { View, StyleSheet, ToastAndroid } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { useUpdateTaskMutation } from "../../../api/task-api";
 import DeleteTaskModal from "./DeleteModal";
@@ -28,7 +28,15 @@ const TaskList = ({
     if (deleteTaskApiResults.isSuccess) {
       setIsDeleteModalVisible(false);
       setEditTask(null);
-      ToastAndroid.show(`Task deleted!`, ToastAndroid.SHORT);
+      toast.show("", {
+        type: "success",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Task deleted!`,
+        description: "",
+      });
     }
   }, [deleteTaskApiResults]);
 

@@ -47,6 +47,7 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
 
+  console.log("VERIDY: ", verifyResult);
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,
@@ -70,7 +71,8 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
-      setError(verifyResult?.error?.data?.message);
+      const message = verifyResult?.error?.data?.message ?? "Sorry an error has occured"
+      setError(message);
     }
   }, [verifyResult]);
 
@@ -178,136 +180,133 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <LayoutView>
-           <KeyboardAvoidingView
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
-  
       >
-      <View style={styles.titleContainer}>
-        <Image
-          source={titleDark}
-          resizeMode="contain"
-          style={{
-            width: 231,
-            height: 42,
-          }}
-        ></Image>
-        <View style={{ marginTop: 19 }}>
-          <Text style={styles.secondaryTitle}>
-            Sign in, to unlock your productivity
-          </Text>
-        </View>
-      </View>
-      <View style={{flexGrow: 1}}>
-        <Animated.View
-          style={{
-            ...styles.inputWrapper,
-            marginBottom: 30,
-            transform: [{ translateX: passwordInputPos }],
-          }}
-        >
-          <View
+        <View style={styles.titleContainer}>
+          <Image
+            source={titleDark}
+            resizeMode="contain"
             style={{
-              flexDirection: "row",
+              width: 231,
+              height: 42,
+            }}
+          ></Image>
+          <View style={{ marginTop: 19 }}>
+            <Text style={styles.secondaryTitle}>
+              Sign in, to unlock your productivity
+            </Text>
+          </View>
+        </View>
+        <View style={{ flexGrow: 1 }}>
+          <Animated.View
+            style={{
+              ...styles.inputWrapper,
+              marginBottom: 30,
+              transform: [{ translateX: passwordInputPos }],
             }}
           >
             <View
               style={{
-                display: "flex",
-                alignItems: "center",
-                width: windowWidth,
+                flexDirection: "row",
               }}
             >
-              <MuiTextInput
-                label="Email"
-                value={email}
-                mode="outlined"
-                error={false}
-                outlineColor="#bcc5d6"
-                ref={emailInputRef}
-                theme={{ roundness: 10 }}
+              <View
                 style={{
-                  backgroundColor: "white",
-                  height: 55,
-                  fontSize: 17,
-                  width: "85%",
-
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
+                  display: "flex",
+                  alignItems: "center",
+                  width: windowWidth,
                 }}
-                onChangeText={handleOnChangeEmail}
-                keyboardType="email-address"
-              />
+              >
+                <MuiTextInput
+                  label="Email"
+                  value={email}
+                  mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
+                  ref={emailInputRef}
+                  theme={{ roundness: 10 }}
+                  style={{
+                    backgroundColor: "white",
+                    height: 55,
+                    fontSize: 17,
+                    width: "85%",
 
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {error ? (
-                  <Text
-                    style={{
-                      color: "#D14343",
-                      alignSelf: "flex-start",
-                      fontWeight: "700",
-                      paddingLeft: windowWidth - windowWidth * 0.9,
-                    }}
-                  >
-                    {error}
-                  </Text>
-                ) : null}
+                    width: windowWidth * 0.85,
+                    maxWidth: windowWidth * 0.9,
+                  }}
+                  onChangeText={handleOnChangeEmail}
+                  keyboardType="email-address"
+                />
+
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {error ? (
+                    <Text
+                      style={{
+                        color: "#D14343",
+                        alignSelf: "flex-start",
+                        fontWeight: "700",
+                        paddingLeft: windowWidth - windowWidth * 0.9,
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ) : null}
+                </View>
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: windowWidth,
+                }}
+              >
+                <MuiTextInput
+                  label="Password"
+                  value={password}
+                  mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
+                  ref={passwordInputRef}
+                  style={{
+                    backgroundColor: "white",
+                    width: "85%",
+                    height: 55,
+                    fontSize: 17,
+                    width: windowWidth * 0.85,
+                    maxWidth: windowWidth * 0.9,
+                  }}
+                  onChangeText={handleOnChangePassword}
+                  secureTextEntry={secretMap["password"]}
+                  right={
+                    <MuiTextInput.Icon
+                      onPress={handlePassToggle("password")}
+                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                      color="#fff"
+                    />
+                  }
+                />
+
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {error ? (
+                    <Text
+                      style={{
+                        color: "#D14343",
+                        alignSelf: "flex-start",
+                        fontWeight: "700",
+                        paddingLeft: windowWidth - windowWidth * 0.9,
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
             </View>
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: windowWidth,
-              }}
-            >
-              <MuiTextInput
-                label="Password"
-                value={password}
-                mode="outlined"
-                error={false}
-                outlineColor="#bcc5d6"
-                ref={passwordInputRef}
-                style={{
-                  backgroundColor: "white",
-                  width: "85%",
-                  height: 55,
-                  fontSize: 17,
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
-                }}
-                onChangeText={handleOnChangePassword}
-                secureTextEntry={secretMap["password"]}
-                right={
-                  <MuiTextInput.Icon
-                    onPress={handlePassToggle("password")}
-                    icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                    color="#fff"
-                  />
-                }
-              />
-
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {error ? (
-                  <Text
-                    style={{
-                      color: "#D14343",
-                      alignSelf: "flex-start",
-                      fontWeight: "700",
-                      paddingLeft: windowWidth - windowWidth * 0.9,
-                    }}
-                  >
-                    {error}
-                  </Text>
-                ) : null}
-              </View>
-            </View>
-          </View>
-        </Animated.View>
-
-   
-      </View>
-      <FooterActions
+          </Animated.View>
+        </View>
+        <FooterActions
           handleOnPressPrimary={handleOnPressPrimary}
           handleOnPressSecondary={handleOnPressSecondary}
           step={step}

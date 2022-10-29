@@ -4,7 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, Animated, Platform, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -69,7 +75,15 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (createTaskResult.isError) {
-      ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Error creating task!`,
+        description: "",
+      });
     }
   }, [createTaskResult.isError]);
 
@@ -204,21 +218,21 @@ const ListScreen = () => {
               <Animated.View
                 style={{ height: 400, transform: [{ translateY: posXanim }] }}
               >
-               <KeyboardAvoidingView>
-               <TaskList
-                  tasks={tasks || []}
-                  handleToggleTaskFocus={handleToggleTaskFocus}
-                  handleToggleTaskComplete={handleToggleTaskComplete}
-                  currentTask={currentTask}
-                  isLoadingToggle={isLoadingToggle}
-                  utcDate={utcDate}
-                />
+                <KeyboardAvoidingView>
+                  <TaskList
+                    tasks={tasks || []}
+                    handleToggleTaskFocus={handleToggleTaskFocus}
+                    handleToggleTaskComplete={handleToggleTaskComplete}
+                    currentTask={currentTask}
+                    isLoadingToggle={isLoadingToggle}
+                    utcDate={utcDate}
+                  />
 
-                <AddItem
-                  handleCreateNewTask={handleCreateNewTask}
-                  currentDate={utcDate}
-                />
-               </KeyboardAvoidingView>
+                  <AddItem
+                    handleCreateNewTask={handleCreateNewTask}
+                    currentDate={utcDate}
+                  />
+                </KeyboardAvoidingView>
               </Animated.View>
             )}
           </View>
