@@ -112,7 +112,7 @@ const UpdateEmail = ({ route, navigation }) => {
           <TextInput.Icon
             style={{ paddingTop: 8 }}
             onPress={handlePassToggle("password")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+            icon={secretMap["password"] ? "eye-off" : "eye"}
           />
         }
       />
@@ -134,14 +134,6 @@ const UpdateEmail = ({ route, navigation }) => {
         onChange={formik.handleChange("email")}
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
-        secureTextEntry={secretMap["password"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingTop: 8 }}
-            onPress={handlePassToggle("password")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
       />
 
       <View style={{ height: 20 }}>
