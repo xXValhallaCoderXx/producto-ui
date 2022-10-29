@@ -177,7 +177,7 @@ const ProfileScreen = ({ navigation }) => {
           <RnText
             type="h4"
             color="secondary"
-            customStyle={{ marginBottom: 20 }}
+            customStyle={{ marginBottom: 20 , letterSpacing: 0.8}}
           >
             APP SETTINGS
           </RnText>
@@ -250,7 +250,7 @@ const ProfileScreen = ({ navigation }) => {
           <RnText
             type="h4"
             color="secondary"
-            customStyle={{ marginBottom: 20 }}
+            customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
           >
             APP INFORMATION
           </RnText>
