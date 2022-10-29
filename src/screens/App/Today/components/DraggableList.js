@@ -1,16 +1,17 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
-import { useSelector } from "react-redux";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
 import { ListItem, CheckBox } from "@rneui/themed";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import IoniIcons from "react-native-vector-icons/Ionicons";
+import { setSortedData } from "../../../../shared/slice/task-sort-slice";
+import { useDispatch, useSelector } from "react-redux";
 
 const DraggableListContainer = ({
   tasks,
@@ -19,34 +20,30 @@ const DraggableListContainer = ({
   onCheckTask,
   onToggleFocus,
 }) => {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const { theme } = useTheme();
+  const dispatch = useDispatch();
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
-
+  const sortedTaskMap = useSelector((state) => state.persist);
   const [updateTaskApi] = useUpdateTaskMutation();
   const focusMode = useSelector((state) => state.today.focusMode);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
-  useEffect(() => {
-    setData(tasks);
-  }, [tasks]);
 
-  // const sortData = async () => {
-  //   const hasData = await AsyncStorage.getItem(currentDate);
+  const sortData = useMemo(() => {
+      if(tasks.length > 0){
+        const taskSortId = sortedTaskMap.data[currentDate];
+        tasks.sort(function (a, b) {
+          return taskSortId.indexOf(a.id) - taskSortId.indexOf(b.id);
+        });
+        return tasks;
+      } else {
+        return []
+      }
+ }, [tasks]);
 
-  //   if (hasData && hasData.length > 0) {
-  //     let tempResult = [];
-  //     JSON.parse(hasData).forEach((item) => {
-  //       const x = data.find((task) => task?.id === item);
-  //       tempResult.push(x);
-  //     });
-  //     setData(tempResult);
-  //   } else {
-  //     setData(tasks);
-  //   }
-  // };
 
   let countRef = useRef(0).current;
   let countTimer = useRef(null);
@@ -165,13 +162,13 @@ const DraggableListContainer = ({
 
   return (
     <DraggableFlatList
-      data={data}
+      data={sortData}
       onDragEnd={async ({ data }) => {
         const itemSort = data.map((item) => item.id);
         const taskIdsInSortOrder = JSON.stringify(itemSort);
-        console.log("OBJECT TO STORE: ", taskIdsInSortOrder);
-        // AsyncStorage.setItem(currentDate, objectToStore);
-        setData(data);
+        dispatch(
+          setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
+        );
       }}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
