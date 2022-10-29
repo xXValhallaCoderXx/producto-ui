@@ -31,6 +31,7 @@ import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
+import { setSortedData } from "../../../shared/slice/task-sort-slice";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
@@ -39,10 +40,11 @@ const ListScreen = () => {
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const x = useSelector((state) => state.persist);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
-
+  console.log("X: ", x);
   const {
     data: tasks,
     isLoading,

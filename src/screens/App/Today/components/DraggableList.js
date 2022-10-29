@@ -167,8 +167,9 @@ const DraggableListContainer = ({
     <DraggableFlatList
       data={data}
       onDragEnd={async ({ data }) => {
-        // const itemSort = data.map((item) => item.id);
-        // const objectToStore = JSON.stringify(itemSort);
+        const itemSort = data.map((item) => item.id);
+        const taskIdsInSortOrder = JSON.stringify(itemSort);
+        console.log("OBJECT TO STORE: ", taskIdsInSortOrder);
         // AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
       }}
