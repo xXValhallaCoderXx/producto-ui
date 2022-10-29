@@ -5,10 +5,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 const LayoutView = ({ children }) => {
+  const isEditMode = useSelector(state => state.global.editMode);
+
+  const handleOnPress = () => {
+    Keyboard.dismiss();
+  }
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <TouchableWithoutFeedback onPress={handleOnPress} accessible={false}>
       <View
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}

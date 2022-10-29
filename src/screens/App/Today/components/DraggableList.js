@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -18,7 +19,7 @@ import { useTheme, Text } from "@rneui/themed";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
-
+import { toggleEditMode } from "../../../../shared/slice/global-slice";
 const DraggableListContainer = ({
   tasks,
   handleOnPressDelete,
@@ -38,6 +39,14 @@ const DraggableListContainer = ({
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
+  useEffect(() => {
+    const x = Keyboard.addListener("keyboardDidHide", onKeyboardDidHide);
+
+    return () => {
+      x.remove();
+    };
+  }, []);
+
   const sortData = useMemo(() => {
     if (tasks.length > 0) {
       const taskSortId = sortedTaskMap.data[currentDate];
@@ -54,13 +63,17 @@ const DraggableListContainer = ({
   let countTimer = useRef(null);
 
   const handleOnBlur = async () => {
-    setEditTask(null);
-    setTaskValue("");
     await updateTaskApi({
       id: editTask,
       title: value,
       date: format(utcDate, "yyyy-MM-dd"),
     });
+  };
+
+  const onKeyboardDidHide = (event) => {
+    console.log("WOOWO");
+    setEditTask(null);
+    setTaskValue("");
   };
 
   const handleOnChange = (_value) => {
@@ -95,7 +108,7 @@ const DraggableListContainer = ({
             <MaterialIcons
               name="trash-o"
               color={"#6B7280"}
-              style={{ fontSize: 25 }}
+              style={{ fontSize: 25, paddingRight: 3 }}
             />
           </TouchableOpacity>
         </View>
@@ -114,11 +127,12 @@ const DraggableListContainer = ({
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               setEditTask(item.id);
               setTaskValue(item.title);
+              dispatch(toggleEditMode(true));
             } else {
               countTimer.current = setTimeout(() => {
                 onCheckTaskRow(item);
                 countRef = 0;
-              }, 150);
+              }, 250);
             }
           }}
           key={item.id}
@@ -155,7 +169,7 @@ const DraggableListContainer = ({
             <View style={{ justifyContent: "center" }}>
               <CheckBox
                 checked={item.completed}
-                containerStyle={{ padding: 0 }}
+                containerStyle={{ padding: 0, paddingRight: 3 }}
                 onPress={onCheckTask(item)}
                 // disabled={isLoadingToggle}
               />
@@ -176,6 +190,7 @@ const DraggableListContainer = ({
           setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
         );
       }}
+      keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
     />

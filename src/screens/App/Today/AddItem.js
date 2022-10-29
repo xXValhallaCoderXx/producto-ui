@@ -18,8 +18,7 @@ const AddItem = ({ handleCreateNewTask }) => {
   };
 
   const handleOnPress = () => {
-  
-    if(!addTask){
+    if (!addTask) {
       setTaskName("");
       setAddTask(true);
       addTaskInputRef.current && addTaskInputRef.current.focus();
@@ -85,17 +84,26 @@ const AddItem = ({ handleCreateNewTask }) => {
           buttonStyle={{
             display: "flex",
             justifyContent: "flex-start",
-          
           }}
-     
-          
           onPress={handleOnPress}
         >
           <MaterialIcons
-            style={{ paddingRight: 4, color: theme.colors.primary }}
+            style={{
+              paddingRight: 4,
+              color: theme.colors.primary,
+              fontSize: 18,
+            }}
             name={"add"}
           />
-          Add Item
+          <Text
+            style={{
+              color: theme.colors.primary,
+              fontSize: 18,
+              fontWeight: "600",
+            }}
+          >
+            Add Item
+          </Text>
         </Button>
       )}
     </View>

@@ -119,19 +119,24 @@ const LoginScreen = ({ navigation }) => {
         }
       }
     } else {
-      const res = await verifyTigger({ email });
-      passwordInputRef.current.focus();
-      if (res.isSuccess) {
-        setStep(nextStep);
+      if(email === "") {
+        setError("Please enter an e-mail address");
       } else {
-        if (res.error.status === 200) {
+        const res = await verifyTigger({ email });
+        passwordInputRef.current.focus();
+        if (res.isSuccess) {
           setStep(nextStep);
-        } else if (res.error.status === 400) {
-          setError(res.error.data.message[0]);
-        } else if (res.error.status === 404) {
-          setError("Email address not found");
+        } else {
+          if (res.error.status === 200) {
+            setStep(nextStep);
+          } else if (res.error.status === 400) {
+            setError(res.error.data.message[0]);
+          } else if (res.error.status === 404) {
+            setError("Email address not found");
+          }
         }
       }
+   
     }
   };
 
@@ -152,13 +157,13 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-  const delayedQuery = useCallback(
-    debounce((value) => checkEmail(value), 1000),
-    []
-  );
+  // const delayedQuery = useCallback(
+  //   debounce((value) => checkEmail(value), 1000),
+  //   []
+  // );
   const handleOnChangeEmail = (value) => {
     setError("");
-    delayedQuery(value);
+    // delayedQuery(value);
     setEmail(value);
   };
 
@@ -167,11 +172,11 @@ const LoginScreen = ({ navigation }) => {
     setPassword(value);
   };
 
-  const checkEmail = (_value) => {
-    if (_value.match(validEmailRegex) === null && _value !== "") {
-      setError("You must enter a valid email address");
-    }
-  };
+  // const checkEmail = (_value) => {
+  //   if (_value.match(validEmailRegex) === null && _value !== "") {
+  //     setError("You must enter a valid email address");
+  //   }
+  // };
 
   return (
     <LayoutView>
@@ -189,9 +194,13 @@ const LoginScreen = ({ navigation }) => {
             }}
           ></Image>
           <View style={{ marginTop: 19 }}>
-            <Text style={styles.secondaryTitle}>
-              Sign in, to unlock your productivity
-            </Text>
+            {step === 1 ?  <Text style={styles.secondaryTitle}>
+            Sign in, to unlock your productivity
+            </Text> : 
+             <Text style={styles.secondaryTitle}>
+            Welcome back, <Text style={{fontWeight: "500"}}>{email}!</Text>
+           </Text>}
+           
           </View>
         </View>
         <View style={{ flexGrow: 1 }}>
@@ -223,6 +232,7 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth * 0.85,
                     maxWidth: windowWidth * 0.9,
                   }}
+                  error={Boolean(error) ?? false}
                   onChange={handleOnChangeEmail}
                   keyboardType="email-address"
                 />
@@ -233,7 +243,8 @@ const LoginScreen = ({ navigation }) => {
                       style={{
                         color: "#D14343",
                         alignSelf: "flex-start",
-                        fontWeight: "700",
+                        fontWeight: "400",
+                        letterSpacing: 0.4,
                         paddingLeft: windowWidth - windowWidth * 0.9,
                       }}
                     >
@@ -258,6 +269,7 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth * 0.85,
                     maxWidth: windowWidth * 0.9,
                   }}
+                  error={Boolean(error) ?? false}
                   onChange={handleOnChangePassword}
                   secureTextEntry={secretMap["password"]}
                   right={
@@ -265,7 +277,7 @@ const LoginScreen = ({ navigation }) => {
                       style={{ paddingTop: 8 }}
                       onPress={handlePassToggle("password")}
                       icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                      color="#fff"
+                  
                     />
                   }
                 />
@@ -276,7 +288,8 @@ const LoginScreen = ({ navigation }) => {
                       style={{
                         color: "#D14343",
                         alignSelf: "flex-start",
-                        fontWeight: "700",
+                        fontWeight: "400",
+                        letterSpacing: 0.4,
                         paddingLeft: windowWidth - windowWidth * 0.9,
                       }}
                     >
