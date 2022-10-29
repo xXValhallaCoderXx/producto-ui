@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 
-const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
+const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading: isAutoTaskLoading }) => {
   const { theme } = useTheme();
   const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
   const [parsedDates, setParsedDates] = useState([]);
@@ -116,7 +116,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
         <Button
           onPress={onClickConfirm}
           title="Confirm"
-          disabled={Object.keys(parsedDates).length === 0}
+          disabled={isAutoTaskLoading}
           containerStyle={{ paddingLeft: 25 }}
           titleStyle={{ color: theme.colors.primary }}
           type="clear"

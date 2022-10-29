@@ -32,6 +32,7 @@ import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
 
+
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
@@ -67,6 +68,7 @@ const ListScreen = () => {
   }, []);
 
   useEffect(() => {
+   
     Animated.timing(posXanim, {
       toValue: focusMode ? 160 : 130,
       duration: 350,

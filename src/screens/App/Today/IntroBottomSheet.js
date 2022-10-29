@@ -1,15 +1,13 @@
 import React, { useCallback, useMemo, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { View, Text, StyleSheet, Image } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import productoLogo from "../../../assets/images/title-dark.png";
-import { toggleFirstLoad } from "../../../shared/slice/global-slice";
+import { setOnboarding } from "../../../shared/slice/task-sort-slice";
 
 const IntroBottomSheet = () => {
   const dispatch = useDispatch();
-  const { firstLoad } = useSelector((state) => state.global);
-
+  const isOnboarded = useSelector((state) => state.persist.onboarded);
   const bottomSheetRef = useRef(null);
 
   // variables
@@ -23,12 +21,11 @@ const IntroBottomSheet = () => {
   // callbacks
   const handleSheetChanges = useCallback(async (index) => {
     if (index === -1) {
-      await AsyncStorage.setItem("@first-load", "false");
-      dispatch(toggleFirstLoad(false));
+      dispatch(setOnboarding(true));
     }
   }, []);
 
-  if (!firstLoad) {
+  if (isOnboarded) {
     return null;
   }
 

@@ -45,20 +45,10 @@ const ProfileScreen = ({ navigation }) => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
   };
 
-  const toggleAutoTaskModal = async () => {
-    if (!data?.prefs?.autoMove) {
-      setisAutoTaskModalVisible(true);
-    }
-    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Auto Tasks Updated!",
-    });
-  };
+  const toggleAutoTaskModal = () => {
+    setisAutoTaskModalVisible(!isAutoTaskModalVisible)
+  }
+
 
   const handleCloseModal = () => {
     setisAutoTaskModalVisible(false);
@@ -73,6 +63,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleSubmitAutoTask = async (dates) => {
     const to = format(new Date(), "yyyy-MM-dd");
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     await moveTasksApi({ tasks: Object.keys(dates), to });
     setisAutoTaskModalVisible(false);
     toast.show("", {
@@ -81,7 +72,7 @@ const ProfileScreen = ({ navigation }) => {
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: "Tasks have been moved!",
+      title: "Auto task setting updated!",
     });
   };
 
@@ -278,8 +269,8 @@ const ProfileScreen = ({ navigation }) => {
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
-        isLoading={moveTasksApiResult.isLoading}
-        isSuccess={moveTasksApiResult.isSuccess}
+        isLoading={moveTasksApiResult.isLoading || updatePrefsResult.isLoading}
+        isSuccess={moveTasksApiResult.isSuccess  || updatePrefsResult.isLoading}
       />
     </View>
   );

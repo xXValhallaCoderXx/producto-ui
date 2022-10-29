@@ -3,10 +3,10 @@ import DashboardScreen from "./Today";
 import { Animated, Easing } from "react-native";
 import ProfileScreen from "./Profile";
 import { TouchableNativeFeedback, View } from "react-native";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
 import LayoutView from "../../components/LayoutView";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Text } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
@@ -50,8 +50,6 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
       ]).start();
     }
   }, [focused]);
-
-  const handleOnPress = () => {};
 
   return (
     <TouchableNativeFeedback
@@ -102,19 +100,6 @@ export default function App() {
             paddingBottom: 10,
           },
           tabBarButton: buttonNativeFeedback,
-          // tabBarIcon: ({ focused, color, size, ...rest }) => {
-          //   let iconName;
-          //   if (route.name === "Today") {
-          //     iconName = "list";
-          //   } else if (route.name === "Account") {
-          //     return (
-          //       <Ionicons name="person" size={20} color={color} />
-          //     );
-          //   }
-          //   return (
-          //     <Feather name={iconName} size={size} color={color} />
-          //   );
-          // },
         })}
       >
         <Tab.Screen name="Today" component={DashboardScreen} />

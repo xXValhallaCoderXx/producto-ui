@@ -34,14 +34,12 @@ export default function App() {
         Platform.OS === "android" &&
           (await NavigationBar.setButtonStyleAsync("dark"));
 
-        const isFirstLoad = await AsyncStorage.getItem("@first-load");
-        if (isFirstLoad === "true") {
-          store.dispatch({
-            type: "global/toggleFirstLoad",
-            payload: true,
-          });
-        }
+        //  const isOnboarded = store.getState()?.persist?.onboarded;
 
+        //  if
+        
+        // const isFirstLoad = await AsyncStorage.getItem("@first-load");
+ 
         // Pre-load fonts, make any API calls you need to do here
         // await Font.loadAsync(Entypo.font);
         // Artificially delay for two seconds to simulate a slow loading
