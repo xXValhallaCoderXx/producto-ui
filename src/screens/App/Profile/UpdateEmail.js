@@ -11,6 +11,7 @@ import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
+import ProductoInput from "../../../components/Input";
 
 const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
@@ -75,8 +76,8 @@ const UpdateEmail = ({ route, navigation }) => {
     }
     if (updateEmailResult.isError) {
       const message = Array.isArray(updateEmailResult?.error?.data?.message)
-      ? updateEmailResult?.error?.data?.message[0]
-      : updateEmailResult?.error?.data?.message;
+        ? updateEmailResult?.error?.data?.message[0]
+        : updateEmailResult?.error?.data?.message;
 
       toast.show("Email update error", {
         type: "error",
@@ -85,9 +86,8 @@ const UpdateEmail = ({ route, navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Error updating email!",
-        description: message ?? "Sorry, an error occured"
+        description: message ?? "Sorry, an error occured",
       });
-
     }
   }, [updateEmailResult]);
 
@@ -100,28 +100,24 @@ const UpdateEmail = ({ route, navigation }) => {
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("password")}
-        autoFocus
-        onBlur={formik.handleBlur("password")}
-        value={formik.values.password}
-        mode="outlined"
+      <ProductoInput
         label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
+        value={formik.values.password}
+        onChange={formik.handleChange("password")}
+        autoFocus
+        onBlur={formik.handleBlur("password")}
         secureTextEntry={secretMap["password"]}
         right={
           <TextInput.Icon
-            style={{ paddingBottom: 2 }}
+            style={{ paddingTop: 8 }}
             onPress={handlePassToggle("password")}
             icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />
 
-      <View style={{ height: 20, marginBottom: 10 }}>
+      <View style={{ height: 20, marginBottom: 15 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
@@ -129,19 +125,24 @@ const UpdateEmail = ({ route, navigation }) => {
         </Text>
       </View>
 
-      <TextInput
-        onChangeText={formik.handleChange("email")}
-        onBlur={formik.handleBlur("email")}
-        value={formik.values.email}
-        mode="outlined"
+      <ProductoInput
         label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
-        style={{
-          marginTop: 5,
-          backgroundColor: "white",
-        }}
+        onChange={formik.handleChange("email")}
+        autoFocus
+        onBlur={formik.handleBlur("email")}
+        value={formik.values.email}
+        secureTextEntry={secretMap["password"]}
+        right={
+          <TextInput.Icon
+            style={{ paddingTop: 8 }}
+            onPress={handlePassToggle("password")}
+            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+          />
+        }
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}

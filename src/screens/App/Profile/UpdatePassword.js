@@ -7,7 +7,7 @@ import { useTheme } from "react-native-paper";
 import { View } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
-
+import ProductoInput from "../../../components/Input";
 const EditPassword = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
@@ -97,23 +97,19 @@ const EditPassword = ({ navigation }) => {
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("currentPassword")}
-        autoFocus
-        onBlur={formik.handleBlur("currentPassword")}
-        value={formik.values.currentPassword}
-        mode="outlined"
+      <ProductoInput
         label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
+        value={formik.values.currentPassword}
+        onChange={formik.handleChange("currentPassword")}
+        autoFocus
+        onBlur={formik.handleBlur("currentPassword")}
         secureTextEntry={secretMap["currentPassword"]}
         right={
           <TextInput.Icon
-            style={{ paddingBottom: 4 }}
+            style={{ paddingTop: 8 }}
             onPress={handlePassToggle("currentPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+            icon={secretMap["currentPassword"] ? "eye-off" : "eye"}
           />
         }
       />
@@ -126,25 +122,23 @@ const EditPassword = ({ navigation }) => {
         </Text>
       </View>
 
-      <TextInput
-        onChangeText={formik.handleChange("newPassword")}
-        onBlur={formik.handleBlur("newPassword")}
-        value={formik.values.newPassword}
-        mode="outlined"
+      <ProductoInput
         label="New Password"
         placeholder="Enter new password"
-        style={{
-          backgroundColor: "white",
-        }}
+        value={formik.values.newPassword}
+        onChange={formik.handleChange("newPassword")}
+        autoFocus
+        onBlur={formik.handleBlur("newPassword")}
         secureTextEntry={secretMap["newPassword"]}
         right={
           <TextInput.Icon
-            style={{ paddingBottom: 4 }}
+            style={{ paddingTop: 8 }}
             onPress={handlePassToggle("newPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+            icon={secretMap["newPassword"] ? "eye-off" : "eye"}
           />
         }
       />
+
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
@@ -153,25 +147,23 @@ const EditPassword = ({ navigation }) => {
         </Text>
       </View>
 
-      <TextInput
-        onChangeText={formik.handleChange("confirmPassword")}
-        onBlur={formik.handleBlur("confirmPassword")}
-        value={formik.values.confirmPassword}
-        mode="outlined"
+      <ProductoInput
         label="Confirm Password"
         placeholder="Confirm new password"
-        style={{
-          backgroundColor: "white",
-        }}
+        value={formik.values.confirmPassword}
+        onChange={formik.handleChange("confirmPassword")}
+        autoFocus
+        onBlur={formik.handleBlur("confirmPassword")}
         secureTextEntry={secretMap["confirmPassword"]}
         right={
           <TextInput.Icon
-            style={{ paddingBottom: 4 }}
+            style={{ paddingTop: 8 }}
             onPress={handlePassToggle("confirmPassword")}
             icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />
         }
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
