@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
+  NestableScrollContainer,
+  NestableDraggableFlatList,
 } from "react-native-draggable-flatlist";
 import {
   View,
@@ -180,8 +182,8 @@ const DraggableListContainer = ({
   };
 
   return (
-    <View>
-      <DraggableFlatList
+    <NestableScrollContainer>
+      <NestableDraggableFlatList
         data={sortedTasks}
         // style={{height: 250}}
         onDragEnd={async ({ data }) => {
@@ -200,7 +202,7 @@ const DraggableListContainer = ({
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
-    </View>
+    </NestableScrollContainer>
   );
 };
 

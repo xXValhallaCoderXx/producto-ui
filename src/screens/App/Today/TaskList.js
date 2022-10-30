@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { View, KeyboardAvoidingView, Platform } from "react-native";
+import { View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "@rneui/themed";
@@ -14,7 +14,7 @@ const TaskList = ({
   handleToggleTaskComplete,
   utcDate,
   keyboardShown,
-  handleCreateNewTask
+  handleCreateNewTask,
 }) => {
   const toast = useToast();
   const { theme } = useTheme();
@@ -27,7 +27,6 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
-
 
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
@@ -72,28 +71,27 @@ const TaskList = ({
           </Text>
         </View>
       ) : (
-        <KeyboardAvoidingView
-          behavior={"height"}
-          // keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 70}
-        >
-          <DraggbleList
-            tasks={tasks.filter((task) => {
-              if (!focusMode && !task.focus && !task.completed) {
-                return false;
-              }
-              return task;
-            })}
-            handleOnPressDelete={handleOnPressDelete}
-            utcDate={utcDate}
-            onCheckTask={onCheckTask}
-            onCheckTaskRow={onCheckTaskRow}
-            onToggleFocus={onToggleFocus}
-          />
+        <KeyboardAvoidingView behavior={"height"}>
+          <ScrollView>
+            <DraggbleList
+              tasks={tasks.filter((task) => {
+                if (!focusMode && !task.focus && !task.completed) {
+                  return false;
+                }
+                return task;
+              })}
+              handleOnPressDelete={handleOnPressDelete}
+              utcDate={utcDate}
+              onCheckTask={onCheckTask}
+              onCheckTaskRow={onCheckTaskRow}
+              onToggleFocus={onToggleFocus}
+            />
 
-          <AddItem
-            handleCreateNewTask={handleCreateNewTask}
-            currentDate={utcDate}
-          />
+            <AddItem
+              handleCreateNewTask={handleCreateNewTask}
+              currentDate={utcDate}
+            />
+          </ScrollView>
         </KeyboardAvoidingView>
       )}
       <DeleteTaskModal
