@@ -46,9 +46,8 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const toggleAutoTaskModal = () => {
-    setisAutoTaskModalVisible(!isAutoTaskModalVisible)
-  }
-
+    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
+  };
 
   const handleCloseModal = () => {
     setisAutoTaskModalVisible(false);
@@ -121,47 +120,49 @@ const ProfileScreen = ({ navigation }) => {
               <SkeletonBox height={30} width={"100%"} />
             </View>
           ) : (
-            <List.Item
-              titleStyle={{
-                color: "#111827",
-                fontWeight: "500",
-                letterSpacing: 0.9,
-              }}
-              style={{ padding: 0, marginLeft: -7 }}
-              onPress={navigateToChangeEmail}
-              title="Email"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {data?.email}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
+            <TouchableOpacity onPress={navigateToChangeEmail}>
+              <List.Item
+                titleStyle={{
+                  color: "#111827",
+                  fontWeight: "500",
+                  letterSpacing: 0.9,
+                }}
+                style={{ padding: 0, marginLeft: -7 }}
+                title="Email"
+                right={() => (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={{ marginBottom: 2, paddingRight: 5 }}
+                      type="h3"
+                      color="black"
+                    >
+                      {data?.email}
+                    </Text>
+                    <MaterialIcons size={24} name="keyboard-arrow-right" />
+                  </View>
+                )}
+              />
+            </TouchableOpacity>
           )}
           {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
           ) : (
-            <List.Item
-              style={{ padding: 0, marginTop: 15, marginLeft: -7 }}
-              titleStyle={{
-                color: "#111827",
-                fontWeight: "500",
-                letterSpacing: 0.9,
-              }}
-              onPress={navigateToEditPassword}
-              title="Password"
-              right={() => (
-                <MaterialIcons size={24} name="keyboard-arrow-right" />
-              )}
-            />
+            <TouchableOpacity onPress={navigateToEditPassword}>
+              <List.Item
+                style={{ padding: 0, marginTop: 15, marginLeft: -7 }}
+                titleStyle={{
+                  color: "#111827",
+                  fontWeight: "500",
+                  letterSpacing: 0.9,
+                }}
+                title="Password"
+                right={() => (
+                  <MaterialIcons size={24} name="keyboard-arrow-right" />
+                )}
+              />
+            </TouchableOpacity>
           )}
         </View>
         <View style={{ marginTop: 50 }}>
@@ -178,28 +179,29 @@ const ProfileScreen = ({ navigation }) => {
               <SkeletonBox height={30} width={"100%"} />
             </View>
           ) : (
-            <List.Item
-              style={{ padding: 0, marginLeft: -7 }}
-              titleStyle={{
-                color: "#111827",
-                fontWeight: "500",
-                letterSpacing: 0.9,
-              }}
-              onPress={navigateToChangeTimezone}
-              title="Timezone"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {Localization.timezone}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
+            <TouchableOpacity onPress={navigateToChangeTimezone}>
+              <List.Item
+                style={{ padding: 0, marginLeft: -7 }}
+                titleStyle={{
+                  color: "#111827",
+                  fontWeight: "500",
+                  letterSpacing: 0.9,
+                }}
+                title="Timezone"
+                right={() => (
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text
+                      style={{ marginBottom: 2, paddingRight: 5 }}
+                      type="h3"
+                      color="black"
+                    >
+                      {Localization.timezone}
+                    </Text>
+                    <MaterialIcons size={24} name="keyboard-arrow-right" />
+                  </View>
+                )}
+              />
+            </TouchableOpacity>
           )}
 
           <View style={{ marginTop: 10 }}>
@@ -270,7 +272,7 @@ const ProfileScreen = ({ navigation }) => {
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading || updatePrefsResult.isLoading}
-        isSuccess={moveTasksApiResult.isSuccess  || updatePrefsResult.isLoading}
+        isSuccess={moveTasksApiResult.isSuccess || updatePrefsResult.isLoading}
       />
     </View>
   );
