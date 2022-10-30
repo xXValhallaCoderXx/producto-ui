@@ -17,6 +17,7 @@ import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
+import { useKeyboard } from "../../../shared/hooks/use-keyboard";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -32,6 +33,8 @@ import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
+  const { keyboardShown } = useKeyboard();
+
   const dispatch = useDispatch();
   const toast = useToast();
   const [progress, setProgress] = useState(0);
@@ -39,7 +42,7 @@ const ListScreen = () => {
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-  const posXanim = useRef(new Animated.Value(0)).current;
+
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -48,7 +51,7 @@ const ListScreen = () => {
     isFetching,
     error,
   } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const [posY] = useState(new Animated.Value(0));
+
   const {
     data: incompleteTasks,
     isLoading: incompleteIsLoading,
@@ -60,6 +63,9 @@ const ListScreen = () => {
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
+  const posXanim = useRef(new Animated.Value(0)).current;
+  const headerPostXAnim = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     setTheme();
   }, []);
@@ -71,6 +77,14 @@ const ListScreen = () => {
       useNativeDriver: true,
     }).start();
   }, [focusMode]);
+
+  useEffect(() => {
+    Animated.timing(headerPostXAnim, {
+      toValue: keyboardShown ? -70 : 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  }, [keyboardShown]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -193,16 +207,18 @@ const ListScreen = () => {
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
-        <Header
-          clientUtc={utcDate}
-          focusMode={focusMode}
-          onChangeDate={handleOnChangeDate}
-          onPressToday={handleOnPressToday}
-          onPressDate={handleOnPressDate}
-        />
-        <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
-          <ProgressBar focusMode={focusMode} progress={progress} />
-        </View>
+        {/* <Animated.View style={{ transform: [{ translateY: headerPostXAnim }] }}> */}
+          <Header
+            clientUtc={utcDate}
+            focusMode={focusMode}
+            onChangeDate={handleOnChangeDate}
+            onPressToday={handleOnPressToday}
+            onPressDate={handleOnPressDate}
+          />
+          <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+            <ProgressBar focusMode={focusMode} progress={progress} />
+          </View>
+        {/* </Animated.View> */}
 
         <View style={{ flex: 1, display: "flex" }}>
           {isLoading || isFetching ? (
@@ -212,8 +228,10 @@ const ListScreen = () => {
           ) : (
             <TaskList
               tasks={tasks || []}
+              keyboardShown={keyboardShown}
               handleToggleTaskFocus={handleToggleTaskFocus}
               handleToggleTaskComplete={handleToggleTaskComplete}
+              handleCreateNewTask={handleCreateNewTask}
               currentTask={currentTask}
               isLoadingToggle={isLoadingToggle}
               utcDate={utcDate}

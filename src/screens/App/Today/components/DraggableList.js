@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
-  NestableScrollContainer,
 } from "react-native-draggable-flatlist";
 import {
   View,
@@ -9,10 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Keyboard,
-  ScrollView,
-  Platform,
-  KeyboardAvoidingView,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -24,7 +19,8 @@ import IoniIcons from "react-native-vector-icons/Ionicons";
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
-import AddItem from "../AddItem";
+import { useKeyboard } from "../../../../shared/hooks/use-keyboard";
+
 const DraggableListContainer = ({
   tasks,
   handleOnPressDelete,
@@ -34,7 +30,9 @@ const DraggableListContainer = ({
   onToggleFocus,
 }) => {
   const { theme } = useTheme();
+  const { keyboardShown } = useKeyboard();
   const dispatch = useDispatch();
+  const scrollViewRef = useRef(null);
   const [sortedTasks, setSortedTasks] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
@@ -45,12 +43,13 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    const x = Keyboard.addListener("keyboardDidHide", onKeyboardDidHide);
-
-    return () => {
-      x.remove();
-    };
-  }, []);
+    // console.log("SCHOLAR TOO: ", scrollViewRef?.current);
+    scrollViewRef.current?.scrollToEnd();
+    if (!keyboardShown) {
+      setEditTask(null);
+      setTaskValue("");
+    }
+  }, [keyboardShown]);
 
   useEffect(() => {
     if (tasks.length > 0) {
@@ -74,11 +73,6 @@ const DraggableListContainer = ({
       title: value,
       date: format(utcDate, "yyyy-MM-dd"),
     });
-  };
-
-  const onKeyboardDidHide = (event) => {
-    setEditTask(null);
-    setTaskValue("");
   };
 
   const handleOnChange = (_value) => {
@@ -189,6 +183,7 @@ const DraggableListContainer = ({
     <View>
       <DraggableFlatList
         data={sortedTasks}
+        // style={{height: 250}}
         onDragEnd={async ({ data }) => {
           const itemSort = data.map((item) => item.id);
           const taskIdsInSortOrder = JSON.stringify(itemSort);
@@ -197,11 +192,14 @@ const DraggableListContainer = ({
           );
           setSortedTasks(data);
         }}
+        ref={scrollViewRef}
+        style={{
+          ...(keyboardShown && { height: 250 }),
+        }}
         keyboardShouldPersistTaps="always"
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
       />
-
     </View>
   );
 };

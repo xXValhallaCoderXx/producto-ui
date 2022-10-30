@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { View, KeyboardAvoidingView, Platform } from "react-native";
@@ -13,10 +13,13 @@ const TaskList = ({
   handleToggleTaskFocus,
   handleToggleTaskComplete,
   utcDate,
+  keyboardShown,
+  handleCreateNewTask
 }) => {
   const toast = useToast();
   const { theme } = useTheme();
   const [editTask, setEditTask] = useState(null);
+
   const focusMode = useSelector((state) => state.today.focusMode);
 
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
@@ -24,6 +27,7 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
+
 
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
@@ -69,9 +73,8 @@ const TaskList = ({
         </View>
       ) : (
         <KeyboardAvoidingView
-          style={{ flex: 1, overflow: "hidden" }}
-          behavior={Platform.OS === "ios" ? "position" : null}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 70}
+          behavior={"height"}
+          // keyboardVerticalOffset={Platform.OS === "ios" ? 120 : 70}
         >
           <DraggbleList
             tasks={tasks.filter((task) => {
@@ -88,7 +91,7 @@ const TaskList = ({
           />
 
           <AddItem
-            handleCreateNewTask={() => console.log("CLICK")}
+            handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
           />
         </KeyboardAvoidingView>
