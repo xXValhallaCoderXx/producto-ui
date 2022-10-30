@@ -31,7 +31,6 @@ import CalendarWidget from "./Calendar";
 import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
 
-
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
@@ -66,7 +65,6 @@ const ListScreen = () => {
   }, []);
 
   useEffect(() => {
-   
     Animated.timing(posXanim, {
       toValue: focusMode ? 160 : 130,
       duration: 350,
@@ -206,59 +204,40 @@ const ListScreen = () => {
           <ProgressBar focusMode={focusMode} progress={progress} />
         </View>
 
-        <View
-          contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
-          style={{ flex: 1, marginTop: 10 }}
-        >
-          <View
-            style={{ height: 80, display: "flex", justifyContent: "center" }}
-          >
-            {isLoading || isFetching ? (
-              <View style={{ flex: 1, paddingTop: 20 }}>
-                <SkeletonList />
-              </View>
-            ) : (
-              <Animated.View
-                style={{ height: 400, transform: [{ translateY: posXanim }] }}
-              >
-                <KeyboardAvoidingView>
-                  <TaskList
-                    tasks={tasks || []}
-                    handleToggleTaskFocus={handleToggleTaskFocus}
-                    handleToggleTaskComplete={handleToggleTaskComplete}
-                    currentTask={currentTask}
-                    isLoadingToggle={isLoadingToggle}
-                    utcDate={utcDate}
-                  />
+        <View style={{ flex: 1, display: "flex" }}>
+          {isLoading || isFetching ? (
+            <View style={{ flex: 1, paddingTop: 20 }}>
+              <SkeletonList />
+            </View>
+          ) : (
+            <TaskList
+              tasks={tasks || []}
+              handleToggleTaskFocus={handleToggleTaskFocus}
+              handleToggleTaskComplete={handleToggleTaskComplete}
+              currentTask={currentTask}
+              isLoadingToggle={isLoadingToggle}
+              utcDate={utcDate}
+            />
+          )}
+        </View>
 
-                  {!focusMode ? null : (
-                    <AddItem
-                      handleCreateNewTask={handleCreateNewTask}
-                      currentDate={utcDate}
-                    />
-                  )}
-                </KeyboardAvoidingView>
-              </Animated.View>
-            )}
-          </View>
+        <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
+        />
 
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
-            currentDate={utcDate}
-            handleOnSelectDay={handleOnSelectDay}
-          />
-
-          {isFetching ? null : (
+        {/* {isFetching ? null : (
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
               isLoading={moveIncompleteTasksResult.isLoading}
               onMoveIncomplete={handleMoveIncompleteTasks}
             />
-          )}
-        </View>
+          )} */}
+
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>
@@ -270,7 +249,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     padding: 30,
+    paddingBottom: 0,
   },
 });
 
 export default ListScreen;
+
+{
+  /* <AddItem
+                  handleCreateNewTask={handleCreateNewTask}
+                  currentDate={utcDate}
+                /> */
+}

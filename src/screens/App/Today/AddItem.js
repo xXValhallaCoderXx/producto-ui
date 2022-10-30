@@ -35,9 +35,9 @@ const AddItem = ({ handleCreateNewTask }) => {
     }
   };
 
-  if (!isToday) {
-    return null;
-  }
+  // if (!isToday) {
+  //   return null;
+  // }
 
   return (
     <View

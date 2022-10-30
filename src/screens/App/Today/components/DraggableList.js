@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
-  ScaleDecorator,
+  OpacityDecorator,
+  NestableScrollContainer,
 } from "react-native-draggable-flatlist";
 import {
   View,
@@ -9,6 +10,9 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -20,6 +24,7 @@ import IoniIcons from "react-native-vector-icons/Ionicons";
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
+import AddItem from "../AddItem";
 const DraggableListContainer = ({
   tasks,
   handleOnPressDelete,
@@ -56,7 +61,6 @@ const DraggableListContainer = ({
         });
         setSortedTasks(tasks);
       }
-
       setSortedTasks(tasks);
     }
   }, [tasks]);
@@ -116,7 +120,7 @@ const DraggableListContainer = ({
       );
     }
     return (
-      <ScaleDecorator>
+      <OpacityDecorator>
         <TouchableWithoutFeedback
           onLongPress={drag}
           disabled={isActive}
@@ -177,25 +181,28 @@ const DraggableListContainer = ({
             </View>
           </View>
         </TouchableWithoutFeedback>
-      </ScaleDecorator>
+      </OpacityDecorator>
     );
   };
 
   return (
-    <DraggableFlatList
-      data={sortedTasks}
-      onDragEnd={async ({ data }) => {
-        const itemSort = data.map((item) => item.id);
-        const taskIdsInSortOrder = JSON.stringify(itemSort);
-        dispatch(
-          setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
-        );
-        setSortedTasks(data);
-      }}
-      keyboardShouldPersistTaps="always"
-      keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-    />
+    <View>
+      <DraggableFlatList
+        data={sortedTasks}
+        onDragEnd={async ({ data }) => {
+          const itemSort = data.map((item) => item.id);
+          const taskIdsInSortOrder = JSON.stringify(itemSort);
+          dispatch(
+            setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
+          );
+          setSortedTasks(data);
+        }}
+        keyboardShouldPersistTaps="always"
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+      />
+
+    </View>
   );
 };
 

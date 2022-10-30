@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { View } from "react-native";
+import { View, KeyboardAvoidingView, Platform } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "@rneui/themed";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
-
+import AddItem from "./AddItem";
 const TaskList = ({
   tasks,
   handleToggleTaskFocus,
@@ -57,7 +57,7 @@ const TaskList = ({
   };
 
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       {tasks.length === 0 ? (
         <View>
           <Text style={{ marginTop: 15 }}>
@@ -68,19 +68,30 @@ const TaskList = ({
           </Text>
         </View>
       ) : (
-        <DraggbleList
-          tasks={tasks.filter((task) => {
-            if (!focusMode && !task.focus && !task.completed) {
-              return false;
-            }
-            return task;
-          })}
-          handleOnPressDelete={handleOnPressDelete}
-          utcDate={utcDate}
-          onCheckTask={onCheckTask}
-          onCheckTaskRow={onCheckTaskRow}
-          onToggleFocus={onToggleFocus}
-        />
+        <KeyboardAvoidingView
+          style={{ flex: 1, overflow: "hidden" }}
+          behavior={Platform.OS === "ios" ? "position" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 70}
+        >
+          <DraggbleList
+            tasks={tasks.filter((task) => {
+              if (!focusMode && !task.focus && !task.completed) {
+                return false;
+              }
+              return task;
+            })}
+            handleOnPressDelete={handleOnPressDelete}
+            utcDate={utcDate}
+            onCheckTask={onCheckTask}
+            onCheckTaskRow={onCheckTaskRow}
+            onToggleFocus={onToggleFocus}
+          />
+
+          <AddItem
+            handleCreateNewTask={() => console.log("CLICK")}
+            currentDate={utcDate}
+          />
+        </KeyboardAvoidingView>
       )}
       <DeleteTaskModal
         isVisible={isDeleteModalVisible}
