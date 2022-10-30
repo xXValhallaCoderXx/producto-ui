@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
-import { ListItem, CheckBox } from "@rneui/themed";
+import { CheckBox } from "@rneui/themed";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { useTheme, Text } from "@rneui/themed";
@@ -28,9 +28,9 @@ const DraggableListContainer = ({
   onCheckTaskRow,
   onToggleFocus,
 }) => {
-  // const [data, setData] = useState([]);
   const { theme } = useTheme();
   const dispatch = useDispatch();
+  const [sortedTasks, setSortedTasks] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
   const sortedTaskMap = useSelector((state) => state.persist);
@@ -47,18 +47,17 @@ const DraggableListContainer = ({
     };
   }, []);
 
-  const sortData = useMemo(() => {
+  useEffect(() => {
     if (tasks.length > 0) {
       const taskSortId = sortedTaskMap?.data[currentDate];
       if (taskSortId) {
         tasks.sort(function (a, b) {
           return taskSortId.indexOf(a.id) - taskSortId.indexOf(b.id);
         });
+        setSortedTasks(tasks);
       }
 
-      return tasks;
-    } else {
-      return [];
+      setSortedTasks(tasks);
     }
   }, [tasks]);
 
@@ -152,7 +151,7 @@ const DraggableListContainer = ({
                   style={{
                     fontSize: 25,
                     marginRight: 15,
-                    transform: [{ rotate: "315deg" }, {scaleX: -1}],
+                    transform: [{ rotate: "315deg" }, { scaleX: -1 }],
                   }}
                   color={item.focus ? theme.colors.primary : "#111827"}
                   name={"key-outline"}
@@ -174,7 +173,6 @@ const DraggableListContainer = ({
                 checked={item.completed}
                 containerStyle={{ padding: 0, paddingRight: 3 }}
                 onPress={onCheckTask(item)}
-                // disabled={isLoadingToggle}
               />
             </View>
           </View>
@@ -185,13 +183,14 @@ const DraggableListContainer = ({
 
   return (
     <DraggableFlatList
-      data={sortData}
+      data={sortedTasks}
       onDragEnd={async ({ data }) => {
         const itemSort = data.map((item) => item.id);
         const taskIdsInSortOrder = JSON.stringify(itemSort);
         dispatch(
           setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
         );
+        setSortedTasks(data);
       }}
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}

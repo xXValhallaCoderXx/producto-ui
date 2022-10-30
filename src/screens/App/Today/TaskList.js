@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { useToast } from "react-native-toast-notifications";
-import { useUpdateTaskMutation } from "../../../api/task-api";
 import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "@rneui/themed";
 import DraggbleList from "./components/DraggableList";
@@ -19,8 +18,7 @@ const TaskList = ({
   const { theme } = useTheme();
   const [editTask, setEditTask] = useState(null);
   const focusMode = useSelector((state) => state.today.focusMode);
-  const [value, setTaskValue] = useState("");
-  const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
+
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
   const onCheckTaskRow = (_task) => handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
@@ -29,7 +27,6 @@ const TaskList = ({
 
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
-      setIsDeleteModalVisible(false);
       setEditTask(null);
       toast.show("", {
         type: "success",
@@ -54,6 +51,7 @@ const TaskList = ({
   };
 
   const handleDeleteTask = async () => {
+    setIsDeleteModalVisible(false);
     await deleteTaskApi({ id: editTask, date: format(utcDate, "yyyy-MM-dd") });
     setEditTask(null);
   };
