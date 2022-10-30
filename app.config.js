@@ -21,7 +21,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://wild-memes-doubt-116-86-1-104.loca.lt",
+      baseUrl: "https://itchy-plums-retire-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

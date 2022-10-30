@@ -52,7 +52,7 @@ const TodayHeader = ({
               marginLeft: Platform.OS === "ios" ? -28 : -6,
               alignSelf: "flex-start",
               fontWeight: "700",
-              letterSpacing: 1.2,
+              letterSpacing: 0.8,
               color: isToday ? theme.colors.primary : "#6B7280",
             }}
           >
@@ -73,7 +73,7 @@ const TodayHeader = ({
                     h3
                     style={{
                       color: theme.colors.primary,
-                      letterSpacing: 1,
+                      letterSpacing: 0.5,
 
                       fontWeight: "700",
                     }}
