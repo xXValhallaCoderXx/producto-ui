@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
+  Animated,
 } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
@@ -24,6 +25,7 @@ const TodayHeader = ({
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector((state) => state.today.isToday);
+  const posXanim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (clientUtc) {
@@ -38,6 +40,14 @@ const TodayHeader = ({
   }, [clientUtc]);
 
   useEffect(() => {
+    Animated.timing(posXanim, {
+      toValue: focusMode ? 0 : -15,
+      duration: 350,
+      useNativeDriver: true,
+    }).start();
+  }, [focusMode]);
+
+  useEffect(() => {
     if (!isToday) {
       dispatch(toggleFocusMode({ focusMode: true }));
     }
@@ -46,7 +56,7 @@ const TodayHeader = ({
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
       <View>
-        <TouchableOpacity onPress={onPressDate} style={{height: 18}}>
+        <TouchableOpacity onPress={onPressDate} style={{ height: 18 }}>
           <Text2
             style={{
               marginLeft: Platform.OS === "ios" ? -28 : -6,
@@ -68,7 +78,9 @@ const TodayHeader = ({
                 background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
                 onPress={onPressToday}
               >
-                <View>
+                <Animated.View
+                  style={{ transform: [{ translateY: posXanim }] }}
+                >
                   <Text
                     h3
                     style={{
@@ -80,32 +92,32 @@ const TodayHeader = ({
                   >
                     Today
                   </Text>
-                </View>
+                </Animated.View>
               </TouchableNativeFeedback>
-       <View style={{ height: 55}}>
-       {focusMode && (
-                <View style={styles.dateContainer}>
-                  <TouchableOpacity
-                    background={TouchableNativeFeedback.Ripple(
-                      "#2962ff1f",
-                      true
-                    )}
-                    onPress={onChangeDate("back")}
-                  >
-                    <IonIcon
-                      style={styles.leftArrow}
-                      name="keyboard-arrow-left"
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={onChangeDate("forward")}>
-                    <IonIcon
-                      style={styles.rightArrow}
-                      name="keyboard-arrow-right"
-                    />
-                  </TouchableOpacity>
-                </View>
-              )}
-       </View>
+              <View style={{ height: 55 }}>
+                {focusMode && (
+                  <View style={styles.dateContainer}>
+                    <TouchableOpacity
+                      background={TouchableNativeFeedback.Ripple(
+                        "#2962ff1f",
+                        true
+                      )}
+                      onPress={onChangeDate("back")}
+                    >
+                      <IonIcon
+                        style={styles.leftArrow}
+                        name="keyboard-arrow-left"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={onChangeDate("forward")}>
+                      <IonIcon
+                        style={styles.rightArrow}
+                        name="keyboard-arrow-right"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
         </View>

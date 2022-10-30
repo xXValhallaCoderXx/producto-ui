@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
-import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
 import {
   StyleSheet,
@@ -40,7 +39,6 @@ const ListScreen = () => {
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
-  const x = useSelector((state) => state.persist);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
