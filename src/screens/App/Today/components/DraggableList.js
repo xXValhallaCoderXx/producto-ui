@@ -21,7 +21,6 @@ import IoniIcons from "react-native-vector-icons/Ionicons";
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
-import { useKeyboard } from "../../../../shared/hooks/use-keyboard";
 
 const DraggableListContainer = ({
   tasks,
@@ -30,9 +29,9 @@ const DraggableListContainer = ({
   onCheckTask,
   onCheckTaskRow,
   onToggleFocus,
+  keyboardShown
 }) => {
   const { theme } = useTheme();
-  const { keyboardShown } = useKeyboard();
   const dispatch = useDispatch();
   const scrollViewRef = useRef(null);
   const [sortedTasks, setSortedTasks] = useState([]);
@@ -45,7 +44,7 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    // console.log("SCHOLAR TOO: ", scrollViewRef?.current);
+   
     scrollViewRef.current?.scrollToEnd();
     if (!keyboardShown) {
       setEditTask(null);
@@ -70,6 +69,8 @@ const DraggableListContainer = ({
   let countTimer = useRef(null);
 
   const handleOnBlur = async () => {
+    setEditTask(null);
+    setTaskValue("");
     await updateTaskApi({
       id: editTask,
       title: value,
@@ -182,27 +183,26 @@ const DraggableListContainer = ({
   };
 
   return (
-    <NestableScrollContainer>
-      <NestableDraggableFlatList
-        data={sortedTasks}
-        // style={{height: 250}}
-        onDragEnd={async ({ data }) => {
-          const itemSort = data.map((item) => item.id);
-          const taskIdsInSortOrder = JSON.stringify(itemSort);
-          dispatch(
-            setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
-          );
-          setSortedTasks(data);
-        }}
-        ref={scrollViewRef}
-        style={{
-          ...(keyboardShown && { height: 250 }),
-        }}
-        keyboardShouldPersistTaps="always"
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-      />
-    </NestableScrollContainer>
+    <DraggableFlatList
+      data={sortedTasks}
+      // style={{height: 250}}
+      onDragEnd={async ({ data }) => {
+        const itemSort = data.map((item) => item.id);
+        const taskIdsInSortOrder = JSON.stringify(itemSort);
+        dispatch(
+          setSortedData({ date: currentDate, tasks: taskIdsInSortOrder })
+        );
+        setSortedTasks(data);
+      }}
+    
+      ref={scrollViewRef}
+      style={{
+        ...(keyboardShown && { height: 250 })
+      }}
+      keyboardShouldPersistTaps="always"
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+    />
   );
 };
 

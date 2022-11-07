@@ -8,6 +8,11 @@ import { Text, useTheme } from "@rneui/themed";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 import AddItem from "./AddItem";
+import DraggableFlatList, {
+  OpacityDecorator,
+  NestableScrollContainer,
+  NestableDraggableFlatList,
+} from "react-native-draggable-flatlist";
 const TaskList = ({
   tasks,
   handleToggleTaskFocus,
@@ -71,27 +76,30 @@ const TaskList = ({
           </Text>
         </View>
       ) : (
-        <KeyboardAvoidingView behavior={"height"}>
-          <ScrollView>
-            <DraggbleList
-              tasks={tasks.filter((task) => {
-                if (!focusMode && !task.focus && !task.completed) {
-                  return false;
-                }
-                return task;
-              })}
-              handleOnPressDelete={handleOnPressDelete}
-              utcDate={utcDate}
-              onCheckTask={onCheckTask}
-              onCheckTaskRow={onCheckTaskRow}
-              onToggleFocus={onToggleFocus}
-            />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "height" : "position"}
 
-            <AddItem
-              handleCreateNewTask={handleCreateNewTask}
-              currentDate={utcDate}
-            />
-          </ScrollView>
+          style={{ ...(keyboardShown ? { paddingBottom: 0 } : {paddingBottom: 100}) }}
+        >
+          <DraggbleList
+            tasks={tasks.filter((task) => {
+              if (!focusMode && !task.focus && !task.completed) {
+                return false;
+              }
+              return task;
+            })}
+            handleOnPressDelete={handleOnPressDelete}
+            utcDate={utcDate}
+            onCheckTask={onCheckTask}
+            onCheckTaskRow={onCheckTaskRow}
+            onToggleFocus={onToggleFocus}
+            keyboardShown={keyboardShown}
+          />
+
+          <AddItem
+            handleCreateNewTask={handleCreateNewTask}
+            currentDate={utcDate}
+          />
         </KeyboardAvoidingView>
       )}
       <DeleteTaskModal
