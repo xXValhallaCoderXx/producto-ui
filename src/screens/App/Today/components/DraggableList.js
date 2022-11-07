@@ -18,6 +18,8 @@ import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { useTheme, Text } from "@rneui/themed";
 import IoniIcons from "react-native-vector-icons/Ionicons";
+import Material from "react-native-vector-icons/MaterialIcons";
+
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
@@ -29,7 +31,7 @@ const DraggableListContainer = ({
   onCheckTask,
   onCheckTaskRow,
   onToggleFocus,
-  keyboardShown
+  keyboardShown,
 }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
@@ -44,7 +46,6 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-   
     scrollViewRef.current?.scrollToEnd();
     if (!keyboardShown) {
       setEditTask(null);
@@ -82,103 +83,133 @@ const DraggableListContainer = ({
     setTaskValue(_value);
   };
 
+  const handleOnLongPress = (_item) => () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setEditTask(_item.id);
+    setTaskValue(_item.title);
+    dispatch(toggleEditMode(true));
+  };
+
+  const handleOnPress = (_item) => () => {
+    onCheckTaskRow(_item);
+  };
+
   const renderItem = ({ item, drag, isActive }) => {
+    console.log("DRAG: ", drag);
     if (item && item.id === editTask) {
       return (
-        <View key={item.id} style={styles.listRow}>
-          <View style={{ justifyContent: "center" }}>
-            <TextInput
-              onChangeText={handleOnChange}
-              value={value}
-              onBlur={handleOnBlur}
-              autoFocus
-              underlineColorAndroid="transparent"
-              style={{
-                fontSize: 16,
-                backgroundColor: "white",
-              }}
-            />
-          </View>
+        <OpacityDecorator>
+          <TouchableWithoutFeedback key={item.id} onLongPress={drag}>
+            <View style={styles.listRow}>
+              <View style={{ justifyContent: "center" }}>
+                <TextInput
+                  onChangeText={handleOnChange}
+                  value={value}
+                  onBlur={handleOnBlur}
+                  // autoFocus
+                  underlineColorAndroid="transparent"
+                  style={{
+                    fontSize: 16,
+                    backgroundColor: "white",
+                  }}
+                />
+              </View>
 
-          <TouchableOpacity
-            style={{
-              justifyContent: "center",
-              paddingRight: 15,
-            }}
-            onPress={handleOnPressDelete(item.id)}
-          >
-            <MaterialIcons
-              name="trash-o"
-              color={"#6B7280"}
-              style={{ fontSize: 25, paddingRight: 3 }}
-            />
-          </TouchableOpacity>
-        </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  style={{
+                    justifyContent: "center",
+                    paddingRight: 15,
+                  }}
+                  onPress={handleOnPressDelete(item.id)}
+                >
+                  <MaterialIcons
+                    name="trash-o"
+                    color={"#6B7280"}
+                    style={{ fontSize: 25, paddingRight: 3 }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    justifyContent: "center",
+                    paddingRight: 15,
+                  }}
+                >
+                  <Material
+                    name="drag-indicator"
+                    color={"#6B7280"}
+                    style={{ fontSize: 25, paddingRight: 3 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </OpacityDecorator>
       );
     }
     return (
-      <OpacityDecorator>
-        <TouchableWithoutFeedback
-          onLongPress={drag}
-          disabled={isActive}
-          onPress={() => {
-            countRef++;
-            if (countRef == 2) {
-              clearTimeout(countTimer.current);
-              countRef = 0;
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setEditTask(item.id);
-              setTaskValue(item.title);
-              dispatch(toggleEditMode(true));
-            } else {
-              countTimer.current = setTimeout(() => {
-                onCheckTaskRow(item);
-                countRef = 0;
-              }, 250);
-            }
-          }}
-          key={item.id}
-        >
-          <View style={styles.listRow}>
-            <View
+      <TouchableWithoutFeedback
+        // onLongPress={drag}
+        onPress={handleOnPress(item)}
+        onLongPress={handleOnLongPress(item)}
+        disabled={isActive}
+        // onPress={() => {
+        //   countRef++;
+        //   if (countRef == 2) {
+        //     clearTimeout(countTimer.current);
+        //     countRef = 0;
+        // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        // setEditTask(item.id);
+        // setTaskValue(item.title);
+        // dispatch(toggleEditMode(true));
+        //   } else {
+        //     countTimer.current = setTimeout(() => {
+        //       onCheckTaskRow(item);
+        //       countRef = 0;
+        //     }, 250);
+        //   }
+        // }}
+        key={item.id}
+      >
+        <View style={styles.listRow}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingLeft: 5,
+            }}
+          >
+            {focusMode && currentDate === todayDate && (
+              <IoniIcons
+                style={{
+                  fontSize: 25,
+                  marginRight: 15,
+                  transform: [{ rotate: "315deg" }, { scaleX: -1 }],
+                }}
+                color={item.focus ? theme.colors.primary : "#111827"}
+                name={"key-outline"}
+                onPress={onToggleFocus(item)}
+              />
+            )}
+            <Text
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                paddingLeft: 5,
+                color: item.completed ? "gray" : "#111827",
+                textDecorationLine: item.completed ? "line-through" : "none",
+                fontSize: 18,
               }}
             >
-              {focusMode && currentDate === todayDate && (
-                <IoniIcons
-                  style={{
-                    fontSize: 25,
-                    marginRight: 15,
-                    transform: [{ rotate: "315deg" }, { scaleX: -1 }],
-                  }}
-                  color={item.focus ? theme.colors.primary : "#111827"}
-                  name={"key-outline"}
-                  onPress={onToggleFocus(item)}
-                />
-              )}
-              <Text
-                style={{
-                  color: item.completed ? "gray" : "#111827",
-                  textDecorationLine: item.completed ? "line-through" : "none",
-                  fontSize: 18,
-                }}
-              >
-                {item.title}
-              </Text>
-            </View>
-            <View style={{ justifyContent: "center" }}>
-              <CheckBox
-                checked={item.completed}
-                containerStyle={{ padding: 0, paddingRight: 3 }}
-                onPress={onCheckTask(item)}
-              />
-            </View>
+              {item.title}
+            </Text>
           </View>
-        </TouchableWithoutFeedback>
-      </OpacityDecorator>
+          <View style={{ justifyContent: "center" }}>
+            <CheckBox
+              checked={item.completed}
+              containerStyle={{ padding: 0, paddingRight: 3 }}
+              onPress={onCheckTask(item)}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
 
@@ -194,10 +225,9 @@ const DraggableListContainer = ({
         );
         setSortedTasks(data);
       }}
-    
       ref={scrollViewRef}
       style={{
-        ...(keyboardShown && { height: 250 })
+        ...(keyboardShown && { height: 250 }),
       }}
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
