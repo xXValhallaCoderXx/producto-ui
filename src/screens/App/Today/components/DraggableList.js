@@ -36,6 +36,7 @@ const DraggableListContainer = ({
   const { theme } = useTheme();
   const dispatch = useDispatch();
   const scrollViewRef = useRef(null);
+  const onDragInputRef = useRef(null);
   const [sortedTasks, setSortedTasks] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
@@ -95,11 +96,18 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive }) => {
-    console.log("DRAG: ", drag);
+    const handleOnDragIcon = () => {
+      console.log("ON DRAGINPUT REF: ");
+      onDragInputRef.current.onBlur(drag);
+    };
     if (item && item.id === editTask) {
       return (
         <OpacityDecorator>
-          <TouchableWithoutFeedback key={item.id} onLongPress={drag}>
+          <TouchableWithoutFeedback
+            ref={onDragInputRef}
+            key={item.id}
+            onLongPress={drag}
+          >
             <View style={styles.listRow}>
               <View style={{ justifyContent: "center" }}>
                 <TextInput
@@ -134,6 +142,7 @@ const DraggableListContainer = ({
                     justifyContent: "center",
                     paddingRight: 15,
                   }}
+                  disabled
                 >
                   <Material
                     name="drag-indicator"

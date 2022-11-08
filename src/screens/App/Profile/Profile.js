@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { List, Switch, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
@@ -220,9 +220,9 @@ const ProfileScreen = ({ navigation }) => {
                   }}
                   title="Auto Move Tasks"
                   right={() => (
-                    <View style={{ justifyContent: "center" }}>
+                    <View pointerEvents="none" style={{ justifyContent: "center" }}>
                       <Switch
-                        onChange={toggleAutoTaskModal}
+                        // onChange={toggleAutoTaskModal}
                         value={data?.prefs?.autoMove}
                       />
                     </View>
