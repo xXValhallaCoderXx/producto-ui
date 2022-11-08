@@ -12,9 +12,8 @@ const CalendarWidget = ({
 }) => {
   const [parsedIncomplete, setParsedIncomplete] = useState({});
   useEffect(() => {
+    const parsedData = {};
     if (incompleteTasks.length > 0) {
-      const parsedData = {};
-
       if (!incompleteTasks.includes(format(currentDate, "yyyy-MM-dd"))) {
         parsedData[format(currentDate, "yyyy-MM-dd")] = {
           // marked: true,
@@ -52,8 +51,25 @@ const CalendarWidget = ({
           },
         };
       });
-      setParsedIncomplete(parsedData);
+      const today = format(new Date(), "yyyy-MM-dd");
+      parsedData[today] = {
+        customStyles: {
+          container: {
+            borderColor: "#5048E5",
+            // backgroundColor:
+            //   format(currentDate, "yyyy-MM-dd") === task
+            //     ? "#5048E5"
+            //     : "white",
+            borderWidth: 1.5,
+            borderRadius: 30,
+          },
+          text: {
+            color: "#5048E5",
+          },
+        },
+      };
     }
+    setParsedIncomplete(parsedData);
   }, [incompleteTasks, currentDate]);
   // console.log("PARSED: ", parsedIncomplete);
   const onDayPress = useCallback((day) => {
@@ -98,7 +114,7 @@ const CalendarWidget = ({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
+    marginTop: 140,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
