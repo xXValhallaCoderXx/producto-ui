@@ -74,12 +74,17 @@ const TaskList = ({
               productivity!
             </Text>
           </Text>
+          <AddItem
+            handleCreateNewTask={handleCreateNewTask}
+            currentDate={utcDate}
+          />
         </View>
       ) : (
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "height" : "position"}
-
-          style={{ ...(keyboardShown ? { paddingBottom: 0 } : {paddingBottom: 100}) }}
+          style={{
+            ...(keyboardShown ? { paddingBottom: 0 } : { paddingBottom: 100 }),
+          }}
         >
           <DraggbleList
             tasks={tasks.filter((task) => {
@@ -95,7 +100,6 @@ const TaskList = ({
             onToggleFocus={onToggleFocus}
             keyboardShown={keyboardShown}
           />
-
           <AddItem
             handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
