@@ -7,6 +7,7 @@ import DraggableFlatList, {
 import {
   View,
   StyleSheet,
+  Image,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -23,6 +24,8 @@ import Material from "react-native-vector-icons/MaterialIcons";
 import { setSortedData } from "../../../../shared/slice/task-sort-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
+import Checked from "../../../../assets/images/checkbox-checked.png";
+import Unchecked from "../../../../assets/images/checkbox-unchecked.png";
 
 const DraggableListContainer = ({
   tasks,
@@ -96,10 +99,6 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive }) => {
-    const handleOnDragIcon = () => {
-      console.log("ON DRAGINPUT REF: ");
-      onDragInputRef.current.onBlur(drag);
-    };
     if (item && item.id === editTask) {
       return (
         <OpacityDecorator>
@@ -118,12 +117,19 @@ const DraggableListContainer = ({
                   underlineColorAndroid="transparent"
                   style={{
                     fontSize: 16,
+                    marginLeft: 5,
                     backgroundColor: "white",
                   }}
                 />
               </View>
 
-              <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+
+                  justifyContent: "flex-end",
+                }}
+              >
                 <TouchableOpacity
                   style={{
                     justifyContent: "center",
@@ -140,14 +146,13 @@ const DraggableListContainer = ({
                 <TouchableOpacity
                   style={{
                     justifyContent: "center",
-                    paddingRight: 15,
                   }}
                   disabled
                 >
                   <Material
                     name="drag-indicator"
                     color={"#6B7280"}
-                    style={{ fontSize: 25, paddingRight: 3 }}
+                    style={{ fontSize: 25, padding: 0 }}
                   />
                 </TouchableOpacity>
               </View>
@@ -210,12 +215,19 @@ const DraggableListContainer = ({
               {item.title}
             </Text>
           </View>
-          <View style={{ justifyContent: "center" }}>
-            <CheckBox
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <TouchableOpacity onPress={onCheckTask(item)}>
+              <Image
+                // style={styles.tinyLogo}
+                style={{ maxHeight: 20, maxWidth: 20 }}
+                source={item.completed ? Checked : Unchecked}
+              />
+            </TouchableOpacity>
+            {/* <CheckBox
               checked={item.completed}
               containerStyle={{ padding: 0, paddingRight: 3 }}
-              onPress={onCheckTask(item)}
-            />
+             
+            /> */}
           </View>
         </View>
       </TouchableWithoutFeedback>
