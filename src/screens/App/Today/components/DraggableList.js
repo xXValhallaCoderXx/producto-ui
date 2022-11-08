@@ -49,13 +49,13 @@ const DraggableListContainer = ({
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
-  useEffect(() => {
-    scrollViewRef.current?.scrollToEnd();
-    if (!keyboardShown) {
-      setEditTask(null);
-      setTaskValue("");
-    }
-  }, [keyboardShown]);
+  // useEffect(() => {
+  //   scrollViewRef.current?.scrollToEnd();
+  //   if (!keyboardShown) {
+  //     setEditTask(null);
+  //     setTaskValue("");
+  //   }
+  // }, [keyboardShown]);
 
   useEffect(() => {
     if (tasks.length > 0) {
@@ -103,7 +103,6 @@ const DraggableListContainer = ({
       return (
         <OpacityDecorator>
           <TouchableWithoutFeedback
-            ref={onDragInputRef}
             key={item.id}
             onLongPress={drag}
           >
@@ -113,7 +112,7 @@ const DraggableListContainer = ({
                   onChangeText={handleOnChange}
                   value={value}
                   onBlur={handleOnBlur}
-                  // autoFocus
+                  autoFocus
                   underlineColorAndroid="transparent"
                   style={{
                     fontSize: 16,
@@ -162,6 +161,7 @@ const DraggableListContainer = ({
       );
     }
     return (
+      <OpacityDecorator>
       <TouchableWithoutFeedback
         // onLongPress={drag}
         onPress={handleOnPress(item)}
@@ -231,6 +231,7 @@ const DraggableListContainer = ({
           </View>
         </View>
       </TouchableWithoutFeedback>
+      </OpacityDecorator>
     );
   };
 
