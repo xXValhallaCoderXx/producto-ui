@@ -252,7 +252,10 @@ const ListScreen = () => {
                 utcDate={utcDate}
               />
             )}
-            <MoveIncomplete
+          
+          </View>
+          <View>
+          <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
               isLoading={moveTasksApiResult.isLoading}

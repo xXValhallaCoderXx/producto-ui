@@ -34,7 +34,7 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
-  console.log("HMMMM: ", keyboardShown)
+  console.log("HMMMM: ", keyboardShown);
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setEditTask(null);
@@ -82,14 +82,12 @@ const TaskList = ({
           />
         </View>
       ) : (
-        <View style={{height: "100%"}}>
- <KeyboardAvoidingView
-        style={{backgroundColor: "red"}}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 230}
-      >
-         <View style={{maxHeight: "80%"}}>
-         <DraggbleList
+        <KeyboardAvoidingView
+          style={{ backgroundColor: "red" }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 230 : 230}
+        >
+          <DraggbleList
             tasks={tasks.filter((task) => {
               if (!focusMode && !task.focus && !task.completed) {
                 return false;
@@ -104,19 +102,13 @@ const TaskList = ({
             keyboardShown={keyboardShown}
             keyboardHeight={keyboardHeight}
           />
-         </View>
-    
-        </KeyboardAvoidingView>
-
-        <AddItem
+          <AddItem
             handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
           />
-          </View>
-       
+        </KeyboardAvoidingView>
       )}
 
-   
       <DeleteTaskModal
         isVisible={isDeleteModalVisible}
         onPress={handleDeleteTask}
