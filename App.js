@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
-import { Platform, View, Text } from "react-native";
+import { Platform, View, StatusBar as RnStatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { ThemeProvider } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./src/config/store";
@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import theme from "./src/shared/styles/theme";
 import Toast from "./src/components/Toast";
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -88,9 +89,11 @@ export default function App() {
         >
           <PaperProvider theme={theme2}>
             <ThemeProvider theme={theme}>
-              <StatusBar style="dark" backgroundColor="white" />
+              
               <QueryClientProvider client={queryClient}>
-                <NavigationContainer>
+               <SafeAreaView style={{flex: 1 }}>
+               <NavigationContainer>
+                  <StatusBar style="dark" backgroundColor="white" />
                   <Stack.Navigator
                     screenOptions={() => ({
                       headerShown: false,
@@ -99,6 +102,7 @@ export default function App() {
                     <Stack.Screen name="Root" component={RootScreens} />
                   </Stack.Navigator>
                 </NavigationContainer>
+               </SafeAreaView>
               </QueryClientProvider>
             </ThemeProvider>
           </PaperProvider>

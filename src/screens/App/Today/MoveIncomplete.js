@@ -37,7 +37,6 @@ const MoveIncomplete = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginBottom: Platform.OS === "android" ? 30 : 0,
   },
 });
 

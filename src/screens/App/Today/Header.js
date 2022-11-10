@@ -16,10 +16,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleFocusMode, toggleIsToday } from "./today-slice";
 
 const TodayHeader = ({
-  focusMode,
-  onChangeDate,
-  clientUtc,
   onPressToday,
+  onChangeDate,
+  focusMode,
+  clientUtc,
   onPressDate,
 }) => {
   const { theme } = useTheme();
@@ -54,15 +54,19 @@ const TodayHeader = ({
   }, [isToday]);
 
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+      }}
+    >
       <View>
         <TouchableOpacity onPress={onPressDate} style={{ height: 18 }}>
           <Text2
             style={{
               marginLeft: Platform.OS === "ios" ? -28 : -6,
-              alignSelf: "flex-start",
               fontWeight: "700",
-              letterSpacing: 0.8,
+              letterSpacing: 0.6,
               color: isToday ? theme.colors.primary : "#6B7280",
             }}
           >
@@ -122,34 +126,20 @@ const TodayHeader = ({
           </View>
         </View>
       </View>
-      <View style={{ justifyContent: "center" }}>
-        {isToday ? (
-          <EvilIcon
-            onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
-            style={{ fontSize: 40, paddingRight: 8 }}
-            color={theme.colors.primary}
-            name={focusMode ? "unlock" : "lock"}
-          />
-        ) : null}
-      </View>
-      {/* 
-     
 
-      <View style={styles.container}>
-      
-       
-      </View> */}
+      {isToday ? (
+        <EvilIcon
+          onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
+          style={{ fontSize: 40 }}
+          color={theme.colors.primary}
+          name={focusMode ? "unlock" : "lock"}
+        />
+      ) : null}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-  },
   row: {
     display: "flex",
     flexDirection: "row",

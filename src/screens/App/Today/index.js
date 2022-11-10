@@ -229,13 +229,11 @@ const ListScreen = () => {
         <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
           <ProgressBar focusMode={focusMode} progress={progress} />
         </View>
-        <View style={{ flex: 1, display: "flex" }}>
-          {isLoading || isFetching ? (
-            <View style={{ flex: 1, paddingTop: 20 }}>
+        <View style={{ justifyContent: "space-between", flex: 1 }}>
+          <View>
+            {isLoading || isFetching ? (
               <SkeletonList />
-            </View>
-          ) : (
-            <View style={{ flex: 1, justifyContent: "space-between" }}>
+            ) : (
               <TaskList
                 tasks={tasks || []}
                 keyboardShown={keyboardShown}
@@ -247,17 +245,17 @@ const ListScreen = () => {
                 isLoadingToggle={isLoadingToggle}
                 utcDate={utcDate}
               />
-              {isFetching ? null : (
-                <MoveIncomplete
-                  tasks={tasks}
-                  currentDate={utcDate}
-                  isLoading={moveTasksApiResult.isLoading}
-                  onMoveIncomplete={handleMoveIncompleteTasks}
-                />
-              )}
-            </View>
-          )}
+            )}
+          </View>
+          <MoveIncomplete
+            tasks={tasks}
+            currentDate={utcDate}
+            isLoading={moveTasksApiResult.isLoading}
+            onMoveIncomplete={handleMoveIncompleteTasks}
+          />
         </View>
+        {/* 
+
 
         {/* {isLoading || isFetching ? null : (
           <CalendarWidget
@@ -268,14 +266,22 @@ const ListScreen = () => {
             handleOnSelectDay={handleOnSelectDay}
           />
         )} */}
-        <MoveIncompletModal
+        {/* <MoveIncompletModal
           isVisible={isAutoCompleteModalOpen}
           onCancel={handleCloseModal}
           data={tasks}
           onConfirm={handleOnConfirmMove}
           isLoading={moveTasksApiResult.isLoading}
         />
-        <IntroBottomSheet />
+        <IntroBottomSheet /> */}
+        {/* {isFetching ? null : (
+                <MoveIncomplete
+                  tasks={tasks}
+                  currentDate={utcDate}
+                  isLoading={moveTasksApiResult.isLoading}
+                  onMoveIncomplete={handleMoveIncompleteTasks}
+                />
+              )} */}
       </GestureHandlerRootView>
     </LayoutView>
   );
@@ -286,28 +292,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     padding: 30,
-    paddingBottom: 0,
   },
 });
 
 export default ListScreen;
-
-{
-  /* <Animated.View style={{ transform: [{ translateY: headerPostXAnim }] }}> */
-}
-{
-  /* 
-      
-        {/* </Animated.View> */
-}
-
-{
-  /* <AddItem
-                  handleCreateNewTask={handleCreateNewTask}
-                  currentDate={utcDate}
-                /> */
-}
-
-{
-  /*  */
-}

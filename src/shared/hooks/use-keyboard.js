@@ -62,12 +62,18 @@ export function useKeyboard() {
   //   };
   // }, []);
   const _keyboardDidShow = (e) => {
+    console.log("DID SHOW")
     setShown(true);
     setKeyboardHeight(e.endCoordinates.height);
   };
   const _keyboardDidHide = (e) => {
+    console.log("DID HIDE")
     setShown(false);
     setKeyboardHeight(0);
+  };
+
+  const _keyboardWillHide = (e) => {
+    console.log("WHAT IS: ", e.endCoordinates.height)
   };
   
 
@@ -75,6 +81,7 @@ export function useKeyboard() {
   useEffect(() => {
     const didShowSub =  Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
     const didHideSub = Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+    const willHideSub = Keyboard.addListener('keyboardWillHide', _keyboardWillHide);
 
     // cleanup function
     return () => {
@@ -82,6 +89,7 @@ export function useKeyboard() {
       // Keyboard.remove('keyboardDidHide', _keyboardDidHide);
       didHideSub.remove();
       didShowSub.remove();
+      willHideSub.remove();
     };
   }, []);
 
