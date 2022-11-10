@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import ProductoButton from "../../../components/Button";
 import { format } from "date-fns";
 
@@ -37,8 +37,7 @@ const MoveIncomplete = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-end"
+    marginBottom: Platform.OS === "android" ? 30 : 0,
   },
 });
 

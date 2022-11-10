@@ -35,6 +35,7 @@ const DraggableListContainer = ({
   onCheckTaskRow,
   onToggleFocus,
   keyboardShown,
+  keyboardHeight,
 }) => {
   const { theme } = useTheme();
   const dispatch = useDispatch();
@@ -151,7 +152,7 @@ const DraggableListContainer = ({
                   <Material
                     name="drag-indicator"
                     color={"#6B7280"}
-                    style={{ fontSize: 25, padding: 0 }}
+                    style={{ fontSize: 25, padding: 0, paddingRight: 10 }}
                   />
                 </TouchableOpacity>
               </View>
@@ -215,7 +216,7 @@ const DraggableListContainer = ({
               {item.title}
             </Text>
           </View>
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
+          <View style={{ justifyContent: "center", alignItems: "center", paddingRight: 15 }}>
             <TouchableOpacity onPress={onCheckTask(item)}>
               <Image
                 // style={styles.tinyLogo}

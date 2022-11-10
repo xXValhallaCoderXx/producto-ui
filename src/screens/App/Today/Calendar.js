@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { View, Modal, StyleSheet, Pressable } from "react-native";
+import { View, Modal, StyleSheet, Pressable, Platform } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
 const CalendarWidget = ({
@@ -56,10 +56,6 @@ const CalendarWidget = ({
         customStyles: {
           container: {
             borderColor: "#5048E5",
-            // backgroundColor:
-            //   format(currentDate, "yyyy-MM-dd") === task
-            //     ? "#5048E5"
-            //     : "white",
             borderWidth: 1.5,
             borderRadius: 30,
           },
@@ -114,7 +110,7 @@ const CalendarWidget = ({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    marginTop: 140,
+    marginTop: Platform.OS === "android" ? "25%" : "35%",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {

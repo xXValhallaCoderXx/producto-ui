@@ -14,26 +14,79 @@ import { Keyboard } from "react-native";
 
 export function useKeyboard() {
   const [shown, setShown] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
-  const handleKeyboardWillShow = (e) => {
+  // function onKeyboardWillShow(e) {
+  //   // Remove type here if not using TypeScript
+  //   setKeyboardHeight(e.endCoordinates.height);
+  // }
+
+  // function onKeyboarWillHide() {
+  //   setKeyboardHeight(0);
+  // }
+
+  // useEffect(() => {
+  //   const showSubscription = Keyboard.addListener(
+  //     "keyboardWillShow",
+  //     onKeyboardWillShow
+  //   );
+  //   const hideSubscription = Keyboard.addListener(
+  //     "keyboardWillHide",
+  //     onKeyboarWillHide
+  //   );
+  //   return () => {
+  //     showSubscription.remove();
+  //     hideSubscription.remove();
+  //   };
+  // }, []);
+
+  // const handleKeyboardWillShow = (e) => {
+  //   console.log("WWWWW")
+    // setShown(true);
+    // setKeyboardHeight(e.endCoordinates.height);
+  // };
+
+  // const handleKeyboardWillHide = (e) => {
+    // setShown(false);
+    // setKeyboardHeight(0);
+  // };
+
+  // useEffect(() => {
+  //   const subscriptions = [
+  //     Keyboard.addListener("keyboardWillShow", handleKeyboardWillShow),
+  //     Keyboard.addListener("keyboardWillHide", handleKeyboardWillHide),
+  //   ];
+
+  //   return () => {
+  //     subscriptions.forEach((subscription) => subscription.remove());
+  //   };
+  // }, []);
+  const _keyboardDidShow = (e) => {
     setShown(true);
+    setKeyboardHeight(e.endCoordinates.height);
   };
-
-  const handleKeyboardWillHide = (e) => {
+  const _keyboardDidHide = (e) => {
     setShown(false);
+    setKeyboardHeight(0);
   };
+  
+
 
   useEffect(() => {
-    const subscriptions = [
-      Keyboard.addListener("keyboardWillShow", handleKeyboardWillShow),
-      Keyboard.addListener("keyboardWillHide", handleKeyboardWillHide),
-    ];
+    const didShowSub =  Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+    const didHideSub = Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
 
+    // cleanup function
     return () => {
-      subscriptions.forEach((subscription) => subscription.remove());
+      // Keyboard.remove('keyboardDidShow', _keyboardDidShow);
+      // Keyboard.remove('keyboardDidHide', _keyboardDidHide);
+      didHideSub.remove();
+      didShowSub.remove();
     };
   }, []);
+
   return {
     keyboardShown: shown,
+    keyboardHeight
   };
 }

@@ -90,6 +90,7 @@ export default function App() {
   const { theme } = useTheme();
   return (
     <LayoutView>
+
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,

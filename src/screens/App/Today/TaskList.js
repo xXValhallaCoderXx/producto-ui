@@ -20,6 +20,7 @@ const TaskList = ({
   utcDate,
   keyboardShown,
   handleCreateNewTask,
+  keyboardHeight,
 }) => {
   const toast = useToast();
   const { theme } = useTheme();
@@ -65,7 +66,7 @@ const TaskList = ({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View>
       {tasks.length === 0 ? (
         <View>
           <Text style={{ marginTop: 15 }}>
@@ -83,7 +84,8 @@ const TaskList = ({
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "height" : "position"}
           style={{
-            ...(keyboardShown ? { paddingBottom: 0 } : { paddingBottom: 100 }),
+           maxHeight: "95%",
+            // ...(keyboardShown ? { paddingBottom: 0 } : { paddingBottom: keyboardHeight }),
           }}
         >
           <DraggbleList
@@ -99,6 +101,7 @@ const TaskList = ({
             onCheckTaskRow={onCheckTaskRow}
             onToggleFocus={onToggleFocus}
             keyboardShown={keyboardShown}
+            keyboardHeight={keyboardHeight}
           />
           <AddItem
             handleCreateNewTask={handleCreateNewTask}

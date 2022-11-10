@@ -15,6 +15,7 @@ import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./MoveIncomplete";
+import MoveIncompletModal from "./components/MoveIncompleteModal";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
 import { useKeyboard } from "../../../shared/hooks/use-keyboard";
@@ -33,16 +34,17 @@ import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
-  const { keyboardShown } = useKeyboard();
+  const { keyboardShown, keyboardHeight } = useKeyboard();
 
   const dispatch = useDispatch();
   const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
   const [currentTask, setCurrentTask] = useState(false);
+  const [isAutoCompleteModalOpen, setIsAutoCompleteModalOpen] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-
+  
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -176,23 +178,28 @@ const ListScreen = () => {
   };
 
   const handleMoveIncompleteTasks = async () => {
-    const from = format(utcDate, "yyyy-MM-dd");
-    const to = format(new Date(), "yyyy-MM-dd");
-    await moveIncompleteTasks({ from, to });
+    setIsAutoCompleteModalOpen(true);
+    // const from = format(utcDate, "yyyy-MM-dd");
+    // const to = format(new Date(), "yyyy-MM-dd");
+    // await moveIncompleteTasks({ from, to });
 
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: `Tasks moved to ${to}!`,
-      description: "",
-    });
+    // toast.show("", {
+    //   type: "success",
+    //   duration: 2500,
+    //   offset: 100,
+    //   animationType: "zoom-in",
+    //   placement: "top",
+    //   title: `Tasks moved to ${to}!`,
+    //   description: "",
+    // });
   };
 
   const handleOnPressToday = async () => {
     setUtcDate(new Date());
+  };
+
+  const handleCloseModal = async () => {
+    setIsAutoCompleteModalOpen(false);
   };
 
   const handleOnPressDate = async () => {
@@ -207,55 +214,56 @@ const ListScreen = () => {
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
-        {/* <Animated.View style={{ transform: [{ translateY: headerPostXAnim }] }}> */}
-          <Header
-            clientUtc={utcDate}
-            focusMode={focusMode}
-            onChangeDate={handleOnChangeDate}
-            onPressToday={handleOnPressToday}
-            onPressDate={handleOnPressDate}
-          />
-          <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
-            <ProgressBar focusMode={focusMode} progress={progress} />
-          </View>
-        {/* </Animated.View> */}
-
+        <Header
+          clientUtc={utcDate}
+          focusMode={focusMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
+        />
+        <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+          <ProgressBar focusMode={focusMode} progress={progress} />
+        </View>
         <View style={{ flex: 1, display: "flex" }}>
           {isLoading || isFetching ? (
             <View style={{ flex: 1, paddingTop: 20 }}>
               <SkeletonList />
             </View>
           ) : (
-            <TaskList
-              tasks={tasks || []}
-              keyboardShown={keyboardShown}
-              handleToggleTaskFocus={handleToggleTaskFocus}
-              handleToggleTaskComplete={handleToggleTaskComplete}
-              handleCreateNewTask={handleCreateNewTask}
-              currentTask={currentTask}
-              isLoadingToggle={isLoadingToggle}
-              utcDate={utcDate}
-            />
+            <View style={{ flex: 1, justifyContent: "space-between" }}>
+              <TaskList
+                tasks={tasks || []}
+                keyboardShown={keyboardShown}
+                keyboardHeight={keyboardHeight}
+                handleToggleTaskFocus={handleToggleTaskFocus}
+                handleToggleTaskComplete={handleToggleTaskComplete}
+                handleCreateNewTask={handleCreateNewTask}
+                currentTask={currentTask}
+                isLoadingToggle={isLoadingToggle}
+                utcDate={utcDate}
+              />
+              {isFetching ? null : (
+                <MoveIncomplete
+                  tasks={tasks}
+                  currentDate={utcDate}
+                  isLoading={moveIncompleteTasksResult.isLoading}
+                  onMoveIncomplete={handleMoveIncompleteTasks}
+                />
+              )}
+            </View>
           )}
         </View>
 
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
-          currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
-        />
-
-        {/* {isFetching ? null : (
-            <MoveIncomplete
-              tasks={tasks}
-              currentDate={utcDate}
-              isLoading={moveIncompleteTasksResult.isLoading}
-              onMoveIncomplete={handleMoveIncompleteTasks}
-            />
-          )} */}
-
+        {isLoading || isFetching ? null : (
+          <CalendarWidget
+            calendarOpen={calendarOpen}
+            toggleCalendar={handleToggleCalendar}
+            incompleteTasks={incompleteTasks}
+            currentDate={utcDate}
+            handleOnSelectDay={handleOnSelectDay}
+          />
+        )}
+        <MoveIncompletModal isVisible={isAutoCompleteModalOpen} onCancel={handleCloseModal} data={tasks} />
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>
@@ -274,8 +282,21 @@ const styles = StyleSheet.create({
 export default ListScreen;
 
 {
+  /* <Animated.View style={{ transform: [{ translateY: headerPostXAnim }] }}> */
+}
+{
+  /* 
+      
+        {/* </Animated.View> */
+}
+
+{
   /* <AddItem
                   handleCreateNewTask={handleCreateNewTask}
                   currentDate={utcDate}
                 /> */
+}
+
+{
+  /*  */
 }
