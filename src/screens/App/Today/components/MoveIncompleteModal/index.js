@@ -6,43 +6,17 @@ import { useTheme, ListItem, CheckBox } from "@rneui/themed";
 import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
+import { useMoveSpecificTasksMutation } from "../../../../../api/task-api";
 
 const AutoTaskModal = ({
   isVisible,
   data,
-  onPress,
+  onConfirm,
   onCancel,
   isLoading: isAutoTaskLoading,
 }) => {
   const { theme } = useTheme();
-  const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
-  //   useEffect(() => {
-  //     if (isVisible) {
-  //       refetch();
-  //     }
-  //   }, [isVisible]);
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      // const dates = {};
-      // const today = format(new Date(), "yyyy-MM-dd");
-      // data?.forEach((item) => {
-      //   if (format(new Date(item.deadline), "yyyy-MM-dd") !== today) {
-      //     if (dates[item.deadline]) {
-      //       dates[item.deadline].push(item);
-      //     } else {
-      //       const tempArray = new Array();
-      //       tempArray.push(item);
-      //       dates[item.deadline] = tempArray;
-      //     }
-      //   }
-      // });
-      // data?.forEach(item => {
-      // })
-      // setParsedDates(dates);
-    }
-  }, [data]);
 
   const onClickCheckbox = (task) => () => {
     const updatedDates = {
@@ -56,15 +30,15 @@ const AutoTaskModal = ({
     setCheckedDates(updatedDates);
   };
 
-  const onClickConfirm = () => {
-    // onPress(checkedDates);
+  const onClickConfirm = async () => {
+    onConfirm(checkedDates);
   };
 
   const onHandleCancel = () => {
-    // setCheckedDates({});
+    setCheckedDates({});
     onCancel();
   };
-  console.log();
+
   const filteredDates = data?.reduce(
     (result, item) => (!item.completed ? result.push(item) && result : result),
     []
@@ -95,7 +69,7 @@ const AutoTaskModal = ({
                 }}
               >
                 <CheckBox
-                  checked={false}
+                  checked={checkedDates[item.id]}
                   onPress={onClickCheckbox(item)}
                   containerStyle={{ padding: 0 }}
                 />
@@ -119,6 +93,7 @@ const AutoTaskModal = ({
         />
         <Button
           title="Cancel"
+          disabled={isAutoTaskLoading}
           titleStyle={{ color: theme.colors.primary }}
           onPress={onHandleCancel}
           type="clear"

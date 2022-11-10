@@ -26,6 +26,7 @@ import {
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
+  useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
@@ -44,7 +45,7 @@ const ListScreen = () => {
   const [isAutoCompleteModalOpen, setIsAutoCompleteModalOpen] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-  
+
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -63,8 +64,7 @@ const ListScreen = () => {
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
-  const [moveIncompleteTasks, moveIncompleteTasksResult] =
-    useMoveIncompleteTasksMutation();
+  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const posXanim = useRef(new Animated.Value(0)).current;
   const headerPostXAnim = useRef(new Animated.Value(0)).current;
 
@@ -179,19 +179,24 @@ const ListScreen = () => {
 
   const handleMoveIncompleteTasks = async () => {
     setIsAutoCompleteModalOpen(true);
-    // const from = format(utcDate, "yyyy-MM-dd");
-    // const to = format(new Date(), "yyyy-MM-dd");
-    // await moveIncompleteTasks({ from, to });
+  };
 
-    // toast.show("", {
-    //   type: "success",
-    //   duration: 2500,
-    //   offset: 100,
-    //   animationType: "zoom-in",
-    //   placement: "top",
-    //   title: `Tasks moved to ${to}!`,
-    //   description: "",
-    // });
+  const handleOnConfirmMove = async (checkedDates) => {
+    const to = format(new Date(), "yyyy-MM-dd");
+    await moveTasksApi({ tasks: Object.keys(checkedDates), to });
+
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: `Tasks moved to ${to}!`,
+      description: "",
+    });
+
+    setIsAutoCompleteModalOpen(false);
+    setUtcDate(new Date());
   };
 
   const handleOnPressToday = async () => {
@@ -246,7 +251,7 @@ const ListScreen = () => {
                 <MoveIncomplete
                   tasks={tasks}
                   currentDate={utcDate}
-                  isLoading={moveIncompleteTasksResult.isLoading}
+                  isLoading={moveTasksApiResult.isLoading}
                   onMoveIncomplete={handleMoveIncompleteTasks}
                 />
               )}
@@ -254,7 +259,7 @@ const ListScreen = () => {
           )}
         </View>
 
-        {isLoading || isFetching ? null : (
+        {/* {isLoading || isFetching ? null : (
           <CalendarWidget
             calendarOpen={calendarOpen}
             toggleCalendar={handleToggleCalendar}
@@ -262,8 +267,14 @@ const ListScreen = () => {
             currentDate={utcDate}
             handleOnSelectDay={handleOnSelectDay}
           />
-        )}
-        <MoveIncompletModal isVisible={isAutoCompleteModalOpen} onCancel={handleCloseModal} data={tasks} />
+        )} */}
+        <MoveIncompletModal
+          isVisible={isAutoCompleteModalOpen}
+          onCancel={handleCloseModal}
+          data={tasks}
+          onConfirm={handleOnConfirmMove}
+          isLoading={moveTasksApiResult.isLoading}
+        />
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>
