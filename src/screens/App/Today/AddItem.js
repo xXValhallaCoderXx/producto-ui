@@ -40,10 +40,7 @@ const AddItem = ({ handleCreateNewTask }) => {
   // }
 
   return (
-    <View
-      style={{ marginTop: 25 }}
-      // keyboardShouldPersistTaps="handled"
-    >
+    <View>
       {addTask ? (
         <View>
           <View

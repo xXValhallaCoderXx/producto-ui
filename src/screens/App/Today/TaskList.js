@@ -5,6 +5,7 @@ import { View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "@rneui/themed";
+
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 import AddItem from "./AddItem";
@@ -33,7 +34,7 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
-
+  console.log("HMMMM: ", keyboardShown)
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setEditTask(null);
@@ -81,14 +82,14 @@ const TaskList = ({
           />
         </View>
       ) : (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "height" : "position"}
-          style={{
-           maxHeight: "95%",
-            // ...(keyboardShown ? { paddingBottom: 0 } : { paddingBottom: keyboardHeight }),
-          }}
-        >
-          <DraggbleList
+        <View style={{height: "100%"}}>
+ <KeyboardAvoidingView
+        style={{backgroundColor: "red"}}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 230}
+      >
+         <View style={{maxHeight: "80%"}}>
+         <DraggbleList
             tasks={tasks.filter((task) => {
               if (!focusMode && !task.focus && !task.completed) {
                 return false;
@@ -103,12 +104,19 @@ const TaskList = ({
             keyboardShown={keyboardShown}
             keyboardHeight={keyboardHeight}
           />
-          <AddItem
+         </View>
+    
+        </KeyboardAvoidingView>
+
+        <AddItem
             handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
           />
-        </KeyboardAvoidingView>
+          </View>
+       
       )}
+
+   
       <DeleteTaskModal
         isVisible={isDeleteModalVisible}
         onPress={handleDeleteTask}

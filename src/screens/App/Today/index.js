@@ -229,7 +229,13 @@ const ListScreen = () => {
         <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
           <ProgressBar focusMode={focusMode} progress={progress} />
         </View>
-        <View style={{ justifyContent: "space-between", flex: 1 }}>
+        <View
+          style={{
+            justifyContent: "space-between",
+            flex: 1,
+            overflow: "hidden",
+          }}
+        >
           <View>
             {isLoading || isFetching ? (
               <SkeletonList />
@@ -246,13 +252,13 @@ const ListScreen = () => {
                 utcDate={utcDate}
               />
             )}
+            <MoveIncomplete
+              tasks={tasks}
+              currentDate={utcDate}
+              isLoading={moveTasksApiResult.isLoading}
+              onMoveIncomplete={handleMoveIncompleteTasks}
+            />
           </View>
-          <MoveIncomplete
-            tasks={tasks}
-            currentDate={utcDate}
-            isLoading={moveTasksApiResult.isLoading}
-            onMoveIncomplete={handleMoveIncompleteTasks}
-          />
         </View>
         {/* 
 
