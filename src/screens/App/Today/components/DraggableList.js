@@ -103,10 +103,7 @@ const DraggableListContainer = ({
     if (item && item.id === editTask) {
       return (
         <OpacityDecorator>
-          <TouchableWithoutFeedback
-            key={item.id}
-            onLongPress={drag}
-          >
+          <TouchableWithoutFeedback key={item.id} onLongPress={drag}>
             <View style={styles.listRow}>
               <View style={{ justifyContent: "center" }}>
                 <TextInput
@@ -117,7 +114,7 @@ const DraggableListContainer = ({
                   underlineColorAndroid="transparent"
                   style={{
                     fontSize: 16,
-                    marginLeft: 5,
+
                     backgroundColor: "white",
                   }}
                 />
@@ -140,19 +137,20 @@ const DraggableListContainer = ({
                   <MaterialIcons
                     name="trash-o"
                     color={"#6B7280"}
-                    style={{ fontSize: 25, paddingRight: 3 }}
+                    style={{ fontSize: 25, paddingRight: 5 }}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{
                     justifyContent: "center",
+                    marginRight: -5,
                   }}
                   disabled
                 >
                   <Material
                     name="drag-indicator"
                     color={"#6B7280"}
-                    style={{ fontSize: 25, padding: 0, paddingRight: 10 }}
+                    style={{ fontSize: 25, padding: 0 }}
                   />
                 </TouchableOpacity>
               </View>
@@ -163,75 +161,74 @@ const DraggableListContainer = ({
     }
     return (
       <OpacityDecorator>
-      <TouchableWithoutFeedback
-        // onLongPress={drag}
-        onPress={handleOnPress(item)}
-        onLongPress={handleOnLongPress(item)}
-        disabled={isActive}
-        // onPress={() => {
-        //   countRef++;
-        //   if (countRef == 2) {
-        //     clearTimeout(countTimer.current);
-        //     countRef = 0;
-        // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-        // setEditTask(item.id);
-        // setTaskValue(item.title);
-        // dispatch(toggleEditMode(true));
-        //   } else {
-        //     countTimer.current = setTimeout(() => {
-        //       onCheckTaskRow(item);
-        //       countRef = 0;
-        //     }, 250);
-        //   }
-        // }}
-        key={item.id}
-      >
-        <View style={styles.listRow}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              paddingLeft: 5,
-            }}
-          >
-            {focusMode && currentDate === todayDate && (
-              <IoniIcons
-                style={{
-                  fontSize: 25,
-                  marginRight: 15,
-                  transform: [{ rotate: "315deg" }, { scaleX: -1 }],
-                }}
-                color={item.focus ? theme.colors.primary : "#111827"}
-                name={"key-outline"}
-                onPress={onToggleFocus(item)}
-              />
-            )}
-            <Text
+        <TouchableWithoutFeedback
+          // onLongPress={drag}
+          onPress={handleOnPress(item)}
+          onLongPress={handleOnLongPress(item)}
+          disabled={isActive}
+          // onPress={() => {
+          //   countRef++;
+          //   if (countRef == 2) {
+          //     clearTimeout(countTimer.current);
+          //     countRef = 0;
+          // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          // setEditTask(item.id);
+          // setTaskValue(item.title);
+          // dispatch(toggleEditMode(true));
+          //   } else {
+          //     countTimer.current = setTimeout(() => {
+          //       onCheckTaskRow(item);
+          //       countRef = 0;
+          //     }, 250);
+          //   }
+          // }}
+          key={item.id}
+        >
+          <View style={styles.listRow}>
+            <View
               style={{
-                color: item.completed ? "gray" : "#111827",
-                textDecorationLine: item.completed ? "line-through" : "none",
-                fontSize: 18,
+                flexDirection: "row",
+                alignItems: "center",
               }}
             >
-              {item.title}
-            </Text>
-          </View>
-          <View style={{ justifyContent: "center", alignItems: "center", paddingRight: 15 }}>
-            <TouchableOpacity onPress={onCheckTask(item)}>
-              <Image
-                // style={styles.tinyLogo}
-                style={{ maxHeight: 20, maxWidth: 20 }}
-                source={item.completed ? Checked : Unchecked}
-              />
-            </TouchableOpacity>
-            {/* <CheckBox
+              {focusMode && currentDate === todayDate && (
+                <IoniIcons
+                  style={{
+                    fontSize: 25,
+                    marginRight: 15,
+                    transform: [{ rotate: "315deg" }, { scaleX: -1 }],
+                  }}
+                  color={item.focus ? theme.colors.primary : "#111827"}
+                  name={"key-outline"}
+                  onPress={onToggleFocus(item)}
+                />
+              )}
+              <Text
+                style={{
+                  color: item.completed ? "gray" : "#111827",
+                  textDecorationLine: item.completed ? "line-through" : "none",
+                  fontSize: 18,
+                }}
+              >
+                {item.title}
+              </Text>
+            </View>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
+              <TouchableOpacity onPress={onCheckTask(item)}>
+                <Image
+                  // style={styles.tinyLogo}
+                  style={{ maxHeight: 20, maxWidth: 20 }}
+                  source={item.completed ? Checked : Unchecked}
+                />
+              </TouchableOpacity>
+              {/* <CheckBox
               checked={item.completed}
               containerStyle={{ padding: 0, paddingRight: 3 }}
              
             /> */}
+            </View>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
       </OpacityDecorator>
     );
   };
@@ -249,9 +246,9 @@ const DraggableListContainer = ({
         setSortedTasks(data);
       }}
       ref={scrollViewRef}
-      style={{
-        ...(keyboardShown && { height: 250 }),
-      }}
+      // style={{
+      //   ...(keyboardShown && { height: 250 }),
+      // }}
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}

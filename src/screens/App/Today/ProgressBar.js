@@ -9,7 +9,7 @@ const ProgressBar = ({ focusMode, progress }) => {
       style={{
         flexDirection: "row",
         alignItems: "center",
- 
+        // backgroundColor: "red",
         justifyContent: "space-between",
       }}
     >
@@ -17,10 +17,9 @@ const ProgressBar = ({ focusMode, progress }) => {
         <>
           <LinearProgress
             style={{
-         
               height: 15,
               borderRadius: 8,
-              flex: 0.8,
+              flex: 0.9,
             }}
             trackColor="#F2F2F2"
             animation={{ duration: 200 }}
@@ -31,7 +30,8 @@ const ProgressBar = ({ focusMode, progress }) => {
           <Text
             h5
             style={{
-              flex: 0.15,
+              includeFontPadding: false,
+              // flex: 0.15,
               textAlign: "center",
               color: theme.colors.primary,
               fontWeight: "700",
