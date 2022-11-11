@@ -1,5 +1,5 @@
 import { Provider } from "react-redux";
-import { Platform, View } from "react-native";
+import { KeyboardAvoidingView, Platform, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import * as NavigationBar from "expo-navigation-bar";
@@ -9,7 +9,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { ToastProvider } from "react-native-toast-notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-
+import RegisterScreen from "./src/screens/Auth/Register";
 import store from "./src/config/store";
 import theme from "./src/shared/styles/theme";
 
@@ -65,16 +65,21 @@ export default function App() {
         <ToastProvider renderToast={renderToast}>
           <PaperProvider theme={theme}>
             <SafeAreaView style={{ flex: 1 }}>
-              <NavigationContainer>
-                {/* <StatusBar style="white" backgroundColor="white" /> */}
-                <Stack.Navigator
-                  screenOptions={() => ({
-                    headerShown: false,
-                  })}
-                >
-                  <Stack.Screen name="Root" component={RootScreens} />
-                </Stack.Navigator>
-              </NavigationContainer>
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+              >
+                <NavigationContainer>
+                  {/* <StatusBar style="white" backgroundColor="white" /> */}
+                  <Stack.Navigator
+                    screenOptions={() => ({
+                      headerShown: false,
+                    })}
+                  >
+                    <Stack.Screen name="Root" component={RootScreens} />
+                  </Stack.Navigator>
+                </NavigationContainer>
+              </KeyboardAvoidingView>
             </SafeAreaView>
           </PaperProvider>
         </ToastProvider>

@@ -75,7 +75,24 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-  return (
+  // return (
+  //   <Stack.Navigator
+  //     screenOptions={() => ({
+  //       headerShown: false,
+  //     })}
+  //   >
+  //     <Stack.Screen name="Auth" component={AuthScreens} />
+  //   </Stack.Navigator>
+  // );
+  return init && isAuthenticated ? (
+    <Stack.Navigator
+      screenOptions={() => ({
+        headerShown: false,
+      })}
+    >
+      <Stack.Screen name="App" component={AppScreens} />
+    </Stack.Navigator>
+  ) : (
     <Stack.Navigator
       screenOptions={() => ({
         headerShown: false,
@@ -84,23 +101,6 @@ const RootScreen = ({ navigation }) => {
       <Stack.Screen name="Auth" component={AuthScreens} />
     </Stack.Navigator>
   );
-  // return init && isAuthenticated ? (
-  //   <Stack.Navigator
-  //     screenOptions={() => ({
-  //       headerShown: false,
-  //     })}
-  //   >
-  //     <Stack.Screen name="App" component={AppScreens} />
-  //   </Stack.Navigator>
-  // ) : (
-  // <Stack.Navigator
-  //   screenOptions={() => ({
-  //     headerShown: false,
-  //   })}
-  // >
-  //   <Stack.Screen name="Auth" component={AuthScreens} />
-  // </Stack.Navigator>
-  // );
 };
 
 export default RootScreen;

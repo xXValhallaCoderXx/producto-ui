@@ -6,7 +6,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.bloopdevstudios.producto",
-      // windowSoftInputMode: "adjustPan",
+      windowSoftInputMode: "adjustPan",
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",

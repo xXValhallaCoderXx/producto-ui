@@ -7,11 +7,12 @@ const ProductoButton = ({
   type = "outlined",
   disabled,
   loading,
+  size= "sm"
 }) => {
   return (
     <Button
       mode={type}
-      size="sm"
+      size={size}
       onPress={onPress}
       style={{ borderRadius: 10, paddingTop: 5, paddingBottom: 5, ...style }}
       labelStyle={{ fontWeight: "700", fontSize: 16 }}

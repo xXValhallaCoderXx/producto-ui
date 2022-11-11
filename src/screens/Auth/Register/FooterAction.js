@@ -9,11 +9,13 @@ const FooterActions = ({
   isLoading,
   disabledPrimary,
 }) => {
-  console.log("DISB: ", disabledPrimary)
+  console.log("DISB: ", disabledPrimary);
   return (
     <View
       style={{
-        padding: 25,
+        padding: 10,
+        paddingLeft: 25,
+        paddingRight: 25,
         justifyContent: "flex-end",
       }}
     >
