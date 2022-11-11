@@ -9,6 +9,7 @@ import {
   Animated,
   Platform,
   KeyboardAvoidingView,
+  TextInput,
 } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
@@ -19,6 +20,7 @@ import MoveIncompletModal from "./components/MoveIncompleteModal";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
 import { useKeyboard } from "../../../shared/hooks/use-keyboard";
+// import KeyboardShiftView from "../../../Layouts/components/KeyboardAvoidLayout";
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -31,8 +33,9 @@ import {
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
-import LayoutView from "../../../components/LayoutView";
+// import LayoutView from "../../../components/KeyboardDismissView";
 import { useToast } from "react-native-toast-notifications";
+import { Button } from "react-native-paper";
 
 const ListScreen = () => {
   const { keyboardShown, keyboardHeight } = useKeyboard();
@@ -45,6 +48,7 @@ const ListScreen = () => {
   const [isAutoCompleteModalOpen, setIsAutoCompleteModalOpen] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
+
 
   const [utcDate, setUtcDate] = useState(new Date());
 
@@ -68,7 +72,18 @@ const ListScreen = () => {
   const posXanim = useRef(new Animated.Value(0)).current;
   const headerPostXAnim = useRef(new Animated.Value(0)).current;
 
+
+  const [imageScaleAnim] = useState(new Animated.Value(4.5));
+
+
   useEffect(() => {
+
+    Animated.timing(imageScaleAnim, {
+      toValue: 240,
+      duration: 3000,
+      useNativeDriver: true,
+    }).start();
+
     setTheme();
   }, []);
 
@@ -217,53 +232,100 @@ const ListScreen = () => {
   };
 
   return (
-    <LayoutView>
-      <GestureHandlerRootView style={styles.container}>
-        <Header
-          clientUtc={utcDate}
-          focusMode={focusMode}
-          onChangeDate={handleOnChangeDate}
-          onPressToday={handleOnPressToday}
-          onPressDate={handleOnPressDate}
-        />
-        <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
-          <ProgressBar focusMode={focusMode} progress={progress} />
+   <View style={{ flex:1 }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-between",
+          backgroundColor: "red",
+        }}
+      >
+        <View>
+          <Button>sss</Button>
         </View>
-        <View
-          style={{
-            justifyContent: "space-between",
-            flex: 1,
-            overflow: "hidden",
-          }}
-        >
-          <View>
-            {isLoading || isFetching ? (
-              <SkeletonList />
-            ) : (
-              <TaskList
-                tasks={tasks || []}
-                keyboardShown={keyboardShown}
-                keyboardHeight={keyboardHeight}
-                handleToggleTaskFocus={handleToggleTaskFocus}
-                handleToggleTaskComplete={handleToggleTaskComplete}
-                handleCreateNewTask={handleCreateNewTask}
-                currentTask={currentTask}
-                isLoadingToggle={isLoadingToggle}
-                utcDate={utcDate}
-              />
-            )}
-          
-          </View>
-          <View>
-          <MoveIncomplete
-              tasks={tasks}
-              currentDate={utcDate}
-              isLoading={moveTasksApiResult.isLoading}
-              onMoveIncomplete={handleMoveIncompleteTasks}
-            />
-          </View>
+        <View>
+          <Button>sss</Button>
+          <TextInput />
         </View>
-        {/* 
+      </View>
+      {/* <Header
+        clientUtc={utcDate}
+        focusMode={focusMode}
+        onChangeDate={handleOnChangeDate}
+        onPressToday={handleOnPressToday}
+        onPressDate={handleOnPressDate}
+      />
+      <TaskList
+        tasks={tasks || []}
+        keyboardShown={keyboardShown}
+        keyboardHeight={keyboardHeight}
+        handleToggleTaskFocus={handleToggleTaskFocus}
+        handleToggleTaskComplete={handleToggleTaskComplete}
+        handleCreateNewTask={handleCreateNewTask}
+        currentTask={currentTask}
+        isLoadingToggle={isLoadingToggle}
+        utcDate={utcDate}
+      /> */}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // backgroundColor: "white",
+    // padding: 30,
+  },
+  content: {
+    justifyContent: "space-between",
+    flex: 1,
+    overflow: "hidden",
+  },
+});
+
+export default ListScreen;
+
+// <LayoutView>
+//   <GestureHandlerRootView style={styles.container}>
+// <Header
+//   clientUtc={utcDate}
+//   focusMode={focusMode}
+//   onChangeDate={handleOnChangeDate}
+//   onPressToday={handleOnPressToday}
+//   onPressDate={handleOnPressDate}
+// />
+//     <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+//       <ProgressBar focusMode={focusMode} progress={progress} />
+//     </View>
+//     <View style={styles.content}>
+//       <View>
+//         {isLoading || isFetching ? (
+//           <SkeletonList />
+//         ) : (
+// <TaskList
+//   tasks={tasks || []}
+//   keyboardShown={keyboardShown}
+//   keyboardHeight={keyboardHeight}
+//   handleToggleTaskFocus={handleToggleTaskFocus}
+//   handleToggleTaskComplete={handleToggleTaskComplete}
+//   handleCreateNewTask={handleCreateNewTask}
+//   currentTask={currentTask}
+//   isLoadingToggle={isLoadingToggle}
+//   utcDate={utcDate}
+// />
+//         )}
+//       </View>
+//       <View>
+//         <MoveIncomplete
+//           tasks={tasks}
+//           currentDate={utcDate}
+//           isLoading={moveTasksApiResult.isLoading}
+//           onMoveIncomplete={handleMoveIncompleteTasks}
+//         />
+//       </View>
+//     </View>
+{
+  /* 
 
 
         {/* {isLoading || isFetching ? null : (
@@ -274,34 +336,27 @@ const ListScreen = () => {
             currentDate={utcDate}
             handleOnSelectDay={handleOnSelectDay}
           />
-        )} */}
-        {/* <MoveIncompletModal
+        )} */
+}
+{
+  /* <MoveIncompletModal
           isVisible={isAutoCompleteModalOpen}
           onCancel={handleCloseModal}
           data={tasks}
           onConfirm={handleOnConfirmMove}
           isLoading={moveTasksApiResult.isLoading}
         />
-        <IntroBottomSheet /> */}
-        {/* {isFetching ? null : (
+        <IntroBottomSheet /> */
+}
+{
+  /* {isFetching ? null : (
                 <MoveIncomplete
                   tasks={tasks}
                   currentDate={utcDate}
                   isLoading={moveTasksApiResult.isLoading}
                   onMoveIncomplete={handleMoveIncompleteTasks}
                 />
-              )} */}
-      </GestureHandlerRootView>
-    </LayoutView>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 30,
-  },
-});
-
-export default ListScreen;
+              )} */
+}
+//   </GestureHandlerRootView>
+// </LayoutView>

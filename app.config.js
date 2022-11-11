@@ -6,7 +6,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.bloopdevstudios.producto",
-      windowSoftInputMode: "adjustPan",
+      // windowSoftInputMode: "adjustPan",
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",
@@ -22,7 +22,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://slick-spies-play-116-86-1-104.loca.lt",
+      baseUrl: "https://brave-dodos-search-103-4-198-126.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

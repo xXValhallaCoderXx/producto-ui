@@ -1,17 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import debounce from "lodash.debounce";
 import * as SecureStore from "expo-secure-store";
-import { Text } from "@rneui/themed";
+import debounce from "lodash.debounce";
 import { useDispatch } from "react-redux";
 import {
   useWindowDimensions,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+// import {useAnimatedKeyboard } from "react-native-reanimated"
 import { StyleSheet, View, Image, Animated } from "react-native";
-import { TextInput as MuiTextInput } from "react-native-paper";
+import { TextInput, Text, useTheme } from "react-native-paper";
 import ProductoInput from "../../../components/Input";
-import LayoutView from "../../../components/LayoutView";
+import KeyboardDismissView from "../../../components/Layouts/KeyboardDismissView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -27,6 +27,7 @@ const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
+  const theme = useTheme();
   const emailInputRef = useRef(null);
   const toast = useToast();
   const dispatch = useDispatch();
@@ -41,7 +42,6 @@ const LoginScreen = ({ navigation }) => {
     email,
   });
 
-  console.log("VERIDY: ", verifyResult);
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,
@@ -119,7 +119,7 @@ const LoginScreen = ({ navigation }) => {
         }
       }
     } else {
-      if(email === "") {
+      if (email === "") {
         setError("Please enter an e-mail address");
       } else {
         const res = await verifyTigger({ email });
@@ -136,7 +136,6 @@ const LoginScreen = ({ navigation }) => {
           }
         }
       }
-   
     }
   };
 
@@ -157,13 +156,15 @@ const LoginScreen = ({ navigation }) => {
       setStep(nextStep);
     }
   };
-  // const delayedQuery = useCallback(
-  //   debounce((value) => checkEmail(value), 1000),
-  //   []
-  // );
+
+  const delayedQuery = useCallback(
+    debounce((value) => checkEmail(value), 1000),
+    []
+  );
+
   const handleOnChangeEmail = (value) => {
     setError("");
-    // delayedQuery(value);
+    delayedQuery(value);
     setEmail(value);
   };
 
@@ -172,42 +173,45 @@ const LoginScreen = ({ navigation }) => {
     setPassword(value);
   };
 
-  // const checkEmail = (_value) => {
-  //   if (_value.match(validEmailRegex) === null && _value !== "") {
-  //     setError("You must enter a valid email address");
-  //   }
-  // };
+  const checkEmail = (_value) => {
+    if (_value.match(validEmailRegex) === null && _value !== "") {
+      setError("You must enter a valid email address");
+    }
+  };
 
   return (
-    <LayoutView>
+    <KeyboardDismissView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: "white" }}
       >
         <View style={styles.titleContainer}>
           <Image
             source={titleDark}
             resizeMode="contain"
-            style={{
-              width: 231,
-              height: 42,
-            }}
+            style={styles.productoImage}
           ></Image>
           <View style={{ marginTop: 19 }}>
-            {step === 1 ?  <Text style={styles.secondaryTitle}>
-            Sign in, to unlock your productivity
-            </Text> : 
-             <Text style={styles.secondaryTitle}>
-            Welcome back, <Text style={{fontWeight: "500"}}>{email}!</Text>
-           </Text>}
-           
+            <Text
+              style={{
+                ...styles.secondaryTitle,
+                color: theme.colors.secondary,
+              }}
+            >
+              {step === 1 ? (
+                "Sign in, to unlock your productivity"
+              ) : (
+                <>
+                  Welcome back, <Text>{email}!</Text>
+                </>
+              )}
+            </Text>
           </View>
         </View>
         <View style={{ flexGrow: 1 }}>
           <Animated.View
             style={{
               ...styles.inputWrapper,
-              marginBottom: 30,
               transform: [{ translateX: passwordInputPos }],
             }}
           >
@@ -273,18 +277,17 @@ const LoginScreen = ({ navigation }) => {
                   onChange={handleOnChangePassword}
                   secureTextEntry={secretMap["password"]}
                   right={
-                    <MuiTextInput.Icon
+                    <TextInput.Icon
                       style={{ paddingTop: 8 }}
                       onPress={handlePassToggle("password")}
                       icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                  
                     />
                   }
                 />
 
                 <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                   {error ? (
-                    <Text
+                    <TextInput
                       style={{
                         color: "#D14343",
                         alignSelf: "flex-start",
@@ -294,13 +297,14 @@ const LoginScreen = ({ navigation }) => {
                       }}
                     >
                       {error}
-                    </Text>
+                    </TextInput>
                   ) : null}
                 </View>
               </View>
             </View>
           </Animated.View>
         </View>
+
         <FooterActions
           handleOnPressPrimary={handleOnPressPrimary}
           handleOnPressSecondary={handleOnPressSecondary}
@@ -310,7 +314,7 @@ const LoginScreen = ({ navigation }) => {
           isLoading={verifyResult.isFetching || loginApiResult.isLoading}
         />
       </KeyboardAvoidingView>
-    </LayoutView>
+    </KeyboardDismissView>
   );
 };
 
@@ -319,17 +323,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 106,
   },
+  productoImage: {
+    width: 231,
+    height: 42,
+  },
   secondaryTitle: {
     fontSize: 14,
-    color: "gray",
+    // color: "gray",
     textAlign: "center",
-    marginLeft: -10,
+    // fontFamily: "Inter",
     fontWeight: "500",
   },
   inputWrapper: {
     display: "flex",
     alignItems: "center",
     marginTop: 80,
+    marginBottom: 30,
   },
   input: {
     height: 45,

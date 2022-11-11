@@ -82,12 +82,9 @@ const TaskList = ({
           />
         </View>
       ) : (
-        <KeyboardAvoidingView
-          style={{ backgroundColor: "red" }}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 230 : 230}
-        >
-          <DraggbleList
+        <View>
+        
+         <DraggbleList
             tasks={tasks.filter((task) => {
               if (!focusMode && !task.focus && !task.completed) {
                 return false;
@@ -102,11 +99,12 @@ const TaskList = ({
             keyboardShown={keyboardShown}
             keyboardHeight={keyboardHeight}
           />
+        
           <AddItem
             handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
           />
-        </KeyboardAvoidingView>
+        </View>
       )}
 
       <DeleteTaskModal

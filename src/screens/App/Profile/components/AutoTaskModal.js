@@ -1,7 +1,7 @@
-import { Button } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
+
 import { Text } from "../../../../components";
-import { useTheme, ListItem, CheckBox } from "@rneui/themed";
+import { useTheme } from "react-native-paper";
+
 import { useGetIncompleteDetailTasksQuery } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
@@ -60,75 +60,76 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading: isAutoTaskLoad
   };
 
   return (
-    <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
-      <Text type="h2" color="black">
-        Move Tasks
-      </Text>
-      <Text
-        type="h3"
-        color="secondary"
-        customStyle={{ marginTop: 15, marginBottom: 20 }}
-      >
-        Select incomplete tasks that you want to move to Today.
-      </Text>
-      {Object.keys(parsedDates).length === 0 && (
-        <Text type="h4">No Overdue Tasks</Text>
-      )}
-      <ScrollView style={{ maxHeight: 350 }}>
-        {Object.keys(parsedDates).map((k) => {
-          return (
-            <View key={k}>
-              <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-                <Text type="h3" color="secondary">
-                  {format(new Date(k), "EEE, d LLL yyyy")}
-                </Text>
-              </View>
+    <View><Text>sasa</Text></View>
+    // <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
+    //   <Text type="h2" color="black">
+    //     Move Tasks
+    //   </Text>
+    //   <Text
+    //     type="h3"
+    //     color="secondary"
+    //     customStyle={{ marginTop: 15, marginBottom: 20 }}
+    //   >
+    //     Select incomplete tasks that you want to move to Today.
+    //   </Text>
+    //   {Object.keys(parsedDates).length === 0 && (
+    //     <Text type="h4">No Overdue Tasks</Text>
+    //   )}
+    //   {/* <ScrollView style={{ maxHeight: 350 }}>
+    //     {Object.keys(parsedDates).map((k) => {
+    //       return (
+    //         <View key={k}>
+    //           <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
+    //             <Text type="h3" color="secondary">
+    //               {format(new Date(k), "EEE, d LLL yyyy")}
+    //             </Text>
+    //           </View>
 
-              {parsedDates[k].map((item, _index) => {
-                return (
-                  <ListItem key={_index} containerStyle={{ padding: 7 }}>
-                    <ListItem.Content
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <CheckBox
-                        checked={checkedDates[item.id]}
-                        onPress={onClickCheckbox(item)}
-                        containerStyle={{ padding: 0 }}
-                      />
-                      <Text type="h3" color="black">
-                        {item.title}
-                      </Text>
-                    </ListItem.Content>
-                  </ListItem>
-                );
-              })}
-            </View>
-          );
-        })}
-      </ScrollView>
+    //           {parsedDates[k].map((item, _index) => {
+    //             return (
+    //               <ListItem key={_index} containerStyle={{ padding: 7 }}>
+    //                 <ListItem.Content
+    //                   style={{
+    //                     display: "flex",
+    //                     flexDirection: "row",
+    //                     alignItems: "center",
+    //                     justifyContent: "flex-start",
+    //                   }}
+    //                 >
+    //                   <CheckBox
+    //                     checked={checkedDates[item.id]}
+    //                     onPress={onClickCheckbox(item)}
+    //                     containerStyle={{ padding: 0 }}
+    //                   />
+    //                   <Text type="h3" color="black">
+    //                     {item.title}
+    //                   </Text>
+    //                 </ListItem.Content>
+    //               </ListItem>
+    //             );
+    //           })}
+    //         </View>
+    //       );
+    //     })}
+    //   </ScrollView> */}
 
-      <Dialog.Actions>
-        <Button
-          onPress={onClickConfirm}
-          title="Confirm"
-          disabled={isAutoTaskLoading}
-          containerStyle={{ paddingLeft: 25 }}
-          titleStyle={{ color: theme.colors.primary }}
-          type="clear"
-        />
-        <Button
-          title="Cancel"
-          titleStyle={{ color: theme.colors.primary }}
-          onPress={onHandleCancel}
-          type="clear"
-        />
-      </Dialog.Actions>
-    </Dialog>
+    //   <Dialog.Actions>
+    //     <Button
+    //       onPress={onClickConfirm}
+    //       title="Confirm"
+    //       disabled={isAutoTaskLoading}
+    //       containerStyle={{ paddingLeft: 25 }}
+    //       titleStyle={{ color: theme.colors.primary }}
+    //       type="clear"
+    //     />
+    //     <Button
+    //       title="Cancel"
+    //       titleStyle={{ color: theme.colors.primary }}
+    //       onPress={onHandleCancel}
+    //       type="clear"
+    //     />
+    //   </Dialog.Actions>
+    // </Dialog>
   );
 };
 

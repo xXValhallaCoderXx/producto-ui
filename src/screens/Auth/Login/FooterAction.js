@@ -1,15 +1,11 @@
 import ProductoButton from "../../../components/Button";
 import { View } from "react-native";
 
-const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
-
 const FooterActions = ({
   handleOnPressPrimary,
   handleOnPressSecondary,
   isLoading,
   step,
-  email,
-  password,
 }) => {
   return (
     <View
@@ -36,11 +32,6 @@ const FooterActions = ({
           type="contained"
           loading={isLoading}
           title={step === 1 ? "Next" : "Log in"}
-          // disabled={
-          //   isLoading ||
-          //   (step === 1 && !email.match(validEmailRegex)) ||
-          //   (step === 2 && password === "")
-          // }
         />
       </View>
     </View>

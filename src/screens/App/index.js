@@ -4,15 +4,14 @@ import { Animated, Easing } from "react-native";
 import ProfileScreen from "./Profile";
 import { TouchableNativeFeedback, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useTheme } from "@rneui/themed";
-import LayoutView from "../../components/LayoutView";
+import KeyboardDismissView from "../../components/Layouts/KeyboardDismissView";
 import { useEffect } from "react";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
 
 const buttonNativeFeedback = ({ children, style, ...props }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const { item, accessibilityState } = props;
 
   const focused = accessibilityState.selected;
@@ -89,7 +88,7 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
 export default function App() {
   const { theme } = useTheme();
   return (
-    <LayoutView>
+    <KeyboardDismissView>
 
       <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -107,6 +106,6 @@ export default function App() {
         <Tab.Screen name="Today" component={DashboardScreen} />
         <Tab.Screen name="Account" component={ProfileScreen} />
       </Tab.Navigator>
-    </LayoutView>
+    </KeyboardDismissView>
   );
 }

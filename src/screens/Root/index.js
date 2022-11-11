@@ -1,4 +1,4 @@
-import { Animated, Image, Platform } from "react-native";
+import { Animated, Image, Platform, Text } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -22,10 +22,12 @@ const RootScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    async function prepare() {
-      Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
-      Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
-    }
+    // async function prepare() {
+    //   Platform.OS === "android" &&
+    //     (await NavigationBar.setBackgroundColorAsync("dark"));
+    //   Platform.OS === "android" &&
+    //     (await NavigationBar.setButtonStyleAsync("light"));
+    // }
 
     const fadeAnimation = Animated.timing(fadeAnim, {
       toValue: 1,
@@ -47,9 +49,10 @@ const RootScreen = ({ navigation }) => {
     fadeAnimation.start();
     scaleAnimation.start();
     fadeAnimation2.start();
-    prepare();
+    // prepare();
   }, []);
-
+  console.log("INIT: ", init);
+  console.log("PLATFORm: ", Platform.OS);
   if (!init) {
     return (
       <Animated.View
@@ -72,15 +75,7 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-  return init && isAuthenticated ? (
-    <Stack.Navigator
-      screenOptions={() => ({
-        headerShown: false,
-      })}
-    >
-      <Stack.Screen name="App" component={AppScreens} />
-    </Stack.Navigator>
-  ) : (
+  return (
     <Stack.Navigator
       screenOptions={() => ({
         headerShown: false,
@@ -89,6 +84,23 @@ const RootScreen = ({ navigation }) => {
       <Stack.Screen name="Auth" component={AuthScreens} />
     </Stack.Navigator>
   );
+  // return init && isAuthenticated ? (
+  //   <Stack.Navigator
+  //     screenOptions={() => ({
+  //       headerShown: false,
+  //     })}
+  //   >
+  //     <Stack.Screen name="App" component={AppScreens} />
+  //   </Stack.Navigator>
+  // ) : (
+  // <Stack.Navigator
+  //   screenOptions={() => ({
+  //     headerShown: false,
+  //   })}
+  // >
+  //   <Stack.Screen name="Auth" component={AuthScreens} />
+  // </Stack.Navigator>
+  // );
 };
 
 export default RootScreen;

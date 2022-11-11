@@ -1,5 +1,4 @@
-import { Text } from "@rneui/base";
-import { useTheme } from "@rneui/themed";
+import { Text, useTheme } from "react-native-paper";
 
 const TextComponent = ({
   type = "h3",
@@ -7,7 +6,7 @@ const TextComponent = ({
   customStyle,
   color = "primary",
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
 
   const mapColor = () => {
     switch (color) {

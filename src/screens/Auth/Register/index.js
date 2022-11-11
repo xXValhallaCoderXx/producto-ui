@@ -5,7 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import { useRegisterMutation } from "../../../api/auth-api";
 import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
-import LayoutView from "../../../components/LayoutView";
+import KeyboardDismissView from "../../../components/Layouts/KeyboardDismissView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   StyleSheet,
@@ -111,7 +111,7 @@ const RegisterScreen = ({ navigation }) => {
   }, [registerApiResult.isSuccess]);
 
   return (
-    <LayoutView>
+    <KeyboardDismissView>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -259,7 +259,7 @@ const RegisterScreen = ({ navigation }) => {
           isLoading={registerApiResult.isLoading}
         />
       </KeyboardAvoidingView>
-    </LayoutView>
+    </KeyboardDismissView>
   );
 };
 

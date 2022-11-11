@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
 import * as Localization from "expo-localization";
 import ProductoButton from "../../../components/Button";
