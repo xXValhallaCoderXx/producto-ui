@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { Button, useTheme } from "react-native-paper";
 import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useTheme, Button } from "@rneui/themed";
 
 const AddItem = ({ handleCreateNewTask }) => {
-  const { theme } = useTheme();
-  const isToday = useSelector((state) => state.today.isToday);
+  const theme = useTheme();
+  // const isToday = useSelector((state) => state.today.isToday);
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -18,11 +18,12 @@ const AddItem = ({ handleCreateNewTask }) => {
   };
 
   const handleOnPress = () => {
-    if (!addTask) {
-      setTaskName("");
-      setAddTask(true);
-      addTaskInputRef.current && addTaskInputRef.current.focus();
-    }
+    setAddTask(true);
+    // if (!addTask) {
+    //   setTaskName("");
+    //   setAddTask(true);
+    //   addTaskInputRef.current && addTaskInputRef.current.focus();
+    // }
     // setError("");
   };
 
@@ -40,33 +41,23 @@ const AddItem = ({ handleCreateNewTask }) => {
   // }
 
   return (
-    <View>
+    <View style={{ alignItems: "flex-start" }}>
       {addTask ? (
         <View>
-          <View
+          <TextInput
+            placeholder="Enter task name..."
+            autoFocus
+            placeholderTextColor="#808080"
+            onChangeText={handleOnChange}
+            value={taskName}
+            onBlur={handleOnBlur}
+            underlineColorAndroid="transparent"
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              fontSize: 16,
+              height: 50,
+              backgroundColor: "white",
             }}
-          >
-            <View style={{ flex: 7 }}>
-              <TextInput
-                placeholder="Enter task name..."
-                autoFocus
-                placeholderTextColor="#808080"
-                onChangeText={handleOnChange}
-                value={taskName}
-                onBlur={handleOnBlur}
-                underlineColorAndroid="transparent"
-                style={{
-                  fontSize: 16,
-                  height: 50,
-                  backgroundColor: "white",
-                }}
-              />
-            </View>
-          </View>
+          />
           {error ? (
             <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
               {error}
@@ -75,26 +66,19 @@ const AddItem = ({ handleCreateNewTask }) => {
         </View>
       ) : (
         <Button
-          type="clear"
-          TouchableComponent={TouchableWithoutFeedback}
+          mode="text"
           color={theme.colors.primary}
-          buttonStyle={{
-            display: "flex",
-            justifyContent: "flex-start",
-        
-          
-          }}
+          icon={() => (
+            <MaterialIcons
+              style={{
+                color: theme.colors.primary,
+                fontSize: 20,
+              }}
+              name={"add"}
+            />
+          )}
           onPress={handleOnPress}
         >
-          <MaterialIcons
-            style={{
-              paddingRight: 4,
-              color: theme.colors.primary,
-              fontSize: 20,
-        
-            }}
-            name={"add"}
-          />
           <Text
             style={{
               color: theme.colors.primary,

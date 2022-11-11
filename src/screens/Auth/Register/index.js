@@ -174,7 +174,6 @@ const RegisterScreen = ({ navigation }) => {
             placeholder="Enter Email"
             onChange={formik.handleChange("email")}
             keyboardType="email-address"
-            autoFocus
           />
 
           <View style={{ height: 25 }}>

@@ -9,9 +9,8 @@ import {
 } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
-import { Text as Text2 } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
-import { Text, useTheme } from "@rneui/themed";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFocusMode, toggleIsToday } from "./today-slice";
 
@@ -22,7 +21,7 @@ const TodayHeader = ({
   clientUtc,
   onPressDate,
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector((state) => state.today.isToday);
   const posXanim = useRef(new Animated.Value(0)).current;
@@ -62,7 +61,7 @@ const TodayHeader = ({
     >
       <View>
         <TouchableOpacity onPress={onPressDate} style={{ height: 18 }}>
-          <Text2
+          <Text
             style={{
               marginLeft: Platform.OS === "ios" ? -28 : -6,
               fontWeight: "700",
@@ -73,7 +72,7 @@ const TodayHeader = ({
             {focusMode
               ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
               : null}
-          </Text2>
+          </Text>
         </TouchableOpacity>
         <View style={{ ...styles.row, marginTop: 5 }}>
           <View>
@@ -86,7 +85,7 @@ const TodayHeader = ({
                   style={{ transform: [{ translateY: posXanim }] }}
                 >
                   <Text
-                    h3
+                    variant="headlineLarge"
                     style={{
                       color: theme.colors.primary,
                       letterSpacing: 0.5,

@@ -49,7 +49,6 @@ const ListScreen = () => {
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
 
-
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -72,12 +71,9 @@ const ListScreen = () => {
   const posXanim = useRef(new Animated.Value(0)).current;
   const headerPostXAnim = useRef(new Animated.Value(0)).current;
 
-
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
 
-
   useEffect(() => {
-
     Animated.timing(imageScaleAnim, {
       toValue: 240,
       duration: 3000,
@@ -232,29 +228,35 @@ const ListScreen = () => {
   };
 
   return (
-   <View style={{ flex:1 }}>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "space-between",
-          backgroundColor: "red",
-        }}
-      >
-        <View>
-          <Button>sss</Button>
-        </View>
-        <View>
-          <Button>sss</Button>
-          <TextInput />
-        </View>
-      </View>
-      {/* <Header
+    <View style={{ flex: 1, backgroundColor: "white", padding: 30 }}>
+      <Header
         clientUtc={utcDate}
         focusMode={focusMode}
         onChangeDate={handleOnChangeDate}
         onPressToday={handleOnPressToday}
         onPressDate={handleOnPressDate}
       />
+      <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+        <ProgressBar focusMode={focusMode} progress={progress} />
+      </View>
+      <View>
+        {isLoading || isFetching ? (
+          <SkeletonList />
+        ) : (
+          <TaskList
+            tasks={tasks || []}
+            keyboardShown={keyboardShown}
+            keyboardHeight={keyboardHeight}
+            handleToggleTaskFocus={handleToggleTaskFocus}
+            handleToggleTaskComplete={handleToggleTaskComplete}
+            handleCreateNewTask={handleCreateNewTask}
+            currentTask={currentTask}
+            isLoadingToggle={isLoadingToggle}
+            utcDate={utcDate}
+          />
+        )}
+      </View>
+      {/*
       <TaskList
         tasks={tasks || []}
         keyboardShown={keyboardShown}
@@ -294,9 +296,9 @@ export default ListScreen;
 //   onPressToday={handleOnPressToday}
 //   onPressDate={handleOnPressDate}
 // />
-//     <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
-//       <ProgressBar focusMode={focusMode} progress={progress} />
-//     </View>
+// <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+//   <ProgressBar focusMode={focusMode} progress={progress} />
+// </View>
 //     <View style={styles.content}>
 //       <View>
 //         {isLoading || isFetching ? (

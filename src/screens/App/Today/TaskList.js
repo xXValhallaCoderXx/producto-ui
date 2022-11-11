@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import DeleteTaskModal from "./DeleteModal";
-import { Text, useTheme } from "@rneui/themed";
+import {Text, useTheme} from "react-native-paper";
 
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
@@ -24,7 +24,7 @@ const TaskList = ({
   keyboardHeight,
 }) => {
   const toast = useToast();
-  const { theme } = useTheme();
+  const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
 
   const focusMode = useSelector((state) => state.today.focusMode);
@@ -70,7 +70,7 @@ const TaskList = ({
     <View>
       {tasks.length === 0 ? (
         <View>
-          <Text style={{ marginTop: 15 }}>
+          <Text style={{ marginTop: 15, marginBottom: 15 }}>
             Add a task to start your{" "}
             <Text style={{ color: theme.colors.primary, fontWeight: "700" }}>
               productivity!
@@ -84,7 +84,7 @@ const TaskList = ({
       ) : (
         <View>
         
-         <DraggbleList
+         {/* <DraggbleList
             tasks={tasks.filter((task) => {
               if (!focusMode && !task.focus && !task.completed) {
                 return false;
@@ -103,16 +103,16 @@ const TaskList = ({
           <AddItem
             handleCreateNewTask={handleCreateNewTask}
             currentDate={utcDate}
-          />
+          /> */}
         </View>
       )}
 
-      <DeleteTaskModal
+      {/* <DeleteTaskModal
         isVisible={isDeleteModalVisible}
         onPress={handleDeleteTask}
         onCancel={toggleDeleteModal}
         isLoading={deleteTaskApiResults.isLoading}
-      />
+      /> */}
     </View>
   );
 };

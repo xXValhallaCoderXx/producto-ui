@@ -180,148 +180,148 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardDismissView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: "white" }}
+    <View style={{ flex: 1, backgroundColor: "white" }}>
+      <View
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: -40
+        }}
       >
-        <View style={styles.titleContainer}>
-          <Image
-            source={titleDark}
-            resizeMode="contain"
-            style={styles.productoImage}
-          ></Image>
-          <View style={{ marginTop: 19 }}>
-            <Text
-              style={{
-                ...styles.secondaryTitle,
-                color: theme.colors.secondary,
-              }}
-            >
-              {step === 1 ? (
-                "Sign in, to unlock your productivity"
-              ) : (
-                <>
-                  Welcome back, <Text>{email}!</Text>
-                </>
-              )}
-            </Text>
-          </View>
-        </View>
-        <View style={{ flexGrow: 1 }}>
-          <Animated.View
+        <Image
+          source={require("../../../assets/images/title-dark.png")}
+          resizeMode="contain"
+          style={{ height: 80, width: 210 }}
+        />
+        <Text
+          style={{
+            ...styles.secondaryTitle,
+            color: theme.colors.secondary,
+          }}
+        >
+          {step === 1 ? (
+            "Sign in, to unlock your productivity"
+          ) : (
+            <>
+              Welcome back, <Text>{email}!</Text>
+            </>
+          )}
+        </Text>
+      </View>
+
+      <View style={{ flexGrow: 1 }}>
+        <Animated.View
+          style={{
+            ...styles.inputWrapper,
+            transform: [{ translateX: passwordInputPos }],
+          }}
+        >
+          <View
             style={{
-              ...styles.inputWrapper,
-              transform: [{ translateX: passwordInputPos }],
+              flexDirection: "row",
             }}
           >
             <View
               style={{
-                flexDirection: "row",
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
               }}
             >
-              <View
+              <ProductoInput
+                label="Email"
+                value={email}
+                ref={emailInputRef}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: windowWidth,
+                  width: "85%",
+                  width: windowWidth * 0.85,
+                  maxWidth: windowWidth * 0.9,
                 }}
-              >
-                <ProductoInput
-                  label="Email"
-                  value={email}
-                  ref={emailInputRef}
-                  style={{
-                    width: "85%",
-                    width: windowWidth * 0.85,
-                    maxWidth: windowWidth * 0.9,
-                  }}
-                  error={Boolean(error) ?? false}
-                  onChange={handleOnChangeEmail}
-                  keyboardType="email-address"
-                />
+                error={Boolean(error) ?? false}
+                onChange={handleOnChangeEmail}
+                keyboardType="email-address"
+              />
 
-                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                  {error ? (
-                    <Text
-                      style={{
-                        color: "#D14343",
-                        alignSelf: "flex-start",
-                        fontWeight: "400",
-                        letterSpacing: 0.4,
-                        paddingLeft: windowWidth - windowWidth * 0.9,
-                      }}
-                    >
-                      {error}
-                    </Text>
-                  ) : null}
-                </View>
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: windowWidth,
-                }}
-              >
-                <ProductoInput
-                  label="Password"
-                  value={password}
-                  ref={passwordInputRef}
-                  style={{
-                    width: "85%",
-                    width: windowWidth * 0.85,
-                    maxWidth: windowWidth * 0.9,
-                  }}
-                  error={Boolean(error) ?? false}
-                  onChange={handleOnChangePassword}
-                  secureTextEntry={secretMap["password"]}
-                  right={
-                    <TextInput.Icon
-                      style={{ paddingTop: 8 }}
-                      onPress={handlePassToggle("password")}
-                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                    />
-                  }
-                />
-
-                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                  {error ? (
-                    <TextInput
-                      style={{
-                        color: "#D14343",
-                        alignSelf: "flex-start",
-                        fontWeight: "400",
-                        letterSpacing: 0.4,
-                        paddingLeft: windowWidth - windowWidth * 0.9,
-                      }}
-                    >
-                      {error}
-                    </TextInput>
-                  ) : null}
-                </View>
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "400",
+                      letterSpacing: 0.4,
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
               </View>
             </View>
-          </Animated.View>
-        </View>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <ProductoInput
+                label="Password"
+                value={password}
+                ref={passwordInputRef}
+                style={{
+                  width: "85%",
+                  width: windowWidth * 0.85,
+                  maxWidth: windowWidth * 0.9,
+                }}
+                error={Boolean(error) ?? false}
+                onChange={handleOnChangePassword}
+                secureTextEntry={secretMap["password"]}
+                right={
+                  <TextInput.Icon
+                    style={{ paddingTop: 8 }}
+                    onPress={handlePassToggle("password")}
+                    icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                  />
+                }
+              />
 
-        <FooterActions
-          handleOnPressPrimary={handleOnPressPrimary}
-          handleOnPressSecondary={handleOnPressSecondary}
-          step={step}
-          email={email}
-          password={password}
-          isLoading={verifyResult.isFetching || loginApiResult.isLoading}
-        />
-      </KeyboardAvoidingView>
-    </KeyboardDismissView>
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <TextInput
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "400",
+                      letterSpacing: 0.4,
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </TextInput>
+                ) : null}
+              </View>
+            </View>
+          </View>
+        </Animated.View>
+      </View>
+
+      <FooterActions
+        handleOnPressPrimary={handleOnPressPrimary}
+        handleOnPressSecondary={handleOnPressSecondary}
+        step={step}
+        email={email}
+        password={password}
+        isLoading={verifyResult.isFetching || loginApiResult.isLoading}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
-    marginTop: 106,
+    marginTop: 40,
   },
   productoImage: {
     width: 231,

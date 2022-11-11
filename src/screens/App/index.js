@@ -61,13 +61,13 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
             <Ionicons
               name={"home-sharp"}
               size={25}
-              color={focused ? theme.colors.primary : theme.colors.secondary}
+              // color={focused ? theme?.colors?.primary : theme?.colors.secondary}
             />
           ) : (
             <Ionicons
               name="person"
               size={25}
-              color={focused ? theme.colors.primary : theme.colors.secondary}
+              // color={focused ? theme.colors.primary : theme.colors.secondary}
             />
           )}
         </Animated.View>
@@ -75,7 +75,7 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
           style={{
             fontSize: 16,
             marginTop: 2,
-            color: focused ? theme.colors.primary : theme.colors.secondary,
+            // color: focused ? theme.colors.primary : theme.colors.secondary,
           }}
         >
           {iconName === "Today" ? "Home" : "Account"}
@@ -93,7 +93,7 @@ export default function App() {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarActiveTintColor: theme.colors.primary,
+          // tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: "gray",
           tabBarHideOnKeyboard: true,
           tabBarStyle: {
