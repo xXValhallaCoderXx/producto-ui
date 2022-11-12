@@ -33,11 +33,11 @@ export function useKeyboard() {
     //   _keyboardDidHide
     // );
     const willHideSub = Keyboard.addListener(
-      "keyboardWillHide",
+      "keyboardDidHide",
       _keyboardWillHide
     );
     const willShowSub = Keyboard.addListener(
-      "keyboardWillShow",
+      "keyboardDidShow",
       _keyboardWillShow
     );
 

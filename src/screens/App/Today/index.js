@@ -3,14 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-  KeyboardAvoidingView,
-  TextInput,
-} from "react-native";
+import { View, Animated, Platform } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -26,7 +19,6 @@ import {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
@@ -35,7 +27,6 @@ import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
 import KeyboardDismissView from "../../../components/Layouts/KeyboardDismissView";
 import { useToast } from "react-native-toast-notifications";
-import { Button } from "react-native-paper";
 
 const ListScreen = () => {
   const { keyboardShown, keyboardHeight } = useKeyboard();
@@ -232,7 +223,6 @@ const ListScreen = () => {
       <View style={{ flex: 1 }}>
         <View
           style={{
-            flex: 1,
             flexGrow: 1,
             padding: 30,
             backgroundColor: "white",
@@ -248,23 +238,26 @@ const ListScreen = () => {
           <View style={{ height: 20, marginTop: 10, marginBottom: 20 }}>
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
-          <View>
+       
             {isLoading || isFetching ? (
               <SkeletonList />
             ) : (
-              <TaskList
-                tasks={tasks || []}
-                keyboardShown={keyboardShown}
-                keyboardHeight={keyboardHeight}
-                handleToggleTaskFocus={handleToggleTaskFocus}
-                handleToggleTaskComplete={handleToggleTaskComplete}
-                handleCreateNewTask={handleCreateNewTask}
-                currentTask={currentTask}
-                isLoadingToggle={isLoadingToggle}
-                utcDate={utcDate}
-              />
+              <>
+                <TaskList
+                  tasks={tasks || []}
+                  keyboardShown={keyboardShown}
+                  keyboardHeight={keyboardHeight}
+                  handleToggleTaskFocus={handleToggleTaskFocus}
+                  handleToggleTaskComplete={handleToggleTaskComplete}
+                  handleCreateNewTask={handleCreateNewTask}
+                  currentTask={currentTask}
+                  isLoadingToggle={isLoadingToggle}
+                  utcDate={utcDate}
+                />
+              
+              </>
             )}
-          </View>
+        
         </View>
         <MoveIncomplete
           tasks={tasks}
@@ -272,14 +265,7 @@ const ListScreen = () => {
           isLoading={moveTasksApiResult.isLoading}
           onMoveIncomplete={handleMoveIncompleteTasks}
         />
-        <View style={{ padding: 10, backgroundColor: "white" }}>
-          {tasks?.length > 0 && (
-            <AddItem
-              handleCreateNewTask={handleCreateNewTask}
-              currentDate={utcDate}
-            />
-          )}
-        </View>
+
         {isLoading || isFetching ? null : (
           <CalendarWidget
             calendarOpen={calendarOpen}

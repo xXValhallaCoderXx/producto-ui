@@ -33,7 +33,7 @@ const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
             disabled={isLoading}
             isLoading={isLoading}
             style={{ color: theme.colors.error }}
-            onPress={onClickConfirm}
+            onPress={onPress}
           >
             Delete
           </Button>

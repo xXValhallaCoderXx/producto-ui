@@ -8,6 +8,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Keyboard,
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -95,7 +96,12 @@ const DraggableListContainer = ({
   };
 
   const handleOnPress = (_item) => () => {
-    onCheckTaskRow(_item);
+    if(!keyboardShown){
+      onCheckTaskRow(_item);
+    } else {
+      Keyboard.dismiss();
+    }
+   
   };
 
   const renderItem = ({ item, drag, isActive }) => {
@@ -235,7 +241,6 @@ const DraggableListContainer = ({
   return (
     <DraggableFlatList
       data={sortedTasks}
-      // style={{height: 250}}
       onDragEnd={async ({ data }) => {
         const itemSort = data.map((item) => item.id);
         const taskIdsInSortOrder = JSON.stringify(itemSort);
@@ -245,13 +250,10 @@ const DraggableListContainer = ({
         setSortedTasks(data);
       }}
       ref={scrollViewRef}
-      // style={{
-      //   ...(keyboardShown && { height: 250 }),
-      // }}
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      style={{maxHeight: "93%"}}
+      style={{maxHeight: "85%"}}
       
     />
   );
@@ -282,36 +284,3 @@ const styles = StyleSheet.create({
 });
 
 export default DraggableListContainer;
-
-// <View style={styles.listRow}>
-// <TextInput
-//   // onChangeText={handleOnChange}
-//   value={item.title}
-//   // onBlur={handleOnBlur}
-//   underlineColorAndroid="transparent"
-//   style={{
-//     fontSize: 16,
-
-//     backgroundColor: "white",
-//   }}
-// />
-// </View>
-// <View
-// style={{
-//   justifyContent: "flex-end",
-//   ...styles.listRow,
-//   marginRight: 15,
-//   height: 35,
-// }}
-// >
-// <TouchableOpacity
-// //   onPress={handleOnPressDelete}
-// >
-//   {/* <MaterialIcons
-//       name="trash-o"
-//       color={"#6B7280"}
-//       style={{ fontSize: 25 }}
-//     /> */}
-// </TouchableOpacity>
-// </View>
-// {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}

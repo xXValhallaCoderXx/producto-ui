@@ -82,29 +82,37 @@ const TaskList = ({
           />
         </View>
       ) : (
-        <DraggbleList
-          tasks={tasks.filter((task) => {
-            if (!focusMode && !task.focus && !task.completed) {
-              return false;
-            }
-            return task;
-          })}
-          handleOnPressDelete={handleOnPressDelete}
-          utcDate={utcDate}
-          onCheckTask={onCheckTask}
-          onCheckTaskRow={onCheckTaskRow}
-          onToggleFocus={onToggleFocus}
-          keyboardShown={keyboardShown}
-          keyboardHeight={keyboardHeight}
-        />
+        <View>
+          <DraggbleList
+            tasks={tasks.filter((task) => {
+              if (!focusMode && !task.focus && !task.completed) {
+                return false;
+              }
+              return task;
+            })}
+            handleOnPressDelete={handleOnPressDelete}
+            utcDate={utcDate}
+            onCheckTask={onCheckTask}
+            onCheckTaskRow={onCheckTaskRow}
+            onToggleFocus={onToggleFocus}
+            keyboardShown={keyboardShown}
+            keyboardHeight={keyboardHeight}
+          />
+          <View>
+            <AddItem
+              handleCreateNewTask={handleCreateNewTask}
+              currentDate={utcDate}
+            />
+          </View>
+        </View>
       )}
 
-      {/* <DeleteTaskModal
+      <DeleteTaskModal
         isVisible={isDeleteModalVisible}
         onPress={handleDeleteTask}
         onCancel={toggleDeleteModal}
         isLoading={deleteTaskApiResults.isLoading}
-      /> */}
+      />
     </View>
   );
 };
