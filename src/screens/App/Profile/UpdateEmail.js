@@ -93,55 +93,71 @@ const UpdateEmail = ({ route, navigation }) => {
 
   return (
     <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
+      style={{
+        backgroundColor: "white",
+        flex: 1,
+        padding: 30,
+        paddingTop: 20,
+        justifyContent: "space-between",
+      }}
     >
-      <Text style={{ marginBottom: 15 }}>
-        Enter your current password, and your new email you would like to change
-        to.
-      </Text>
+      <View>
+        <Text style={{ marginBottom: 15 }}>
+          Enter your current password, and your new email you would like to
+          change to.
+        </Text>
 
-      <ProductoInput
-        label="Password"
-        placeholder="Enter current password"
-        value={formik.values.password}
-        onChange={formik.handleChange("password")}
-        autoFocus
-        secureTextEntry={secretMap["password"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingTop: 8 }}
-            onPress={handlePassToggle("password")}
-            icon={secretMap["password"] ? "eye-off" : "eye"}
-          />
-        }
-      />
+        <ProductoInput
+          label="Password"
+          placeholder="Enter current password"
+          value={formik.values.password}
+          onChange={formik.handleChange("password")}
+          autoFocus
+          secureTextEntry={secretMap["password"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("password")}
+              icon={secretMap["password"] ? "eye-off" : "eye"}
+            />
+          }
+        />
 
-      <View style={{ height: 20, marginBottom: 15 }}>
-        {formik.touched.password && (
-          <Text
-            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-          >
-            {formik?.errors?.password || ""}
-          </Text>
-        )}
-      </View>
+        <View style={{ height: 20, marginBottom: 15 }}>
+          {formik.touched.password && (
+            <Text
+              style={{
+                marginTop: 5,
+                marginLeft: 10,
+                color: theme.colors.error,
+              }}
+            >
+              {formik?.errors?.password || ""}
+            </Text>
+          )}
+        </View>
 
-      <ProductoInput
-        label="New Email"
-        placeholder="Enter a new email"
-        keyboardType="email-address"
-        onChange={formik.handleChange("email")}
-        value={formik.values.email}
-      />
+        <ProductoInput
+          label="New Email"
+          placeholder="Enter a new email"
+          keyboardType="email-address"
+          onChange={formik.handleChange("email")}
+          value={formik.values.email}
+        />
 
-      <View style={{ height: 20 }}>
-        {formik.touched.email && (
-          <Text
-            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-          >
-            {formik?.errors?.email || ""}
-          </Text>
-        )}
+        <View style={{ height: 20 }}>
+          {formik.touched.email && (
+            <Text
+              style={{
+                marginTop: 5,
+                marginLeft: 10,
+                color: theme.colors.error,
+              }}
+            >
+              {formik?.errors?.email || ""}
+            </Text>
+          )}
+        </View>
       </View>
 
       <ProductoButton
