@@ -90,93 +90,112 @@ const EditPassword = ({ navigation }) => {
 
   return (
     <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
+      style={{
+        backgroundColor: "white",
+        flex: 1,
+        padding: 30,
+        paddingTop: 20,
+        justifyContent: "space-between",
+      }}
     >
-      <Text style={{ marginBottom: 15, fontSize: 18, lineHeight: 28 }}>
-        Enter your current password, and your new password you wish to change
-        to.
-      </Text>
+      <View>
+        <Text style={{ marginBottom: 15, fontSize: 18, lineHeight: 28 }}>
+          Enter your current password, and your new password you wish to change
+          to.
+        </Text>
 
-      <ProductoInput
-        label="Current Password"
-        placeholder="Enter current password"
-        value={formik.values.currentPassword}
-        onChange={formik.handleChange("currentPassword")}
-        autoFocus
-        secureTextEntry={secretMap["currentPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingTop: 8 }}
-            onPress={handlePassToggle("currentPassword")}
-            icon={secretMap["currentPassword"] ? "eye-off" : "eye"}
-          />
-        }
-      />
+        <ProductoInput
+          label="Current Password"
+          placeholder="Enter current password"
+          value={formik.values.currentPassword}
+          onChange={formik.handleChange("currentPassword")}
+          autoFocus
+          secureTextEntry={secretMap["currentPassword"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("currentPassword")}
+              icon={secretMap["currentPassword"] ? "eye-off" : "eye"}
+            />
+          }
+        />
 
-      <View style={{ height: 20, marginBottom: 10 }}>
-        {formik.touched.confirmPassword && (
-          <Text
-            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-          >
-            {formik?.errors?.currentPassword || ""}
-          </Text>
-        )}
-      </View>
+        <View style={{ height: 20, marginBottom: 10 }}>
+          {formik.touched.confirmPassword && (
+            <Text
+              style={{
+                marginTop: 5,
+                marginLeft: 10,
+                color: theme.colors.error,
+              }}
+            >
+              {formik?.errors?.currentPassword || ""}
+            </Text>
+          )}
+        </View>
 
-      <ProductoInput
-        label="New Password"
-        placeholder="Enter new password"
-        value={formik.values.newPassword}
-        onChange={formik.handleChange("newPassword")}
-        secureTextEntry={secretMap["newPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingTop: 8 }}
-            onPress={handlePassToggle("newPassword")}
-            icon={secretMap["newPassword"] ? "eye-off" : "eye"}
-          />
-        }
-      />
+        <ProductoInput
+          label="New Password"
+          placeholder="Enter new password"
+          value={formik.values.newPassword}
+          onChange={formik.handleChange("newPassword")}
+          secureTextEntry={secretMap["newPassword"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("newPassword")}
+              icon={secretMap["newPassword"] ? "eye-off" : "eye"}
+            />
+          }
+        />
 
-      <View style={{ height: 20, marginBottom: 10 }}>
-        {formik.touched.newPassword && (
-          <Text
-            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-          >
-            {formik?.errors?.newPassword || ""}
-          </Text>
-        )}
-      </View>
+        <View style={{ height: 20, marginBottom: 10 }}>
+          {formik.touched.newPassword && (
+            <Text
+              style={{
+                marginTop: 5,
+                marginLeft: 10,
+                color: theme.colors.error,
+              }}
+            >
+              {formik?.errors?.newPassword || ""}
+            </Text>
+          )}
+        </View>
 
-      <ProductoInput
-        label="Confirm New Password"
-        placeholder="Confirm new password"
-        value={formik.values.confirmPassword}
-        onChange={formik.handleChange("confirmPassword")}
-        secureTextEntry={secretMap["confirmPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingTop: 8 }}
-            onPress={handlePassToggle("confirmPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
-      />
+        <ProductoInput
+          label="Confirm New Password"
+          placeholder="Confirm new password"
+          value={formik.values.confirmPassword}
+          onChange={formik.handleChange("confirmPassword")}
+          secureTextEntry={secretMap["confirmPassword"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("confirmPassword")}
+              icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+            />
+          }
+        />
 
-      <View style={{ height: 20 }}>
-        {formik.touched.confirmPassword && (
-          <Text
-            style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
-          >
-            {formik?.errors?.confirmPassword || ""}
-          </Text>
-        )}
+        <View style={{ height: 20 }}>
+          {formik.touched.confirmPassword && (
+            <Text
+              style={{
+                marginTop: 5,
+                marginLeft: 10,
+                color: theme.colors.error,
+              }}
+            >
+              {formik?.errors?.confirmPassword || ""}
+            </Text>
+          )}
+        </View>
       </View>
 
       <ProductoButton
         title="Change Password"
         type="contained"
-        style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
         disabled={
           updatePasswordResult.isLoading || !formik.isValid || !formik.dirty
