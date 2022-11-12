@@ -245,7 +245,7 @@ const ListScreen = () => {
             onPressToday={handleOnPressToday}
             onPressDate={handleOnPressDate}
           />
-          <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+          <View style={{ height: 20, marginTop: 10, marginBottom: 20 }}>
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
           <View>
@@ -288,43 +288,10 @@ const ListScreen = () => {
           onConfirm={handleOnConfirmMove}
           isLoading={moveTasksApiResult.isLoading}
         />
+        <IntroBottomSheet />
       </View>
     </KeyboardDismissView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    justifyContent: "space-between",
-    flex: 1,
-    overflow: "hidden",
-  },
-});
-
 export default ListScreen;
-
-{
-  /* 
-
-
-   
-}
-{
-  /* 
-        <IntroBottomSheet /> */
-}
-{
-  /* {isFetching ? null : (
-                <MoveIncomplete
-                  tasks={tasks}
-                  currentDate={utcDate}
-                  isLoading={moveTasksApiResult.isLoading}
-                  onMoveIncomplete={handleMoveIncompleteTasks}
-                />
-              )} */
-}
-//   </GestureHandlerRootView>
-// </LayoutView>

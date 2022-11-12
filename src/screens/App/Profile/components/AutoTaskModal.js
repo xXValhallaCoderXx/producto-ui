@@ -1,14 +1,19 @@
-
-import { Text } from "../../../../components";
-import { useTheme } from "react-native-paper";
-
+import { Button, Text, Dialog, Portal, useTheme, List } from "react-native-paper";
 import { useGetIncompleteDetailTasksQuery } from "../../../../api/task-api";
 import { format } from "date-fns";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, TouchableOpacity, Image } from "react-native";
 import { useEffect, useState } from "react";
+import Checked from "../../../../assets/images/checkbox-checked.png";
+import Unchecked from "../../../../assets/images/checkbox-unchecked.png";
 
-const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading: isAutoTaskLoading }) => {
-  const { theme } = useTheme();
+
+const AutoTaskModal = ({
+  isVisible,
+  onPress,
+  onCancel,
+  isLoading: isAutoTaskLoading,
+}) => {
+  const theme = useTheme();
   const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
   const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
@@ -60,76 +65,93 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading: isAutoTaskLoad
   };
 
   return (
-    <View><Text>sasa</Text></View>
-    // <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
-    //   <Text type="h2" color="black">
-    //     Move Tasks
-    //   </Text>
-    //   <Text
-    //     type="h3"
-    //     color="secondary"
-    //     customStyle={{ marginTop: 15, marginBottom: 20 }}
-    //   >
-    //     Select incomplete tasks that you want to move to Today.
-    //   </Text>
-    //   {Object.keys(parsedDates).length === 0 && (
-    //     <Text type="h4">No Overdue Tasks</Text>
-    //   )}
-    //   {/* <ScrollView style={{ maxHeight: 350 }}>
-    //     {Object.keys(parsedDates).map((k) => {
-    //       return (
-    //         <View key={k}>
-    //           <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-    //             <Text type="h3" color="secondary">
-    //               {format(new Date(k), "EEE, d LLL yyyy")}
-    //             </Text>
-    //           </View>
+    <Portal>
+      <Dialog
+        style={{ backgroundColor: "white", borderRadius: 8 }}
+        visible={isVisible}
+        onDismiss={onCancel}
+      >
+        <Dialog.Content>
+          <Text
+            variant="titleLarge"
+            style={{ fontWeight: "600" }}
+            color="black"
+          >
+            Move Tasks
+          </Text>
+          <Text
+            variant="bodyLarge"
+            style={{
+              color: theme.colors.secondary,
+              marginTop: 10,
+              marginBottom: 20,
+            }}
+          >
+            Select incomplete tasks that you want to move to Today.
+          </Text>
 
-    //           {parsedDates[k].map((item, _index) => {
-    //             return (
-    //               <ListItem key={_index} containerStyle={{ padding: 7 }}>
-    //                 <ListItem.Content
-    //                   style={{
-    //                     display: "flex",
-    //                     flexDirection: "row",
-    //                     alignItems: "center",
-    //                     justifyContent: "flex-start",
-    //                   }}
-    //                 >
-    //                   <CheckBox
-    //                     checked={checkedDates[item.id]}
-    //                     onPress={onClickCheckbox(item)}
-    //                     containerStyle={{ padding: 0 }}
-    //                   />
-    //                   <Text type="h3" color="black">
-    //                     {item.title}
-    //                   </Text>
-    //                 </ListItem.Content>
-    //               </ListItem>
-    //             );
-    //           })}
-    //         </View>
-    //       );
-    //     })}
-    //   </ScrollView> */}
+          {Object.keys(parsedDates).length === 0 && (
+            <Text type="h4">No Overdue Tasks</Text>
+          )}
+          {
+            <ScrollView style={{ maxHeight: 350 }}>
+              {Object.keys(parsedDates).map((k) => {
+                return (
+                  <View key={k}>
+                    <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
+                      <Text type="h3" color="secondary">
+                        {format(new Date(k), "EEE, d LLL yyyy")}
+                      </Text>
+                    </View>
 
-    //   <Dialog.Actions>
-    //     <Button
-    //       onPress={onClickConfirm}
-    //       title="Confirm"
-    //       disabled={isAutoTaskLoading}
-    //       containerStyle={{ paddingLeft: 25 }}
-    //       titleStyle={{ color: theme.colors.primary }}
-    //       type="clear"
-    //     />
-    //     <Button
-    //       title="Cancel"
-    //       titleStyle={{ color: theme.colors.primary }}
-    //       onPress={onHandleCancel}
-    //       type="clear"
-    //     />
-    //   </Dialog.Actions>
-    // </Dialog>
+                    {parsedDates[k].map((item, _index) => {
+                      return (
+                        <List.Item
+                          key={_index}
+                          title={item.title}
+                          style={{
+                            borderBottomWidth: 1,
+                            borderBottomColor: "#d3d3d3",
+                          }}
+                          left={(props) => (
+                            <TouchableOpacity
+                              style={{
+                                justifyContent: "center",
+                                marginRight: 10,
+                              }}
+                              onPress={onClickCheckbox(item)}
+                            >
+                              <Image
+                                style={{ maxHeight: 20, maxWidth: 20 }}
+                                source={
+                                  checkedDates[item.id] ? Checked : Unchecked
+                                }
+                              />
+                            </TouchableOpacity>
+                          )}
+                        />
+                      );
+                    })}
+                  </View>
+                );
+              })}
+            </ScrollView>
+          }
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button
+            style={{ color: theme.colors.primary }}
+            disabled={isAutoTaskLoading}
+            onPress={onClickConfirm}
+          >
+            Confirm
+          </Button>
+          <Button style={{ color: theme.colors.primary }} onPress={onCancel}>
+            Cancel
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
 

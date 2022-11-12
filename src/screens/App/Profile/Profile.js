@@ -3,7 +3,12 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import { StyleSheet, View, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { List, Switch, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
@@ -105,163 +110,101 @@ const ProfileScreen = ({ navigation }) => {
       >
         My Account
       </Text>
-      <View style={styles.container}>
-        <View>
-          <RnText
-            customStyle={{ marginBottom: 10, letterSpacing: 0.8 }}
-            type="h4"
-            color="secondary"
-          >
-            ACCOUNT INFORMATION
-          </RnText>
+      <View style={{ marginTop: 50 }}>
+        <RnText
+          type="h4"
+          color="secondary"
+          customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
+        >
+          APP SETTINGS
+        </RnText>
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <TouchableOpacity onPress={navigateToChangeEmail}>
-              <List.Item
-                titleStyle={{
-                  color: "#111827",
-                  fontWeight: "500",
-                  letterSpacing: 0.9,
-                }}
-                style={{ padding: 0, marginLeft: -7 }}
-                title="Email"
-                right={() => (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text
-                      style={{ marginBottom: 2, paddingRight: 5 }}
-                      type="h3"
-                      color="black"
-                    >
-                      {data?.email}
-                    </Text>
-                    <MaterialIcons size={24} name="keyboard-arrow-right" />
-                  </View>
-                )}
-              />
-            </TouchableOpacity>
-          )}
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <TouchableOpacity onPress={navigateToEditPassword}>
-              <List.Item
-                style={{ padding: 0, marginTop: 15, marginLeft: -7 }}
-                titleStyle={{
-                  color: "#111827",
-                  fontWeight: "500",
-                  letterSpacing: 0.9,
-                }}
-                title="Password"
-                right={() => (
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <TouchableOpacity onPress={navigateToChangeTimezone}>
+            <List.Item
+              style={{ padding: 0, marginLeft: -7 }}
+              titleStyle={{
+                color: "#111827",
+                fontWeight: "500",
+                letterSpacing: 0.9,
+              }}
+              title="Timezone"
+              right={() => (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text
+                    style={{ marginBottom: 2, paddingRight: 5 }}
+                    type="h3"
+                    color="black"
+                  >
+                    {Localization.timezone}
+                  </Text>
                   <MaterialIcons size={24} name="keyboard-arrow-right" />
-                )}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-        <View style={{ marginTop: 50 }}>
-          <RnText
-            type="h4"
-            color="secondary"
-            customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
-          >
-            APP SETTINGS
-          </RnText>
+                </View>
+              )}
+            />
+          </TouchableOpacity>
+        )}
 
+        <View style={{ marginTop: 10 }}>
           {isLoading ? (
             <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
+              <SkeletonBox height={70} width={"100%"} />
             </View>
           ) : (
-            <TouchableOpacity onPress={navigateToChangeTimezone}>
+            <TouchableOpacity onPress={toggleAutoTaskModal}>
               <List.Item
-                style={{ padding: 0, marginLeft: -7 }}
+                style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
                 titleStyle={{
                   color: "#111827",
                   fontWeight: "500",
                   letterSpacing: 0.9,
                 }}
-                title="Timezone"
+                title="Auto Move Tasks"
                 right={() => (
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Text
-                      style={{ marginBottom: 2, paddingRight: 5 }}
-                      type="h3"
-                      color="black"
-                    >
-                      {Localization.timezone}
-                    </Text>
-                    <MaterialIcons size={24} name="keyboard-arrow-right" />
+                  <View
+                    pointerEvents="none"
+                    style={{ justifyContent: "center" }}
+                  >
+                    <Switch
+                      // onChange={toggleAutoTaskModal}
+                      value={data?.prefs?.autoMove}
+                    />
                   </View>
                 )}
               />
+              <Text
+                color="secondary"
+                type="h4"
+                customStyle={{ marginTop: 15, maxWidth: 240 }}
+              >
+                Automatically move all incompleted tasks to “today”.
+              </Text>
             </TouchableOpacity>
           )}
-
-          <View style={{ marginTop: 10 }}>
-            {isLoading ? (
-              <View style={{ marginBottom: 10 }}>
-                <SkeletonBox height={70} width={"100%"} />
-              </View>
-            ) : (
-              <TouchableOpacity onPress={toggleAutoTaskModal}>
-                <List.Item
-                  style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
-                  titleStyle={{
-                    color: "#111827",
-                    fontWeight: "500",
-                    letterSpacing: 0.9,
-                  }}
-                  title="Auto Move Tasks"
-                  right={() => (
-                    <View pointerEvents="none" style={{ justifyContent: "center" }}>
-                      <Switch
-                        // onChange={toggleAutoTaskModal}
-                        value={data?.prefs?.autoMove}
-                      />
-                    </View>
-                  )}
-                />
-                <RnText
-                  color="secondary"
-                  type="h4"
-                  customStyle={{ marginTop: 15, maxWidth: 240 }}
-                >
-                  Automatically move all incompleted tasks to “today”.
-                </RnText>
-              </TouchableOpacity>
-            )}
-          </View>
         </View>
-
-        <View style={{ flexGrow: 1, marginTop: 50 }}>
-          <RnText
-            type="h4"
-            color="secondary"
-            customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
-          >
-            APP INFORMATION
-          </RnText>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ fontSize: 16 }}>App Version No.</Text>
-            <Text style={{ color: "gray" }}>v0.2</Text>
-          </View>
-        </View>
-
-        <TouchableOpacity onPress={toggleLogoutModal} style={{ flex: 2 }}>
-          <RnText type="h3" color="error" customStyle={{ textAlign: "center" }}>
-            Log out
-          </RnText>
-        </TouchableOpacity>
       </View>
+      <View style={{ flexGrow: 1, marginTop: 50 }}>
+        <Text
+          type="h4"
+          color="secondary"
+          customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
+        >
+          APP INFORMATION
+        </Text>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text style={{ fontSize: 16 }}>App Version No.</Text>
+          <Text style={{ color: "gray" }}>v0.2</Text>
+        </View>
+      </View>
+      <TouchableOpacity onPress={toggleLogoutModal} style={{ flex: 2 }}>
+        <Text type="h3" color="error" customStyle={{ textAlign: "center" }}>
+          Log out
+        </Text>
+      </TouchableOpacity>
       <LogoutModal
         isVisible={isLogoutModalVisible}
         onPress={handleLogout}
