@@ -12,6 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Dimensions
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -49,7 +50,9 @@ const DraggableListContainer = ({
   const focusMode = useSelector((state) => state.today.focusMode);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
-
+  const windowHeight = Dimensions.get('window').height;
+  const isToday = useSelector((state) => state.today.isToday);
+  console.log("WINDOW HEIGHT:" , keyboardHeight);
   // useEffect(() => {
   //   scrollViewRef.current?.scrollToEnd();
   //   if (!keyboardShown) {
@@ -230,7 +233,7 @@ const DraggableListContainer = ({
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      style={{maxHeight: "85%"}}
+      style={{maxHeight: keyboardShown ?  (windowHeight * .25) : isToday ? (windowHeight * .55) : (windowHeight * .45)}}
       
     />
   );

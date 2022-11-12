@@ -252,6 +252,14 @@ const ListScreen = () => {
                   isLoadingToggle={isLoadingToggle}
                   utcDate={utcDate}
                 />
+                {/* {isToday && (
+                  <View style={{ marginTop: 20 }}>
+                    <AddItem
+                      handleCreateNewTask={handleCreateNewTask}
+                      currentDate={utcDate}
+                    />
+                  </View>
+                )} */}
               </View>
             )}
           </KeyboardAvoidingView>
