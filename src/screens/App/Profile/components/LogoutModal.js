@@ -12,7 +12,7 @@ const LogoutModal = ({ isVisible, onPress, onCancel }) => {
         <Dialog.Content>
           <Text
             variant="titleLarge"
-            style={{ fontWeight: "600" }}
+            style={{ fontWeight: "700" }}
             color="black"
           >
             Confirm
@@ -21,7 +21,7 @@ const LogoutModal = ({ isVisible, onPress, onCancel }) => {
             variant="bodyLarge"
             style={{
               color: theme.colors.secondary,
-              marginTop: 10,
+              marginTop: 20,
               marginBottom: 20,
             }}
           >
@@ -29,11 +29,11 @@ const LogoutModal = ({ isVisible, onPress, onCancel }) => {
           </Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button style={{ color: theme.colors.error }} onPress={onPress}>
-            Log out
-          </Button>
-          <Button style={{ color: theme.colors.primary }} onPress={onCancel}>
+          <Button  labelStyle={{fontSize: 18}} onPress={onCancel}>
             Cancel
+          </Button>
+          <Button labelStyle={{ color: theme.colors.error, fontSize: 18 }}  onPress={onPress}>
+            Log out
           </Button>
         </Dialog.Actions>
       </Dialog>
