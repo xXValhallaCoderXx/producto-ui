@@ -1,11 +1,17 @@
-import { Button, Text, Dialog, Portal, useTheme, List } from "react-native-paper";
+import {
+  Button,
+  Text,
+  Dialog,
+  Portal,
+  useTheme,
+  List,
+} from "react-native-paper";
 import { useGetIncompleteDetailTasksQuery } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { View, ScrollView, TouchableOpacity, Image } from "react-native";
 import { useEffect, useState } from "react";
 import Checked from "../../../../assets/images/checkbox-checked.png";
 import Unchecked from "../../../../assets/images/checkbox-unchecked.png";
-
 
 const AutoTaskModal = ({
   isVisible,
@@ -74,7 +80,7 @@ const AutoTaskModal = ({
         <Dialog.Content>
           <Text
             variant="titleLarge"
-            style={{ fontWeight: "600" }}
+            style={{ fontWeight: "700" }}
             color="black"
           >
             Move Tasks
@@ -83,8 +89,8 @@ const AutoTaskModal = ({
             variant="bodyLarge"
             style={{
               color: theme.colors.secondary,
-              marginTop: 10,
-              marginBottom: 20,
+              marginTop: 20,
+              marginBottom: 10,
             }}
           >
             Select incomplete tasks that you want to move to Today.
@@ -98,8 +104,20 @@ const AutoTaskModal = ({
               {Object.keys(parsedDates).map((k) => {
                 return (
                   <View key={k}>
-                    <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-                      <Text type="h3" color="secondary">
+                    <View
+                      style={{
+                        backgroundColor: "#f9f9f9",
+                        padding: 8,
+                        marginTop: 20,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: theme.colors.secondary,
+                          fontWeight: "700",
+                          fontSize: 16,
+                        }}
+                      >
                         {format(new Date(k), "EEE, d LLL yyyy")}
                       </Text>
                     </View>
@@ -109,6 +127,9 @@ const AutoTaskModal = ({
                         <List.Item
                           key={_index}
                           title={item.title}
+                          titleStyle={{
+                            fontSize: 18,
+                          }}
                           style={{
                             borderBottomWidth: 1,
                             borderBottomColor: "#d3d3d3",
@@ -140,14 +161,25 @@ const AutoTaskModal = ({
         </Dialog.Content>
         <Dialog.Actions>
           <Button
+            labelStyle={{
+              fontWeight: "600",
+              fontSize: 18,
+            }}
+            style={{ color: theme.colors.primary }}
+            onPress={onCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            labelStyle={{
+              fontWeight: "600",
+              fontSize: 18,
+            }}
             style={{ color: theme.colors.primary }}
             disabled={isAutoTaskLoading}
             onPress={onClickConfirm}
           >
             Confirm
-          </Button>
-          <Button style={{ color: theme.colors.primary }} onPress={onCancel}>
-            Cancel
           </Button>
         </Dialog.Actions>
       </Dialog>
