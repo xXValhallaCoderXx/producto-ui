@@ -103,7 +103,6 @@ const EditPassword = ({ navigation }) => {
         value={formik.values.currentPassword}
         onChange={formik.handleChange("currentPassword")}
         autoFocus
-        onBlur={formik.handleBlur("currentPassword")}
         secureTextEntry={secretMap["currentPassword"]}
         right={
           <TextInput.Icon
@@ -129,7 +128,6 @@ const EditPassword = ({ navigation }) => {
         placeholder="Enter new password"
         value={formik.values.newPassword}
         onChange={formik.handleChange("newPassword")}
-        onBlur={formik.handleBlur("newPassword")}
         secureTextEntry={secretMap["newPassword"]}
         right={
           <TextInput.Icon
@@ -155,7 +153,6 @@ const EditPassword = ({ navigation }) => {
         placeholder="Confirm new password"
         value={formik.values.confirmPassword}
         onChange={formik.handleChange("confirmPassword")}
-        onBlur={formik.handleBlur("confirmPassword")}
         secureTextEntry={secretMap["confirmPassword"]}
         right={
           <TextInput.Icon

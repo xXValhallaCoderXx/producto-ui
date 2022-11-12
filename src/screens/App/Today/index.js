@@ -297,7 +297,7 @@ const ListScreen = () => {
           isLoading={moveTasksApiResult.isLoading}
         />
 
-        <IntroBottomSheet />
+        {/* <IntroBottomSheet /> */}
       </View>
     </KeyboardDismissView>
   );

@@ -3,12 +3,7 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { List, Switch, useTheme, Text } from "react-native-paper";
 import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
@@ -32,13 +27,13 @@ import { useToast } from "react-native-toast-notifications";
 
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
+  const theme = useTheme();
   const toast = useToast();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data, isLoading } = useGetProfileQuery({});
-  const { colors } = useTheme();
 
   useEffect(() => {
     if (data?.prefs?.false) {
@@ -100,24 +95,33 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <Text
+      <View
         style={{
-          marginBottom: 10,
-          color: "#111827",
-          fontSize: 22,
-          fontWeight: "600",
+          backgroundColor: "white",
+          paddingTop: 10,
+          paddingBottom: 10,
         }}
       >
-        My Account
-      </Text>
-      <View style={{ marginTop: 50 }}>
-        <RnText
-          type="h4"
-          color="secondary"
-          customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "700",
+          }}
         >
-          APP SETTINGS
-        </RnText>
+          My account
+        </Text>
+      </View>
+      <View style={{ marginTop: 25 }}>
+        <Text
+          style={{
+            marginBottom: 5,
+            letterSpacing: 0.3,
+            fontWeight: "700",
+            color: theme.colors.secondary,
+          }}
+        >
+          ACCOUNT INFOMATION
+        </Text>
 
         {isLoading ? (
           <View style={{ marginBottom: 10 }}>
@@ -125,18 +129,31 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : (
           <List.Item
+            style={{
+              padding: 0,
+              marginLeft: -7,
+              paddingTop: 10,
+              paddingBottom: 10,
+              backgroundColor: "white",
+            }}
             titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
+              color: "#111827",
+              fontWeight: "700",
+              fontSize: 18,
             }}
             onPress={navigateToChangeEmail}
             title="Email"
             right={() => (
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text
-                  style={{ marginBottom: 2, paddingRight: 5 }}
+                  style={{
+                    marginBottom: 2,
+                    paddingRight: 5,
+                    fontSize: 16,
+                    fontWeight: "600",
+                    color: theme.colors.secondary,
+                  }}
                   type="h3"
-                  color="black"
                 >
                   {data?.email}
                 </Text>
@@ -151,9 +168,17 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : (
           <List.Item
+            style={{
+              padding: 0,
+              marginLeft: -7,
+              backgroundColor: "white",
+
+              paddingBottom: 10,
+            }}
             titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
+              color: "#111827",
+              fontWeight: "700",
+              fontSize: 18,
             }}
             onPress={navigateToEditPassword}
             title="Password"
@@ -169,19 +194,30 @@ const ProfileScreen = ({ navigation }) => {
         ) : (
           <TouchableOpacity onPress={navigateToChangeTimezone}>
             <List.Item
-              style={{ padding: 0, marginLeft: -7 }}
+              style={{
+                padding: 0,
+                marginLeft: -7,
+                backgroundColor: "white",
+
+                paddingBottom: 10,
+              }}
               titleStyle={{
                 color: "#111827",
-                fontWeight: "500",
-                letterSpacing: 0.9,
+                fontWeight: "700",
+                fontSize: 18,
               }}
               title="Timezone"
               right={() => (
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
+                    style={{
+                      marginBottom: 2,
+                      paddingRight: 5,
+                      fontSize: 16,
+                      fontWeight: "600",
+                      color: theme.colors.secondary,
+                    }}
                     type="h3"
-                    color="black"
                   >
                     {Localization.timezone}
                   </Text>
@@ -192,7 +228,18 @@ const ProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
 
-        <View style={{ marginTop: 10 }}>
+        <Text
+          style={{
+            marginTop: 20,
+            letterSpacing: 0.3,
+            fontWeight: "700",
+            color: theme.colors.secondary,
+          }}
+        >
+          APP SETTINGS
+        </Text>
+
+        <View>
           {isLoading ? (
             <View style={{ marginBottom: 10 }}>
               <SkeletonBox height={70} width={"100%"} />
@@ -200,11 +247,15 @@ const ProfileScreen = ({ navigation }) => {
           ) : (
             <TouchableOpacity onPress={toggleAutoTaskModal}>
               <List.Item
-                style={{ padding: 0, marginLeft: -7, marginTop: 15 }}
+                style={{
+                  padding: 0,
+                  marginLeft: -7,
+                  backgroundColor: "white",
+                }}
                 titleStyle={{
                   color: "#111827",
-                  fontWeight: "500",
-                  letterSpacing: 0.9,
+                  fontWeight: "700",
+                  fontSize: 18,
                 }}
                 title="Auto Move Tasks"
                 right={() => (
@@ -222,7 +273,12 @@ const ProfileScreen = ({ navigation }) => {
               <Text
                 color="secondary"
                 type="h4"
-                customStyle={{ marginTop: 15, maxWidth: 240 }}
+                style={{
+                  marginTop: 5,
+                  fontWeight: "500",
+                  maxWidth: "95%",
+                  color: theme.colors.secondary,
+                }}
               >
                 Automatically move all incompleted tasks to “today”.
               </Text>
@@ -230,21 +286,60 @@ const ProfileScreen = ({ navigation }) => {
           )}
         </View>
       </View>
-      <View style={{ flexGrow: 1, marginTop: 50 }}>
+      <View style={{ flexGrow: 1, marginTop: 10 }}>
         <Text
-          type="h4"
-          color="secondary"
-          customStyle={{ marginBottom: 20, letterSpacing: 0.8 }}
+          style={{
+            marginTop: 20,
+            marginBottom: 10,
+            letterSpacing: 0.6,
+            fontWeight: "700",
+            color: theme.colors.secondary,
+          }}
         >
-          APP INFORMATION
+          APP INFOMATION
         </Text>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text style={{ fontSize: 16 }}>App Version No.</Text>
-          <Text style={{ color: "gray" }}>v0.2</Text>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            backgroundColor: "white",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#111827",
+              fontWeight: "700",
+              fontSize: 18,
+            }}
+          >
+            App Version No.
+          </Text>
+          <Text
+            style={{
+              color: theme.colors.secondary,
+              fontSize: 16,
+              fontWeight: "600",
+              color: theme.colors.secondary,
+            }}
+          >
+            v0.2
+          </Text>
         </View>
       </View>
-      <TouchableOpacity onPress={toggleLogoutModal} style={{ flex: 2 }}>
-        <Text type="h3" color="error" customStyle={{ textAlign: "center" }}>
+      <TouchableOpacity
+        onPress={toggleLogoutModal}
+        style={{
+          backgroundColor: "white",
+          marginBottom: 30,
+          padding: 10,
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{ color: theme.colors.error, fontWeight: "600", fontSize: 20 }}
+        >
           Log out
         </Text>
       </TouchableOpacity>
@@ -268,10 +363,7 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: "white",
-    display: "flex",
-    paddingTop: 55,
-    paddingLeft: 30,
-    paddingRight: 30,
+    padding: 30,
   },
   container: {
     display: "flex",
