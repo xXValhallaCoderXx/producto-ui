@@ -124,6 +124,49 @@ const ProfileScreen = ({ navigation }) => {
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={navigateToChangeEmail}
+            title="Email"
+            right={() => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  style={{ marginBottom: 2, paddingRight: 5 }}
+                  type="h3"
+                  color="black"
+                >
+                  {data?.email}
+                </Text>
+                <MaterialIcons size={24} name="keyboard-arrow-right" />
+              </View>
+            )}
+          />
+        )}
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={navigateToEditPassword}
+            title="Password"
+            right={() => (
+              <MaterialIcons size={24} name="keyboard-arrow-right" />
+            )}
+          />
+        )}
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
           <TouchableOpacity onPress={navigateToChangeTimezone}>
             <List.Item
               style={{ padding: 0, marginLeft: -7 }}

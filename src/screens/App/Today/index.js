@@ -48,7 +48,7 @@ const ListScreen = () => {
   const [isAutoCompleteModalOpen, setIsAutoCompleteModalOpen] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-
+  const isToday = useSelector((state) => state.today.isToday);
   const [utcDate, setUtcDate] = useState(new Date());
 
   const {
@@ -272,6 +272,14 @@ const ListScreen = () => {
           isLoading={moveTasksApiResult.isLoading}
           onMoveIncomplete={handleMoveIncompleteTasks}
         />
+        <View style={{ padding: 10, backgroundColor: "white" }}>
+          {tasks?.length > 0 && (
+            <AddItem
+              handleCreateNewTask={handleCreateNewTask}
+              currentDate={utcDate}
+            />
+          )}
+        </View>
         {isLoading || isFetching ? null : (
           <CalendarWidget
             calendarOpen={calendarOpen}
@@ -288,6 +296,7 @@ const ListScreen = () => {
           onConfirm={handleOnConfirmMove}
           isLoading={moveTasksApiResult.isLoading}
         />
+
         <IntroBottomSheet />
       </View>
     </KeyboardDismissView>

@@ -41,7 +41,7 @@ const AddItem = ({ handleCreateNewTask }) => {
   // }
 
   return (
-    <View style={{ alignItems: "flex-start" }}>
+    <View style={{ alignItems: "flex-start", backgroundColor: "white" }}>
       {addTask ? (
         <View>
           <TextInput

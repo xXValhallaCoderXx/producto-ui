@@ -14,7 +14,6 @@ import {
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
-import { CheckBox } from "@rneui/themed";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { useTheme, Text } from "react-native-paper";
@@ -252,7 +251,7 @@ const DraggableListContainer = ({
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      style={{height: "90%"}}
+      style={{maxHeight: "93%"}}
       
     />
   );

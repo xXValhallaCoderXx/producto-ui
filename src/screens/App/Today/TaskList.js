@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { View, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useToast } from "react-native-toast-notifications";
 import DeleteTaskModal from "./DeleteModal";
-import {Text, useTheme} from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
@@ -82,30 +82,21 @@ const TaskList = ({
           />
         </View>
       ) : (
-        <View>
-          <DraggbleList
-            tasks={tasks.filter((task) => {
-              if (!focusMode && !task.focus && !task.completed) {
-                return false;
-              }
-              return task;
-            })}
-            handleOnPressDelete={handleOnPressDelete}
-            utcDate={utcDate}
-            onCheckTask={onCheckTask}
-            onCheckTaskRow={onCheckTaskRow}
-            onToggleFocus={onToggleFocus}
-            keyboardShown={keyboardShown}
-            keyboardHeight={keyboardHeight}
-          />
-        
-         {/* 
-        
-          <AddItem
-            handleCreateNewTask={handleCreateNewTask}
-            currentDate={utcDate}
-          /> */}
-        </View>
+        <DraggbleList
+          tasks={tasks.filter((task) => {
+            if (!focusMode && !task.focus && !task.completed) {
+              return false;
+            }
+            return task;
+          })}
+          handleOnPressDelete={handleOnPressDelete}
+          utcDate={utcDate}
+          onCheckTask={onCheckTask}
+          onCheckTaskRow={onCheckTaskRow}
+          onToggleFocus={onToggleFocus}
+          keyboardShown={keyboardShown}
+          keyboardHeight={keyboardHeight}
+        />
       )}
 
       {/* <DeleteTaskModal

@@ -1,47 +1,52 @@
-import { View } from "react-native";
-import { Button } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
-import { Text } from "../../../components";
-import { useTheme } from "@rneui/themed";
+import { Button, Text, Dialog, Portal, useTheme } from "react-native-paper";
 
 const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   return (
-    <Dialog isVisible={isVisible} onBackdropPress={onCancel}>
-
-    <Text type="h2" color="black">
-        Confirm Delete
-      </Text>
-      <Text
-        type="h3"
-        color="secondary"
-        customStyle={{ marginTop: 15, marginBottom: 20 }}
+    <Portal>
+      <Dialog
+        style={{ backgroundColor: "white", borderRadius: 8 }}
+        visible={isVisible}
+        onDismiss={onCancel}
       >
-        Are you sure you want to delete this task?
-      </Text>
-
-      <Dialog.Actions>
-        <Button
-          onPress={onPress}
-          title="Delete"
-          containerStyle={{ paddingLeft: 25, width: 100 }}
-          titleStyle={{ color: theme.colors.error }}
-          type="clear"
-          disabled={isLoading}
-          loading={isLoading}
-        />
-    
-       <Button
-          title="Cancel"
-          titleStyle={{ color: theme.colors.primary }}
-          onPress={onCancel}
-          type="clear"
-          disabled={isLoading}
-        />
-       
-      </Dialog.Actions>
-
-    </Dialog>
+        <Dialog.Content>
+          <Text
+            variant="titleLarge"
+            style={{ fontWeight: "600" }}
+            color="black"
+          >
+            Confirm Delete
+          </Text>
+          <Text
+            variant="bodyLarge"
+            style={{
+              color: theme.colors.secondary,
+              marginTop: 10,
+              marginBottom: 20,
+            }}
+          >
+            Are you sure you want to delete this task?
+          </Text>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button
+            disabled={isLoading}
+            isLoading={isLoading}
+            style={{ color: theme.colors.error }}
+            onPress={onClickConfirm}
+          >
+            Delete
+          </Button>
+          <Button
+            disabled={isLoading}
+            style={{ color: theme.colors.primary }}
+            onPress={onCancel}
+          >
+            Cancel
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
 

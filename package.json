@@ -19,8 +19,6 @@
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
     "@reduxjs/toolkit": "^1.8.4",
-    "@rneui/base": "^4.0.0-rc.5",
-    "@rneui/themed": "^4.0.0-rc.5",
     "@tanstack/react-query": "^4.0.10",
     "add": "^2.0.6",
     "axios": "^0.27.2",

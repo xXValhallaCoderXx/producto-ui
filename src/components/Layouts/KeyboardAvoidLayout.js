@@ -27,21 +27,10 @@ const KeyboardShiftView = (props) => {
       "keyboardDidHide",
       handleKeyboardDidHide
     );
-    // const willHideSub = Keyboard.addListener(
-    //   "keyboardWillHide",
-    //   _keyboardWillHide
-    // );
-    // const willShowSub = Keyboard.addListener(
-    //   "keyboardWillShow",
-    //   _keyboardWillShow
-    // );
 
-    // cleanup function
     return () => {
       didHideSub.remove();
       didShowSub.remove();
-      //   willHideSub.remove();
-      //   willShowSub.remove();
     };
   }, []);
 
