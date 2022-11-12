@@ -1,6 +1,7 @@
 import { Provider } from "react-redux";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { Platform } from "react-native";
 import { useFonts } from "expo-font";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SplashScreen from "expo-splash-screen";
 import * as NavigationBar from "expo-navigation-bar";
 import { useState, useCallback, useEffect } from "react";
@@ -9,12 +10,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { ToastProvider } from "react-native-toast-notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import RegisterScreen from "./src/screens/Auth/Register";
+
 import store from "./src/config/store";
 import theme from "./src/shared/styles/theme";
 
 import Toast from "./src/components/Toast";
-import { StatusBar } from "expo-status-bar";
 import RootScreens from "./src/screens/Root";
 
 SplashScreen.preventAutoHideAsync();
@@ -51,8 +51,6 @@ export default function App() {
     }
   }, [appIsReady, fontsLoaded]);
 
-  console.log("APP READY: ", appIsReady);
-  console.log("FONT LOADIED:", fontsLoaded);
   if (!appIsReady || !fontsLoaded) {
     return null;
   }
@@ -65,7 +63,7 @@ export default function App() {
         <ToastProvider renderToast={renderToast}>
           <PaperProvider theme={theme}>
             <SafeAreaView style={{ flex: 1 }}>
-        
+              <GestureHandlerRootView style={{ flex: 1 }}>
                 <NavigationContainer>
                   {/* <StatusBar style="white" backgroundColor="white" /> */}
                   <Stack.Navigator
@@ -76,7 +74,7 @@ export default function App() {
                     <Stack.Screen name="Root" component={RootScreens} />
                   </Stack.Navigator>
                 </NavigationContainer>
- 
+              </GestureHandlerRootView>
             </SafeAreaView>
           </PaperProvider>
         </ToastProvider>
