@@ -2,6 +2,7 @@ import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
 const KeyboarDismissView = ({ children }) => {
   const handleOnPress = () => {
+    console.log("LALALA")
     Keyboard.dismiss();
   };
   return (

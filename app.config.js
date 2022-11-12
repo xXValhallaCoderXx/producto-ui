@@ -22,7 +22,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://sad-hands-tap-116-86-1-104.loca.lt",
+      baseUrl: "https://fair-dolls-juggle-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

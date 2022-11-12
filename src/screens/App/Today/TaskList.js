@@ -83,8 +83,7 @@ const TaskList = ({
         </View>
       ) : (
         <View>
-        
-         {/* <DraggbleList
+          <DraggbleList
             tasks={tasks.filter((task) => {
               if (!focusMode && !task.focus && !task.completed) {
                 return false;
@@ -99,6 +98,8 @@ const TaskList = ({
             keyboardShown={keyboardShown}
             keyboardHeight={keyboardHeight}
           />
+        
+         {/* 
         
           <AddItem
             handleCreateNewTask={handleCreateNewTask}

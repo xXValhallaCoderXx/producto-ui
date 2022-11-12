@@ -17,7 +17,7 @@ import MaterialIcons from "react-native-vector-icons/FontAwesome";
 import { CheckBox } from "@rneui/themed";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
-import { useTheme, Text } from "@rneui/themed";
+import { useTheme, Text } from "react-native-paper";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import Material from "react-native-vector-icons/MaterialIcons";
 
@@ -37,7 +37,7 @@ const DraggableListContainer = ({
   keyboardShown,
   keyboardHeight,
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const scrollViewRef = useRef(null);
   const onDragInputRef = useRef(null);

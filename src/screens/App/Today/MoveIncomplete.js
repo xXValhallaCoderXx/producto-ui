@@ -37,6 +37,8 @@ const MoveIncomplete = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    backgroundColor: "white",
+    paddingBottom: 30
   },
 });
 

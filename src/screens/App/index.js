@@ -4,7 +4,7 @@ import { Animated, Easing } from "react-native";
 import ProfileScreen from "./Profile";
 import { TouchableNativeFeedback, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import KeyboardDismissView from "../../components/Layouts/KeyboardDismissView";
+
 import { useEffect } from "react";
 import { Text, useTheme } from "react-native-paper";
 
@@ -21,7 +21,7 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
   const scale = animation.interpolate({ inputRange, outputRange });
 
   const iconName = props.to === "/Root/App/Account" ? "Account" : "Today";
-
+ 
   useEffect(() => {
     if (focused) {
       Animated.sequence([
@@ -61,13 +61,13 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
             <Ionicons
               name={"home-sharp"}
               size={25}
-              // color={focused ? theme?.colors?.primary : theme?.colors.secondary}
+              color={focused ? theme?.colors?.primary : theme?.colors?.secondary}
             />
           ) : (
             <Ionicons
               name="person"
               size={25}
-              // color={focused ? theme.colors.primary : theme.colors.secondary}
+              color={focused ? theme?.colors?.primary : theme.colors?.secondary}
             />
           )}
         </Animated.View>
@@ -75,7 +75,7 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
           style={{
             fontSize: 16,
             marginTop: 2,
-            // color: focused ? theme.colors.primary : theme.colors.secondary,
+            color: focused ? theme?.colors?.primary : theme?.colors?.secondary,
           }}
         >
           {iconName === "Today" ? "Home" : "Account"}
@@ -88,24 +88,21 @@ const buttonNativeFeedback = ({ children, style, ...props }) => {
 export default function App() {
   const { theme } = useTheme();
   return (
-    <KeyboardDismissView>
-
-      <Tab.Navigator
-        screenOptions={({ route }) => ({
-          headerShown: false,
-          // tabBarActiveTintColor: theme.colors.primary,
-          tabBarInactiveTintColor: "gray",
-          tabBarHideOnKeyboard: true,
-          tabBarStyle: {
-            height: 70,
-            paddingBottom: 10,
-          },
-          tabBarButton: buttonNativeFeedback,
-        })}
-      >
-        <Tab.Screen name="Today" component={DashboardScreen} />
-        <Tab.Screen name="Account" component={ProfileScreen} />
-      </Tab.Navigator>
-    </KeyboardDismissView>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarActiveTintColor: theme?.colors?.primary,
+        tabBarInactiveTintColor: "gray",
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          height: 70,
+          paddingBottom: 10,
+        },
+        tabBarButton: buttonNativeFeedback,
+      })}
+    >
+      <Tab.Screen name="Today" component={DashboardScreen} />
+      <Tab.Screen name="Account" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 }

@@ -20,19 +20,19 @@ const ProgressBar = ({ focusMode, progress }) => {
         alignItems: "center",
       }}
     >
-      <View style={{ flex: 0.9 }}>
+      <View style={{ flex: 0.8 }}>
         <PaperProgressBar
           style={{ borderRadius: 8, height: 12 }}
           color={MD3Colors.primary0}
           animatedValue={1}
         />
       </View>
-      <View style={{ flex: 0.1 }}>
+      <View style={{ flex: 0.2 }}>
         <Text
           h5
           style={{
             includeFontPadding: false,
-            textAlign: "center",
+            textAlign: "right", 
             color: theme.colors.primary,
             fontWeight: "700",
           }}

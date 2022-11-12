@@ -33,7 +33,7 @@ import {
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
 import CalendarWidget from "./Calendar";
-// import LayoutView from "../../../components/KeyboardDismissView";
+import KeyboardDismissView from "../../../components/Layouts/KeyboardDismissView";
 import { useToast } from "react-native-toast-notifications";
 import { Button } from "react-native-paper";
 
@@ -228,47 +228,46 @@ const ListScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", padding: 30 }}>
-      <Header
-        clientUtc={utcDate}
-        focusMode={focusMode}
-        onChangeDate={handleOnChangeDate}
-        onPressToday={handleOnPressToday}
-        onPressDate={handleOnPressDate}
-      />
-      <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
-        <ProgressBar focusMode={focusMode} progress={progress} />
+    <KeyboardDismissView>
+      <View style={{flex: 1}}>
+      <View style={{ flex: 1, flexGrow: 1, padding: 30, backgroundColor: "white" }}>
+        <Header
+          clientUtc={utcDate}
+          focusMode={focusMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
+        />
+        <View style={{ height: 20, marginTop: 10, marginBottom: 10 }}>
+          <ProgressBar focusMode={focusMode} progress={progress} />
+        </View>
+        <View>
+          {isLoading || isFetching ? (
+            <SkeletonList />
+          ) : (
+            <TaskList
+              tasks={tasks || []}
+              keyboardShown={keyboardShown}
+              keyboardHeight={keyboardHeight}
+              handleToggleTaskFocus={handleToggleTaskFocus}
+              handleToggleTaskComplete={handleToggleTaskComplete}
+              handleCreateNewTask={handleCreateNewTask}
+              currentTask={currentTask}
+              isLoadingToggle={isLoadingToggle}
+              utcDate={utcDate}
+            />
+          )}
+        </View>
+   
       </View>
-      <View>
-        {isLoading || isFetching ? (
-          <SkeletonList />
-        ) : (
-          <TaskList
-            tasks={tasks || []}
-            keyboardShown={keyboardShown}
-            keyboardHeight={keyboardHeight}
-            handleToggleTaskFocus={handleToggleTaskFocus}
-            handleToggleTaskComplete={handleToggleTaskComplete}
-            handleCreateNewTask={handleCreateNewTask}
-            currentTask={currentTask}
-            isLoadingToggle={isLoadingToggle}
-            utcDate={utcDate}
-          />
-        )}
+      <MoveIncomplete
+          tasks={tasks}
+          currentDate={utcDate}
+          isLoading={moveTasksApiResult.isLoading}
+          onMoveIncomplete={handleMoveIncompleteTasks}
+        />
       </View>
-      {/*
-      <TaskList
-        tasks={tasks || []}
-        keyboardShown={keyboardShown}
-        keyboardHeight={keyboardHeight}
-        handleToggleTaskFocus={handleToggleTaskFocus}
-        handleToggleTaskComplete={handleToggleTaskComplete}
-        handleCreateNewTask={handleCreateNewTask}
-        currentTask={currentTask}
-        isLoadingToggle={isLoadingToggle}
-        utcDate={utcDate}
-      /> */}
-    </View>
+    </KeyboardDismissView>
   );
 };
 
@@ -318,12 +317,12 @@ export default ListScreen;
 //         )}
 //       </View>
 //       <View>
-//         <MoveIncomplete
-//           tasks={tasks}
-//           currentDate={utcDate}
-//           isLoading={moveTasksApiResult.isLoading}
-//           onMoveIncomplete={handleMoveIncompleteTasks}
-//         />
+// <MoveIncomplete
+//   tasks={tasks}
+//   currentDate={utcDate}
+//   isLoading={moveTasksApiResult.isLoading}
+//   onMoveIncomplete={handleMoveIncompleteTasks}
+// />
 //       </View>
 //     </View>
 {
