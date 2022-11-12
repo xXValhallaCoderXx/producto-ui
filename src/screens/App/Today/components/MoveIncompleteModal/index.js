@@ -71,17 +71,19 @@ const AutoTaskModal = ({
           >
             Select incomplete tasks that you want to move to Today.
           </Text>
-          <ScrollView contentContainerStyle={{maxHeight: 260}}>
+          <ScrollView contentContainerStyle={{ maxHeight: 260 }}>
             {filteredDates?.map((item, index) => {
               return (
                 <List.Item
                   key={index}
                   title={item.title}
+                  onPress={onClickCheckbox(item)}
                   style={{ borderBottomWidth: 1, borderBottomColor: "#d3d3d3" }}
                   left={(props) => (
                     <TouchableOpacity
+                      disabled
                       style={{ justifyContent: "center", marginRight: 10 }}
-                      onPress={onClickCheckbox(item)}
+                      // onPress={onClickCheckbox(item)}
                     >
                       <Image
                         style={{ maxHeight: 20, maxWidth: 20 }}

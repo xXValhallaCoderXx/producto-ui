@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-import { View, Animated, Platform } from "react-native";
+import { View, Animated, Platform, KeyboardAvoidingView } from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -219,29 +219,24 @@ const ListScreen = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardDismissView>
+        <View style={{ flex: 1 }}>
+          <KeyboardAvoidingView
+            style={{ flex: 1, padding: 30, backgroundColor: "white" }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+          >
+            <Header
+              clientUtc={utcDate}
+              focusMode={focusMode}
+              onChangeDate={handleOnChangeDate}
+              onPressToday={handleOnPressToday}
+              onPressDate={handleOnPressDate}
+            />
+            <View style={{ height: 20, marginTop: 10, marginBottom: 20 }}>
+              <ProgressBar focusMode={focusMode} progress={progress} />
+            </View>
 
-  
-    <KeyboardDismissView>
-      <View style={{ flex: 1 }}>
-        <View
-          style={{
-            flexGrow: 1,
-            padding: 30,
-            backgroundColor: "white",
-          }}
-        >
-          <Header
-            clientUtc={utcDate}
-            focusMode={focusMode}
-            onChangeDate={handleOnChangeDate}
-            onPressToday={handleOnPressToday}
-            onPressDate={handleOnPressDate}
-          />
-          <View style={{ height: 20, marginTop: 10, marginBottom: 20 }}>
-            <ProgressBar focusMode={focusMode} progress={progress} />
-          </View>
-       
             {isLoading || isFetching ? (
               <SkeletonList />
             ) : (
@@ -257,38 +252,36 @@ const ListScreen = () => {
                   isLoadingToggle={isLoadingToggle}
                   utcDate={utcDate}
                 />
-              
               </View>
             )}
-        
-        </View>
-        <MoveIncomplete
-          tasks={tasks}
-          currentDate={utcDate}
-          isLoading={moveTasksApiResult.isLoading}
-          onMoveIncomplete={handleMoveIncompleteTasks}
-        />
-
-        {isLoading || isFetching ? null : (
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
+          </KeyboardAvoidingView>
+          <MoveIncomplete
+            tasks={tasks}
             currentDate={utcDate}
-            handleOnSelectDay={handleOnSelectDay}
+            isLoading={moveTasksApiResult.isLoading}
+            onMoveIncomplete={handleMoveIncompleteTasks}
           />
-        )}
-        <MoveIncompletModal
-          isVisible={isAutoCompleteModalOpen}
-          onCancel={handleCloseModal}
-          data={tasks}
-          onConfirm={handleOnConfirmMove}
-          isLoading={moveTasksApiResult.isLoading}
-        />
 
-        {/* <IntroBottomSheet /> */}
-      </View>
-    </KeyboardDismissView>
+          {isLoading || isFetching ? null : (
+            <CalendarWidget
+              calendarOpen={calendarOpen}
+              toggleCalendar={handleToggleCalendar}
+              incompleteTasks={incompleteTasks}
+              currentDate={utcDate}
+              handleOnSelectDay={handleOnSelectDay}
+            />
+          )}
+          <MoveIncompletModal
+            isVisible={isAutoCompleteModalOpen}
+            onCancel={handleCloseModal}
+            data={tasks}
+            onConfirm={handleOnConfirmMove}
+            isLoading={moveTasksApiResult.isLoading}
+          />
+
+          {/* <IntroBottomSheet /> */}
+        </View>
+      </KeyboardDismissView>
     </GestureHandlerRootView>
   );
 };

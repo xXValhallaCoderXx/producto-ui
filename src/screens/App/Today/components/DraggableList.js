@@ -230,7 +230,7 @@ const DraggableListContainer = ({
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      
+      style={{maxHeight: "85%"}}
       
     />
   );

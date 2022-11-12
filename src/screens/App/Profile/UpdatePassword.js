@@ -4,7 +4,7 @@ import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
 import { useTheme } from "react-native-paper";
-import { View } from "react-native";
+import { View, ScrollView } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
 import ProductoInput from "../../../components/Input";

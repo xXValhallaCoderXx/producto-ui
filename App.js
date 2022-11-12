@@ -65,10 +65,7 @@ export default function App() {
         <ToastProvider renderToast={renderToast}>
           <PaperProvider theme={theme}>
             <SafeAreaView style={{ flex: 1 }}>
-              <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-              >
+        
                 <NavigationContainer>
                   {/* <StatusBar style="white" backgroundColor="white" /> */}
                   <Stack.Navigator
@@ -79,7 +76,7 @@ export default function App() {
                     <Stack.Screen name="Root" component={RootScreens} />
                   </Stack.Navigator>
                 </NavigationContainer>
-              </KeyboardAvoidingView>
+ 
             </SafeAreaView>
           </PaperProvider>
         </ToastProvider>
