@@ -219,6 +219,9 @@ const ListScreen = () => {
   };
 
   return (
+    <GestureHandlerRootView style={{flex: 1}}>
+
+  
     <KeyboardDismissView>
       <View style={{ flex: 1 }}>
         <View
@@ -242,7 +245,7 @@ const ListScreen = () => {
             {isLoading || isFetching ? (
               <SkeletonList />
             ) : (
-              <>
+              <View>
                 <TaskList
                   tasks={tasks || []}
                   keyboardShown={keyboardShown}
@@ -255,7 +258,7 @@ const ListScreen = () => {
                   utcDate={utcDate}
                 />
               
-              </>
+              </View>
             )}
         
         </View>
@@ -286,6 +289,7 @@ const ListScreen = () => {
         {/* <IntroBottomSheet /> */}
       </View>
     </KeyboardDismissView>
+    </GestureHandlerRootView>
   );
 };
 

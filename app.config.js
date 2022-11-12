@@ -21,10 +21,10 @@ module.exports = ({ config }) => {
       url: "https://u.expo.dev/91edd9b2-7766-4ed5-88e8-8821573af2f6",
     },
     extra: {
-      environment: "development",
-      baseUrl: "http://10.0.2.2:3000",
-      // environment: "production",
-      // baseUrl: "https://producto-dev.herokuapp.com",
+      // environment: "development",
+      // baseUrl: "http://10.0.2.2:3000",
+      environment: "production",
+      baseUrl: "https://producto-dev.herokuapp.com",
     },
   };
 };

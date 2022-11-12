@@ -6491,6 +6491,11 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
 
+react-native-animated-progress@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-animated-progress/-/react-native-animated-progress-1.0.2.tgz#3c5c90daf9624abfeb5bf5b9950c9ef3913d1063"
+  integrity sha512-8EQSHTjT7QQY+u/Gknc1X4FxlV/8gRevi2wAlMIUQBf3fq13z++8WIGPPwwKvjsVcQJMm4cadTwn3Ptn5fiUJw==
+
 react-native-calendars@^1.1288.2:
   version "1.1289.0"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1289.0.tgz#f3c2687053aeed51d95738afc5e797c3a6c862e0"

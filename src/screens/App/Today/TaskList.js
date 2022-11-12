@@ -98,7 +98,7 @@ const TaskList = ({
             keyboardShown={keyboardShown}
             keyboardHeight={keyboardHeight}
           />
-          <View>
+          <View style={{marginTop: 20}}>
             <AddItem
               handleCreateNewTask={handleCreateNewTask}
               currentDate={utcDate}

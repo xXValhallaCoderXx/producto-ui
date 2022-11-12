@@ -101,7 +101,7 @@ const DraggableListContainer = ({
     } else {
       Keyboard.dismiss();
     }
-   
+    // onCheckTaskRow(_item);
   };
 
   const renderItem = ({ item, drag, isActive }) => {
@@ -167,26 +167,9 @@ const DraggableListContainer = ({
     return (
       <OpacityDecorator>
         <TouchableWithoutFeedback
-          // onLongPress={drag}
           onPress={handleOnPress(item)}
           onLongPress={handleOnLongPress(item)}
           disabled={isActive}
-          // onPress={() => {
-          //   countRef++;
-          //   if (countRef == 2) {
-          //     clearTimeout(countTimer.current);
-          //     countRef = 0;
-          // Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          // setEditTask(item.id);
-          // setTaskValue(item.title);
-          // dispatch(toggleEditMode(true));
-          //   } else {
-          //     countTimer.current = setTimeout(() => {
-          //       onCheckTaskRow(item);
-          //       countRef = 0;
-          //     }, 250);
-          //   }
-          // }}
           key={item.id}
         >
           <View style={styles.listRow}>
@@ -221,16 +204,10 @@ const DraggableListContainer = ({
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <TouchableOpacity onPress={onCheckTask(item)}>
                 <Image
-                  // style={styles.tinyLogo}
                   style={{ maxHeight: 20, maxWidth: 20 }}
                   source={item.completed ? Checked : Unchecked}
                 />
               </TouchableOpacity>
-              {/* <CheckBox
-              checked={item.completed}
-              containerStyle={{ padding: 0, paddingRight: 3 }}
-             
-            /> */}
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -253,7 +230,7 @@ const DraggableListContainer = ({
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      style={{maxHeight: "85%"}}
+      
       
     />
   );
@@ -275,8 +252,6 @@ const styles = StyleSheet.create({
   listRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // paddingTop: 15,
-    // paddingBottom: 15,
     height: 65,
     borderBottomWidth: 0.5,
     borderBottomColor: "#c6c6c6",

@@ -138,7 +138,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
             titleStyle={{
               color: "#111827",
-              fontWeight: "700",
+              fontWeight: "600",
               fontSize: 18,
             }}
             onPress={navigateToChangeEmail}
@@ -177,7 +177,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
             titleStyle={{
               color: "#111827",
-              fontWeight: "700",
+              fontWeight: "600",
               fontSize: 18,
             }}
             onPress={navigateToEditPassword}
@@ -203,7 +203,7 @@ const ProfileScreen = ({ navigation }) => {
               }}
               titleStyle={{
                 color: "#111827",
-                fontWeight: "700",
+                fontWeight: "600",
                 fontSize: 18,
               }}
               title="Timezone"
@@ -254,7 +254,7 @@ const ProfileScreen = ({ navigation }) => {
                 }}
                 titleStyle={{
                   color: "#111827",
-                  fontWeight: "700",
+                  fontWeight: "600",
                   fontSize: 18,
                 }}
                 title="Auto Move Tasks"
@@ -310,7 +310,7 @@ const ProfileScreen = ({ navigation }) => {
             style={{
               fontSize: 16,
               color: "#111827",
-              fontWeight: "700",
+              fontWeight: "600",
               fontSize: 18,
             }}
           >
