@@ -8,7 +8,7 @@ import {
 
 const ProgressBar = ({ focusMode, progress }) => {
   const theme = useTheme();
-
+  console.log("PROGRESS: ", progress);
   if (!focusMode) {
     return null;
   }
@@ -24,7 +24,7 @@ const ProgressBar = ({ focusMode, progress }) => {
         <PaperProgressBar
           style={{ borderRadius: 8, height: 12 }}
           color={MD3Colors.primary0}
-          animatedValue={1}
+          animatedValue={progress}
         />
       </View>
       <View style={{ flex: 0.2 }}>

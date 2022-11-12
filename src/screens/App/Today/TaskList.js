@@ -34,7 +34,7 @@ const TaskList = ({
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
-  console.log("HMMMM: ", keyboardShown);
+
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
       setEditTask(null);

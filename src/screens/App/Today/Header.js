@@ -89,7 +89,6 @@ const TodayHeader = ({
                     style={{
                       color: theme.colors.primary,
                       letterSpacing: 0.5,
-
                       fontWeight: "700",
                     }}
                   >
