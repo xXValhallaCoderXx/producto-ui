@@ -219,8 +219,8 @@ const ListScreen = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardDismissView>
+    <View style={{ flex: 1 }}>
+      {/* <KeyboardDismissView> */}
         <View style={{ flex: 1 }}>
           <KeyboardAvoidingView
             style={{ flex: 1, padding: 30, backgroundColor: "white" }}
@@ -289,8 +289,8 @@ const ListScreen = () => {
 
           {/* <IntroBottomSheet /> */}
         </View>
-      </KeyboardDismissView>
-    </GestureHandlerRootView>
+      {/* </KeyboardDismissView> */}
+    </View>
   );
 };
 

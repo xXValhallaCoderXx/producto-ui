@@ -12,7 +12,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions
+  Dimensions,
 } from "react-native";
 import * as Haptics from "expo-haptics";
 import MaterialIcons from "react-native-vector-icons/FontAwesome";
@@ -50,9 +50,9 @@ const DraggableListContainer = ({
   const focusMode = useSelector((state) => state.today.focusMode);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
-  const windowHeight = Dimensions.get('window').height;
+  const windowHeight = Dimensions.get("window").height;
   const isToday = useSelector((state) => state.today.isToday);
-  console.log("WINDOW HEIGHT:" , keyboardHeight);
+  console.log("WINDOW HEIGHT:", keyboardHeight);
   // useEffect(() => {
   //   scrollViewRef.current?.scrollToEnd();
   //   if (!keyboardShown) {
@@ -91,23 +91,20 @@ const DraggableListContainer = ({
     setTaskValue(_value);
   };
 
-  const handleOnLongPress = (_item) => () => {
+  const handleOnLongPress = (_item, index) => (e) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    scrollViewRef.current.scrollToIndex({ animated: true, index });
     setEditTask(_item.id);
     setTaskValue(_item.title);
     dispatch(toggleEditMode(true));
   };
 
   const handleOnPress = (_item) => () => {
-    if(!keyboardShown){
-      onCheckTaskRow(_item);
-    } else {
-      Keyboard.dismiss();
-    }
-    // onCheckTaskRow(_item);
+    onCheckTaskRow(_item);
   };
 
-  const renderItem = ({ item, drag, isActive }) => {
+  const renderItem = ({ item, drag, isActive, index }) => {
+    console.log("INDEX ", index);
     if (item && item.id === editTask) {
       return (
         <OpacityDecorator>
@@ -171,7 +168,7 @@ const DraggableListContainer = ({
       <OpacityDecorator>
         <TouchableWithoutFeedback
           onPress={handleOnPress(item)}
-          onLongPress={handleOnLongPress(item)}
+          onLongPress={handleOnLongPress(item, index)}
           disabled={isActive}
           key={item.id}
         >
@@ -233,8 +230,13 @@ const DraggableListContainer = ({
       keyboardShouldPersistTaps="always"
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      style={{maxHeight: keyboardShown ?  (windowHeight * .25) : isToday ? (windowHeight * .55) : (windowHeight * .45)}}
-      
+      style={{
+        maxHeight: keyboardShown
+          ? windowHeight * 0.35
+          : isToday
+          ? windowHeight * 0.55
+          : windowHeight * 0.45,
+      }}
     />
   );
 };
