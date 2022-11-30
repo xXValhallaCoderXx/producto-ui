@@ -12,7 +12,7 @@ import { useGetProfileQuery } from "../../api/user-api";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-  const x = useGetProfileQuery();
+  useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
@@ -51,8 +51,7 @@ const RootScreen = ({ navigation }) => {
     fadeAnimation2.start();
     // prepare();
   }, []);
-  console.log("INIT: ", init);
-  console.log("PLATFORm: ", Platform.OS);
+
   if (!init) {
     return (
       <Animated.View
@@ -75,15 +74,6 @@ const RootScreen = ({ navigation }) => {
     );
   }
 
-  // return (
-  //   <Stack.Navigator
-  //     screenOptions={() => ({
-  //       headerShown: false,
-  //     })}
-  //   >
-  //     <Stack.Screen name="Auth" component={AuthScreens} />
-  //   </Stack.Navigator>
-  // );
   return init && isAuthenticated ? (
     <Stack.Navigator
       screenOptions={() => ({

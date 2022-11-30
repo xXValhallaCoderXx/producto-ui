@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
-  NestableScrollContainer,
-  NestableDraggableFlatList,
 } from "react-native-draggable-flatlist";
 import {
   View,

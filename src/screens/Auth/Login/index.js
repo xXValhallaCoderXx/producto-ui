@@ -185,7 +185,7 @@ const LoginScreen = ({ navigation }) => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          marginBottom: -40
+          marginBottom: -40,
         }}
       >
         <Image

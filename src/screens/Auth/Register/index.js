@@ -3,11 +3,11 @@ import { useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { SafeAreaView } from "react-native";
 import * as SecureStore from "expo-secure-store";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from "react-native-reanimated";
+// import Animated, {
+//   useSharedValue,
+//   useAnimatedStyle,
+//   withSpring,
+// } from "react-native-reanimated";
 import { useRegisterMutation } from "../../../api/auth-api";
 import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
@@ -36,33 +36,33 @@ const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const toast = useToast();
   const [registerApi, registerApiResult] = useRegisterMutation();
-  const randomNumber = useSharedValue(60);
-  const animXPos = useSharedValue(20);
-  const { keyboardShown, keyboardHeight } = useKeyboard();
+  // const randomNumber = useSharedValue(60);
+  // const animXPos = useSharedValue(20);
+  // const { keyboardShown, keyboardHeight } = useKeyboard();
 
   const [secretMap, setSecretMap] = useState({
     password: true,
     confirmPassword: true,
   });
 
-  const style = useAnimatedStyle(() => {
-    return { width: randomNumber.value * 4, height: randomNumber.value };
-  });
-  const animatedYPos = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: animXPos.value }],
-    };
-  });
-  console.log("SHOWN: ", keyboardShown)
-  useEffect(() => {
-    if (keyboardShown) {
-      randomNumber.value = withSpring(50, { mass: 0.5 });
-      animXPos.value = withSpring(-60, { mass: 0.5 });
-    } else {
-      randomNumber.value = withSpring(-10, { mass: 0.5 });
-      animXPos.value = withSpring(20, { mass: 0.5 });
-    }
-  }, [keyboardShown]);
+  // const style = useAnimatedStyle(() => {
+  //   return { width: randomNumber.value * 4, height: randomNumber.value };
+  // });
+  // const animatedYPos = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [{ translateY: animXPos.value }],
+  //   };
+  // });
+  // console.log("SHOWN: ", keyboardShown)
+  // useEffect(() => {
+  //   if (keyboardShown) {
+  //     randomNumber.value = withSpring(50, { mass: 0.5 });
+  //     animXPos.value = withSpring(-60, { mass: 0.5 });
+  //   } else {
+  //     randomNumber.value = withSpring(-10, { mass: 0.5 });
+  //     animXPos.value = withSpring(20, { mass: 0.5 });
+  //   }
+  // }, [keyboardShown]);
 
   const formik = useFormik({
     initialValues: {

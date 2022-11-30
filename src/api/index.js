@@ -48,7 +48,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
       const refreshToken = await SecureStore.getItemAsync(
         REFRESH_JWT_KEY_STORE
       );
-      console.log("API MIDDLEWARE - 401");
       if (refreshToken) {
         try {
           const res = await refetchBaseQuery(
