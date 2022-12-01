@@ -9,12 +9,14 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
+import { useTheme } from "react-native-paper";
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
 import { Text } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { toggleEditMode } from "../../../../shared/slice/global-slice";
+import { useToggleTaskFocusMutation } from "../../../../api/tasks-api";
 import DraggableFlatList, {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
@@ -31,21 +33,22 @@ export default function App({
   utcDate,
 }) {
   const scrollViewRef = useRef(null);
+  const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
   const dispatch = useDispatch();
   const editMode = useSelector((state) => state.global.editMode);
+  const [toggleTask, toggleTaskApi] = useToggleTaskFocusMutation();
 
   const handleOnLongPress = (_item, index) => (e) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     scrollViewRef.current.scrollToIndex({ animated: true, index });
     setEditTask(_item.id);
-    dispatch(toggleEditMode({editMode: _item.id}))
+    dispatch(toggleEditMode({ editMode: _item.id }));
     setTaskValue(_item.title);
     // dispatch(toggleEditMode(true));
   };
-  console.log("EDIT MODE: ", editMode);
-  console.log("Edit Task", editTask)
+
   const handleOnChange = (_value) => {
     setTaskValue(_value);
   };
@@ -62,11 +65,19 @@ export default function App({
 
   const handleOnBlur = async () => {
     setEditTask(null);
-    dispatch(toggleEditMode({editMode: null}))
+    dispatch(toggleEditMode({ editMode: null }));
     setTaskValue("");
     await updateTaskApi({
       id: editTask,
       title: value,
+      date: format(utcDate, "yyyy-MM-dd"),
+    });
+  };
+
+  const onToggleFocus = (item) => async (event) => {
+    await toggleTask({
+      id: item.id,
+      focus: !item.focus,
       date: format(utcDate, "yyyy-MM-dd"),
     });
   };
@@ -145,7 +156,7 @@ export default function App({
                 alignItems: "center",
               }}
             >
-              {focusMode && currentDate === todayDate && (
+              {focusMode && (
                 <Ionicons
                   style={{
                     fontSize: 25,

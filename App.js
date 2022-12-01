@@ -1,5 +1,5 @@
 import { Provider } from "react-redux";
-import { Platform } from "react-native";
+import { Platform, KeyboardAvoidingView } from "react-native";
 import { useFonts } from "expo-font";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SplashScreen from "expo-splash-screen";
@@ -59,26 +59,22 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Provider store={store}>
-        <ToastProvider renderToast={renderToast}>
-          <PaperProvider theme={theme}>
-            <SafeAreaView style={{ flex: 1 }}>
-              <GestureHandlerRootView style={{ flex: 1 }}>
-                <NavigationContainer>
-                  {/* <StatusBar style="white" backgroundColor="white" /> */}
-                  <Stack.Navigator
-                    screenOptions={() => ({
-                      headerShown: false,
-                    })}
-                  >
-                    <Stack.Screen name="Root" component={RootScreens} />
-                  </Stack.Navigator>
-                </NavigationContainer>
-              </GestureHandlerRootView>
-            </SafeAreaView>
-          </PaperProvider>
-        </ToastProvider>
-      </Provider>
+      <PaperProvider theme={theme}>
+        <Provider store={store}>
+          <ToastProvider renderToast={renderToast}>
+            <NavigationContainer>
+              <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1, backgroundColor: "white" }}
+                >
+                  <RootScreens />
+                </KeyboardAvoidingView>
+              </SafeAreaView>
+            </NavigationContainer>
+          </ToastProvider>
+        </Provider>
+      </PaperProvider>
     </SafeAreaProvider>
   );
 }

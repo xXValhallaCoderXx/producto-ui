@@ -216,8 +216,9 @@ const HomeScreen = () => {
                 updateTaskApi={updateTaskApi}
                 handleDelete={handleDeleteTask}
                 toggleComplete={toggleComplete}
+                focusMode={focusMode}
                 tasks={data.filter((task) => {
-                  if (!focusMode && !task.focus && !task.completed) {
+                  if (!focusMode && !task.focus) {
                     return false;
                   }
                   return task;

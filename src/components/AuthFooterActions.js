@@ -24,7 +24,7 @@ const AuthFooterActions = ({
           justifyContent: "space-between",
         }}
       >
-        <TextButton onPress={handleOnPressSecondary} disabled={disabled} loading={loading}>
+        <TextButton onPress={handleOnPressSecondary} disabled={disabled}>
           {secondaryText}
         </TextButton>
         <ContainedButton loading={loading} onPress={handleOnPressPrimary} disabled={disabled}>

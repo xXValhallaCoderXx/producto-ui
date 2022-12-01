@@ -67,7 +67,6 @@ const CalendarWidget = ({
         },
       },
     };
-    console.log("PARSED DATA: ", parsedData);
     setParsedIncomplete(parsedData);
   }, [incompleteTasks, currentDate]);
   // console.log("PARSED: ", parsedIncomplete);
