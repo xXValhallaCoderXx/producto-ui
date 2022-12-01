@@ -162,7 +162,7 @@ const RegisterScreen = ({ navigation }) => {
       <ScrollView contentContainerStyle={{alignItems: "center"}} style={{  marginTop: 30, flexGrow: 1 }}>
         <Input
           label="E-mail "
-          value={""}
+          value={formik.values.email}
           placeholder="Enter an e-mail to register"
           style={{
             width: "85%",
@@ -172,7 +172,7 @@ const RegisterScreen = ({ navigation }) => {
             Boolean(formik.touched["email"] && formik?.errors?.email) ?? false
           }
           keyboardType="email-address"
-          // onChange={handleOnChangeEmail}
+          onChange={formik.handleChange("email")}
         />
         <View style={{ height: 25, width: "85%", marginBottom: 10 }}>
           <Text
@@ -187,7 +187,7 @@ const RegisterScreen = ({ navigation }) => {
         </View>
         <Input
           label="Password"
-          value={""}
+          value={formik.values.password}
           placeholder="Enter password"
           style={{
             width: "85%",
@@ -196,8 +196,15 @@ const RegisterScreen = ({ navigation }) => {
           error={
             Boolean(formik.touched["password"] && formik?.errors?.password) ?? false
           }
-
-          // onChange={handleOnChangeEmail}
+          secureTextEntry={secretMap["password"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("password")}
+              icon={secretMap["password"] ? "eye-off" : "eye"}
+            />
+          }
+          onChange={formik.handleChange("password")}
         />
         <View style={{ height: 25, width: "85%", marginBottom: 10}}>
           <Text
@@ -212,7 +219,7 @@ const RegisterScreen = ({ navigation }) => {
         </View>
         <Input
           label="Confirm password"
-          value={""}
+          value={formik.values.confirmPassword}
           placeholder="Confirm your new password"
           style={{
             width: "85%",
@@ -221,8 +228,15 @@ const RegisterScreen = ({ navigation }) => {
           error={
             Boolean(formik.touched["confirmPassword"] && formik?.errors?.confirmPassword) ?? false
           }
-
-          // onChange={handleOnChangeEmail}
+          secureTextEntry={secretMap["confirmPassword"]}
+          right={
+            <TextInput.Icon
+              style={{ paddingTop: 8 }}
+              onPress={handlePassToggle("confirmPassword")}
+              icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+            />
+          }
+          onChange={formik.handleChange("confirmPassword")}
         />
         <View style={{ height: 25, width: "85%", marginBottom: 15 }}>
           <Text

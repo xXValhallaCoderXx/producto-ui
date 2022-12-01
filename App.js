@@ -11,11 +11,11 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
-import store from "./src/config/store";
+import store from "./src/shared/config/store";
 import theme from "./src/shared/styles/theme";
 
 import Toast from "./src/components/Toast";
-import RootScreens from "./src/screens/Root";
+import RootScreens from "./src/screens/RootScreen";
 
 SplashScreen.preventAutoHideAsync();
 
