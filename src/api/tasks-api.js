@@ -34,7 +34,7 @@ const taskApi = api.injectEndpoints({
         if (date)
           return {
             url: `/task/incomplete-detail`,
-            params: { ...(date && date) },
+            params: { ...(date && {date}) },
           };
       },
       providesTags: ["IncompleteTasks"],

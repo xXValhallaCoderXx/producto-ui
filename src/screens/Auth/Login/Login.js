@@ -279,7 +279,7 @@ const LoginScreen = ({ navigation }) => {
       <AuthFooterActions
         handleOnPressPrimary={handleOnPressPrimary}
         handleOnPressSecondary={handleOnPressSecondary}
-        secondaryText={step === 1 ? "Create Account" : "Back to email"}
+        secondaryText={step === 1 ? "Create Account" : "Change e-mail"}
         primaryText={step === 1 ? "Next" : "Submit"}
         step={step}
         isLoading={verifyResult.isFetching || loginApiResult.isLoading}
