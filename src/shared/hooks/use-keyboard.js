@@ -1,57 +1,34 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard } from "react-native";
 
-export function useKeyboard() {
-  const [shown, setShown] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+export default (config = {}) => {
+  const { useWillShow = false, useWillHide = false } = config;
+  const [visible, setVisible] = useState(false);
+  const showEvent = useWillShow ? "keyboardWillShow" : "keyboardDidShow";
+  const hideEvent = useWillHide ? "keyboardWillHide" : "keyboardDidHide";
 
-  // const _keyboardDidShow = (e) => {
-  //   setShown(true);
-  // };
-  // const _keyboardDidHide = (e) => {
-  //   setShown(false);
-  //   setKeyboardHeight(0);
-  // };
-
-  const _keyboardWillHide = (e) => {
-    setShown(false);
-    setKeyboardHeight(0);
-  };
-
-  const _keyboardWillShow = (e) => {
-    setShown(true);
-    setKeyboardHeight(e.endCoordinates.height);
-  };
+  function dismiss() {
+    Keyboard.dismiss();
+    setVisible(false);
+  }
 
   useEffect(() => {
-    // const didShowSub = Keyboard.addListener(
-    //   "keyboardDidShow",
-    //   _keyboardDidShow
-    // );
-    // const didHideSub = Keyboard.addListener(
-    //   "keyboardDidHide",
-    //   _keyboardDidHide
-    // );
-    const willHideSub = Keyboard.addListener(
-      "keyboardDidHide",
-      _keyboardWillHide
-    );
-    const willShowSub = Keyboard.addListener(
-      "keyboardDidShow",
-      _keyboardWillShow
-    );
+    function onKeyboardShow() {
+      setVisible(true);
+    }
 
-    // cleanup function
+    function onKeyboardHide() {
+      setVisible(false);
+    }
+
+    const showSubscription = Keyboard.addListener(showEvent, onKeyboardShow);
+    const hideSubscription = Keyboard.addListener(hideEvent, onKeyboardHide);
+
     return () => {
-      // didHideSub.remove();
-      // didShowSub.remove();
-      willHideSub.remove();
-      willShowSub.remove();
+      showSubscription.remove();
+      hideSubscription.remove();
     };
-  }, []);
+  }, [useWillShow, useWillHide]);
 
-  return {
-    keyboardShown: shown,
-    keyboardHeight,
-  };
-}
+  return [visible, dismiss];
+};
