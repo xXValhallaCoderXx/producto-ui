@@ -230,7 +230,7 @@ const HomeScreen = () => {
               style={{
                 flex: 2,
                 justifyContent: "flex-end",
-                paddingTop: 10,
+                paddingTop: 25,
                 paddingBottom: 5,
               }}
             >
