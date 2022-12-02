@@ -1,58 +1,34 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard } from "react-native";
 
-const emptyCoordinates = Object.freeze({
-  screenX: 0,
-  screenY: 0,
-  width: 0,
-  height: 0,
-});
-const initialValue = {
-  start: emptyCoordinates,
-  end: emptyCoordinates,
-};
+export default (config = {}) => {
+  const { useWillShow = false, useWillHide = false } = config;
+  const [visible, setVisible] = useState(false);
+  const showEvent = useWillShow ? "keyboardWillShow" : "keyboardDidShow";
+  const hideEvent = useWillHide ? "keyboardWillHide" : "keyboardDidHide";
 
-export function useKeyboard() {
-  const [shown, setShown] = useState(false);
-  const [coordinates, setCoordinates] = useState(initialValue);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-
-  const handleKeyboardWillShow = (e) => {
-    setCoordinates({ start: e.startCoordinates, end: e.endCoordinates });
-  };
-  const handleKeyboardDidShow = (e) => {
-    setShown(true);
-    setCoordinates({ start: e.startCoordinates, end: e.endCoordinates });
-    setKeyboardHeight(e.endCoordinates.height);
-  };
-  const handleKeyboardWillHide = (e) => {
-    setCoordinates({ start: e.startCoordinates, end: e.endCoordinates });
-  };
-  const handleKeyboardDidHide = (e) => {
-    setShown(false);
-    if (e) {
-      setCoordinates({ start: e.startCoordinates, end: e.endCoordinates });
-    } else {
-      setCoordinates(initialValue);
-      setKeyboardHeight(0);
-    }
-  };
+  function dismiss() {
+    Keyboard.dismiss();
+    setVisible(false);
+  }
 
   useEffect(() => {
-    const subscriptions = [
-      Keyboard.addListener("keyboardWillShow", handleKeyboardWillShow),
-      Keyboard.addListener("keyboardDidShow", handleKeyboardDidShow),
-      Keyboard.addListener("keyboardWillHide", handleKeyboardWillHide),
-      Keyboard.addListener("keyboardDidHide", handleKeyboardDidHide),
-    ];
+    function onKeyboardShow() {
+      setVisible(true);
+    }
+
+    function onKeyboardHide() {
+      setVisible(false);
+    }
+
+    const showSubscription = Keyboard.addListener(showEvent, onKeyboardShow);
+    const hideSubscription = Keyboard.addListener(hideEvent, onKeyboardHide);
 
     return () => {
-      subscriptions.forEach((subscription) => subscription.remove());
+      showSubscription.remove();
+      hideSubscription.remove();
     };
-  }, []);
-  return {
-    keyboardShown: shown,
-    coordinates,
-    keyboardHeight,
-  };
-}
+  }, [useWillShow, useWillHide]);
+
+  return [visible, dismiss];
+};

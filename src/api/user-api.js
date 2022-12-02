@@ -19,8 +19,8 @@ const userApi = api.injectEndpoints({
       },
       async onQueryStarted({ ...prefs }, { dispatch, queryFulfilled }) {
         const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getProfile", { }, (draft) => {
-            draft.prefs.autoMove = !draft.prefs.autoMove
+          api.util.updateQueryData("getProfile", {}, (draft) => {
+            draft.prefs.autoMove = !draft.prefs.autoMove;
             return draft;
           })
         );

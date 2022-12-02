@@ -6,6 +6,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.bloopdevstudios.producto",
+      // softwareKeyboardLayoutMode: "pan",
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",
@@ -21,7 +22,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "https://clean-lies-end-116-86-1-104.loca.lt",
+      baseUrl: "https://ten-ghosts-fetch-116-86-1-104.loca.lt",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

@@ -2,15 +2,36 @@ import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
+const iconGetter = (type) => {
+  let icon = "";
+  let color = "";
+  switch (type) {
+    case "warning":
+    case "danger":
+      icon = "error";
+      color = "#D14343";
+      break;
+    case "success":
+      icon = "check-circle";
+      color = "#5048E5";
+      break;
+    default:
+      icon = "check-circle";
+      color = "#5048E5";
+  }
+  return { icon, color };
+};
+
 const ToastContainer = ({ toast }) => {
-  const { title, description = "" } = toast;
+  const { title, description = "", type } = toast;
+  const { icon, color } = iconGetter(type);
   return (
     <View style={[styles.card, styles.shadowProp, styles.elevation]}>
-      <View style={{ backgroundColor: "#5048E5", width: 5 }} />
+      <View style={{ backgroundColor: color, width: 5 }} />
       <View>
         <View style={styles.content}>
           <View style={styles.titleRow}>
-            <MaterialIcons color="#5048E5" size={24} name="check-circle" />
+            <MaterialIcons color={color} size={24} name={icon} />
 
             <View style={{ paddingLeft: 10 }}>
               <Text>{title}</Text>

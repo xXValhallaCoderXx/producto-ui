@@ -1,16 +1,13 @@
-import { createTheme } from "@rneui/themed";
+import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 
-const theme = createTheme({
-  lightColors: {
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
     primary: "#5048E5",
-    secondary: "#687280",
+    secondary: "#6B7280",
     error: "#D14343",
   },
-  darkColors: {
-    primary: "#5048E5",
-    secondary: "#687280",
-    error: "#D14343",
-  },
-});
+};
 
 export default theme;
