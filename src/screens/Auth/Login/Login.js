@@ -15,6 +15,7 @@ import AuthFooterActions from "../../../components/AuthFooterActions";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import Input from "../../../components/Input";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+import KeyboarDismissView from "../../../layouts/KeyboardDismiss";
 
 import {
   JWT_KEY_STORE,
@@ -172,120 +173,124 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Image
-          source={TITLE_DARK}
-          resizeMode="contain"
-          style={{ height: 80, width: 210 }}
-        />
-        {step === 1 && (
-          <Text variant="bodyMedium">Sign in, to unlock your productivity</Text>
-        )}
-        {step === 2 && (
-          <Text variant="bodyMedium"> Welcome back, {email}!</Text>
-        )}
-      </View>
-      <Animated.View
-        style={{
-          ...styles.animationWrapper,
-          transform: [{ translateX: passwordInputPos }],
-        }}
-      >
-        <View style={styles.row}>
-          <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              width: windowWidth,
-            }}
-          >
-            <Input
-              label="E-mail"
-              value={email}
-              ref={emailInputRef}
-              placeholder="Enter your e-mail to login"
-              style={{
-                width: "85%",
-                maxWidth: "90%",
-              }}
-              error={Boolean(error) ?? false}
-              keyboardType="email-address"
-              onChange={handleOnChangeEmail}
-            />
-
-            <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-              {error ? (
-                <Text
-                  style={{
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "400",
-                    letterSpacing: 0.4,
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
-            </View>
-          </View>
-          <View
-            style={{
-              display: "flex",
-              alignItems: "center",
-              width: windowWidth,
-            }}
-          >
-            <Input
-              label="Password"
-              value={password}
-              ref={passwordInputRef}
-              placeholder="Enter password"
-              style={{
-                width: "85%",
-                maxWidth: "90%",
-              }}
-              error={Boolean(error) ?? false}
-              onChange={handleOnChangePassword}
-              secureTextEntry={secretMap["password"]}
-              right={
-                <TextInput.Icon
-                  style={{ paddingTop: 8 }}
-                  onPress={handlePassToggle("password")}
-                  icon={secretMap["password"] ? "eye-off" : "eye"}
-                />
-              }
-            />
-
-            <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-              {error ? (
-                <Text
-                  style={{
-                    color: "#D14343",
-                    alignSelf: "flex-start",
-                    fontWeight: "400",
-                    letterSpacing: 0.4,
-                    paddingLeft: windowWidth - windowWidth * 0.9,
-                  }}
-                >
-                  {error}
-                </Text>
-              ) : null}
-            </View>
-          </View>
+    <KeyboarDismissView>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <Image
+            source={TITLE_DARK}
+            resizeMode="contain"
+            style={{ height: 80, width: 210 }}
+          />
+          {step === 1 && (
+            <Text variant="bodyMedium">
+              Sign in, to unlock your productivity
+            </Text>
+          )}
+          {step === 2 && (
+            <Text variant="bodyMedium"> Welcome back, {email}!</Text>
+          )}
         </View>
-      </Animated.View>
-      <AuthFooterActions
-        handleOnPressPrimary={handleOnPressPrimary}
-        handleOnPressSecondary={handleOnPressSecondary}
-        secondaryText={step === 1 ? "Create Account" : "Change e-mail"}
-        primaryText={step === 1 ? "Next" : "Submit"}
-        step={step}
-        isLoading={verifyResult.isFetching || loginApiResult.isLoading}
-        disabled={verifyResult.isFetching || loginApiResult.isLoading}
-      />
-    </View>
+        <Animated.View
+          style={{
+            ...styles.animationWrapper,
+            transform: [{ translateX: passwordInputPos }],
+          }}
+        >
+          <View style={styles.row}>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <Input
+                label="E-mail"
+                value={email}
+                ref={emailInputRef}
+                placeholder="Enter your e-mail to login"
+                style={{
+                  width: "85%",
+                  maxWidth: "90%",
+                }}
+                error={Boolean(error) ?? false}
+                keyboardType="email-address"
+                onChange={handleOnChangeEmail}
+              />
+
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "400",
+                      letterSpacing: 0.4,
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+            <View
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: windowWidth,
+              }}
+            >
+              <Input
+                label="Password"
+                value={password}
+                ref={passwordInputRef}
+                placeholder="Enter password"
+                style={{
+                  width: "85%",
+                  maxWidth: "90%",
+                }}
+                error={Boolean(error) ?? false}
+                onChange={handleOnChangePassword}
+                secureTextEntry={secretMap["password"]}
+                right={
+                  <TextInput.Icon
+                    style={{ paddingTop: 8 }}
+                    onPress={handlePassToggle("password")}
+                    icon={secretMap["password"] ? "eye-off" : "eye"}
+                  />
+                }
+              />
+
+              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                {error ? (
+                  <Text
+                    style={{
+                      color: "#D14343",
+                      alignSelf: "flex-start",
+                      fontWeight: "400",
+                      letterSpacing: 0.4,
+                      paddingLeft: windowWidth - windowWidth * 0.9,
+                    }}
+                  >
+                    {error}
+                  </Text>
+                ) : null}
+              </View>
+            </View>
+          </View>
+        </Animated.View>
+        <AuthFooterActions
+          handleOnPressPrimary={handleOnPressPrimary}
+          handleOnPressSecondary={handleOnPressSecondary}
+          secondaryText={step === 1 ? "Create Account" : "Change e-mail"}
+          primaryText={step === 1 ? "Next" : "Submit"}
+          step={step}
+          isLoading={verifyResult.isFetching || loginApiResult.isLoading}
+          disabled={verifyResult.isFetching || loginApiResult.isLoading}
+        />
+      </View>
+    </KeyboarDismissView>
   );
 };
 

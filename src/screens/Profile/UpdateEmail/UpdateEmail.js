@@ -7,13 +7,14 @@ import { useFormik } from "formik";
 import ContainedButton from "../../../components/ContainedButton";
 import { useUpdateEmailMutation } from "../../../api/auth-api";
 import { useToast } from "react-native-toast-notifications";
+import KeyboarDismissView from "../../../layouts/KeyboardDismiss";
 
 const UpdateEmailScreen = ({ navigation }) => {
   const theme = useTheme();
   const passInputRef = useRef(null);
   const toast = useToast();
   const [updateEmail, updateEmailResult] = useUpdateEmailMutation();
-  console.log("UPAPAPA:E", updateEmailResult)
+  console.log("UPAPAPA:E", updateEmailResult);
   useEffect(() => {
     navigation.setOptions({ title: "Update E-mail" });
   }, []);
@@ -96,79 +97,81 @@ const UpdateEmailScreen = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "white",
-        flex: 1,
-        padding: 25,
-      }}
-    >
-      <ScrollView keyboardShouldPersistTaps="always" style={{ padding: 5 }}>
-        <View>
-          <Text style={{ marginBottom: 15 }}>
-            Enter your current password, and your new email you would like to
-            change to.
-          </Text>
-
-          <Input
-            label="Password"
-            placeholder="Enter current password"
-            value={formik.values.password}
-            onChange={formik.handleChange("password")}
-            ref={passInputRef}
-            secureTextEntry={secretMap["password"]}
-            right={
-              <TextInput.Icon
-                style={{ paddingTop: 8 }}
-                onPress={handlePassToggle("password")}
-                icon={secretMap["password"] ? "eye-off" : "eye"}
-              />
-            }
-          />
-          <View style={{ height: 20 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik?.touched?.password && formik?.errors?.password) || ""}
+    <KeyboarDismissView>
+      <View
+        style={{
+          backgroundColor: "white",
+          flex: 1,
+          padding: 25,
+        }}
+      >
+        <ScrollView keyboardShouldPersistTaps="always" style={{ padding: 5 }}>
+          <View>
+            <Text style={{ marginBottom: 15 }}>
+              Enter your current password, and your new email you would like to
+              change to.
             </Text>
-          </View>
 
-          <View style={{ marginTop: 10 }}>
             <Input
-              label="E-mail"
-              placeholder="Enter your new e-mail"
-              keyboardType="email-address"
-              onChange={formik.handleChange("email")}
-              value={formik.values.email}
+              label="Password"
+              placeholder="Enter current password"
+              value={formik.values.password}
+              onChange={formik.handleChange("password")}
+              ref={passInputRef}
+              secureTextEntry={secretMap["password"]}
+              right={
+                <TextInput.Icon
+                  style={{ paddingTop: 8 }}
+                  onPress={handlePassToggle("password")}
+                  icon={secretMap["password"] ? "eye-off" : "eye"}
+                />
+              }
             />
+            <View style={{ height: 20 }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginLeft: 10,
+                  color: theme.colors.error,
+                }}
+              >
+                {(formik?.touched?.password && formik?.errors?.password) || ""}
+              </Text>
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <Input
+                label="E-mail"
+                placeholder="Enter your new e-mail"
+                keyboardType="email-address"
+                onChange={formik.handleChange("email")}
+                value={formik.values.email}
+              />
+            </View>
+            <View style={{ height: 20 }}>
+              <Text
+                style={{
+                  marginTop: 5,
+                  marginLeft: 10,
+                  color: theme.colors.error,
+                }}
+              >
+                {(formik?.touched?.email && formik?.errors?.email) || ""}
+              </Text>
+            </View>
           </View>
-          <View style={{ height: 20 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik?.touched?.email && formik?.errors?.email) || ""}
-            </Text>
-          </View>
+        </ScrollView>
+        <View style={{ paddingTop: 25, paddingBottom: 20 }}>
+          <ContainedButton
+            onPress={formik.handleSubmit}
+            disabled={updateEmailResult.isLoading}
+            loading={updateEmailResult.isLoading}
+          >
+            Change Email
+          </ContainedButton>
         </View>
-      </ScrollView>
-      <View style={{ paddingTop: 25, paddingBottom: 20 }}>
-        <ContainedButton
-          onPress={formik.handleSubmit}
-          disabled={updateEmailResult.isLoading}
-          loading={updateEmailResult.isLoading}
-        >
-          Change Email
-        </ContainedButton>
       </View>
-    </View>
+    </KeyboarDismissView>
   );
 };
 

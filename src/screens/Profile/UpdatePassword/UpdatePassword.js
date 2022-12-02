@@ -7,6 +7,7 @@ import Input from "../../../components/Input";
 import ContainedButton from "../../../components/ContainedButton";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
+import KeyboarDismissView from "../../../layouts/KeyboardDismiss";
 
 const UpdatePasswordScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -95,7 +96,8 @@ const UpdatePasswordScreen = ({ navigation }) => {
   };
 
   return (
-    <View
+   <KeyboarDismissView>
+     <View
       style={{
         backgroundColor: "white",
         flex: 1,
@@ -204,6 +206,7 @@ const UpdatePasswordScreen = ({ navigation }) => {
         </ContainedButton>
       </View>
     </View>
+   </KeyboarDismissView>
   );
 };
 
