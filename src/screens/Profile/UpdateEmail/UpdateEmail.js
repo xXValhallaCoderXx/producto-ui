@@ -141,6 +141,7 @@ const UpdateEmailScreen = ({ navigation }) => {
             <Input
               label="E-mail"
               placeholder="Enter your new e-mail"
+              keyboardType="email-address"
               onChange={formik.handleChange("email")}
               value={formik.values.email}
             />
