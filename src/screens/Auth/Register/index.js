@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
 import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image, KeyboardAvoidingView } from "react-native";
 import * as Localization from "expo-localization";
 import FooterActions from "./FooterAction";
 import {
@@ -26,7 +26,7 @@ const RegisterScreen = ({ navigation }) => {
     password: true,
     confirmPassword: true,
   });
-  console.log("REGISTER: ", registerApiResult)
+  console.log("REGISTER: ", registerApiResult);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -101,6 +101,11 @@ const RegisterScreen = ({ navigation }) => {
       });
     }
   }, [registerApiResult.isSuccess]);
+
+  const handleBackToLogin = () => {
+    formik.resetForm();
+    navigation.navigate("Login");
+  };
 
   return (
     <LayoutView>
@@ -212,42 +217,17 @@ const RegisterScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
-
-      {/* <View style={{ alignItems: "center", marginTop: 20 }}>
-        <ProductoButton
-          loading={registerApiResult.isLoading}
-          type="contained"
-          disabled={registerApiResult.isLoading || !formik.isValid}
-          title="Register"
-          onPress={formik.handleSubmit}
-          color="primary"
+      <KeyboardAvoidingView
+        style={{ flex: 1, justifyContent: "flex-end" }}
+        behavior="padding"
+      >
+        <FooterActions
+          handleOnPressPrimary={formik.handleSubmit}
+          handleOnPressSecondary={handleBackToLogin}
+          disabledPrimary={registerApiResult.isLoading}
+          isLoading={registerApiResult.isLoading}
         />
-        <TouchableOpacity
-          style={{ marginTop: 20 }}
-          onPress={() => navigation.navigate("Login")}
-        >
-          <Text style={{ color: "black" }} h5>
-            Already have an account?
-          </Text>
-          <Text
-            h6
-            style={{
-              color: theme.colors.primary,
-              marginTop: 5,
-              fontWeight: "700",
-              textAlign: "center",
-            }}
-          >
-            Log-in Here
-          </Text>
-        </TouchableOpacity>
-      </View> */}
-      <FooterActions
-        handleOnPressPrimary={formik.handleSubmit}
-        handleOnPressSecondary={() => navigation.navigate("Login")}
-        disabledPrimary={registerApiResult.isLoading || !formik.isValid || !formik.dirty}
-        isLoading={registerApiResult.isLoading}
-      />
+      </KeyboardAvoidingView>
     </LayoutView>
   );
 };
