@@ -46,18 +46,19 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const toggleAutoTaskModal = async () => {
-    if (!data?.prefs?.autoMove) {
-      setisAutoTaskModalVisible(true);
-    }
-    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Auto Tasks Updated!",
-    });
+    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
+    // if (!data?.prefs?.autoMove) {
+      
+    // }
+ 
+    // toast.show("", {
+    //   type: "success",
+    //   duration: 2500,
+    //   offset: 100,
+    //   animationType: "zoom-in",
+    //   placement: "top",
+    //   title: "Auto Tasks Updated!",
+    // });
   };
 
   const handleCloseModal = () => {
@@ -74,6 +75,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleSubmitAutoTask = async (dates) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     setisAutoTaskModalVisible(false);
     toast.show("", {
       type: "success",

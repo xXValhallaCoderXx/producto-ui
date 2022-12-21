@@ -185,9 +185,7 @@ const EditPassword = ({ navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
-        disabled={
-          updatePasswordResult.isLoading || !formik.isValid || !formik.dirty
-        }
+        disabled={updatePasswordResult.isLoading}
         loading={updatePasswordResult.isLoading}
       />
     </View>

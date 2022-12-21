@@ -75,8 +75,8 @@ const UpdateEmail = ({ route, navigation }) => {
     }
     if (updateEmailResult.isError) {
       const message = Array.isArray(updateEmailResult?.error?.data?.message)
-      ? updateEmailResult?.error?.data?.message[0]
-      : updateEmailResult?.error?.data?.message;
+        ? updateEmailResult?.error?.data?.message[0]
+        : updateEmailResult?.error?.data?.message;
 
       toast.show("Email update error", {
         type: "error",
@@ -85,9 +85,8 @@ const UpdateEmail = ({ route, navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Error updating email!",
-        description: message ?? "Sorry, an error occured"
+        description: message ?? "Sorry, an error occured",
       });
-
     }
   }, [updateEmailResult]);
 
@@ -155,9 +154,7 @@ const UpdateEmail = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={formik.handleSubmit}
-        disabled={
-          updateEmailResult.isLoading || !formik.isValid || !formik.dirty
-        }
+        disabled={updateEmailResult.isLoading}
         loading={updateEmailResult.isLoading}
       />
     </View>

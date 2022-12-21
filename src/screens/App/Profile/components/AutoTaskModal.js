@@ -116,7 +116,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
         <Button
           onPress={onClickConfirm}
           title="Confirm"
-          disabled={Object.keys(parsedDates).length === 0}
+          // disabled={Object.keys(parsedDates).length === 0}
           containerStyle={{ paddingLeft: 25 }}
           titleStyle={{ color: theme.colors.primary }}
           type="clear"

@@ -67,7 +67,6 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
-    console.log("VERIFY: ", verifyResult);
     if (verifyResult.isError) {
       setError(verifyResult?.error?.data?.message);
     }
@@ -116,12 +115,15 @@ const LoginScreen = ({ navigation }) => {
         setError("Please enter a password");
       } else {
         const res = await loginApi({ email, password });
+      
         if (res?.error?.status === 400) {
           setError(res.error.data.message);
         }
       }
     } else {
+      console.log("EMAIL: ", email);
       const res = await verifyTigger({ email });
+      console.log("RES: ", res);
       passwordInputRef.current.focus();
       if (res.isSuccess) {
         setStep(nextStep);
