@@ -36,11 +36,12 @@ const FooterActions = ({
           type="contained"
           loading={isLoading}
           title={step === 1 ? "Next" : "Log in"}
-          disabled={
-            isLoading ||
-            (step === 1 && !email.match(validEmailRegex)) ||
-            (step === 2 && password === "")
-          }
+          disabled={isLoading}
+          // disabled={
+          //   isLoading ||
+          //   (step === 1 && !email.match(validEmailRegex)) ||
+          //   (step === 2 && password === "")
+          // }
         />
       </View>
     </View>

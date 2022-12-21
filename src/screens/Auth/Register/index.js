@@ -26,7 +26,7 @@ const RegisterScreen = ({ navigation }) => {
     password: true,
     confirmPassword: true,
   });
-
+  console.log("REGISTER: ", registerApiResult)
   const formik = useFormik({
     initialValues: {
       email: "",

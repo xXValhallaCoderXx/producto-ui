@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 import * as SecureStore from "expo-secure-store";
 import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
-import { useWindowDimensions } from "react-native";
+import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
   StyleSheet,
   View,
@@ -37,10 +37,12 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const timestampRef = useRef(Date.now()).current;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
+    timestampRef
   });
 
   const [step, setStep] = useState(1);
@@ -65,6 +67,7 @@ const LoginScreen = ({ navigation }) => {
   }, [step]);
 
   useEffect(() => {
+    console.log("VERIFY: ", verifyResult);
     if (verifyResult.isError) {
       setError(verifyResult?.error?.data?.message);
     }
@@ -173,48 +176,43 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <TouchableWithoutFeedback
-    onPress={Keyboard.dismiss}
-    accessible={false}
-  
-  >
-    <LayoutView>
-      <View style={styles.titleContainer}>
-        <Image
-          source={titleDark}
-          resizeMode="contain"
-          style={{
-            width: 231,
-            height: 42,
-          }}
-        ></Image>
-        <View style={{ marginTop: 19 }}>
-          <Text style={styles.secondaryTitle}>
-            Sign in, to unlock your productivity
-          </Text>
-        </View>
-      </View>
-      <View>
-        <Animated.View
-          style={{
-            ...styles.inputWrapper,
-            marginBottom: 30,
-            transform: [{ translateX: passwordInputPos }],
-          }}
-        >
-          <View
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <LayoutView>
+        <View style={styles.titleContainer}>
+          <Image
+            source={titleDark}
+            resizeMode="contain"
             style={{
-              flexDirection: "row",
+              width: 231,
+              height: 42,
+            }}
+          ></Image>
+          <View style={{ marginTop: 19 }}>
+            <Text style={styles.secondaryTitle}>
+              Sign in, to unlock your productivity
+            </Text>
+          </View>
+        </View>
+        <View >
+          <Animated.View
+            style={{
+              ...styles.inputWrapper,
+              marginBottom: 30,
+              transform: [{ translateX: passwordInputPos }],
             }}
           >
             <View
               style={{
-                display: "flex",
-                alignItems: "center",
-                width: windowWidth,
+                flexDirection: "row",
               }}
             >
-          
+              <View
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: windowWidth,
+                }}
+              >
                 <MuiTextInput
                   label="Email"
                   value={email}
@@ -234,83 +232,87 @@ const LoginScreen = ({ navigation }) => {
                   onChangeText={handleOnChangeEmail}
                   keyboardType="email-address"
                 />
-           
 
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {error ? (
-                  <Text
-                    style={{
-                      color: "#D14343",
-                      alignSelf: "flex-start",
-                      fontWeight: "700",
-                      paddingLeft: windowWidth - windowWidth * 0.9,
-                    }}
-                  >
-                    {error}
-                  </Text>
-                ) : null}
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {error ? (
+                    <Text
+                      style={{
+                        color: "#D14343",
+                        alignSelf: "flex-start",
+                        fontWeight: "700",
+                        paddingLeft: windowWidth - windowWidth * 0.9,
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
-            </View>
-            <View
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: windowWidth,
-              }}
-            >
-              <MuiTextInput
-                label="Password"
-                value={password}
-                mode="outlined"
-                error={false}
-                outlineColor="#bcc5d6"
-                ref={passwordInputRef}
+              <View
                 style={{
-                  backgroundColor: "white",
-                  width: "85%",
-                  fontSize: 14,
-                  width: windowWidth * 0.85,
-                  maxWidth: windowWidth * 0.9,
+                  display: "flex",
+                  alignItems: "center",
+                  width: windowWidth,
                 }}
-                onChangeText={handleOnChangePassword}
-                secureTextEntry={secretMap["password"]}
-                right={
-                  <MuiTextInput.Icon
-                    onPress={handlePassToggle("password")}
-                    icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                    color="#fff"
-                  />
-                }
-              />
+              >
+                <MuiTextInput
+                  label="Password"
+                  value={password}
+                  mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
+                  ref={passwordInputRef}
+                  style={{
+                    backgroundColor: "white",
+                    width: "85%",
+                    fontSize: 14,
+                    width: windowWidth * 0.85,
+                    maxWidth: windowWidth * 0.9,
+                  }}
+                  onChangeText={handleOnChangePassword}
+                  secureTextEntry={secretMap["password"]}
+                  right={
+                    <MuiTextInput.Icon
+                      onPress={handlePassToggle("password")}
+                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                      color="#fff"
+                    />
+                  }
+                />
 
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {error ? (
-                  <Text
-                    style={{
-                      color: "#D14343",
-                      alignSelf: "flex-start",
-                      fontWeight: "700",
-                      paddingLeft: windowWidth - windowWidth * 0.9,
-                    }}
-                  >
-                    {error}
-                  </Text>
-                ) : null}
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {error ? (
+                    <Text
+                      style={{
+                        color: "#D14343",
+                        alignSelf: "flex-start",
+                        fontWeight: "700",
+                        paddingLeft: windowWidth - windowWidth * 0.9,
+                      }}
+                    >
+                      {error}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
             </View>
-          </View>
-        </Animated.View>
+          </Animated.View>
+        </View>
 
-        <FooterActions
-          handleOnPressPrimary={handleOnPressPrimary}
-          handleOnPressSecondary={handleOnPressSecondary}
-          step={step}
-          email={email}
-          password={password}
-          isLoading={verifyResult.isFetching || loginApiResult.isLoading}
-        />
-      </View>
-    </LayoutView>
+        <KeyboardAvoidingView
+          style={{ flex: 1, justifyContent: "flex-end" }}
+          behavior="padding"
+        >
+          <FooterActions
+            handleOnPressPrimary={handleOnPressPrimary}
+            handleOnPressSecondary={handleOnPressSecondary}
+            step={step}
+            email={email}
+            password={password}
+            isLoading={verifyResult.isFetching || loginApiResult.isLoading}
+          />
+        </KeyboardAvoidingView>
+      </LayoutView>
     </TouchableWithoutFeedback>
   );
 };
