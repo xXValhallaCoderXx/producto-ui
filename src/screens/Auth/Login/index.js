@@ -317,7 +317,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
-    marginTop: 106,
+    marginTop: 76,
   },
   secondaryTitle: {
     fontSize: 14,

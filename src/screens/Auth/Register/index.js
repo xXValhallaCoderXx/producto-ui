@@ -1,15 +1,23 @@
-import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import {
+  StyleSheet,
+  View,
+  Image,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+
 import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
+import * as Localization from "expo-localization";
+
+import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 import { useRegisterMutation } from "../../../api/auth-api";
-import ProductoButton from "../../../components/Button";
 import { useFormik } from "formik";
 import { TextInput, Text, useTheme } from "react-native-paper";
-import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import { StyleSheet, View, Image, KeyboardAvoidingView } from "react-native";
-import * as Localization from "expo-localization";
 import FooterActions from "./FooterAction";
 import {
   JWT_KEY_STORE,
@@ -26,20 +34,13 @@ const RegisterScreen = ({ navigation }) => {
     password: true,
     confirmPassword: true,
   });
-  console.log("REGISTER: ", registerApiResult);
+
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
     },
-    // validate: (values) => {
-    //   const errors = {
-    //     ...(Boolean(passwordCheck(values.password)) && {password: passwordCheck(values.password)}),
-    //     ...(Boolean(passwordCheck(values.password)) && {confirmPassword: passwordCheck(values.confirmPassword)})
-    //   };
-    //   return errors;
-    // },
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .required("Email field is required")
@@ -108,146 +109,128 @@ const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <LayoutView>
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 106,
-          marginBottom: 40,
-        }}
-      >
-        <Image
-          style={{ height: 40, width: 220 }}
-          source={require("../../../assets/images/title-dark.png")}
-        />
-      </View>
-
-      <View style={{ alignItems: "center" }}>
-        <View style={{ width: "85%" }}>
-          <TextInput
-            onChangeText={formik.handleChange("email")}
-            autoFocus
-            onBlur={formik.handleBlur("email")}
-            value={formik.values.email}
-            mode="outlined"
-            label="E-mail"
-            keyboardType="email-address"
-            placeholder="Enter Email"
-            style={{
-              backgroundColor: "white",
-            }}
-          />
-          <View style={{ height: 20 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik.touched["email"] && formik?.errors?.email) || ""}
-            </Text>
-          </View>
-
-          <TextInput
-            onChangeText={formik.handleChange("password")}
-            onBlur={formik.handleBlur("password")}
-            value={formik.values.password}
-            mode="outlined"
-            label="Password"
-            placeholder="Enter Password"
-            secureTextEntry={secretMap["password"]}
-            style={{
-              backgroundColor: "white",
-              marginTop: 10,
-            }}
-            right={
-              <TextInput.Icon
-                style={{ paddingBottom: 4 }}
-                onPress={handlePassToggle("password")}
-                icon={secretMap["password"] ? "eye-off" : "eye"}
-              />
-            }
-          />
-          <View style={{ height: 20 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik.touched["password"] && formik?.errors?.password) || ""}
-            </Text>
-          </View>
-
-          <TextInput
-            onChangeText={formik.handleChange("confirmPassword")}
-            onBlur={formik.handleBlur("confirmPassword")}
-            secureTextEntry={secretMap["confirmPassword"]}
-            value={formik.values.confirmPassword}
-            mode="outlined"
-            label="Confirm Password"
-            placeholder="Confirm Password"
-            style={{
-              backgroundColor: "white",
-              marginTop: 10,
-            }}
-            right={
-              <TextInput.Icon
-                style={{ paddingBottom: 4 }}
-                onPress={handlePassToggle("confirmPassword")}
-                icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-              />
-            }
-          />
-          <View style={{ height: 20 }}>
-            <Text
-              style={{
-                marginTop: 5,
-                marginLeft: 10,
-                color: theme.colors.error,
-              }}
-            >
-              {(formik.touched["confirmPassword"] &&
-                formik?.errors?.confirmPassword) ||
-                ""}
-            </Text>
-          </View>
-        </View>
-      </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        style={{ flex: 1, justifyContent: "flex-end" }}
-        behavior="padding"
+        keyboardVerticalOffset={50}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1, backgroundColor: "white" }}
       >
-        <FooterActions
-          handleOnPressPrimary={formik.handleSubmit}
-          handleOnPressSecondary={handleBackToLogin}
-          disabledPrimary={registerApiResult.isLoading}
-          isLoading={registerApiResult.isLoading}
-        />
+        <View style={styles.titleContainer}>
+          <Image
+            style={styles.titleImage}
+            source={require("../../../assets/images/title-dark.png")}
+          />
+        </View>
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View>
+            <View style={{ alignItems: "center" }}>
+              <View style={{ width: "85%" }}>
+                <TextInput
+                  onChangeText={formik.handleChange("email")}
+                  autoFocus
+                  onBlur={formik.handleBlur("email")}
+                  value={formik.values.email}
+                  mode="outlined"
+                  label="E-mail"
+                  keyboardType="email-address"
+                  placeholder="Enter Email"
+                  style={{
+                    backgroundColor: "white",
+                  }}
+                />
+                <View style={{ height: 20 }}>
+                  <Text
+                    style={{ ...styles.errorText, color: theme.colors.error }}
+                  >
+                    {(formik.touched["email"] && formik?.errors?.email) || ""}
+                  </Text>
+                </View>
+
+                <TextInput
+                  onChangeText={formik.handleChange("password")}
+                  onBlur={formik.handleBlur("password")}
+                  value={formik.values.password}
+                  mode="outlined"
+                  label="Password"
+                  placeholder="Enter Password"
+                  secureTextEntry={secretMap["password"]}
+                  style={styles.inputContainer}
+                  right={
+                    <TextInput.Icon
+                      style={{ paddingBottom: 4 }}
+                      onPress={handlePassToggle("password")}
+                      icon={secretMap["password"] ? "eye-off" : "eye"}
+                    />
+                  }
+                />
+                <View style={{ height: 20 }}>
+                  <Text
+                    style={{ ...styles.errorText, color: theme.colors.error }}
+                  >
+                    {(formik.touched["password"] && formik?.errors?.password) ||
+                      ""}
+                  </Text>
+                </View>
+
+                <TextInput
+                  onChangeText={formik.handleChange("confirmPassword")}
+                  onBlur={formik.handleBlur("confirmPassword")}
+                  secureTextEntry={secretMap["confirmPassword"]}
+                  value={formik.values.confirmPassword}
+                  mode="outlined"
+                  label="Confirm Password"
+                  placeholder="Confirm Password"
+                  style={styles.inputContainer}
+                  right={
+                    <TextInput.Icon
+                      style={{ paddingBottom: 4 }}
+                      onPress={handlePassToggle("confirmPassword")}
+                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                    />
+                  }
+                />
+                <View style={{ height: 20 }}>
+                  <Text
+                    style={{ ...styles.errorText, color: theme.colors.error }}
+                  >
+                    {(formik.touched["confirmPassword"] &&
+                      formik?.errors?.confirmPassword) ||
+                      ""}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+          <FooterActions
+            handleOnPressPrimary={formik.handleSubmit}
+            handleOnPressSecondary={handleBackToLogin}
+            disabledPrimary={registerApiResult.isLoading}
+            isLoading={registerApiResult.isLoading}
+          />
+        </View>
       </KeyboardAvoidingView>
-    </LayoutView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    display: "flex",
+  titleContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 76,
+    marginBottom: 40,
   },
-  input: {
-    width: 300,
-    height: 45,
-    backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    fontSize: 16,
+  titleImage: {
+    height: 40,
+    width: 220,
+  },
+  inputContainer: {
+    backgroundColor: "white",
+    marginTop: 10,
+  },
+  errorText: {
+    marginTop: 5,
+    marginLeft: 10,
   },
 });
 
