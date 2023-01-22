@@ -1,13 +1,13 @@
-import { View, StyleSheet, Platform } from "react-native";
+import { View, StyleSheet, Platform, KeyboardAvoidingView } from "react-native";
 
 const LayoutView = ({ children }) => {
   return (
-    <View
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
       {children}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingBottom: Platform.OS === "ios" ? 40 : 0,
-    paddingTop: Platform.OS === "ios" ? 15 : 5,
+    // paddingBottom: Platform.OS === "ios" ? 40 : 0,
+    // paddingTop: Platform.OS === "ios" ? 15 : 5,
   },
 });
 
