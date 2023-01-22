@@ -68,7 +68,7 @@ const ListScreen = () => {
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: focusMode ? 160 : 130,
+      toValue: focusMode ? 0 : 50,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -195,69 +195,52 @@ const ListScreen = () => {
           onPressDate={handleOnPressDate}
         />
         <ProgressBar focusMode={focusMode} progress={progress} />
-
-        <View
-          contentContainerStyle={{
-            justifyContent: "space-between",
-            flex: 1,
-          }}
-          style={{
-            flex: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <View
+        {isLoading ? (
+          <View style={{ flex: 1, paddingTop: 20 }}>
+            <SkeletonList />
+          </View>
+        ) : (
+          <Animated.View
             style={{
-              height: 80,
-              display: "flex",
-              justifyContent: "center",
-              borderStartColor: "pink",
+              height: 400,
+
+              transform: [{ translateY: posXanim }],
             }}
           >
-            {isLoading ? (
-              <View style={{ flex: 1, paddingTop: 20 }}>
-                <SkeletonList />
-              </View>
-            ) : (
-              <Animated.View
-                style={{ height: 400, transform: [{ translateY: posXanim }] }}
-              >
-                <KeyboardAvoidingView>
-                  <TaskList
-                    tasks={tasks || []}
-                    handleToggleTaskFocus={handleToggleTaskFocus}
-                    handleToggleTaskComplete={handleToggleTaskComplete}
-                    currentTask={currentTask}
-                    isLoadingToggle={isLoadingToggle}
-                    utcDate={utcDate}
-                  />
+            <KeyboardAvoidingView>
+              <TaskList
+                tasks={tasks || []}
+                handleToggleTaskFocus={handleToggleTaskFocus}
+                handleToggleTaskComplete={handleToggleTaskComplete}
+                currentTask={currentTask}
+                isLoadingToggle={isLoadingToggle}
+                utcDate={utcDate}
+              />
 
-                  <AddItem
-                    handleCreateNewTask={handleCreateNewTask}
-                    currentDate={utcDate}
-                  />
-                </KeyboardAvoidingView>
-              </Animated.View>
-            )}
-          </View>
+              <AddItem
+                handleCreateNewTask={handleCreateNewTask}
+                currentDate={utcDate}
+              />
+            </KeyboardAvoidingView>
+          </Animated.View>
+        )}
+        <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
+        />
 
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
+        {isFetching || !focusMode ? null : (
+          <MoveIncomplete
+            tasks={tasks}
             currentDate={utcDate}
-            handleOnSelectDay={handleOnSelectDay}
+            isLoading={moveIncompleteTasksResult.isLoading}
+            onMoveIncomplete={handleMoveIncompleteTasks}
           />
+        )}
 
-          {isFetching || !focusMode ? null : (
-            <MoveIncomplete
-              tasks={tasks}
-              currentDate={utcDate}
-              isLoading={moveIncompleteTasksResult.isLoading}
-              onMoveIncomplete={handleMoveIncompleteTasks}
-            />
-          )}
-        </View>
         <IntroBottomSheet />
       </GestureHandlerRootView>
     </LayoutView>
