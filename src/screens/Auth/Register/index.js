@@ -130,12 +130,17 @@ const RegisterScreen = ({ navigation }) => {
                   autoFocus
                   onBlur={formik.handleBlur("email")}
                   value={formik.values.email}
+                  theme={{ roundness: 10 }}
                   mode="outlined"
+                  error={false}
+                  outlineColor="#bcc5d6"
                   label="E-mail"
                   keyboardType="email-address"
                   placeholder="Enter Email"
                   style={{
                     backgroundColor: "white",
+
+                    fontSize: 14,
                   }}
                 />
                 <View style={{ height: 20 }}>
@@ -152,12 +157,17 @@ const RegisterScreen = ({ navigation }) => {
                   value={formik.values.password}
                   mode="outlined"
                   label="Password"
+                  theme={{ roundness: 10 }}
+                  outlineColor="#bcc5d6"
                   placeholder="Enter Password"
                   secureTextEntry={secretMap["password"]}
-                  style={styles.inputContainer}
+                  style={{
+                    backgroundColor: "white",
+                    fontSize: 14,
+                    marginTop: 10,
+                  }}
                   right={
                     <TextInput.Icon
-                      style={{ paddingBottom: 4 }}
                       onPress={handlePassToggle("password")}
                       icon={secretMap["password"] ? "eye-off" : "eye"}
                     />
@@ -180,10 +190,15 @@ const RegisterScreen = ({ navigation }) => {
                   mode="outlined"
                   label="Confirm Password"
                   placeholder="Confirm Password"
-                  style={styles.inputContainer}
+                  theme={{ roundness: 10 }}
+                  outlineColor="#bcc5d6"
+                  style={{
+                    backgroundColor: "white",
+                    fontSize: 14,
+                    marginTop: 10,
+                  }}
                   right={
                     <TextInput.Icon
-                      style={{ paddingBottom: 4 }}
                       onPress={handlePassToggle("confirmPassword")}
                       icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
                     />
@@ -231,6 +246,7 @@ const styles = StyleSheet.create({
   errorText: {
     marginTop: 5,
     marginLeft: 10,
+    fontWeight: "700",
   },
 });
 
