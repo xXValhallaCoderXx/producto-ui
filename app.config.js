@@ -21,7 +21,7 @@ module.exports = ({ config }) => {
     },
     extra: {
       environment: "development",
-      baseUrl: "http://localhost:3000",
+      baseUrl: "http://192.168.10.132:3000",
       // environment: "production",
       // baseUrl: "https://producto-dev.herokuapp.com",
     },

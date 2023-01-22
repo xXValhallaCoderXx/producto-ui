@@ -2,11 +2,10 @@ import { useState, useCallback, useEffect } from "react";
 import { Platform, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
-import { ThemeProvider } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import store from "./src/config/store";
@@ -84,14 +83,14 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Provider store={store}>
-        <ToastProvider
-          renderToast={(toastOptions) => <Toast toast={toastOptions} />}
-        >
-          <PaperProvider theme={theme2}>
-            <ThemeProvider theme={theme}>
-              <StatusBar style="dark" backgroundColor="white" />
-              <QueryClientProvider client={queryClient}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Provider store={store}>
+          <ToastProvider
+            renderToast={(toastOptions) => <Toast toast={toastOptions} />}
+          >
+            <QueryClientProvider client={queryClient}>
+              <PaperProvider theme={theme2}>
+                {/* <StatusBar style="dark" backgroundColor="white" /> */}
                 <NavigationContainer>
                   <Stack.Navigator
                     screenOptions={() => ({
@@ -101,11 +100,11 @@ export default function App() {
                     <Stack.Screen name="Root" component={RootScreens} />
                   </Stack.Navigator>
                 </NavigationContainer>
-              </QueryClientProvider>
-            </ThemeProvider>
-          </PaperProvider>
-        </ToastProvider>
-      </Provider>
+              </PaperProvider>
+            </QueryClientProvider>
+          </ToastProvider>
+        </Provider>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }

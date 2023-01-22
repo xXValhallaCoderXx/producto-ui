@@ -13,7 +13,6 @@ import {
   Keyboard,
 } from "react-native";
 import { TextInput as MuiTextInput } from "react-native-paper";
-import LayoutView from "../../../components/LayoutView";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -42,7 +41,7 @@ const LoginScreen = ({ navigation }) => {
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
     email,
-    timestampRef
+    timestampRef,
   });
 
   const [step, setStep] = useState(1);
@@ -115,15 +114,13 @@ const LoginScreen = ({ navigation }) => {
         setError("Please enter a password");
       } else {
         const res = await loginApi({ email, password });
-      
+
         if (res?.error?.status === 400) {
           setError(res.error.data.message);
         }
       }
     } else {
-      console.log("EMAIL: ", email);
       const res = await verifyTigger({ email });
-      console.log("RES: ", res);
       passwordInputRef.current.focus();
       if (res.isSuccess) {
         setStep(nextStep);
@@ -179,132 +176,130 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <LayoutView>
-        <View style={styles.titleContainer}>
-          <Image
-            source={titleDark}
-            resizeMode="contain"
-            style={{
-              width: 231,
-              height: 42,
-            }}
-          ></Image>
-          <View style={{ marginTop: 19 }}>
-            <Text style={styles.secondaryTitle}>
-              Sign in, to unlock your productivity
-            </Text>
-          </View>
-        </View>
-        <View >
-          <Animated.View
-            style={{
-              ...styles.inputWrapper,
-              marginBottom: 30,
-              transform: [{ translateX: passwordInputPos }],
-            }}
-          >
-            <View
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={50}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1, backgroundColor: "white" }}
+      >
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
+          <View>
+            <View style={styles.titleContainer}>
+              <Image
+                source={titleDark}
+                resizeMode="contain"
+                style={{
+                  width: 231,
+                  height: 42,
+                }}
+              ></Image>
+              <View style={{ marginTop: 19 }}>
+                <Text style={styles.secondaryTitle}>
+                  Sign in, to unlock your productivity
+                </Text>
+              </View>
+            </View>
+            <Animated.View
               style={{
-                flexDirection: "row",
+                ...styles.inputWrapper,
+                marginBottom: 30,
+                transform: [{ translateX: passwordInputPos }],
               }}
             >
               <View
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: windowWidth,
+                  flexDirection: "row",
                 }}
               >
-                <MuiTextInput
-                  label="Email"
-                  value={email}
-                  mode="outlined"
-                  error={false}
-                  outlineColor="#bcc5d6"
-                  ref={emailInputRef}
-                  theme={{ roundness: 10 }}
+                <View
                   style={{
-                    backgroundColor: "white",
-                    height: 50,
-                    width: "85%",
-                    fontSize: 14,
-                    width: windowWidth * 0.85,
-                    maxWidth: windowWidth * 0.9,
+                    display: "flex",
+                    alignItems: "center",
+                    width: windowWidth,
                   }}
-                  onChangeText={handleOnChangeEmail}
-                  keyboardType="email-address"
-                />
-
-                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                  {error ? (
-                    <Text
-                      style={{
-                        color: "#D14343",
-                        alignSelf: "flex-start",
-                        fontWeight: "700",
-                        paddingLeft: windowWidth - windowWidth * 0.9,
-                      }}
-                    >
-                      {error}
-                    </Text>
-                  ) : null}
+                >
+                  <MuiTextInput
+                    label="Email"
+                    value={email}
+                    mode="outlined"
+                    error={false}
+                    outlineColor="#bcc5d6"
+                    ref={emailInputRef}
+                    theme={{ roundness: 10 }}
+                    style={{
+                      backgroundColor: "white",
+                      height: 50,
+                      width: "85%",
+                      fontSize: 14,
+                      width: windowWidth * 0.85,
+                      maxWidth: windowWidth * 0.9,
+                    }}
+                    onChangeText={handleOnChangeEmail}
+                    keyboardType="email-address"
+                  />
+                  <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                    {error ? (
+                      <Text
+                        style={{
+                          color: "#D14343",
+                          alignSelf: "flex-start",
+                          fontWeight: "700",
+                          paddingLeft: windowWidth - windowWidth * 0.9,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ) : null}
+                  </View>
+                </View>
+                <View
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: windowWidth,
+                  }}
+                >
+                  <MuiTextInput
+                    label="Password"
+                    value={password}
+                    mode="outlined"
+                    error={false}
+                    outlineColor="#bcc5d6"
+                    ref={passwordInputRef}
+                    style={{
+                      backgroundColor: "white",
+                      width: "85%",
+                      fontSize: 14,
+                      width: windowWidth * 0.85,
+                      maxWidth: windowWidth * 0.9,
+                    }}
+                    onChangeText={handleOnChangePassword}
+                    secureTextEntry={secretMap["password"]}
+                    right={
+                      <MuiTextInput.Icon
+                        onPress={handlePassToggle("password")}
+                        icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                        color="#fff"
+                      />
+                    }
+                  />
+                  <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                    {error ? (
+                      <Text
+                        style={{
+                          color: "#D14343",
+                          alignSelf: "flex-start",
+                          fontWeight: "700",
+                          paddingLeft: windowWidth - windowWidth * 0.9,
+                        }}
+                      >
+                        {error}
+                      </Text>
+                    ) : null}
+                  </View>
                 </View>
               </View>
-              <View
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: windowWidth,
-                }}
-              >
-                <MuiTextInput
-                  label="Password"
-                  value={password}
-                  mode="outlined"
-                  error={false}
-                  outlineColor="#bcc5d6"
-                  ref={passwordInputRef}
-                  style={{
-                    backgroundColor: "white",
-                    width: "85%",
-                    fontSize: 14,
-                    width: windowWidth * 0.85,
-                    maxWidth: windowWidth * 0.9,
-                  }}
-                  onChangeText={handleOnChangePassword}
-                  secureTextEntry={secretMap["password"]}
-                  right={
-                    <MuiTextInput.Icon
-                      onPress={handlePassToggle("password")}
-                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                      color="#fff"
-                    />
-                  }
-                />
-
-                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                  {error ? (
-                    <Text
-                      style={{
-                        color: "#D14343",
-                        alignSelf: "flex-start",
-                        fontWeight: "700",
-                        paddingLeft: windowWidth - windowWidth * 0.9,
-                      }}
-                    >
-                      {error}
-                    </Text>
-                  ) : null}
-                </View>
-              </View>
-            </View>
-          </Animated.View>
-        </View>
-
-        <KeyboardAvoidingView
-          style={{ flex: 1, justifyContent: "flex-end" }}
-          behavior="padding"
-        >
+            </Animated.View>
+          </View>
           <FooterActions
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleOnPressSecondary}
@@ -313,8 +308,8 @@ const LoginScreen = ({ navigation }) => {
             password={password}
             isLoading={verifyResult.isFetching || loginApiResult.isLoading}
           />
-        </KeyboardAvoidingView>
-      </LayoutView>
+        </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };

@@ -185,17 +185,36 @@ const ListScreen = () => {
   };
 
   return (
-    <LayoutView>
-      <GestureHandlerRootView style={styles.container}>
-        <Header
-          clientUtc={utcDate}
-          focusMode={focusMode}
-          onChangeDate={handleOnChangeDate}
-          onPressToday={handleOnPressToday}
-          onPressDate={handleOnPressDate}
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: "red" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      {/* <GestureHandlerRootView style={styles.container}> */}
+      <Header
+        clientUtc={utcDate}
+        focusMode={focusMode}
+        onChangeDate={handleOnChangeDate}
+        onPressToday={handleOnPressToday}
+        onPressDate={handleOnPressDate}
+      />
+      <ProgressBar focusMode={focusMode} progress={progress} />
+      <View
+        style={{
+          height: 400,
+
+          // transform: [{ translateY: posXanim }],
+        }}
+      >
+        <TaskList
+          tasks={tasks || []}
+          handleToggleTaskFocus={handleToggleTaskFocus}
+          handleToggleTaskComplete={handleToggleTaskComplete}
+          currentTask={currentTask}
+          isLoadingToggle={isLoadingToggle}
+          utcDate={utcDate}
         />
-        <ProgressBar focusMode={focusMode} progress={progress} />
-        {isLoading ? (
+      </View>
+      {/* {isLoading ? (
           <View style={{ flex: 1, paddingTop: 20 }}>
             <SkeletonList />
           </View>
@@ -223,27 +242,32 @@ const ListScreen = () => {
               />
             </KeyboardAvoidingView>
           </Animated.View>
-        )}
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
+        )} */}
+      <CalendarWidget
+        calendarOpen={calendarOpen}
+        toggleCalendar={handleToggleCalendar}
+        incompleteTasks={incompleteTasks}
+        currentDate={utcDate}
+        handleOnSelectDay={handleOnSelectDay}
+      />
+
+      {isFetching || !focusMode ? null : (
+        <MoveIncomplete
+          tasks={tasks}
           currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
+          isLoading={moveIncompleteTasksResult.isLoading}
+          onMoveIncomplete={handleMoveIncompleteTasks}
         />
+      )}
 
-        {isFetching || !focusMode ? null : (
-          <MoveIncomplete
-            tasks={tasks}
-            currentDate={utcDate}
-            isLoading={moveIncompleteTasksResult.isLoading}
-            onMoveIncomplete={handleMoveIncompleteTasks}
-          />
-        )}
+      <AddItem
+        handleCreateNewTask={handleCreateNewTask}
+        currentDate={utcDate}
+      />
 
-        <IntroBottomSheet />
-      </GestureHandlerRootView>
-    </LayoutView>
+      <IntroBottomSheet />
+      {/* </GestureHandlerRootView> */}
+    </KeyboardAvoidingView>
   );
 };
 

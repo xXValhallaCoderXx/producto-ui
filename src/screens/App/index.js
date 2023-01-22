@@ -2,11 +2,16 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import DashboardScreen from "./Today";
 import { Animated } from "react-native";
 import ProfileScreen from "./Profile";
-import { TouchableNativeFeedback, View } from "react-native";
+import {
+  TouchableNativeFeedback,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+} from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useTheme } from "@rneui/themed";
-import LayoutView from "../../components/LayoutView";
 
+const { width, height } = Dimensions.get("window");
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const Tab = createBottomTabNavigator();
 
@@ -22,16 +27,21 @@ const buttonNativeFeedback = ({ children, style, ...props }) => (
 export default function App() {
   const { theme } = useTheme();
   return (
-    <LayoutView>
+    <KeyboardAvoidingView
+      style={{
+        width,
+        height,
+      }}
+    >
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: "gray",
           tabBarStyle: {
-            height: 65,
+            height: 85,
             paddingTop: 10,
-            paddingBottom: 10,
+            paddingBottom: 30,
           },
           tabBarButton: buttonNativeFeedback,
           tabBarIcon: ({ focused, color, size, ...rest }) => {
@@ -40,7 +50,12 @@ export default function App() {
               iconName = "list";
             } else if (route.name === "Account") {
               return (
-                <AnimatedIcon {...rest} name="person" size={20} color={color} />
+                <AnimatedIcon
+                  {...rest}
+                  name="person"
+                  size={size}
+                  color={color}
+                />
               );
             }
             return (
@@ -52,6 +67,6 @@ export default function App() {
         <Tab.Screen name="Today" component={DashboardScreen} />
         <Tab.Screen name="Account" component={ProfileScreen} />
       </Tab.Navigator>
-    </LayoutView>
+    </KeyboardAvoidingView>
   );
 }
