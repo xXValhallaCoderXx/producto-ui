@@ -1,4 +1,3 @@
-import { StyleSheet, View } from "react-native";
 import ProductoButton from "../../../components/Button";
 import { format } from "date-fns";
 
@@ -21,25 +20,15 @@ const MoveIncomplete = ({
   }
 
   return (
-    <View style={styles.container}>
-      <ProductoButton
-        onPress={onMoveIncomplete}
-        disabled={isLoading}
-        loading={isLoading}
-        containerStyle={{ width: 160, borderRadius: 8 }}
-        type="contained"
-        title="Move Incomplete"
-      />
-    </View>
+    <ProductoButton
+      onPress={onMoveIncomplete}
+      disabled={isLoading}
+      loading={isLoading}
+      containerStyle={{ width: 160, borderRadius: 8 }}
+      type="contained"
+      title="Move Incomplete"
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "flex-end"
-  },
-});
 
 export default MoveIncomplete;

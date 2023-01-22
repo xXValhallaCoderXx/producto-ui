@@ -18,8 +18,7 @@ const AddItem = ({ handleCreateNewTask }) => {
   };
 
   const handleOnPress = () => {
-  
-    if(!addTask){
+    if (!addTask) {
       setTaskName("");
       setAddTask(true);
       addTaskInputRef.current && addTaskInputRef.current.focus();
@@ -36,19 +35,20 @@ const AddItem = ({ handleCreateNewTask }) => {
     }
   };
 
-  if (!isToday) {
-    return null;
-  }
+  // if (!isToday) {
+  //   return null;
+  // }
 
   return (
     <View
-      style={{ marginTop: 35 }}
+      style={{ marginTop: 10 }}
       // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (
         <View>
           <View
             style={{
+              paddingLeft: 15,
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
@@ -72,12 +72,8 @@ const AddItem = ({ handleCreateNewTask }) => {
             </View>
             <View
               style={{
-                display: "flex",
-                flexDirection: "row",
-                flex: 3,
-                justifyContent: "flex-end",
                 marginTop: 10,
-                paddingRight: 10,
+                paddingRight: 4,
               }}
             >
               <CheckBox
@@ -101,10 +97,7 @@ const AddItem = ({ handleCreateNewTask }) => {
           buttonStyle={{
             display: "flex",
             justifyContent: "flex-start",
-          
           }}
-     
-          
           onPress={handleOnPress}
         >
           <MaterialIcons

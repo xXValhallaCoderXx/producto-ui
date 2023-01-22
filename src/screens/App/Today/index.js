@@ -4,7 +4,13 @@ import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, Animated, Platform, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  KeyboardAvoidingView,
+} from "react-native";
 import Header from "./Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
@@ -37,12 +43,13 @@ const ListScreen = () => {
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
 
-  const {
-    data: tasks,
-    isLoading,
-    isFetching,
-    error,
-  } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
+  const hehe = useGetTodaysTasksQuery(
+    { date: format(utcDate, "yyyy-MM-dd") }
+    // { pollingInterval: 5000 }
+  );
+  // console.log("HEHE: ", hehe);
+  const { data: tasks, isLoading, isFetching, error } = hehe;
+
   const [posY] = useState(new Animated.Value(0));
   const {
     data: incompleteTasks,
@@ -176,7 +183,7 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-  console.log("FOCUS MODE: ", focusMode);
+
   return (
     <LayoutView>
       <GestureHandlerRootView style={styles.container}>
@@ -190,13 +197,24 @@ const ListScreen = () => {
         <ProgressBar focusMode={focusMode} progress={progress} />
 
         <View
-          contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
-          style={{ flex: 1 }}
+          contentContainerStyle={{
+            justifyContent: "space-between",
+            flex: 1,
+          }}
+          style={{
+            flex: 1,
+            justifyContent: "space-between",
+          }}
         >
           <View
-            style={{ height: 80, display: "flex", justifyContent: "center" }}
+            style={{
+              height: 80,
+              display: "flex",
+              justifyContent: "center",
+              borderStartColor: "pink",
+            }}
           >
-            {isLoading || isFetching ? (
+            {isLoading ? (
               <View style={{ flex: 1, paddingTop: 20 }}>
                 <SkeletonList />
               </View>
@@ -204,21 +222,21 @@ const ListScreen = () => {
               <Animated.View
                 style={{ height: 400, transform: [{ translateY: posXanim }] }}
               >
-               <KeyboardAvoidingView>
-               <TaskList
-                  tasks={tasks || []}
-                  handleToggleTaskFocus={handleToggleTaskFocus}
-                  handleToggleTaskComplete={handleToggleTaskComplete}
-                  currentTask={currentTask}
-                  isLoadingToggle={isLoadingToggle}
-                  utcDate={utcDate}
-                />
+                <KeyboardAvoidingView>
+                  <TaskList
+                    tasks={tasks || []}
+                    handleToggleTaskFocus={handleToggleTaskFocus}
+                    handleToggleTaskComplete={handleToggleTaskComplete}
+                    currentTask={currentTask}
+                    isLoadingToggle={isLoadingToggle}
+                    utcDate={utcDate}
+                  />
 
-                <AddItem
-                  handleCreateNewTask={handleCreateNewTask}
-                  currentDate={utcDate}
-                />
-               </KeyboardAvoidingView>
+                  <AddItem
+                    handleCreateNewTask={handleCreateNewTask}
+                    currentDate={utcDate}
+                  />
+                </KeyboardAvoidingView>
               </Animated.View>
             )}
           </View>
