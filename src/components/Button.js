@@ -4,6 +4,7 @@ const ProductoButton = ({
   onPress,
   title,
   style,
+  size = "sm",
   type = "outlined",
   disabled,
   loading,
@@ -11,22 +12,12 @@ const ProductoButton = ({
   return (
     <Button
       mode={type}
-      size="sm"
+      size={size}
       onPress={onPress}
       style={{ borderRadius: 10, ...style }}
       labelStyle={{ fontWeight: "700" }}
       loading={loading}
       disabled={disabled}
-      // buttonStyle={{
-      //   borderColor: "transparent",
-      //   borderWidth: 0,
-      //   borderRadius: 30,
-      // }}
-      // containerStyle={{
-      //   width: "70%",
-      //   marginHorizontal: 50,
-      //   marginVertical: 10,
-      // }}
     >
       {title}
     </Button>

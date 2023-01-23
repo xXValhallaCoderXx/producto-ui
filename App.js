@@ -12,7 +12,6 @@ import store from "./src/config/store";
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
 import { ToastProvider } from "react-native-toast-notifications";
-import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import theme from "./src/shared/styles/theme";
 import Toast from "./src/components/Toast";

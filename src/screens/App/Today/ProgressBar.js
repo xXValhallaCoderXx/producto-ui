@@ -1,8 +1,9 @@
 import { View } from "react-native";
 import { LinearProgress } from "@rneui/themed";
 import { useTheme, Text } from "react-native-paper";
+import ProgressBar from "../../../components/ProgressBar";
 
-const ProgressBar = ({ focusMode, progress }) => {
+const ProgressBarContainer = ({ focusMode, progress }) => {
   const theme = useTheme();
 
   return (
@@ -17,7 +18,7 @@ const ProgressBar = ({ focusMode, progress }) => {
       >
         {focusMode && (
           <>
-            <LinearProgress
+            {/* <LinearProgress
               style={{
                 marginVertical: 15,
                 height: 15,
@@ -29,7 +30,10 @@ const ProgressBar = ({ focusMode, progress }) => {
               value={progress}
               color={theme.colors.primary}
               variant="determinate"
-            />
+            /> */}
+            <View style={{ flexGrow: 1 }}>
+              <ProgressBar progress={progress} />
+            </View>
             <Text
               h6
               style={{
@@ -48,4 +52,4 @@ const ProgressBar = ({ focusMode, progress }) => {
   );
 };
 
-export default ProgressBar;
+export default ProgressBarContainer;
