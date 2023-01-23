@@ -2,8 +2,6 @@ import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useTheme, Button, Checkbox } from "react-native-paper";
 import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-// import { useTheme, Button, CheckBox } from "@rneui/themed";
 
 const AddItem = ({ handleCreateNewTask }) => {
   const theme = useTheme();

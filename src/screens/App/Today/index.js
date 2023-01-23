@@ -212,7 +212,7 @@ const ListScreen = () => {
             </View>
           ) : (
             <View style={styles.container}>
-              <View style={{ flex: 0.8 }}>
+              <View style={{ flex: 0.9 }}>
                 <View style={{ flex: 0.9 }}>
                   <TaskList
                     tasks={tasks || []}
@@ -230,17 +230,6 @@ const ListScreen = () => {
                   </View>
                 </View>
               </View>
-
-              <View style={styles.moveIncomlpleteContainer}>
-                <View style={{ paddingBottom: 20 }}>
-                  <MoveIncomplete
-                    tasks={tasks}
-                    currentDate={utcDate}
-                    isLoading={moveIncompleteTasksResult.isLoading}
-                    onMoveIncomplete={handleMoveIncompleteTasks}
-                  />
-                </View>
-              </View>
             </View>
           )}
           <CalendarWidget
@@ -252,6 +241,17 @@ const ListScreen = () => {
           />
           <IntroBottomSheet />
         </KeyboardAvoidingView>
+
+        <View style={styles.moveIncomlpleteContainer}>
+          <View style={{ paddingBottom: 20 }}>
+            <MoveIncomplete
+              tasks={tasks}
+              currentDate={utcDate}
+              isLoading={moveIncompleteTasksResult.isLoading}
+              onMoveIncomplete={handleMoveIncompleteTasks}
+            />
+          </View>
+        </View>
       </GestureHandlerRootView>
     </TouchableWithoutFeedback>
   );
@@ -262,7 +262,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   moveIncomlpleteContainer: {
-    flex: 0.15,
+    // flex: 0.15,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
     justifyContent: "flex-end",
   },
 });
