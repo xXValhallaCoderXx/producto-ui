@@ -4,7 +4,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
-import { useTheme, Checkbox, List, Text } from "react-native-paper";
+import { useTheme, Checkbox, List } from "react-native-paper";
 import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IoniIcons from "react-native-vector-icons/Ionicons";
@@ -50,7 +50,9 @@ const DraggableListContainer = ({
   let countRef = useRef(0).current;
   let countTimer = useRef(null);
 
-  const handleOnBlur = async () => {
+  const handleOnBlur = async (e) => {
+    console.log("E ", e);
+    e.stopPropagation();
     setEditTask(null);
     setTaskValue("");
     await updateTaskApi({
@@ -64,46 +66,49 @@ const DraggableListContainer = ({
     setTaskValue(_value);
   };
 
+  const handleOnCheckTask = (_task) => () => {
+    onCheckTask(_task);
+  };
+
+  const onPressDelete = (_task) => () => {
+    console.log("LALAL");
+    handleOnPressDelete(_task.id);
+  };
+
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item.id === editTask) {
       return (
-        <List.Item>
-          <Text>asa</Text>
-        </List.Item>
-        // <ListItem key={item.id} onLongPress={drag}>
-        //   <ListItem.Content style={styles.listContent}>
-        //     <View style={styles.listRow}>
-        //       <TextInput
-        //         onChangeText={handleOnChange}
-        //         value={value}
-        //         onBlur={handleOnBlur}
-        //         autoFocus
-        //         underlineColorAndroid="transparent"
-        //         style={{
-        //           fontSize: 16,
-        //           backgroundColor: "white",
-        //         }}
-        //       />
-        //     </View>
-        //     <View
-        //       style={{
-        //         justifyContent: "flex-end",
-        //         ...styles.listRow,
-        //         marginRight: 15,
-        //         height: 35,
-        //       }}
-        //     >
-        //       <TouchableOpacity onPress={handleOnPressDelete(item.id)}>
-        //         <FontAwesome
-        //           name="trash-o"
-        //           color={"#6B7280"}
-        //           style={{ fontSize: 25 }}
-        //         />
-        //       </TouchableOpacity>
-        //     </View>
-        //     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
-        //   </ListItem.Content>
-        // </ListItem>
+        <View key={item.id} onLongPress={drag} style={styles.listContent}>
+          <View>
+            <TextInput
+              onChangeText={handleOnChange}
+              value={value}
+              onBlur={handleOnBlur}
+              autoFocus
+              underlineColorAndroid="transparent"
+              style={{
+                fontSize: 16,
+                backgroundColor: "white",
+              }}
+            />
+          </View>
+          <View
+            style={{
+              justifyContent: "flex-end",
+              ...styles.listRow,
+              marginRight: 15,
+              height: 35,
+            }}
+          >
+            <TouchableOpacity onPress={onPressDelete(item)}>
+              <FontAwesome
+                name="trash-o"
+                color={"#6B7280"}
+                style={{ fontSize: 25 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       );
     }
     return (
@@ -117,6 +122,7 @@ const DraggableListContainer = ({
           onLongPress={drag}
           onPress={() => {
             countRef++;
+            console.log("WHAT IS COUNT REF: ", countRef);
             if (countRef == 2) {
               clearTimeout(countTimer.current);
               countRef = 0;
@@ -125,21 +131,21 @@ const DraggableListContainer = ({
               setTaskValue(item.title);
             } else {
               countTimer.current = setTimeout(() => {
-                () => onCheckTask(item);
+                onCheckTask(item);
                 countRef = 0;
               }, 250);
             }
           }}
           style={{ borderBottomColor: "white", borderBottomWidth: "1px" }}
-          right={(props) => (
+          right={() => (
             <View style={{ paddingRight: 5 }}>
               <Checkbox.Android
                 status={item.completed ? "checked" : "unchecked"}
-                onPress={onCheckTask(item)}
+                onPress={handleOnCheckTask(item)}
               />
             </View>
           )}
-          left={(props) =>
+          left={() =>
             focusMode && currentDate === todayDate ? (
               <View style={{ justifyContent: "center" }}>
                 <IoniIcons
@@ -171,22 +177,20 @@ const DraggableListContainer = ({
       }}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
+      keyboardShouldPersistTaps="handled"
     />
   );
 };
 
 const styles = StyleSheet.create({
-  text: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
   listContent: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingLeft: 3,
+    paddingRight: 6,
+    height: 52,
   },
   listRow: {
     display: "flex",
@@ -196,36 +200,3 @@ const styles = StyleSheet.create({
 });
 
 export default DraggableListContainer;
-
-// <View style={styles.listRow}>
-// <TextInput
-//   // onChangeText={handleOnChange}
-//   value={item.title}
-//   // onBlur={handleOnBlur}
-//   underlineColorAndroid="transparent"
-//   style={{
-//     fontSize: 16,
-
-//     backgroundColor: "white",
-//   }}
-// />
-// </View>
-// <View
-// style={{
-//   justifyContent: "flex-end",
-//   ...styles.listRow,
-//   marginRight: 15,
-//   height: 35,
-// }}
-// >
-// <TouchableOpacity
-// //   onPress={handleOnPressDelete}
-// >
-//   {/* <FontAwesome
-//       name="trash-o"
-//       color={"#6B7280"}
-//       style={{ fontSize: 25 }}
-//     /> */}
-// </TouchableOpacity>
-// </View>
-// {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}

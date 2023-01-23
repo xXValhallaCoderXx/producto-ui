@@ -7,6 +7,7 @@ import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
+import { useToast } from "react-native-toast-notifications";
 
 const TaskList = ({
   tasks,
@@ -14,12 +15,13 @@ const TaskList = ({
   handleToggleTaskComplete,
   utcDate,
 }) => {
+  const toast = useToast();
   const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const focusMode = useSelector((state) => state.today.focusMode);
   const [value, setTaskValue] = useState("");
   const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
-  const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
+  // const onCheckTask = (_task) =>  handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
@@ -28,11 +30,21 @@ const TaskList = ({
     if (deleteTaskApiResults.isSuccess) {
       setIsDeleteModalVisible(false);
       setEditTask(null);
-      ToastAndroid.show(`Task deleted!`, ToastAndroid.SHORT);
+      toast.show("", {
+        type: "success",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Task created!`,
+        description: "",
+      });
+      // ToastAndroid.show(`Task deleted!`, ToastAndroid.SHORT);
     }
   }, [deleteTaskApiResults]);
 
-  const handleOnPressDelete = () => (_id) => {
+  const handleOnPressDelete = (_id) => {
+    console.log("DELETE TASK");
     setIsDeleteModalVisible(true);
     setEditTask(_id);
   };
@@ -66,7 +78,7 @@ const TaskList = ({
           })}
           handleOnPressDelete={handleOnPressDelete}
           utcDate={utcDate}
-          onCheckTask={onCheckTask}
+          onCheckTask={handleToggleTaskComplete}
           onToggleFocus={onToggleFocus}
         />
         // <ScrollView style={{ marginTop: 15, padding: 3 }}>

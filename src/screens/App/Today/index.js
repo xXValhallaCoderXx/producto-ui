@@ -19,6 +19,7 @@ import AddItem from "./AddItem";
 import MoveIncomplete from "./components/MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
+
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -183,8 +184,16 @@ const ListScreen = () => {
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
 
+  const handleKeyboardDismiss = (e) => {
+    // e.stopPropagation();
+    Keyboard.dismiss();
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    <TouchableWithoutFeedback
+      onPress={handleKeyboardDismiss}
+      accessible={false}
+    >
       <GestureHandlerRootView style={styles.container}>
         <KeyboardAvoidingView
           keyboardVerticalOffset={50}
