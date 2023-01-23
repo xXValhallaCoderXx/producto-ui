@@ -19,7 +19,7 @@ const DraggableListContainer = ({
   onToggleFocus,
 }) => {
   const [data, setData] = useState([]);
-  const { theme } = useTheme();
+  const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
 

@@ -48,7 +48,7 @@ const TodayHeader = ({
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
         <Text
           style={{
-            marginLeft: Platform.OS === "ios" ? -26 : -6,
+            marginLeft: Platform.OS === "ios" ? -28 : -6,
             alignSelf: "flex-start",
             fontWeight: "700",
             color: isToday ? theme.colors.primary : "#6B7280",
