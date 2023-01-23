@@ -9,7 +9,6 @@ const FooterActions = ({
   isLoading,
   disabledPrimary,
 }) => {
-  console.log("DISB: ", disabledPrimary)
   return (
     <View
       style={{

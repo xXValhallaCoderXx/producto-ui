@@ -59,7 +59,7 @@ const taskApi = api.injectEndpoints({
           optimisticUpdate.undo();
         }
       },
-      invalidatesTags: ["IncompleteTasks"]
+      invalidatesTags: ["IncompleteTasks"],
     }),
     toggleTaskFocus: builder.mutation({
       query: ({ id, focus, date }) => {
@@ -104,7 +104,7 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           // optimisticUpdate.undo();
-          dispatch(api.util.invalidateTags(['Tasks']))
+          dispatch(api.util.invalidateTags(["Tasks"]));
         }
       },
     }),
@@ -117,7 +117,10 @@ const taskApi = api.injectEndpoints({
           body: { title, deadline },
         };
       },
-      async onQueryStarted({ title, deadline, date }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(
+        { title, deadline, date },
+        { dispatch, queryFulfilled }
+      ) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
             draft.push({
@@ -126,8 +129,8 @@ const taskApi = api.injectEndpoints({
               id: Math.floor(Math.random() * 100),
               createdAt: deadline,
               deadline,
-              title
-            })
+              title,
+            });
             return draft;
           })
         );
@@ -135,7 +138,6 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           optimisticUpdate.undo();
-          console.log(e);
         }
       },
     }),
@@ -169,5 +171,5 @@ export const {
   useUpdateTaskMutation,
   useGetIncompleteDetailTasksQuery,
   useMoveSpecificTasksMutation,
-  useDeleteTaskMutation
+  useDeleteTaskMutation,
 } = taskApi;

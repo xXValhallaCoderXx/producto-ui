@@ -20,7 +20,6 @@ const authApi = api.injectEndpoints({
     }),
     verifyEmail: builder.query({
       query: ({ email }) => {
-        console.log("sssssss: ", email);
         return {
           url: `/auth/verify-email?email=${email}`,
           method: "GET",

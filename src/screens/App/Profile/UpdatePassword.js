@@ -87,7 +87,7 @@ const EditPassword = ({ navigation }) => {
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
-  console.log("FORMIK: ", formik.isValid);
+
   return (
     <View
       style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}

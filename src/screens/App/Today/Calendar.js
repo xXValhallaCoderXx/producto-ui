@@ -55,7 +55,7 @@ const CalendarWidget = ({
       setParsedIncomplete(parsedData);
     }
   }, [incompleteTasks, currentDate]);
-  // console.log("PARSED: ", parsedIncomplete);
+
   const onDayPress = useCallback((day) => {
     // setSelected(day.dateString);
     handleOnSelectDay(day);

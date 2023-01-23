@@ -51,7 +51,6 @@ const DraggableListContainer = ({
   let countTimer = useRef(null);
 
   const handleOnBlur = async (e) => {
-    console.log("E ", e);
     e.stopPropagation();
     setEditTask(null);
     setTaskValue("");
@@ -71,7 +70,6 @@ const DraggableListContainer = ({
   };
 
   const onPressDelete = (_task) => () => {
-    console.log("LALAL");
     handleOnPressDelete(_task.id);
   };
 
@@ -122,7 +120,6 @@ const DraggableListContainer = ({
           onLongPress={drag}
           onPress={() => {
             countRef++;
-            console.log("WHAT IS COUNT REF: ", countRef);
             if (countRef == 2) {
               clearTimeout(countTimer.current);
               countRef = 0;

@@ -44,7 +44,6 @@ const TaskList = ({
   }, [deleteTaskApiResults]);
 
   const handleOnPressDelete = (_id) => {
-    console.log("DELETE TASK");
     setIsDeleteModalVisible(true);
     setEditTask(_id);
   };

@@ -43,8 +43,6 @@ const LoginScreen = ({ navigation }) => {
     timestampRef,
   });
 
-  console.log("VERIFY: ", verifyResult);
-
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,
