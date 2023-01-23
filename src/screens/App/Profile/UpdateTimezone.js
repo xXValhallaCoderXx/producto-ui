@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import LayoutView from "../../../components/LayoutView";
 import * as Yup from "yup";
 import * as Localization from "expo-localization";
 import ProductoButton from "../../../components/Button";
-import { TextInput, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { useFormik } from "formik";
 import { useTheme } from "react-native-paper";
 import { View } from "react-native";

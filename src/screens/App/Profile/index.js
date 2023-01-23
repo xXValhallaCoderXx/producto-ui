@@ -16,9 +16,9 @@ const ProfileScreens = () => {
       }}
     >
       <Stack.Screen name="Accounts" component={ProfileScreen} />
-      {/* <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
+      <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
       <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
-      <Stack.Screen name="UpdateTimezone" component={UpdateTimezone} /> */}
+      <Stack.Screen name="UpdateTimezone" component={UpdateTimezone} />
     </Stack.Navigator>
   );
 };
