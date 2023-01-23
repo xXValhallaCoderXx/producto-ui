@@ -5,9 +5,8 @@ import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
-// import { Text as RnText } from "../../../components";
 import LogoutModal from "./components/LogoutModal";
-// import AutoTaskModal from "./components/AutoTaskModal";
+import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -243,14 +242,14 @@ const ProfileScreen = ({ navigation }) => {
         onPress={handleLogout}
         onCancel={toggleLogoutModal}
       />
-      {/* 
+
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading}
         isSuccess={moveTasksApiResult.isSuccess}
-      /> */}
+      />
     </View>
   );
 };

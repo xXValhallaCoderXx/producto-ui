@@ -1,14 +1,12 @@
-import { Button } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
-import { Text } from "../../../../components";
-import { useTheme, ListItem, CheckBox } from "@rneui/themed";
+import Button from "../../../../components/Button";
+import { Dialog, Text, useTheme, List, Checkbox } from "react-native-paper";
 import { useGetIncompleteDetailTasksQuery } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 
 const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
   const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
@@ -58,59 +56,52 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     setCheckedDates({});
     onCancel();
   };
-
   return (
-    <Dialog isVisible={isVisible} onBackdropPress={onHandleCancel}>
-      <Text type="h2" color="black">
-        Move Tasks
-      </Text>
-      <Text
-        type="h3"
-        color="secondary"
-        customStyle={{ marginTop: 15, marginBottom: 20 }}
-      >
-        Select incomplete tasks that you want to move to Today.
-      </Text>
-      {Object.keys(parsedDates).length === 0 && (
-        <Text type="h4">No Overdue Tasks</Text>
-      )}
-      <ScrollView style={{ maxHeight: 350 }}>
-        {Object.keys(parsedDates).map((k) => {
-          return (
-            <View key={k}>
-              <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-                <Text type="h3" color="secondary">
-                  {format(new Date(k), "EEE, d LLL yyyy")}
-                </Text>
-              </View>
+    <Dialog
+      style={{ backgroundColor: "white", borderRadius: 8 }}
+      visible={isVisible}
+      onDismiss={onHandleCancel}
+    >
+      <Dialog.Title>Move Tasks</Dialog.Title>
+      <Dialog.Content>
+        <Text
+          color="secondary"
+          customStyle={{ marginTop: 15, marginBottom: 20 }}
+        >
+          Select incomplete tasks that you want to move to Today.
+        </Text>
+        {Object.keys(parsedDates).length === 0 && <Text>No Overdue Tasks</Text>}
+        <ScrollView style={{ maxHeight: 350 }}>
+          {Object.keys(parsedDates).map((k) => {
+            return (
+              <View key={k}>
+                <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
+                  <Text color="secondary">
+                    {format(new Date(k), "EEE, d LLL yyyy")}
+                  </Text>
+                </View>
 
-              {parsedDates[k].map((item, _index) => {
-                return (
-                  <ListItem key={_index} containerStyle={{ padding: 7 }}>
-                    <ListItem.Content
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                      }}
-                    >
-                      <CheckBox
-                        checked={checkedDates[item.id]}
-                        onPress={onClickCheckbox(item)}
-                        containerStyle={{ padding: 0 }}
-                      />
-                      <Text type="h3" color="black">
-                        {item.title}
-                      </Text>
-                    </ListItem.Content>
-                  </ListItem>
-                );
-              })}
-            </View>
-          );
-        })}
-      </ScrollView>
+                {parsedDates[k].map((item, _index) => {
+                  return (
+                    <List.Item
+                      title={item.title}
+                      onPress={onClickCheckbox(item)}
+                      right={() => (
+                        <Checkbox.Android
+                          status={
+                            checkedDates[item.id] ? "checked" : "unchecked"
+                          }
+                          onPress={onClickCheckbox(item)}
+                        />
+                      )}
+                    />
+                  );
+                })}
+              </View>
+            );
+          })}
+        </ScrollView>
+      </Dialog.Content>
 
       <Dialog.Actions>
         <Button
