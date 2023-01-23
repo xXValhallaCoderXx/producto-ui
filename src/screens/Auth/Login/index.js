@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import debounce from "lodash.debounce";
 import * as SecureStore from "expo-secure-store";
-import { Text } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
@@ -12,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { TextInput as MuiTextInput } from "react-native-paper";
+import { TextInput as MuiTextInput, Text } from "react-native-paper";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
@@ -44,6 +43,8 @@ const LoginScreen = ({ navigation }) => {
     timestampRef,
   });
 
+  console.log("VERIFY: ", verifyResult);
+
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,
@@ -67,7 +68,11 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
-      setError(verifyResult?.error?.data?.message);
+      if (verifyResult?.error?.data?.message) {
+        setError(verifyResult?.error?.data?.message);
+      } else {
+        setError("Sorry, an unknown error occured");
+      }
     }
   }, [verifyResult]);
 

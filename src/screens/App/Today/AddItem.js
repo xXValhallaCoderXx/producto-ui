@@ -1,11 +1,13 @@
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { useTheme, Button, Checkbox } from "react-native-paper";
 import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useTheme, Button, CheckBox } from "@rneui/themed";
+// import { useTheme, Button, CheckBox } from "@rneui/themed";
 
 const AddItem = ({ handleCreateNewTask }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
+
   const isToday = useSelector((state) => state.today.isToday);
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
@@ -41,8 +43,8 @@ const AddItem = ({ handleCreateNewTask }) => {
 
   return (
     <View
-      style={{ marginTop: 10 }}
-      // keyboardShouldPersistTaps="handled"
+    // style={{ marginTop: 10 }}
+    // keyboardShouldPersistTaps="handled"
     >
       {addTask ? (
         <View>
@@ -76,7 +78,7 @@ const AddItem = ({ handleCreateNewTask }) => {
                 paddingRight: 4,
               }}
             >
-              <CheckBox
+              <Checkbox
                 checked={false}
                 containerStyle={{ padding: 0 }}
                 disabled={true}
@@ -92,18 +94,14 @@ const AddItem = ({ handleCreateNewTask }) => {
       ) : (
         <Button
           type="clear"
-          TouchableComponent={TouchableWithoutFeedback}
-          color={theme.colors.primary}
-          buttonStyle={{
-            display: "flex",
+          icon="plus"
+          contentStyle={{
             justifyContent: "flex-start",
           }}
+          TouchableComponent={TouchableWithoutFeedback}
+          color={theme.colors.primary}
           onPress={handleOnPress}
         >
-          <MaterialIcons
-            style={{ paddingRight: 4, color: theme.colors.primary }}
-            name={"add"}
-          />
           Add Item
         </Button>
       )}

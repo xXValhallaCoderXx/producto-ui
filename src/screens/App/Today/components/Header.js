@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -8,11 +8,11 @@ import {
 } from "react-native";
 import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
-import { Text as Text2 } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
-import { Text, useTheme } from "@rneui/themed";
+
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFocusMode, toggleIsToday } from "./today-slice";
+import { toggleFocusMode, toggleIsToday } from "../today-slice";
 
 const TodayHeader = ({
   focusMode,
@@ -21,7 +21,7 @@ const TodayHeader = ({
   onPressToday,
   onPressDate,
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector((state) => state.today.isToday);
 
@@ -46,7 +46,7 @@ const TodayHeader = ({
   return (
     <View>
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
-        <Text2
+        <Text
           style={{
             marginLeft: Platform.OS === "ios" ? -26 : -6,
             alignSelf: "flex-start",
@@ -57,7 +57,7 @@ const TodayHeader = ({
           {focusMode
             ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
             : null}
-        </Text2>
+        </Text>
       </TouchableOpacity>
       <View style={styles.container}>
         <View style={styles.row}>
@@ -69,7 +69,7 @@ const TodayHeader = ({
               >
                 <View>
                   <Text
-                    h4
+                    variant="titleLarge"
                     style={{
                       color: theme.colors.primary,
                       fontWeight: "600",

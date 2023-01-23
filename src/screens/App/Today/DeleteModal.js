@@ -1,15 +1,15 @@
 import { View } from "react-native";
-import { Button } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
-import { Text } from "../../../components";
-import { useTheme } from "@rneui/themed";
+import Button from "../../../components/Button";
+
+import { useTheme, Dialog, Text } from "react-native-paper";
+// import { Text } from "../../../components";
+// import { useTheme } from "@rneui/themed";
 
 const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   return (
-    <Dialog isVisible={isVisible} onBackdropPress={onCancel}>
-
-    <Text type="h2" color="black">
+    <Dialog visible={isVisible} onDismiss={onCancel}>
+      <Text type="h2" color="black">
         Confirm Delete
       </Text>
       <Text
@@ -17,30 +17,28 @@ const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
         color="secondary"
         customStyle={{ marginTop: 15, marginBottom: 20 }}
       >
-        Are you sure you want to delete this task?
+        Are you sure you want to delete this task?s
       </Text>
 
       <Dialog.Actions>
         <Button
           onPress={onPress}
           title="Delete"
-          containerStyle={{ paddingLeft: 25, width: 100 }}
-          titleStyle={{ color: theme.colors.error }}
+          // containerStyle={{ paddingLeft: 25, width: 100 }}
+          // titleStyle={{ color: theme.colors.error }}
           type="clear"
           disabled={isLoading}
           loading={isLoading}
         />
-    
-       <Button
+
+        <Button
           title="Cancel"
-          titleStyle={{ color: theme.colors.primary }}
+          // titleStyle={{ color: theme.colors.primary }}
           onPress={onCancel}
           type="clear"
           disabled={isLoading}
         />
-       
       </Dialog.Actions>
-
     </Dialog>
   );
 };

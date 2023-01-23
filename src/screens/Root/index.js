@@ -1,5 +1,4 @@
 import { Animated, Image, Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
@@ -12,7 +11,7 @@ import { useGetProfileQuery } from "../../api/user-api";
 const Stack = createNativeStackNavigator();
 
 const RootScreen = ({ navigation }) => {
-  const x = useGetProfileQuery();
+  useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
@@ -23,8 +22,10 @@ const RootScreen = ({ navigation }) => {
 
   useEffect(() => {
     async function prepare() {
-      Platform.OS === "android" && await NavigationBar.setBackgroundColorAsync("white");
-      Platform.OS === "android" && await NavigationBar.setButtonStyleAsync("dark");
+      Platform.OS === "android" &&
+        (await NavigationBar.setBackgroundColorAsync("white"));
+      Platform.OS === "android" &&
+        (await NavigationBar.setButtonStyleAsync("dark"));
     }
 
     const fadeAnimation = Animated.timing(fadeAnim, {

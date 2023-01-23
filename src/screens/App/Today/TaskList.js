@@ -4,7 +4,7 @@ import { View, StyleSheet, ToastAndroid } from "react-native";
 
 import { useUpdateTaskMutation } from "../../../api/task-api";
 import DeleteTaskModal from "./DeleteModal";
-import { Text, useTheme } from "@rneui/themed";
+import { Text, useTheme } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 
@@ -14,9 +14,9 @@ const TaskList = ({
   handleToggleTaskComplete,
   utcDate,
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
-  const focusMode = useSelector(state => state.today.focusMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const [value, setTaskValue] = useState("");
   const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
   const onCheckTask = (_task) => () => handleToggleTaskComplete(_task);
@@ -53,9 +53,7 @@ const TaskList = ({
         <View>
           <Text style={{ marginTop: 15 }}>
             Add a task to start your{" "}
-            <Text style={{ color: theme.colors.primary, fontWeight: "700" }}>
-              productivity!
-            </Text>
+            <Text style={{ fontWeight: "700" }}>productivity!</Text>
           </Text>
         </View>
       ) : (

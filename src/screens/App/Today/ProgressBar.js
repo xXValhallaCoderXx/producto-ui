@@ -1,8 +1,9 @@
 import { View } from "react-native";
-import { Text, useTheme, LinearProgress } from "@rneui/themed";
+import { LinearProgress } from "@rneui/themed";
+import { useTheme, Text } from "react-native-paper";
 
 const ProgressBar = ({ focusMode, progress }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
 
   return (
     <View style={{ paddingTop: 0, height: 20 }}>
@@ -24,7 +25,7 @@ const ProgressBar = ({ focusMode, progress }) => {
                 flex: 0.85,
               }}
               trackColor="#F2F2F2"
-              animation={{duration: 200}}
+              animation={{ duration: 200 }}
               value={progress}
               color={theme.colors.primary}
               variant="determinate"

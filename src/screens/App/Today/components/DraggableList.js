@@ -4,13 +4,12 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
+import { useTheme, Checkbox, List, Text } from "react-native-paper";
 import { useSelector } from "react-redux";
-import MaterialIcons from "react-native-vector-icons/FontAwesome";
-import { ListItem, CheckBox } from "@rneui/themed";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import IoniIcons from "react-native-vector-icons/Ionicons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { format } from "date-fns";
-import { useTheme } from "@rneui/themed";
-import IoniIcons from "react-native-vector-icons/Ionicons";
 
 const DraggableListContainer = ({
   tasks,
@@ -68,47 +67,54 @@ const DraggableListContainer = ({
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item.id === editTask) {
       return (
-        <ListItem key={item.id} onLongPress={drag}>
-          <ListItem.Content style={styles.listContent}>
-            <View style={styles.listRow}>
-              <TextInput
-                onChangeText={handleOnChange}
-                value={value}
-                onBlur={handleOnBlur}
-                autoFocus
-                underlineColorAndroid="transparent"
-                style={{
-                  fontSize: 16,
-                  backgroundColor: "white",
-                }}
-              />
-            </View>
-            <View
-              style={{
-                justifyContent: "flex-end",
-                ...styles.listRow,
-                marginRight: 15,
-                height: 35,
-              }}
-            >
-              <TouchableOpacity onPress={handleOnPressDelete(item.id)}>
-                <MaterialIcons
-                  name="trash-o"
-                  color={"#6B7280"}
-                  style={{ fontSize: 25 }}
-                />
-              </TouchableOpacity>
-            </View>
-            {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
-          </ListItem.Content>
-        </ListItem>
+        <List.Item>
+          <Text>asa</Text>
+        </List.Item>
+        // <ListItem key={item.id} onLongPress={drag}>
+        //   <ListItem.Content style={styles.listContent}>
+        //     <View style={styles.listRow}>
+        //       <TextInput
+        //         onChangeText={handleOnChange}
+        //         value={value}
+        //         onBlur={handleOnBlur}
+        //         autoFocus
+        //         underlineColorAndroid="transparent"
+        //         style={{
+        //           fontSize: 16,
+        //           backgroundColor: "white",
+        //         }}
+        //       />
+        //     </View>
+        //     <View
+        //       style={{
+        //         justifyContent: "flex-end",
+        //         ...styles.listRow,
+        //         marginRight: 15,
+        //         height: 35,
+        //       }}
+        //     >
+        //       <TouchableOpacity onPress={handleOnPressDelete(item.id)}>
+        //         <FontAwesome
+        //           name="trash-o"
+        //           color={"#6B7280"}
+        //           style={{ fontSize: 25 }}
+        //         />
+        //       </TouchableOpacity>
+        //     </View>
+        //     {/* <ListItem.Subtitle>what</ListItem.Subtitle> */}
+        //   </ListItem.Content>
+        // </ListItem>
       );
     }
     return (
       <ScaleDecorator>
-        <ListItem
+        <List.Item
+          title={item.title}
+          titleStyle={{
+            color: item.completed ? "gray" : "black",
+            textDecorationLine: item.completed ? "line-through" : "none",
+          }}
           onLongPress={drag}
-
           onPress={() => {
             countRef++;
             if (countRef == 2) {
@@ -124,41 +130,32 @@ const DraggableListContainer = ({
               }, 250);
             }
           }}
-          key={item.id}
-        >
-          <ListItem.Content style={styles.listContent}>
-            <View style={styles.listRow}>
-              {focusMode && currentDate === todayDate && (
+          style={{ borderBottomColor: "white", borderBottomWidth: "1px" }}
+          right={(props) => (
+            <View style={{ paddingRight: 5 }}>
+              <Checkbox.Android
+                status={item.completed ? "checked" : "unchecked"}
+                onPress={onCheckTask(item)}
+              />
+            </View>
+          )}
+          left={(props) =>
+            focusMode && currentDate === todayDate ? (
+              <View style={{ justifyContent: "center" }}>
                 <IoniIcons
                   style={{
                     fontSize: 22,
-                    marginRight: 20,
+                    marginRight: 10,
                     transform: [{ rotate: "45deg" }],
                   }}
                   color={item.focus ? theme.colors.primary : "black"}
                   name={"key-outline"}
                   onPress={onToggleFocus(item)}
                 />
-              )}
-              <ListItem.Title
-                style={{
-                  color: item.completed ? "gray" : "black",
-                  textDecorationLine: item.completed ? "line-through" : "none",
-                }}
-              >
-                {item.title}
-              </ListItem.Title>
-            </View>
-            <View style={{ marginRight: -10 }}>
-              <CheckBox
-                checked={item.completed}
-                containerStyle={{ padding: 0 }}
-                onPress={onCheckTask(item)}
-                // disabled={isLoadingToggle}
-              />
-            </View>
-          </ListItem.Content>
-        </ListItem>
+              </View>
+            ) : null
+          }
+        />
       </ScaleDecorator>
     );
   };
@@ -224,7 +221,7 @@ export default DraggableListContainer;
 // <TouchableOpacity
 // //   onPress={handleOnPressDelete}
 // >
-//   {/* <MaterialIcons
+//   {/* <FontAwesome
 //       name="trash-o"
 //       color={"#6B7280"}
 //       style={{ fontSize: 25 }}
