@@ -5,9 +5,9 @@ import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
-import { Text as RnText } from "../../../components";
-import LogoutModal from "./components/LogoutModal";
-import AutoTaskModal from "./components/AutoTaskModal";
+// import { Text as RnText } from "../../../components";
+// import LogoutModal from "./components/LogoutModal";
+// import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -48,9 +48,9 @@ const ProfileScreen = ({ navigation }) => {
   const toggleAutoTaskModal = async () => {
     setisAutoTaskModalVisible(!isAutoTaskModalVisible);
     // if (!data?.prefs?.autoMove) {
-      
+
     // }
- 
+
     // toast.show("", {
     //   type: "success",
     //   duration: 2500,
@@ -109,13 +109,9 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.screenContainer}>
       <View style={styles.container}>
         <View style={{ flex: 5 }}>
-          <RnText
-            customStyle={{ marginBottom: 10 }}
-            type="h4"
-            color="secondary"
-          >
+          <Text customStyle={{ marginBottom: 10 }} type="h4" color="secondary">
             ACCOUNT
-          </RnText>
+          </Text>
 
           {isLoading ? (
             <View style={{ marginBottom: 10 }}>
@@ -162,13 +158,9 @@ const ProfileScreen = ({ navigation }) => {
           )}
         </View>
         <View style={{ flex: 9 }}>
-          <RnText
-            type="h4"
-            color="secondary"
-            customStyle={{ marginBottom: 20 }}
-          >
+          <Text type="h4" color="secondary" customStyle={{ marginBottom: 20 }}>
             APP SETTINGS
-          </RnText>
+          </Text>
 
           {isLoading ? (
             <View style={{ marginBottom: 10 }}>
@@ -227,24 +219,26 @@ const ProfileScreen = ({ navigation }) => {
           <Button
             type="text"
             TouchableComponent={TouchableOpacity}
-            labelStyle={{ color: colors.secondary, fontSize: 16 }}
+            labelStyle={{ color: colors.secondary, fontSize: 26 }}
             onPress={toggleLogoutModal}
             icon={"door"}
           >
-            Logout
+            <Text style={{ justifyContent: "center", fontSize: 16 }}>
+              Logout
+            </Text>
           </Button>
         </View>
         <View style={{ flex: 2 }}>
-          <RnText
+          <Text
             type="h4"
             color="secondary"
             customStyle={{ textAlign: "center" }}
           >
             v0.0.1
-          </RnText>
+          </Text>
         </View>
       </View>
-      <LogoutModal
+      {/* <LogoutModal
         isVisible={isLogoutModalVisible}
         onPress={handleLogout}
         onCancel={toggleLogoutModal}
@@ -255,7 +249,7 @@ const ProfileScreen = ({ navigation }) => {
         onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading}
         isSuccess={moveTasksApiResult.isSuccess}
-      />
+      /> */}
     </View>
   );
 };
