@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from "react";
-import { Platform, View, Text } from "react-native";
+import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { Provider } from "react-redux";
 import store from "./src/config/store";
 import { MD3LightTheme as DefaultTheme } from "react-native-paper";
@@ -19,7 +19,6 @@ import Toast from "./src/components/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient({});
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -88,20 +87,18 @@ export default function App() {
           <ToastProvider
             renderToast={(toastOptions) => <Toast toast={toastOptions} />}
           >
-            <QueryClientProvider client={queryClient}>
-              <PaperProvider theme={theme2}>
-                {/* <StatusBar style="dark" backgroundColor="white" /> */}
-                <NavigationContainer>
-                  <Stack.Navigator
-                    screenOptions={() => ({
-                      headerShown: false,
-                    })}
-                  >
-                    <Stack.Screen name="Root" component={RootScreens} />
-                  </Stack.Navigator>
-                </NavigationContainer>
-              </PaperProvider>
-            </QueryClientProvider>
+            <PaperProvider theme={theme2}>
+              {/* <StatusBar style="dark" backgroundColor="white" /> */}
+              <NavigationContainer>
+                <Stack.Navigator
+                  screenOptions={() => ({
+                    headerShown: false,
+                  })}
+                >
+                  <Stack.Screen name="Root" component={RootScreens} />
+                </Stack.Navigator>
+              </NavigationContainer>
+            </PaperProvider>
           </ToastProvider>
         </Provider>
       </SafeAreaView>
