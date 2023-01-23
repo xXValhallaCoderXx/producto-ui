@@ -6,7 +6,7 @@ import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 // import { Text as RnText } from "../../../components";
-// import LogoutModal from "./components/LogoutModal";
+import LogoutModal from "./components/LogoutModal";
 // import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
 
@@ -228,7 +228,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </Button>
         </View>
-        <View style={{ flex: 2 }}>
+        <View style={{ flex: 2, alignItems: "center" }}>
           <Text
             type="h4"
             color="secondary"
@@ -238,11 +238,12 @@ const ProfileScreen = ({ navigation }) => {
           </Text>
         </View>
       </View>
-      {/* <LogoutModal
+      <LogoutModal
         isVisible={isLogoutModalVisible}
         onPress={handleLogout}
         onCancel={toggleLogoutModal}
       />
+      {/* 
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}

@@ -1,22 +1,24 @@
-import { Button } from "@rneui/themed";
-import { Dialog } from "@rneui/themed";
-import { Text } from "../../../../components";
-import { useTheme } from "@rneui/themed";
+import Button from "../../../../components/Button";
+import { Dialog, Text, useTheme } from "react-native-paper";
 
 const LogoutModal = ({ isVisible, onPress, onCancel }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   return (
-    <Dialog isVisible={isVisible} onBackdropPress={onCancel}>
-      <Text type="h2" color="black">
-        Confim
-      </Text>
-      <Text
-        type="h3"
-        color="secondary"
-        customStyle={{ marginTop: 15, marginBottom: 20 }}
-      >
-        Are you sure you want to logout?
-      </Text>
+    <Dialog
+      style={{ backgroundColor: "white", borderRadius: 8 }}
+      visible={isVisible}
+      onDismiss={onCancel}
+    >
+      <Dialog.Title>Confim</Dialog.Title>
+      <Dialog.Content>
+        <Text
+          type="h3"
+          color="secondary"
+          customStyle={{ marginTop: 15, marginBottom: 20 }}
+        >
+          Are you sure you want to logout?
+        </Text>
+      </Dialog.Content>
 
       <Dialog.Actions>
         <Button
