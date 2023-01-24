@@ -45,7 +45,7 @@ const AddItem = ({ handleCreateNewTask }) => {
         <View>
           <View
             style={{
-              paddingLeft: 15,
+              // paddingLeft: 15,
               flexDirection: "row",
               justifyContent: "space-between",
             }}
@@ -69,7 +69,7 @@ const AddItem = ({ handleCreateNewTask }) => {
             <View
               style={{
                 marginTop: 10,
-                paddingRight: 4,
+                paddingRight: 10,
               }}
             >
               <Checkbox

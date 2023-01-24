@@ -27,6 +27,7 @@ export default function App() {
         headerShown: false,
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: 75,
           paddingTop: 10,

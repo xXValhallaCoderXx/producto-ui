@@ -196,35 +196,36 @@ const ListScreen = () => {
       onPress={handleKeyboardDismiss}
       accessible={false}
     >
-      <View style={styles.container}>
-        <KeyboardAvoidingView
-          keyboardVerticalOffset={50}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            paddingHorizontal: 20,
-            paddingTop: 10,
-          }}
-        >
-          <View style={{ paddingHorizontal: 5 }}>
-            <Header
-              clientUtc={utcDate}
-              focusMode={focusMode}
-              onChangeDate={handleOnChangeDate}
-              onPressToday={handleOnPressToday}
-              onPressDate={handleOnPressDate}
-            />
-            <ProgressBar focusMode={focusMode} progress={progress} />
-          </View>
+      {/* <View style={styles.container}> */}
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+          paddingHorizontal: 20,
+          paddingTop: 10,
+        }}
+      >
+        <View style={{ paddingHorizontal: 5 }}>
+          <Header
+            clientUtc={utcDate}
+            focusMode={focusMode}
+            onChangeDate={handleOnChangeDate}
+            onPressToday={handleOnPressToday}
+            onPressDate={handleOnPressDate}
+          />
+          <ProgressBar focusMode={focusMode} progress={progress} />
+        </View>
 
-          {isLoading ? (
-            <View style={{ marginTop: 15 }}>
-              <SkeletonList />
-            </View>
-          ) : (
-            <View style={styles.container}>
-              <View style={{ flex: 0.9 }}>
+        {isLoading ? (
+          <View style={{ marginTop: 15 }}>
+            <SkeletonList />
+          </View>
+        ) : (
+          <View style={styles.container}>
+            <View style={{ flex: 0.9 }}>
+              <View style={{ flex: 0.9, paddingTop: 10 }}>
                 <TaskList
                   tasks={tasks || []}
                   handleToggleTaskFocus={handleToggleTaskFocus}
@@ -243,40 +244,19 @@ const ListScreen = () => {
                 )}
               </View>
             </View>
-            // <View style={styles.container}>
-            //   <View style={{ flex: 0.9 }}>
-            //     <View style={{ flex: 0.9 }}>
-            //       <TaskList
-            //         tasks={tasks || []}
-            //         handleToggleTaskFocus={handleToggleTaskFocus}
-            //         handleToggleTaskComplete={handleToggleTaskComplete}
-            //         currentTask={currentTask}
-            //         isLoadingToggle={isLoadingToggle}
-            //         utcDate={utcDate}
-            //       />
-            //       {!editMode && (
-            //         <View style={{ marginTop: 15 }}>
-            //           <AddItem
-            //             handleCreateNewTask={handleCreateNewTask}
-            //             currentDate={utcDate}
-            //           />
-            //         </View>
-            //       )}
-            //     </View>
-            //   </View>
-            // </View>
-          )}
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
-            currentDate={utcDate}
-            handleOnSelectDay={handleOnSelectDay}
-          />
-          <IntroBottomSheet />
-        </KeyboardAvoidingView>
+          </View>
+        )}
+        <CalendarWidget
+          calendarOpen={calendarOpen}
+          toggleCalendar={handleToggleCalendar}
+          incompleteTasks={incompleteTasks}
+          currentDate={utcDate}
+          handleOnSelectDay={handleOnSelectDay}
+        />
+        <IntroBottomSheet />
+      </KeyboardAvoidingView>
 
-        <View style={styles.moveIncomlpleteContainer}>
+      {/* <View style={styles.moveIncomlpleteContainer}>
           <View style={{ paddingBottom: 20 }}>
             <MoveIncomplete
               tasks={tasks}
@@ -285,8 +265,8 @@ const ListScreen = () => {
               onMoveIncomplete={handleMoveIncompleteTasks}
             />
           </View>
-        </View>
-      </View>
+        </View> */}
+      {/* </View> */}
     </TouchableWithoutFeedback>
   );
 };

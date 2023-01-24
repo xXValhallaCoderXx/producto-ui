@@ -107,7 +107,7 @@ const TodayHeader = ({
         {isToday ? (
           <EvilIcon
             onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
-            style={{ fontSize: 40, paddingRight: 8 }}
+            style={{ fontSize: 40 }}
             color={theme.colors.primary}
             name={focusMode ? "unlock" : "lock"}
           />
