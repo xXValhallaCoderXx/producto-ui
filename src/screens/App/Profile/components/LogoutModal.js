@@ -12,7 +12,6 @@ const LogoutModal = ({ isVisible, onPress, onCancel }) => {
       <Dialog.Title>Confim</Dialog.Title>
       <Dialog.Content>
         <Text
-          type="h3"
           color="secondary"
           customStyle={{ marginTop: 15, marginBottom: 20 }}
         >

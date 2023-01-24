@@ -4,7 +4,7 @@ import ProgressBar from "../../../components/ProgressBar";
 
 const ProgressBarContainer = ({ focusMode, progress }) => {
   const theme = useTheme();
-
+  console.log("PROPGRESS: ", progress);
   return (
     <View style={{ paddingTop: 0, height: 20 }}>
       <View
@@ -17,21 +17,8 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
       >
         {focusMode && (
           <>
-            {/* <LinearProgress
-              style={{
-                marginVertical: 15,
-                height: 15,
-                borderRadius: 8,
-                flex: 0.85,
-              }}
-              trackColor="#F2F2F2"
-              animation={{ duration: 200 }}
-              value={progress}
-              color={theme.colors.primary}
-              variant="determinate"
-            /> */}
             <View style={{ flexGrow: 1 }}>
-              <ProgressBar progress={progress} />
+              <ProgressBar progress={isNaN(progress) ? 0 : progress} />
             </View>
             <Text
               h6

@@ -5,10 +5,11 @@ import DraggableFlatList, {
 import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useTheme, Checkbox, List } from "react-native-paper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
+import { toggleEditMode } from "../today-slice";
 import { format } from "date-fns";
 
 const DraggableListContainer = ({
@@ -18,6 +19,7 @@ const DraggableListContainer = ({
   onCheckTask,
   onToggleFocus,
 }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
@@ -54,6 +56,7 @@ const DraggableListContainer = ({
     e.stopPropagation();
     setEditTask(null);
     setTaskValue("");
+    dispatch(toggleEditMode({ editMode: false }));
     await updateTaskApi({
       id: editTask,
       title: value,
@@ -126,6 +129,7 @@ const DraggableListContainer = ({
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               setEditTask(item.id);
               setTaskValue(item.title);
+              dispatch(toggleEditMode({ editMode: true }));
             } else {
               countTimer.current = setTimeout(() => {
                 onCheckTask(item);

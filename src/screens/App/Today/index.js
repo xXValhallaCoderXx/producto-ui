@@ -41,6 +41,7 @@ const ListScreen = () => {
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
+  const editMode = useSelector((state) => state.today.editMode);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
 
@@ -231,12 +232,14 @@ const ListScreen = () => {
                     isLoadingToggle={isLoadingToggle}
                     utcDate={utcDate}
                   />
-                  <View style={{ marginTop: 15 }}>
-                    <AddItem
-                      handleCreateNewTask={handleCreateNewTask}
-                      currentDate={utcDate}
-                    />
-                  </View>
+                  {!editMode && (
+                    <View style={{ marginTop: 15 }}>
+                      <AddItem
+                        handleCreateNewTask={handleCreateNewTask}
+                        currentDate={utcDate}
+                      />
+                    </View>
+                  )}
                 </View>
               </View>
             </View>
