@@ -12,11 +12,7 @@ const DeleteTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
     >
       <Dialog.Title>Confirm Delete</Dialog.Title>
       <Dialog.Content>
-        <Text
-          type="h3"
-          color="secondary"
-          customStyle={{ marginTop: 15, marginBottom: 20 }}
-        >
+        <Text customStyle={{ marginTop: 15, marginBottom: 20 }}>
           Are you sure you want to delete this task?
         </Text>
       </Dialog.Content>

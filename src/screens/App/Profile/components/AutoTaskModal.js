@@ -62,11 +62,17 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
       visible={isVisible}
       onDismiss={onHandleCancel}
     >
-      <Dialog.Title>Move Tasks</Dialog.Title>
+      <Dialog.Title style={{ fontSize: 24, fontWeight: "600" }}>
+        Move Tasks
+      </Dialog.Title>
       <Dialog.Content>
         <Text
-          color="secondary"
-          customStyle={{ marginTop: 15, marginBottom: 20 }}
+          style={{
+            marginBottom: 20,
+            color: "#6B7280",
+            fontSize: 16,
+            fontWeight: "400",
+          }}
         >
           Select incomplete tasks that you want to move to Today.
         </Text>
@@ -76,7 +82,13 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
             return (
               <View key={k}>
                 <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-                  <Text color="secondary">
+                  <Text
+                    style={{
+                      color: "#6B7280",
+                      fontWeight: "600",
+                      fontSize: 16,
+                    }}
+                  >
                     {format(new Date(k), "EEE, d LLL yyyy")}
                   </Text>
                 </View>
@@ -84,6 +96,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
                 {parsedDates[k].map((item, _index) => {
                   return (
                     <List.Item
+                      key={item.id}
                       title={item.title}
                       onPress={onClickCheckbox(item)}
                       right={() => (
@@ -105,17 +118,17 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
 
       <Dialog.Actions>
         <Button
+          title="Cancel"
+          titleStyle={{ color: theme.colors.primary }}
+          onPress={onHandleCancel}
+          type="clear"
+        />
+        <Button
           onPress={onClickConfirm}
           title="Confirm"
           // disabled={Object.keys(parsedDates).length === 0}
           containerStyle={{ paddingLeft: 25 }}
           titleStyle={{ color: theme.colors.primary }}
-          type="clear"
-        />
-        <Button
-          title="Cancel"
-          titleStyle={{ color: theme.colors.primary }}
-          onPress={onHandleCancel}
           type="clear"
         />
       </Dialog.Actions>

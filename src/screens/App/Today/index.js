@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
+
 import {
   StyleSheet,
   View,
@@ -189,13 +190,13 @@ const ListScreen = () => {
     // e.stopPropagation();
     Keyboard.dismiss();
   };
-
+  console.log("TASLS: ", tasks);
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}
       accessible={false}
     >
-      <GestureHandlerRootView style={styles.container}>
+      <View style={styles.container}>
         <KeyboardAvoidingView
           keyboardVerticalOffset={50}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -216,33 +217,54 @@ const ListScreen = () => {
             />
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
+
           {isLoading ? (
-            <View>
+            <View style={{ marginTop: 15 }}>
               <SkeletonList />
             </View>
           ) : (
             <View style={styles.container}>
               <View style={{ flex: 0.9 }}>
-                <View style={{ flex: 0.9 }}>
-                  <TaskList
-                    tasks={tasks || []}
-                    handleToggleTaskFocus={handleToggleTaskFocus}
-                    handleToggleTaskComplete={handleToggleTaskComplete}
-                    currentTask={currentTask}
-                    isLoadingToggle={isLoadingToggle}
-                    utcDate={utcDate}
-                  />
-                  {!editMode && (
-                    <View style={{ marginTop: 15 }}>
-                      <AddItem
-                        handleCreateNewTask={handleCreateNewTask}
-                        currentDate={utcDate}
-                      />
-                    </View>
-                  )}
-                </View>
+                <TaskList
+                  tasks={tasks || []}
+                  handleToggleTaskFocus={handleToggleTaskFocus}
+                  handleToggleTaskComplete={handleToggleTaskComplete}
+                  currentTask={currentTask}
+                  isLoadingToggle={isLoadingToggle}
+                  utcDate={utcDate}
+                />
+                {!editMode && (
+                  <View style={{ marginTop: 15 }}>
+                    <AddItem
+                      handleCreateNewTask={handleCreateNewTask}
+                      currentDate={utcDate}
+                    />
+                  </View>
+                )}
               </View>
             </View>
+            // <View style={styles.container}>
+            //   <View style={{ flex: 0.9 }}>
+            //     <View style={{ flex: 0.9 }}>
+            //       <TaskList
+            //         tasks={tasks || []}
+            //         handleToggleTaskFocus={handleToggleTaskFocus}
+            //         handleToggleTaskComplete={handleToggleTaskComplete}
+            //         currentTask={currentTask}
+            //         isLoadingToggle={isLoadingToggle}
+            //         utcDate={utcDate}
+            //       />
+            //       {!editMode && (
+            //         <View style={{ marginTop: 15 }}>
+            //           <AddItem
+            //             handleCreateNewTask={handleCreateNewTask}
+            //             currentDate={utcDate}
+            //           />
+            //         </View>
+            //       )}
+            //     </View>
+            //   </View>
+            // </View>
           )}
           <CalendarWidget
             calendarOpen={calendarOpen}
@@ -264,7 +286,7 @@ const ListScreen = () => {
             />
           </View>
         </View>
-      </GestureHandlerRootView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -272,6 +294,7 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   moveIncomlpleteContainer: {
     // flex: 0.15,

@@ -40,16 +40,12 @@ const AddItem = ({ handleCreateNewTask }) => {
   // }
 
   return (
-    <View
-    // style={{ marginTop: 10 }}
-    // keyboardShouldPersistTaps="handled"
-    >
+    <View>
       {addTask ? (
         <View>
           <View
             style={{
               paddingLeft: 15,
-              display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
             }}
@@ -95,6 +91,7 @@ const AddItem = ({ handleCreateNewTask }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
+            marginLeft: -8,
           }}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}

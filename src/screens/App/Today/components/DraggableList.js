@@ -118,6 +118,8 @@ const DraggableListContainer = ({
           title={item.title}
           titleStyle={{
             color: item.completed ? "gray" : "black",
+
+            marginLeft: !focusMode ? -10 : 0,
             textDecorationLine: item.completed ? "line-through" : "none",
           }}
           onLongPress={drag}
@@ -137,9 +139,9 @@ const DraggableListContainer = ({
               }, 250);
             }
           }}
-          style={{ borderBottomColor: "white", borderBottomWidth: "1px" }}
+          style={{ borderBottomColor: "white", borderBottomWidth: 1 }}
           right={() => (
-            <View style={{ paddingRight: 5 }}>
+            <View>
               <Checkbox.Android
                 status={item.completed ? "checked" : "unchecked"}
                 onPress={handleOnCheckTask(item)}
@@ -185,7 +187,6 @@ const DraggableListContainer = ({
 
 const styles = StyleSheet.create({
   listContent: {
-    display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -194,7 +195,6 @@ const styles = StyleSheet.create({
     height: 52,
   },
   listRow: {
-    display: "flex",
     alignItems: "center",
     flexDirection: "row",
   },

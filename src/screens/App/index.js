@@ -28,9 +28,9 @@ export default function App() {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
         tabBarStyle: {
-          height: 85,
+          height: 75,
           paddingTop: 10,
-          paddingBottom: 30,
+          paddingBottom: 10,
         },
         tabBarButton: buttonNativeFeedback,
         tabBarIcon: ({ focused, color, size, ...rest }) => {

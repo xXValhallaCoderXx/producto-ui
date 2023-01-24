@@ -46,18 +46,6 @@ const ProfileScreen = ({ navigation }) => {
 
   const toggleAutoTaskModal = async () => {
     setisAutoTaskModalVisible(!isAutoTaskModalVisible);
-    // if (!data?.prefs?.autoMove) {
-
-    // }
-
-    // toast.show("", {
-    //   type: "success",
-    //   duration: 2500,
-    //   offset: 100,
-    //   animationType: "zoom-in",
-    //   placement: "top",
-    //   title: "Auto Tasks Updated!",
-    // });
   };
 
   const handleCloseModal = () => {
@@ -82,7 +70,7 @@ const ProfileScreen = ({ navigation }) => {
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: "Tasks have been moved!",
+      title: "Autotasks updated!",
     });
   };
 
@@ -108,12 +96,19 @@ const ProfileScreen = ({ navigation }) => {
     <View style={styles.screenContainer}>
       <View style={styles.container}>
         <View style={{ flex: 5 }}>
-          <Text customStyle={{ marginBottom: 10 }} type="h4" color="secondary">
+          <Text
+            style={{
+              color: "#6B7280",
+              letterSpacing: 0.5,
+              fontWeight: "600",
+              fontSize: 16,
+            }}
+          >
             ACCOUNT
           </Text>
 
           {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
+            <View style={{ marginBottom: 10, marginTop: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
           ) : (
@@ -157,12 +152,19 @@ const ProfileScreen = ({ navigation }) => {
           )}
         </View>
         <View style={{ flex: 9 }}>
-          <Text type="h4" color="secondary" customStyle={{ marginBottom: 20 }}>
+          <Text
+            style={{
+              color: "#6B7280",
+              letterSpacing: 0.5,
+              fontWeight: "600",
+              fontSize: 16,
+            }}
+          >
             APP SETTINGS
           </Text>
 
           {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
+            <View style={{ marginBottom: 10, marginTop: 10 }}>
               <SkeletonBox height={30} width={"100%"} />
             </View>
           ) : (
