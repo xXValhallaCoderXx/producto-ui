@@ -3,7 +3,12 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
@@ -217,17 +222,21 @@ const ProfileScreen = ({ navigation }) => {
         </View>
 
         <View style={{ flex: 5, alignItems: "flex-start" }}>
-          <Button
-            type="text"
-            TouchableComponent={TouchableOpacity}
-            labelStyle={{ color: colors.secondary, fontSize: 26 }}
-            onPress={toggleLogoutModal}
-            icon={"door"}
-          >
-            <Text style={{ justifyContent: "center", fontSize: 16 }}>
-              Logout
-            </Text>
-          </Button>
+          <View style={{ width: "100%" }}>
+            <Button
+              type="text"
+              TouchableComponent={TouchableWithoutFeedback}
+              style={{ width: "100%" }}
+              contentStyle={{ justifyContent: "flex-start" }}
+              labelStyle={{ color: colors.secondary, fontSize: 26 }}
+              onPress={toggleLogoutModal}
+              icon={"door"}
+            >
+              <Text style={{ justifyContent: "center", fontSize: 16 }}>
+                Logout
+              </Text>
+            </Button>
+          </View>
         </View>
         <View style={{ flex: 2, alignItems: "center" }}>
           <Text

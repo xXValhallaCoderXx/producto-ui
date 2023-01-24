@@ -166,7 +166,6 @@ const EditPassword = ({ navigation }) => {
         secureTextEntry={secretMap["confirmPassword"]}
         right={
           <TextInput.Icon
-            style={{ paddingBottom: 4 }}
             onPress={handlePassToggle("confirmPassword")}
             icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
           />

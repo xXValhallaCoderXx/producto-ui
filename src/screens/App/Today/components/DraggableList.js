@@ -136,7 +136,7 @@ const DraggableListContainer = ({
               countTimer.current = setTimeout(() => {
                 onCheckTask(item);
                 countRef = 0;
-              }, 250);
+              }, 200);
             }
           }}
           style={{ borderBottomColor: "white", borderBottomWidth: 1 }}
