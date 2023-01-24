@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import { LinearProgress } from "@rneui/themed";
 import { useTheme, Text } from "react-native-paper";
 import ProgressBar from "../../../components/ProgressBar";
 
