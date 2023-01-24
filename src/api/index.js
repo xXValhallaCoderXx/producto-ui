@@ -19,7 +19,7 @@ import axios from "axios";
 //     return headers;
 //   },
 // });
-console.log("WHAT IS THIS: ", Constants.default.manifest2.extra.expoClient.extra)
+
 const refetchBaseQuery = fetchBaseQuery({
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
   // baseUrl: `https://deep-mails-jog-116-86-1-104.loca.lt/api/v1`,
@@ -39,7 +39,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
   //
   try {
     result = await baseQuery(args, api, extraOptions);
-   
+
     if (
       result?.error?.status === 401 ||
       result?.error?.status === "FETCH_ERROR"
@@ -138,7 +138,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
   }
 };
 const baseQuery = fetchBaseQuery({
-  
   // baseUrl: `https://deep-mails-jog-116-86-1-104.loca.lt/api/v1`,
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
   baseUrl: `${Constants.default.manifest2.extra.expoClient.extra.baseUrl}/api/v1`,

@@ -4,7 +4,7 @@ import ProgressBar from "../../../components/ProgressBar";
 
 const ProgressBarContainer = ({ focusMode, progress }) => {
   const theme = useTheme();
-  console.log("PROPGRESS: ", progress);
+
   return (
     <View style={{ paddingTop: 0, height: 20 }}>
       <View
