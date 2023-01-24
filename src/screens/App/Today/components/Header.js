@@ -72,7 +72,7 @@ const TodayHeader = ({
                     variant="titleLarge"
                     style={{
                       color: theme.colors.primary,
-                      fontWeight: "600",
+                      fontWeight: "700",
                     }}
                   >
                     Today

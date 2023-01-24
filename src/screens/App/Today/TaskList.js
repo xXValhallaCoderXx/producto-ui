@@ -60,8 +60,8 @@ const TaskList = ({
   return (
     <View>
       {tasks.length === 0 ? (
-        <View>
-          <Text style={{ marginTop: 15 }}>
+        <View style={{ paddingLeft: 5, marginTop: 15 }}>
+          <Text>
             Add a task to start your{" "}
             <Text style={{ fontWeight: "700" }}>productivity!</Text>
           </Text>

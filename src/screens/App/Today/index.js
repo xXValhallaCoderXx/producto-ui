@@ -190,7 +190,7 @@ const ListScreen = () => {
     // e.stopPropagation();
     Keyboard.dismiss();
   };
-  console.log("TASLS: ", tasks);
+
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}
@@ -218,7 +218,7 @@ const ListScreen = () => {
           <ProgressBar focusMode={focusMode} progress={progress} />
         </View>
 
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <View style={{ marginTop: 15 }}>
             <SkeletonList />
           </View>

@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useTheme, Button, Checkbox } from "react-native-paper";
-import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
+import { useTheme, Button } from "react-native-paper";
+import { View, TouchableWithoutFeedback, TextInput } from "react-native";
 
 const AddItem = ({ handleCreateNewTask }) => {
   const theme = useTheme();
@@ -45,7 +45,7 @@ const AddItem = ({ handleCreateNewTask }) => {
         <View>
           <View
             style={{
-              // paddingLeft: 15,
+              paddingLeft: 5,
               flexDirection: "row",
               justifyContent: "space-between",
             }}
@@ -66,24 +66,7 @@ const AddItem = ({ handleCreateNewTask }) => {
                 }}
               />
             </View>
-            <View
-              style={{
-                marginTop: 10,
-                paddingRight: 10,
-              }}
-            >
-              <Checkbox
-                checked={false}
-                containerStyle={{ padding: 0 }}
-                disabled={true}
-              />
-            </View>
           </View>
-          {error ? (
-            <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
-              {error}
-            </Text>
-          ) : null}
         </View>
       ) : (
         <Button
