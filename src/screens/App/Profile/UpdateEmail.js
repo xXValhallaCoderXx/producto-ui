@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { useToast } from "react-native-toast-notifications";
@@ -11,10 +11,13 @@ import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
   const toast = useToast();
+  const payload = useRef({});
+  const [isOpen, setIsOpen] = useState(false);
   const [secretMap, setSecretMap] = useState({
     password: true,
   });
@@ -40,18 +43,31 @@ const UpdateEmail = ({ route, navigation }) => {
     }),
 
     onSubmit: async ({ email, password }) => {
-      const result = await updateEmail({ email, password });
-
-      if (!result.error) {
-        const { tokens } = result?.data;
-        await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
-        await SecureStore.setItemAsync(
-          REFRESH_JWT_KEY_STORE,
-          tokens.refreshToken
-        );
-      }
+      payload.current = {
+        email,
+        password,
+      };
+      setIsOpen(true);
     },
   });
+
+  const onConfirmEmailChange = async () => {
+    const { email, password } = payload.current;
+    const result = await updateEmail({ email, password });
+
+    if (!result.error) {
+      const { tokens } = result?.data;
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+    }
+  };
+
+  const onCancelEmailChange = () => {
+    setIsOpen(false);
+  };
 
   const handlePassToggle = (key) => () => {
     setSecretMap({
@@ -62,7 +78,9 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
+      payload.current = {};
       navigation.navigate("Accounts");
+
       toast.show("Email succesfully updated", {
         type: "success",
         duration: 2500,
@@ -74,6 +92,7 @@ const UpdateEmail = ({ route, navigation }) => {
       });
     }
     if (updateEmailResult.isError) {
+      payload.current = {};
       const message = Array.isArray(updateEmailResult?.error?.data?.message)
         ? updateEmailResult?.error?.data?.message[0]
         : updateEmailResult?.error?.data?.message;
@@ -156,6 +175,14 @@ const UpdateEmail = ({ route, navigation }) => {
         onPress={formik.handleSubmit}
         disabled={updateEmailResult.isLoading}
         loading={updateEmailResult.isLoading}
+      />
+      <ConfirmationModal
+        isVisible={isOpen}
+        title="Change email"
+        description="This will be your new email to login with"
+        onConfirm={onConfirmEmailChange}
+        onCancel={onCancelEmailChange}
+        isLoading={updateEmailResult.isLoading}
       />
     </View>
   );

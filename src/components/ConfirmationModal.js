@@ -4,6 +4,7 @@ import { useTheme, Text, Dialog } from "react-native-paper";
 const ConfirmationModal = ({
   isVisible,
   onCancel,
+  onConfirm,
   isLoading,
   title,
   description,
@@ -11,7 +12,11 @@ const ConfirmationModal = ({
   const theme = useTheme();
 
   return (
-    <Dialog visible={isVisible} onDismiss={onCancel}>
+    <Dialog
+      style={{ backgroundColor: "white", borderRadius: 8 }}
+      visible={isVisible}
+      onDismiss={onCancel}
+    >
       <Dialog.Title>{title}</Dialog.Title>
       <Dialog.Content>
         <Text customStyle={{ marginTop: 15, marginBottom: 20 }}>
@@ -21,7 +26,7 @@ const ConfirmationModal = ({
 
       <Dialog.Actions>
         <Button
-          onPress={handleOnSubmit}
+          onPress={onConfirm}
           title="Save"
           containerStyle={{ paddingLeft: 25 }}
           titleStyle={{ color: theme.colors.primary }}
