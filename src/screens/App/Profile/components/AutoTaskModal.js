@@ -119,16 +119,14 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
       <Dialog.Actions>
         <Button
           title="Cancel"
-          titleStyle={{ color: theme.colors.primary }}
+          textColor={theme.colors.error}
           onPress={onHandleCancel}
           type="clear"
         />
         <Button
           onPress={onClickConfirm}
           title="Confirm"
-          // disabled={Object.keys(parsedDates).length === 0}
-          containerStyle={{ paddingLeft: 25 }}
-          titleStyle={{ color: theme.colors.primary }}
+          textColor={theme.colors.primary}
           type="clear"
         />
       </Dialog.Actions>

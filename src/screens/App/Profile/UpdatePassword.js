@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as Yup from "yup";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
@@ -8,10 +8,13 @@ import { View } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
 import { MainInput as Input } from "../../../components";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const EditPassword = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
+  const payload = useRef({});
+  const [isOpen, setIsOpen] = useState(false);
   const [secretMap, setSecretMap] = useState({
     newPassword: true,
     currentPassword: true,
@@ -40,11 +43,16 @@ const EditPassword = ({ navigation }) => {
       confirmPassword: Yup.string()
         .min(6, "Please enter a minimum of 6 characters")
         .max(50, "Password exceeded 50 characters")
-        .required("Password field is required"),
+        .required("Password field is required")
+        .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
     }),
 
     onSubmit: async ({ currentPassword, newPassword }) => {
-      await updatePassword({ newPassword, currentPassword });
+      payload.current = {
+        newPassword,
+        currentPassword,
+      };
+      setIsOpen(true);
     },
   });
 
@@ -60,13 +68,14 @@ const EditPassword = ({ navigation }) => {
         title: "Sucessfully updated password!",
         description: "You may now login with your new password",
       });
+      setIsOpen(false);
       navigation.navigate("Accounts");
     }
     if (updatePasswordResult.isError) {
       const message = Array.isArray(updatePasswordResult?.error?.data?.message)
         ? updatePasswordResult?.error?.data?.message[0]
         : updatePasswordResult?.error?.data?.message;
-      toast.show("Password succesffully updated", {
+      toast.show("Password update unsuccesful123456", {
         type: "success",
         duration: 2500,
         offset: 30,
@@ -77,6 +86,24 @@ const EditPassword = ({ navigation }) => {
       });
     }
   }, [updatePasswordResult]);
+
+  const onConfirmPasswordChange = async () => {
+    const { newPassword, currentPassword } = payload.current;
+    await updatePassword({ newPassword, currentPassword });
+
+    if (!result.error) {
+      const { tokens } = result?.data;
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+    }
+  };
+
+  const onCancelEmailChange = () => {
+    setIsOpen(false);
+  };
 
   const handlePassToggle = (key) => () => {
     setSecretMap({
@@ -167,6 +194,14 @@ const EditPassword = ({ navigation }) => {
         onPress={handleOnSubmit}
         disabled={updatePasswordResult.isLoading}
         loading={updatePasswordResult.isLoading}
+      />
+      <ConfirmationModal
+        isVisible={isOpen}
+        title="Change password"
+        description="This will update your password"
+        onConfirm={onConfirmPasswordChange}
+        onCancel={onCancelEmailChange}
+        isLoading={updatePasswordResult.isLoading}
       />
     </View>
   );
