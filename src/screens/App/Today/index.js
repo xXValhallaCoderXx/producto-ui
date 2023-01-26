@@ -77,8 +77,17 @@ const ListScreen = () => {
   }, [focusMode]);
 
   useEffect(() => {
+    console.log("CREATE TASK : ", createTaskResult);
     if (createTaskResult.isError) {
-      ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Error creating task!`,
+        description: "",
+      });
     }
   }, [createTaskResult.isError]);
 
@@ -139,6 +148,7 @@ const ListScreen = () => {
         "getTodaysTasks",
         { date: format(utcDate, "yyyy-MM-dd") },
         (draft) => {
+          console.log("WHAT IS RES: ", res);
           const task = draft.find((todo) => todo.title === res.data.title);
           task.id = res.data.id;
           return draft;

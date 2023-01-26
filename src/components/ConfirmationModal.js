@@ -32,13 +32,14 @@ const ConfirmationModal = ({
             textColor={theme.colors.primary}
             type="clear"
             disabled={isLoading}
+            style={{ width: 40 }}
           />
           <Button
             title="Cancel"
             textColor={theme.colors.error}
             onPress={onCancel}
             type="clear"
-            disabled={isLoading}
+            // disabled={isLoading}
           />
         </Dialog.Actions>
       </Dialog>
