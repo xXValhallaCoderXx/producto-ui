@@ -109,7 +109,7 @@ const ProfileScreen = ({ navigation }) => {
               fontSize: 16,
             }}
           >
-            ACCOUNT
+            ACCOUNT INFORMATION
           </Text>
 
           {isLoading ? (

@@ -12,7 +12,7 @@ import {
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import ConfirmationModal from "../../../components/ConfirmationModal";
-
+import { MainInput as Input } from "../../../components";
 const UpdateEmail = ({ route, navigation }) => {
   const theme = useTheme();
   const toast = useToast();
@@ -118,25 +118,16 @@ const UpdateEmail = ({ route, navigation }) => {
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("password")}
+      <Input
         autoFocus
+        label="Password"
+        onChangeText={formik.handleChange("password")}
         onBlur={formik.handleBlur("password")}
         value={formik.values.password}
-        mode="outlined"
-        label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["password"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 2 }}
-            onPress={handlePassToggle("password")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["password"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("password")}
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
@@ -147,19 +138,15 @@ const UpdateEmail = ({ route, navigation }) => {
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="New Email"
         onChangeText={formik.handleChange("email")}
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
-        mode="outlined"
-        label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
-        style={{
-          marginTop: 5,
-          backgroundColor: "white",
-        }}
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}

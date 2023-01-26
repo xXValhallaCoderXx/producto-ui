@@ -11,7 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { TextInput as MuiTextInput, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   JWT_KEY_STORE,
