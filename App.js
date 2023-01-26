@@ -9,7 +9,6 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 
 import { Provider } from "react-redux";
 import store from "./src/config/store";
-import { MD3LightTheme as DefaultTheme } from "react-native-paper";
 import { Provider as PaperProvider } from "react-native-paper";
 import { ToastProvider } from "react-native-toast-notifications";
 import * as SplashScreen from "expo-splash-screen";
@@ -70,15 +69,6 @@ export default function App() {
     return null;
   }
 
-  const theme2 = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: "#5048E5",
-      secondary: "#6B7280",
-    },
-  };
-
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <SafeAreaView style={{ flex: 1 }}>
@@ -86,7 +76,7 @@ export default function App() {
           <ToastProvider
             renderToast={(toastOptions) => <Toast toast={toastOptions} />}
           >
-            <PaperProvider theme={theme2}>
+            <PaperProvider theme={theme}>
               {/* <StatusBar style="dark" backgroundColor="white" /> */}
               <NavigationContainer>
                 <Stack.Navigator

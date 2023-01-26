@@ -13,10 +13,11 @@ import * as Localization from "expo-localization";
 
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+import { MainInput as Input } from "../../../components";
 
 import { useRegisterMutation } from "../../../api/auth-api";
 import { useFormik } from "formik";
-import { TextInput, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import FooterActions from "./FooterAction";
 import {
@@ -125,25 +126,17 @@ const RegisterScreen = ({ navigation }) => {
           <View>
             <View style={{ alignItems: "center" }}>
               <View style={{ width: "85%" }}>
-                <TextInput
-                  onChangeText={formik.handleChange("email")}
+                <Input
                   autoFocus
+                  onChangeText={formik.handleChange("email")}
                   onBlur={formik.handleBlur("email")}
                   value={formik.values.email}
-                  theme={{ roundness: 10 }}
-                  mode="outlined"
-                  error={false}
-                  outlineColor="#bcc5d6"
                   label="E-mail"
                   keyboardType="email-address"
                   placeholder="Enter Email"
-                  style={{
-                    backgroundColor: "white",
-
-                    fontSize: 14,
-                  }}
                 />
-                <View style={{ height: 20 }}>
+
+                <View style={{ height: 20, marginBottom: 10 }}>
                   <Text
                     style={{ ...styles.errorText, color: theme.colors.error }}
                   >
@@ -151,29 +144,18 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </View>
 
-                <TextInput
+                <Input
                   onChangeText={formik.handleChange("password")}
                   onBlur={formik.handleBlur("password")}
                   value={formik.values.password}
-                  mode="outlined"
                   label="Password"
-                  theme={{ roundness: 10 }}
-                  outlineColor="#bcc5d6"
                   placeholder="Enter Password"
                   secureTextEntry={secretMap["password"]}
-                  style={{
-                    backgroundColor: "white",
-                    fontSize: 14,
-                    marginTop: 10,
-                  }}
-                  right={
-                    <TextInput.Icon
-                      onPress={handlePassToggle("password")}
-                      icon={secretMap["password"] ? "eye-off" : "eye"}
-                    />
-                  }
+                  rightIcon={secretMap["password"] ? "eye-off" : "eye"}
+                  onPressIcon={handlePassToggle("password")}
                 />
-                <View style={{ height: 20 }}>
+
+                <View style={{ height: 20, marginBottom: 10 }}>
                   <Text
                     style={{ ...styles.errorText, color: theme.colors.error }}
                   >
@@ -182,28 +164,17 @@ const RegisterScreen = ({ navigation }) => {
                   </Text>
                 </View>
 
-                <TextInput
+                <Input
                   onChangeText={formik.handleChange("confirmPassword")}
                   onBlur={formik.handleBlur("confirmPassword")}
                   secureTextEntry={secretMap["confirmPassword"]}
                   value={formik.values.confirmPassword}
-                  mode="outlined"
                   label="Confirm Password"
                   placeholder="Confirm Password"
-                  theme={{ roundness: 10 }}
-                  outlineColor="#bcc5d6"
-                  style={{
-                    backgroundColor: "white",
-                    fontSize: 14,
-                    marginTop: 10,
-                  }}
-                  right={
-                    <TextInput.Icon
-                      onPress={handlePassToggle("confirmPassword")}
-                      icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                    />
-                  }
+                  rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                  onPressIcon={handlePassToggle("confirmPassword")}
                 />
+
                 <View style={{ height: 20 }}>
                   <Text
                     style={{ ...styles.errorText, color: theme.colors.error }}

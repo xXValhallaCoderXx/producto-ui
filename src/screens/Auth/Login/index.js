@@ -23,6 +23,7 @@ import {
 } from "../../../api/auth-api";
 import FooterActions from "./FooterAction";
 import { useToast } from "react-native-toast-notifications";
+import { MainInput as Input } from "../../../components";
 const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
@@ -124,7 +125,7 @@ const LoginScreen = ({ navigation }) => {
       }
     } else {
       const res = await verifyTigger({ email });
-      passwordInputRef.current.focus();
+      passwordInputRef?.current?.focus();
       if (res.isSuccess) {
         setStep(nextStep);
       } else {
@@ -220,25 +221,18 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth,
                   }}
                 >
-                  <MuiTextInput
+                  <Input
                     label="Email"
                     value={email}
-                    mode="outlined"
-                    error={false}
-                    outlineColor="#bcc5d6"
                     ref={emailInputRef}
-                    theme={{ roundness: 10 }}
                     style={{
-                      backgroundColor: "white",
-                      height: 50,
-                      width: "85%",
-                      fontSize: 14,
                       width: windowWidth * 0.85,
                       maxWidth: windowWidth * 0.9,
                     }}
                     onChangeText={handleOnChangeEmail}
                     keyboardType="email-address"
                   />
+
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                     {error ? (
                       <Text
@@ -261,30 +255,20 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth,
                   }}
                 >
-                  <MuiTextInput
+                  <Input
                     label="Password"
                     value={password}
-                    mode="outlined"
-                    error={false}
-                    outlineColor="#bcc5d6"
                     ref={passwordInputRef}
                     style={{
-                      backgroundColor: "white",
-                      width: "85%",
-                      fontSize: 14,
                       width: windowWidth * 0.85,
                       maxWidth: windowWidth * 0.9,
                     }}
                     onChangeText={handleOnChangePassword}
                     secureTextEntry={secretMap["password"]}
-                    right={
-                      <MuiTextInput.Icon
-                        onPress={handlePassToggle("password")}
-                        icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                        color="#fff"
-                      />
-                    }
+                    rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                    onPressIcon={handlePassToggle("password")}
                   />
+
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                     {error ? (
                       <Text
@@ -332,7 +316,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     display: "flex",
     alignItems: "center",
-    marginTop: 80,
+    marginTop: 70,
   },
   input: {
     height: 45,
