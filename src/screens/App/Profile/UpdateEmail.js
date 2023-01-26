@@ -134,7 +134,7 @@ const UpdateEmail = ({ route, navigation }) => {
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.password || ""}
+          {(formik.touched["password"] && formik?.errors?.password) || ""}
         </Text>
       </View>
 
@@ -151,7 +151,7 @@ const UpdateEmail = ({ route, navigation }) => {
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.email || ""}
+          {(formik.touched["email"] && formik?.errors?.email) || ""}
         </Text>
       </View>
 

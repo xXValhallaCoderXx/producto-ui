@@ -28,6 +28,7 @@ const ProductoButton = ({
   onPress,
   title,
   style,
+  textColor,
   type = "outlined",
   size = "md",
   disabled,
@@ -42,6 +43,7 @@ const ProductoButton = ({
       labelStyle={{ ...SIZE_MAP[size].label }}
       loading={loading}
       disabled={disabled}
+      textColor={textColor}
     >
       {title}
     </Button>

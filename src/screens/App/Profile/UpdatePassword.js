@@ -7,6 +7,7 @@ import { useTheme } from "react-native-paper";
 import { View } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
+import { MainInput as Input } from "../../../components";
 
 const EditPassword = ({ navigation }) => {
   const theme = useTheme();
@@ -97,85 +98,65 @@ const EditPassword = ({ navigation }) => {
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("currentPassword")}
+      <Input
         autoFocus
+        label="Password"
+        onChangeText={formik.handleChange("currentPassword")}
         onBlur={formik.handleBlur("currentPassword")}
         value={formik.values.currentPassword}
-        mode="outlined"
-        label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["currentPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 4 }}
-            onPress={handlePassToggle("currentPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["currentPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("currentPassword")}
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.currentPassword || ""}
+          {(formik.touched["currentPassword"] &&
+            formik?.errors?.currentPassword) ||
+            ""}
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="New Password"
         onChangeText={formik.handleChange("newPassword")}
         onBlur={formik.handleBlur("newPassword")}
         value={formik.values.newPassword}
-        mode="outlined"
-        label="New Password"
         placeholder="Enter new password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["newPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 4 }}
-            onPress={handlePassToggle("newPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["newPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("newPassword")}
       />
+
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.newPassword || ""}
+          {(formik.touched["newPassword"] && formik?.errors?.newPassword) || ""}
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="Confirm Password"
         onChangeText={formik.handleChange("confirmPassword")}
         onBlur={formik.handleBlur("confirmPassword")}
         value={formik.values.confirmPassword}
-        mode="outlined"
-        label="Confirm Password"
         placeholder="Confirm new password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["confirmPassword"]}
-        right={
-          <TextInput.Icon
-            onPress={handlePassToggle("confirmPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("confirmPassword")}
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.confirmPassword || ""}
+          {(formik.touched["confirmPassword"] &&
+            formik?.errors?.confirmPassword) ||
+            ""}
         </Text>
       </View>
 
