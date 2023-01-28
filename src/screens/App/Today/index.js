@@ -21,6 +21,7 @@ import AddItem from "./AddItem";
 import MoveIncomplete from "./components/MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
+import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 
 import {
   useGetTodaysTasksQuery,
@@ -29,6 +30,7 @@ import {
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
+  useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
@@ -47,13 +49,14 @@ const ListScreen = () => {
   const editMode = useSelector((state) => state.today.editMode);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
+  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
   const hehe = useGetTodaysTasksQuery(
     { date: format(utcDate, "yyyy-MM-dd") }
     // { pollingInterval: 5000 }
   );
   const { data: tasks, isLoading, isFetching, error } = hehe;
-
+  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
   const [posY] = useState(new Animated.Value(0));
   const {
     data: incompleteTasks,
@@ -79,7 +82,6 @@ const ListScreen = () => {
   }, [focusMode]);
 
   useEffect(() => {
-    console.log("CREATE TASK : ", createTaskResult);
     if (createTaskResult.isError) {
       toast.show("", {
         type: "error",
@@ -170,20 +172,38 @@ const ListScreen = () => {
     return;
   };
 
-  const handleMoveIncompleteTasks = async () => {
-    const from = format(utcDate, "yyyy-MM-dd");
+  const handleMoveIncompleteTasks = async (items) => {
     const to = format(new Date(), "yyyy-MM-dd");
-    await moveIncompleteTasks({ from, to });
-
+    await moveTasksApi({ tasks: Object.keys(items), to });
+    setIsMoveIncompleteOpen(false);
     toast.show("", {
       type: "success",
       duration: 2500,
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: `Tasks moved to ${to}!`,
-      description: "",
+      title: "Selected tasks have been moved!",
     });
+    // const from = format(utcDate, "yyyy-MM-dd");
+    // const to = format(new Date(), "yyyy-MM-dd");
+    // await moveIncompleteTasks({ from, to });
+    // toast.show("", {
+    //   type: "success",
+    //   duration: 2500,
+    //   offset: 100,
+    //   animationType: "zoom-in",
+    //   placement: "top",
+    //   title: `Tasks moved to ${to}!`,
+    //   description: "",
+    // });
+  };
+
+  const handleOpenIncompleteModal = () => {
+    setIsMoveIncompleteOpen(true);
+  };
+
+  const handleCloseIncompleteModal = () => {
+    setIsMoveIncompleteOpen(false);
   };
 
   const handleOnPressToday = async () => {
@@ -203,7 +223,7 @@ const ListScreen = () => {
     // e.stopPropagation();
     Keyboard.dismiss();
   };
-  console.log("EDIT MODE", editMode);
+
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}
@@ -281,10 +301,16 @@ const ListScreen = () => {
               tasks={tasks}
               currentDate={utcDate}
               isLoading={moveIncompleteTasksResult.isLoading}
-              onMoveIncomplete={handleMoveIncompleteTasks}
+              onMoveIncomplete={handleOpenIncompleteModal}
             />
           </View>
         </View>
+        <MoveIncompleteModal
+          isVisible={isMoveIncompleteOpen}
+          onPress={handleMoveIncompleteTasks}
+          onCancel={handleCloseIncompleteModal}
+          currentDate={utcDate}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
