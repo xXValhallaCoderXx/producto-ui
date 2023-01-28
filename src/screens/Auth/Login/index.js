@@ -163,7 +163,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={20}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
@@ -285,7 +285,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
-    marginTop: 60,
+    marginTop: 30,
   },
   secondaryTitle: {
     fontSize: 14,

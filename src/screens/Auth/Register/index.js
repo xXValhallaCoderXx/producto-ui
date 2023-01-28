@@ -43,6 +43,7 @@ const RegisterScreen = ({ navigation }) => {
       password: "",
       confirmPassword: "",
     },
+    validateOnChange: false,
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .required("Email field is required")
@@ -115,7 +116,7 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={20}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
@@ -138,7 +139,7 @@ const RegisterScreen = ({ navigation }) => {
                 <Input
                   autoFocus
                   onChangeText={handleOnChangeText("email")}
-                  onBlur={formik.handleBlur("email")}
+                  // onBlur={formik.handleBlur("email")}
                   value={formik.values.email}
                   label="E-mail"
                   keyboardType="email-address"
@@ -155,7 +156,7 @@ const RegisterScreen = ({ navigation }) => {
 
                 <Input
                   onChangeText={handleOnChangeText("password")}
-                  onBlur={formik.handleBlur("password")}
+                  // onBlur={formik.handleBlur("password")}
                   value={formik.values.password}
                   label="Password"
                   placeholder="Enter Password"
@@ -175,7 +176,7 @@ const RegisterScreen = ({ navigation }) => {
 
                 <Input
                   onChangeText={handleOnChangeText("confirmPassword")}
-                  onBlur={formik.handleBlur("confirmPassword")}
+                  // onBlur={formik.handleBlur("confirmPassword")}
                   secureTextEntry={secretMap["confirmPassword"]}
                   value={formik.values.confirmPassword}
                   label="Confirm Password"
@@ -225,7 +226,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 60,
+    marginTop: 30,
     marginBottom: 20,
   },
   titleImage: {
@@ -241,6 +242,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 10,
     fontWeight: "400",
+  },
+  secondaryTitle: {
+    fontSize: 14,
+    color: "gray",
+    textAlign: "center",
+    marginLeft: -10,
+    fontWeight: "500",
   },
 });
 
