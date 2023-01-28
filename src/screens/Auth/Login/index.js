@@ -1,8 +1,22 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import debounce from "lodash.debounce";
-import * as SecureStore from "expo-secure-store";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
+import { useTheme } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
+import { useState, useRef, useEffect } from "react";
+import { useToast } from "react-native-toast-notifications";
 import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
+import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+
+import { Text } from "react-native-paper";
+import FooterActions from "./FooterAction";
+import { MainInput as Input } from "../../../components";
+const titleDark = require("../../../assets/images/title-dark.png");
+
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import {
   StyleSheet,
   View,
@@ -11,44 +25,55 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { Text } from "react-native-paper";
-import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
-import {
-  JWT_KEY_STORE,
-  REFRESH_JWT_KEY_STORE,
-} from "../../../shared/constants";
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
-import FooterActions from "./FooterAction";
-import { useToast } from "react-native-toast-notifications";
-import { MainInput as Input } from "../../../components";
-import { useTheme } from "react-native-paper";
-const validEmailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
-  const emailInputRef = useRef(null);
   const theme = useTheme();
   const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const timestampRef = useRef(Date.now()).current;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
-  const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery({
-    email,
-    timestampRef,
-  });
+  const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
 
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,
+  });
+
+  const emailForm = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string()
+        .required("Email field is required")
+        .email("Please enter a valid e-mail address"),
+    }),
+    onSubmit: async ({ email }) => {
+      console.log("EMAI SUBMIT");
+      verifyTigger({ email });
+    },
+  });
+
+  const passwordForm = useFormik({
+    initialValues: {
+      password: "",
+    },
+    validationSchema: Yup.object().shape({
+      password: Yup.string()
+        .required("Password is required")
+        .min(6, "Please enter a minimum of 6 characters")
+        .max(50, "Password exceeded 50 characters"),
+    }),
+
+    onSubmit: async ({ password }) => {
+      loginApi({ email: emailForm.values.email, password });
+    },
   });
 
   useEffect(() => {
@@ -69,84 +94,50 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isError) {
-      if (verifyResult?.error?.data?.message) {
-        setError(verifyResult?.error?.data?.message);
-      } else {
-        setError("Sorry, an unknown error occured");
-      }
+      emailForm.setFieldError(
+        "email",
+        verifyResult?.error?.data?.message ?? "Sorry an error occured"
+      );
     }
-  }, [verifyResult]);
+  }, [verifyResult.isError]);
 
   useEffect(() => {
-    if (loginApiResult.isError) {
-      toast.show("Email succesffully updated", {
-        type: "error",
-        duration: 2500,
-        offset: 30,
-        animationType: "zoom-in",
-        placement: "bottom",
-        title: "Incorrect Credentials!",
-      });
+    if (verifyResult.isSuccess) {
+      setStep(2);
     }
-  }, [loginApiResult.isError]);
+  }, [verifyResult.isSuccess, verifyResult.isFetching]);
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
+      toast.show("Login Success!", {
+        type: "success",
+        title: "Login Success!",
+      });
       setTokenAndRedirect(loginApiResult.data);
     }
-  }, [loginApiResult.isSuccess]);
+  }, [loginApiResult.isError, loginApiResult.isSuccess]);
+
+  useEffect(() => {
+    if (loginApiResult.isError) {
+      passwordForm.setFieldError(
+        "password",
+        loginApiResult?.error?.data?.message ?? "Sorry an error occured"
+      );
+    }
+  }, [loginApiResult.isError]);
 
   const setTokenAndRedirect = async (token) => {
     const { accessToken, refreshToken } = token;
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
-
-    toast.show("Email succesffully updated", {
-      type: "success",
-      duration: 2500,
-      offset: 30,
-      animationType: "zoom-in",
-      placement: "bottom",
-      title: "Login Success!",
-    });
     dispatch(toggleIsAuthenticated(true));
   };
 
   const handleOnPressPrimary = async () => {
-    const nextStep = step === 1 ? 2 : 1;
-    setError("");
-    if (nextStep === 1) {
-      if (password === "") {
-        setError("Please enter a password");
-      } else if (password.length < 6) {
-        setError("Password should not be less than 6 characters");
-      } else {
-        const res = await loginApi({ email, password });
-        if (res?.error?.status === 400) {
-          setError(res.error.data.message);
-        }
-      }
-    } else {
-      if (email === "") {
-        setError("Enter an e-mail address");
-      } else if (email.match(validEmailRegex) === null) {
-        setError("Enter a valid e-mail address");
-      } else {
-        const res = await verifyTigger({ email });
-
-        passwordInputRef?.current?.focus();
-        if (res.isSuccess) {
-          setStep(nextStep);
-        } else {
-          if (res.error.status === 200) {
-            setStep(nextStep);
-          } else if (res.error.status === 400) {
-            setError(res.error.data.message);
-          } else if (res.error.status === 404) {
-            setError("Email address not found");
-          }
-        }
-      }
+    if (step === 1) {
+      await emailForm.handleSubmit();
+    } else if (step === 2) {
+      passwordForm.handleSubmit();
     }
   };
 
@@ -159,39 +150,19 @@ const LoginScreen = ({ navigation }) => {
 
   const handleOnPressSecondary = () => {
     const nextStep = step === 1 ? 2 : 1;
-    setError("");
     if (step === 1) {
+      emailForm.resetForm();
+      passwordForm.resetForm();
       navigation.navigate("Registration");
     } else {
-      emailInputRef.current.focus();
       setStep(nextStep);
     }
   };
-  const delayedQuery = useCallback(
-    debounce((value) => checkEmail(value), 1000),
-    []
-  );
-  const handleOnChangeEmail = (value) => {
-    setError("");
-    delayedQuery(value);
-    setEmail(value);
-  };
 
-  const handleOnChangePassword = (value) => {
-    setError("");
-    setPassword(value);
-  };
-
-  const checkEmail = (_value) => {
-    if (_value.match(validEmailRegex) === null && _value !== "") {
-      setError("Enter a valid e-mail address");
-    }
-  };
-  console.log("ERROR: ", error);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={50}
+        keyboardVerticalOffset={20}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
@@ -233,18 +204,18 @@ const LoginScreen = ({ navigation }) => {
                 >
                   <Input
                     label="Email"
-                    value={email}
-                    ref={emailInputRef}
+                    value={emailForm.values.email}
                     style={{
                       width: windowWidth * 0.85,
                       maxWidth: windowWidth * 0.9,
                     }}
-                    onChangeText={handleOnChangeEmail}
+                    onChangeText={emailForm.handleChange("email")}
+                    onBlur={emailForm.handleBlur("email")}
                     keyboardType="email-address"
                   />
 
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {error ? (
+                    {emailForm.touched.email && emailForm.errors.email ? (
                       <Text
                         style={{
                           color: theme.colors.error,
@@ -253,7 +224,7 @@ const LoginScreen = ({ navigation }) => {
                           paddingLeft: windowWidth - windowWidth * 0.9,
                         }}
                       >
-                        {error}
+                        {emailForm.errors.email}
                       </Text>
                     ) : null}
                   </View>
@@ -267,20 +238,21 @@ const LoginScreen = ({ navigation }) => {
                 >
                   <Input
                     label="Password"
-                    value={password}
+                    value={passwordForm.values.password}
                     ref={passwordInputRef}
                     style={{
                       width: windowWidth * 0.85,
                       maxWidth: windowWidth * 0.9,
                     }}
-                    onChangeText={handleOnChangePassword}
+                    onChangeText={passwordForm.handleChange("password")}
+                    onBlur={passwordForm.handleBlur("password")}
                     secureTextEntry={secretMap["password"]}
-                    rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                    rightIcon={secretMap["password"] ? "eye-off" : "eye"}
                     onPressIcon={handlePassToggle("password")}
                   />
 
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {error ? (
+                    {passwordForm.errors.password ? (
                       <Text
                         style={{
                           color: theme.colors.error,
@@ -290,7 +262,7 @@ const LoginScreen = ({ navigation }) => {
                           paddingLeft: windowWidth - windowWidth * 0.9,
                         }}
                       >
-                        {error}
+                        {passwordForm.errors.password}
                       </Text>
                     ) : null}
                   </View>
@@ -302,8 +274,6 @@ const LoginScreen = ({ navigation }) => {
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleOnPressSecondary}
             step={step}
-            email={email}
-            password={password}
             isLoading={verifyResult.isFetching || loginApiResult.isLoading}
           />
         </View>
@@ -328,15 +298,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginTop: 70,
-  },
-  input: {
-    height: 45,
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 8,
-    fontSize: 16,
   },
 });
 

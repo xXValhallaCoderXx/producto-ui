@@ -121,7 +121,12 @@ const RegisterScreen = ({ navigation }) => {
             style={styles.titleImage}
             source={require("../../../assets/images/title-dark.png")}
           />
+          <Text style={styles.secondaryTitle}>
+            Create an account, and unlock your productivity
+          </Text>
         </View>
+        <View style={{ height: 40 }}></View>
+
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
             <View style={{ alignItems: "center" }}>
@@ -204,11 +209,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 76,
-    marginBottom: 40,
+    marginBottom: 20,
   },
   titleImage: {
     height: 40,
     width: 220,
+    marginBottom: 20,
   },
   inputContainer: {
     backgroundColor: "white",

@@ -74,6 +74,10 @@ export default function App() {
       <SafeAreaView style={{ flex: 1 }}>
         <Provider store={store}>
           <ToastProvider
+            duration={2500}
+            animationType="zoom-in"
+            offset={30}
+            placement="bottom"
             renderToast={(toastOptions) => <Toast toast={toastOptions} />}
           >
             <PaperProvider theme={theme}>
