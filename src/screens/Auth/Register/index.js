@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   errorText: {
     marginTop: 5,
     marginLeft: 10,
-    fontWeight: "700",
+    fontWeight: "400",
   },
 });
 
