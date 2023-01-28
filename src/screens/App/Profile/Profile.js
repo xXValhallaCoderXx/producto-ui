@@ -3,16 +3,11 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import {
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native";
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
-import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
@@ -243,10 +238,13 @@ const ProfileScreen = ({ navigation }) => {
         </Text>
       </View>
 
-      <LogoutModal
+      <ConfirmationModal
         isVisible={isLogoutModalVisible}
-        onPress={handleLogout}
+        title="Log out"
+        description="  Are you sure you want to logout?"
+        onConfirm={handleLogout}
         onCancel={toggleLogoutModal}
+        confirmLabel="Log out"
       />
 
       <AutoTaskModal

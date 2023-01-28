@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { View } from "react-native";
 
-import { useUpdateTaskMutation } from "../../../api/task-api";
 import { Text, useTheme } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
@@ -19,8 +18,7 @@ const TaskList = ({
   const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const focusMode = useSelector((state) => state.today.focusMode);
-  const [value, setTaskValue] = useState("");
-  const [updateTaskApi, updateTaskInfo] = useUpdateTaskMutation();
+
   // const onCheckTask = (_task) =>  handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -71,10 +69,15 @@ const TaskList = ({
       ) : (
         <DraggbleList
           tasks={tasks.filter((task) => {
-            if (!focusMode && !task.focus && !task.completed) {
-              return false;
+            // if (!focusMode && !task.focus && !task.completed) {
+            //   return false;
+            // }
+            if (!focusMode && task.focus) {
+              return task;
+            } else if (focusMode) {
+              return task;
             }
-            return task;
+            return false;
           })}
           handleOnPressDelete={handleOnPressDelete}
           utcDate={utcDate}
