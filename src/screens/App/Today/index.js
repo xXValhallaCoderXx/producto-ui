@@ -245,7 +245,7 @@ const ListScreen = () => {
                   utcDate={utcDate}
                 />
                 {!editMode && (
-                  <View style={{ marginTop: 15 }}>
+                  <View style={{ marginTop: 15, paddingLeft: 10 }}>
                     <AddItem
                       handleCreateNewTask={handleCreateNewTask}
                       currentDate={utcDate}

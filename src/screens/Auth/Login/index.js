@@ -24,11 +24,13 @@ import {
 import FooterActions from "./FooterAction";
 import { useToast } from "react-native-toast-notifications";
 import { MainInput as Input } from "../../../components";
+import { useTheme } from "react-native-paper";
 const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
   const emailInputRef = useRef(null);
+  const theme = useTheme();
   const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
@@ -116,25 +118,33 @@ const LoginScreen = ({ navigation }) => {
     if (nextStep === 1) {
       if (password === "") {
         setError("Please enter a password");
+      } else if (password.length < 6) {
+        setError("Password should not be less than 6 characters");
       } else {
         const res = await loginApi({ email, password });
-
         if (res?.error?.status === 400) {
           setError(res.error.data.message);
         }
       }
     } else {
-      const res = await verifyTigger({ email });
-      passwordInputRef?.current?.focus();
-      if (res.isSuccess) {
-        setStep(nextStep);
+      if (email === "") {
+        setError("Enter an e-mail address");
+      } else if (email.match(validEmailRegex) === null) {
+        setError("Enter a valid e-mail address");
       } else {
-        if (res.error.status === 200) {
+        const res = await verifyTigger({ email });
+
+        passwordInputRef?.current?.focus();
+        if (res.isSuccess) {
           setStep(nextStep);
-        } else if (res.error.status === 400) {
-          setError(res.error.data.message[0]);
-        } else if (res.error.status === 404) {
-          setError("Email address not found");
+        } else {
+          if (res.error.status === 200) {
+            setStep(nextStep);
+          } else if (res.error.status === 400) {
+            setError(res.error.data.message[0]);
+          } else if (res.error.status === 404) {
+            setError("Email address not found");
+          }
         }
       }
     }
@@ -174,7 +184,7 @@ const LoginScreen = ({ navigation }) => {
 
   const checkEmail = (_value) => {
     if (_value.match(validEmailRegex) === null && _value !== "") {
-      setError("You must enter a valid email address");
+      setError("Enter a valid e-mail address");
     }
   };
 
@@ -237,9 +247,9 @@ const LoginScreen = ({ navigation }) => {
                     {error ? (
                       <Text
                         style={{
-                          color: "#D14343",
-                          alignSelf: "flex-start",
-                          fontWeight: "700",
+                          color: theme.colors.error,
+                          fontSize: 12,
+                          fontWeight: "400",
                           paddingLeft: windowWidth - windowWidth * 0.9,
                         }}
                       >
@@ -273,9 +283,10 @@ const LoginScreen = ({ navigation }) => {
                     {error ? (
                       <Text
                         style={{
-                          color: "#D14343",
+                          color: theme.colors.error,
+                          fontSize: 12,
                           alignSelf: "flex-start",
-                          fontWeight: "700",
+                          fontWeight: "400",
                           paddingLeft: windowWidth - windowWidth * 0.9,
                         }}
                       >
