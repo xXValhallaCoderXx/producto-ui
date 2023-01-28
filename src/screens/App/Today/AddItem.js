@@ -6,7 +6,6 @@ import { View, TouchableWithoutFeedback, TextInput } from "react-native";
 const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const theme = useTheme();
 
-  const isToday = useSelector((state) => state.today.isToday);
   const addTaskInputRef = useRef(null);
   const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
@@ -44,7 +43,6 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
       {addTask ? (
         <View
           style={{
-            paddingLeft: 5,
             flexDirection: "row",
             // justifyContent: "space-between",
           }}

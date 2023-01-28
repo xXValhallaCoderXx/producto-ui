@@ -40,6 +40,7 @@ const ListScreen = () => {
   const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
+  const isToday = useSelector((state) => state.today.isToday);
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
@@ -250,7 +251,7 @@ const ListScreen = () => {
                     <View
                       style={{
                         marginTop: 15,
-                        paddingLeft: 10,
+                        paddingLeft: isToday ? 5 : 15,
                       }}
                     >
                       <AddItem

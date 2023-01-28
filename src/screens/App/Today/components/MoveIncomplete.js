@@ -15,28 +15,38 @@ const MoveIncomplete = ({
     return null;
   }
 
-  if (isAfter(currentDate, new Date())) {
-    return null;
-  }
+  return (
+    <ProductoButton
+      onPress={onMoveIncomplete}
+      disabled={
+        isLoading ||
+        isAfter(currentDate, new Date()) ||
+        tasks.length === 0 ||
+        tasks.every((task) => task.completed === true)
+      }
+      loading={isLoading}
+      containerStyle={{ width: 160, borderRadius: 8 }}
+      type="contained"
+      title="Move Incomplete"
+    />
+  );
 
-  if (!tasks || tasks.length === 0) {
-    return null;
-  }
-
-  if (tasks.every((task) => task.completed === true)) {
-    return null;
-  } else {
-    return (
-      <ProductoButton
-        onPress={onMoveIncomplete}
-        disabled={isLoading}
-        loading={isLoading}
-        containerStyle={{ width: 160, borderRadius: 8 }}
-        type="contained"
-        title="Move Incomplete"
-      />
-    );
-  }
+  // if (tasks.every((task) => task.completed === true)) {
+  //   return null;
+  // } else {
+  //   return (
+  //     <ProductoButton
+  //       onPress={onMoveIncomplete}
+  //       disabled={
+  //         isLoading || isAfter(currentDate, new Date()) || tasks.length === 0
+  //       }
+  //       loading={isLoading}
+  //       containerStyle={{ width: 160, borderRadius: 8 }}
+  //       type="contained"
+  //       title="Move Incomplete"
+  //     />
+  //   );
+  // }
 };
 
 export default MoveIncomplete;
