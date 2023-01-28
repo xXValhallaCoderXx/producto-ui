@@ -79,7 +79,14 @@ const DraggableListContainer = ({
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item.id === editTask) {
       return (
-        <View key={item.id} onLongPress={drag} style={styles.editItem}>
+        <View
+          key={item.id}
+          onLongPress={drag}
+          style={{
+            paddingLeft: focusMode && currentDate === todayDate ? 5 : 15,
+            ...styles.editItem,
+          }}
+        >
           <View>
             <TextInput
               onChangeText={handleOnChange}
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingLeft: 15,
+    // paddingLeft: 15,
     height: 52,
   },
   listRow: {

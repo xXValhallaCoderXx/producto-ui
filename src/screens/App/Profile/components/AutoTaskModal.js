@@ -1,5 +1,12 @@
 import Button from "../../../../components/Button";
-import { Dialog, Text, useTheme, List, Checkbox } from "react-native-paper";
+import {
+  Dialog,
+  Text,
+  useTheme,
+  List,
+  Checkbox,
+  Portal,
+} from "react-native-paper";
 import { useGetIncompleteDetailTasksQuery } from "../../../../api/task-api";
 import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
@@ -57,80 +64,84 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
     onCancel();
   };
   return (
-    <Dialog
-      style={{ backgroundColor: "white", borderRadius: 8 }}
-      visible={isVisible}
-      onDismiss={onHandleCancel}
-    >
-      <Dialog.Title style={{ fontSize: 24, fontWeight: "600" }}>
-        Move Tasks
-      </Dialog.Title>
-      <Dialog.Content>
-        <Text
-          style={{
-            marginBottom: 20,
-            color: "#6B7280",
-            fontSize: 16,
-            fontWeight: "400",
-          }}
-        >
-          Select incomplete tasks that you want to move to Today.
-        </Text>
-        {Object.keys(parsedDates).length === 0 && <Text>No Overdue Tasks</Text>}
-        <ScrollView style={{ maxHeight: 350 }}>
-          {Object.keys(parsedDates).map((k) => {
-            return (
-              <View key={k}>
-                <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
-                  <Text
-                    style={{
-                      color: "#6B7280",
-                      fontWeight: "600",
-                      fontSize: 16,
-                    }}
-                  >
-                    {format(new Date(k), "EEE, d LLL yyyy")}
-                  </Text>
+    <Portal>
+      <Dialog
+        style={{ backgroundColor: "white", borderRadius: 8 }}
+        visible={isVisible}
+        onDismiss={onHandleCancel}
+      >
+        <Dialog.Title style={{ fontSize: 24, fontWeight: "600" }}>
+          Move Tasks
+        </Dialog.Title>
+        <Dialog.Content>
+          <Text
+            style={{
+              marginBottom: 20,
+              color: "#6B7280",
+              fontSize: 16,
+              fontWeight: "400",
+            }}
+          >
+            Select incomplete tasks that you want to move to Today.
+          </Text>
+          {Object.keys(parsedDates).length === 0 && (
+            <Text>No Overdue Tasks</Text>
+          )}
+          <ScrollView style={{ maxHeight: 350 }}>
+            {Object.keys(parsedDates).map((k) => {
+              return (
+                <View key={k}>
+                  <View style={{ backgroundColor: "#f9f9f9", padding: 5 }}>
+                    <Text
+                      style={{
+                        color: "#6B7280",
+                        fontWeight: "600",
+                        fontSize: 16,
+                      }}
+                    >
+                      {format(new Date(k), "EEE, d LLL yyyy")}
+                    </Text>
+                  </View>
+
+                  {parsedDates[k].map((item, _index) => {
+                    return (
+                      <List.Item
+                        key={item.id}
+                        title={item.title}
+                        onPress={onClickCheckbox(item)}
+                        right={() => (
+                          <Checkbox.Android
+                            status={
+                              checkedDates[item.id] ? "checked" : "unchecked"
+                            }
+                            onPress={onClickCheckbox(item)}
+                          />
+                        )}
+                      />
+                    );
+                  })}
                 </View>
+              );
+            })}
+          </ScrollView>
+        </Dialog.Content>
 
-                {parsedDates[k].map((item, _index) => {
-                  return (
-                    <List.Item
-                      key={item.id}
-                      title={item.title}
-                      onPress={onClickCheckbox(item)}
-                      right={() => (
-                        <Checkbox.Android
-                          status={
-                            checkedDates[item.id] ? "checked" : "unchecked"
-                          }
-                          onPress={onClickCheckbox(item)}
-                        />
-                      )}
-                    />
-                  );
-                })}
-              </View>
-            );
-          })}
-        </ScrollView>
-      </Dialog.Content>
-
-      <Dialog.Actions>
-        <Button
-          title="Cancel"
-          textColor={theme.colors.error}
-          onPress={onHandleCancel}
-          type="clear"
-        />
-        <Button
-          onPress={onClickConfirm}
-          title="Confirm"
-          textColor={theme.colors.primary}
-          type="clear"
-        />
-      </Dialog.Actions>
-    </Dialog>
+        <Dialog.Actions>
+          <Button
+            title="Cancel"
+            textColor={theme.colors.error}
+            onPress={onHandleCancel}
+            type="clear"
+          />
+          <Button
+            onPress={onClickConfirm}
+            title="Confirm"
+            textColor={theme.colors.primary}
+            type="clear"
+          />
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 };
 

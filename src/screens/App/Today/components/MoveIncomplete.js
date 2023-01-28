@@ -7,6 +7,10 @@ const MoveIncomplete = ({
   isLoading,
   tasks,
 }) => {
+  if (isLoading) {
+    return null;
+  }
+
   if (format(currentDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")) {
     return null;
   }
