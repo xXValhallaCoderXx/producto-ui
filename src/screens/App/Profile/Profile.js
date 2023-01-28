@@ -99,155 +99,150 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.container}>
-        <View style={{ flex: 5 }}>
-          <Text
-            style={{
-              color: "#6B7280",
-              letterSpacing: 0.5,
-              fontWeight: "600",
-              fontSize: 16,
-            }}
-          >
-            ACCOUNT INFORMATION
-          </Text>
+      <View style={{ flex: 5 }}>
+        <Text
+          style={{
+            color: "#6B7280",
+            letterSpacing: 0.5,
+            fontWeight: "600",
+            fontSize: 16,
+          }}
+        >
+          ACCOUNT INFORMATION
+        </Text>
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10, marginTop: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToChangeEmail}
-              title="Email"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {data?.email}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
-          )}
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToEditPassword}
-              title="Password"
-              right={() => (
-                <MaterialIcons size={24} name="keyboard-arrow-right" />
-              )}
-            />
-          )}
-        </View>
-        <View style={{ flex: 9 }}>
-          <Text
-            style={{
-              color: "#6B7280",
-              letterSpacing: 0.5,
-              fontWeight: "600",
-              fontSize: 16,
-            }}
-          >
-            APP SETTINGS
-          </Text>
-
-          {isLoading ? (
-            <View style={{ marginBottom: 10, marginTop: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToChangeTimezone}
-              title="Timezone"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {Localization.timezone}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
-          )}
-
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={70} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={toggleAutoTaskModal}
-              title="Auto Move Tasks"
-              description="Automatically move all incompleted tasks to “today”."
-              descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
-              right={() => (
-                <View style={{ justifyContent: "center" }}>
-                  <Switch
-                    onChange={toggleAutoTaskModal}
-                    value={data?.prefs?.autoMove}
-                  />
-                </View>
-              )}
-            />
-          )}
-        </View>
-
-        <View style={{ flex: 5, alignItems: "flex-start" }}>
-          <View style={{ width: "100%" }}>
-            <Button
-              type="text"
-              TouchableComponent={TouchableWithoutFeedback}
-              style={{ width: "100%" }}
-              contentStyle={{ justifyContent: "flex-start" }}
-              labelStyle={{ color: colors.secondary, fontSize: 26 }}
-              onPress={toggleLogoutModal}
-              icon={"door"}
-            >
-              <Text style={{ justifyContent: "center", fontSize: 16 }}>
-                Logout
-              </Text>
-            </Button>
+        {isLoading ? (
+          <View style={{ marginBottom: 10, marginTop: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
           </View>
-        </View>
-        <View style={{ flex: 2, alignItems: "center" }}>
-          <Text
-            type="h4"
-            color="secondary"
-            customStyle={{ textAlign: "center" }}
+        ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={navigateToChangeEmail}
+            title="Email"
+            right={() => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  style={{ marginBottom: 2, paddingRight: 5 }}
+                  type="h3"
+                  color="black"
+                >
+                  {data?.email}
+                </Text>
+                <MaterialIcons size={24} name="keyboard-arrow-right" />
+              </View>
+            )}
+          />
+        )}
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={navigateToEditPassword}
+            title="Password"
+            right={() => (
+              <MaterialIcons size={24} name="keyboard-arrow-right" />
+            )}
+          />
+        )}
+      </View>
+      <View style={{ flex: 9 }}>
+        <Text
+          style={{
+            color: "#6B7280",
+            letterSpacing: 0.5,
+            fontWeight: "600",
+            fontSize: 16,
+          }}
+        >
+          APP SETTINGS
+        </Text>
+
+        {isLoading ? (
+          <View style={{ marginBottom: 10, marginTop: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={navigateToChangeTimezone}
+            title="Timezone"
+            right={() => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text
+                  style={{ marginBottom: 2, paddingRight: 5 }}
+                  type="h3"
+                  color="black"
+                >
+                  {Localization.timezone}
+                </Text>
+                <MaterialIcons size={24} name="keyboard-arrow-right" />
+              </View>
+            )}
+          />
+        )}
+
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={70} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={{
+              color: colors.black,
+              fontWeight: "600",
+            }}
+            onPress={toggleAutoTaskModal}
+            title="Auto Move Tasks"
+            description="Automatically move all incompleted tasks to “today”."
+            descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
+            right={() => (
+              <View style={{ justifyContent: "center" }}>
+                <Switch
+                  onChange={toggleAutoTaskModal}
+                  value={data?.prefs?.autoMove}
+                />
+              </View>
+            )}
+          />
+        )}
+      </View>
+
+      <View style={{ flex: 5, alignItems: "flex-start" }}>
+        <View style={{ width: "100%" }}>
+          <Button
+            type="text"
+            TouchableComponent={TouchableWithoutFeedback}
+            style={{ width: "100%" }}
+            contentStyle={{ justifyContent: "flex-start" }}
+            labelStyle={{ color: colors.secondary, fontSize: 26 }}
+            onPress={toggleLogoutModal}
+            icon={"door"}
           >
-            v0.0.1
-          </Text>
+            <Text style={{ justifyContent: "center", fontSize: 16 }}>
+              Logout
+            </Text>
+          </Button>
         </View>
       </View>
+      <View style={{ flex: 2, alignItems: "center" }}>
+        <Text type="h4" color="secondary" customStyle={{ textAlign: "center" }}>
+          v0.0.1
+        </Text>
+      </View>
+
       <LogoutModal
         isVisible={isLogoutModalVisible}
         onPress={handleLogout}
@@ -269,27 +264,9 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: "white",
-    display: "flex",
     paddingTop: 55,
     paddingLeft: 30,
     paddingRight: 30,
-  },
-  container: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
-  },
-  iconStyle: {
-    paddingRight: 5,
-    fontSize: 20,
-    paddingTop: 2,
-    paddingRight: 30,
-  },
-  buttonStyle: {
-    display: "flex",
-    justifyContent: "flex-start",
-    padding: 0,
-    marginLeft: -5,
   },
 });
 

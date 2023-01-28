@@ -25,7 +25,7 @@ import FooterActions from "./FooterAction";
 import { useToast } from "react-native-toast-notifications";
 import { MainInput as Input } from "../../../components";
 import { useTheme } from "react-native-paper";
-const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
+const validEmailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 const titleDark = require("../../../assets/images/title-dark.png");
 const LoginScreen = ({ navigation }) => {
@@ -141,7 +141,7 @@ const LoginScreen = ({ navigation }) => {
           if (res.error.status === 200) {
             setStep(nextStep);
           } else if (res.error.status === 400) {
-            setError(res.error.data.message[0]);
+            setError(res.error.data.message);
           } else if (res.error.status === 404) {
             setError("Email address not found");
           }
@@ -187,7 +187,7 @@ const LoginScreen = ({ navigation }) => {
       setError("Enter a valid e-mail address");
     }
   };
-
+  console.log("ERROR: ", error);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
