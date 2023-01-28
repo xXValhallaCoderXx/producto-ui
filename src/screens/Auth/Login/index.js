@@ -257,7 +257,6 @@ const LoginScreen = ({ navigation }) => {
                         style={{
                           color: theme.colors.error,
                           fontSize: 12,
-                          alignSelf: "flex-start",
                           fontWeight: "400",
                           paddingLeft: windowWidth - windowWidth * 0.9,
                         }}
@@ -285,7 +284,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   titleContainer: {
     alignItems: "center",
-    marginTop: 76,
+    marginTop: 60,
   },
   secondaryTitle: {
     fontSize: 14,
@@ -297,7 +296,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     display: "flex",
     alignItems: "center",
-    marginTop: 70,
+    marginTop: 50,
   },
 });
 

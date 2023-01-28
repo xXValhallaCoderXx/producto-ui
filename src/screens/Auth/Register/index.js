@@ -112,7 +112,7 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={50}
+        keyboardVerticalOffset={20}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
@@ -125,7 +125,7 @@ const RegisterScreen = ({ navigation }) => {
             Create an account, and unlock your productivity
           </Text>
         </View>
-        <View style={{ height: 40 }}></View>
+        <View style={{ height: 20 }}></View>
 
         <View style={{ flex: 1, justifyContent: "space-between" }}>
           <View>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 76,
+    marginTop: 60,
     marginBottom: 20,
   },
   titleImage: {
