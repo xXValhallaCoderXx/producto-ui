@@ -30,6 +30,7 @@ const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const toast = useToast();
+  const [serverError, setServerError] = useState("");
   const [registerApi, registerApiResult] = useRegisterMutation();
   const [secretMap, setSecretMap] = useState({
     password: true,
@@ -78,15 +79,9 @@ const RegisterScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (registerApiResult.isError) {
-      toast.show("Email succesffully updated", {
-        type: "success",
-        duration: 2500,
-        offset: 30,
-        animationType: "zoom-in",
-        placement: "bottom",
-        title: "Error Registering User!",
-        description: "Please try something else",
-      });
+      setServerError(
+        registerApiResult?.error?.data?.message ?? "Sorry an error occured"
+      );
     }
   }, [registerApiResult.isError]);
 
@@ -109,6 +104,14 @@ const RegisterScreen = ({ navigation }) => {
     navigation.navigate("Login");
   };
 
+  const handleOnChangeText = (field) => (e) => {
+    if (serverError) {
+      setServerError("");
+    }
+    console.log("E ", e);
+    formik.setFieldValue(field, e);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
@@ -125,15 +128,16 @@ const RegisterScreen = ({ navigation }) => {
             Create an account, and unlock your productivity
           </Text>
         </View>
-        <View style={{ height: 20 }}></View>
 
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View
+          style={{ flex: 1, justifyContent: "space-between", marginTop: 20 }}
+        >
           <View>
             <View style={{ alignItems: "center" }}>
               <View style={{ width: "85%" }}>
                 <Input
                   autoFocus
-                  onChangeText={formik.handleChange("email")}
+                  onChangeText={handleOnChangeText("email")}
                   onBlur={formik.handleBlur("email")}
                   value={formik.values.email}
                   label="E-mail"
@@ -150,7 +154,7 @@ const RegisterScreen = ({ navigation }) => {
                 </View>
 
                 <Input
-                  onChangeText={formik.handleChange("password")}
+                  onChangeText={handleOnChangeText("password")}
                   onBlur={formik.handleBlur("password")}
                   value={formik.values.password}
                   label="Password"
@@ -170,7 +174,7 @@ const RegisterScreen = ({ navigation }) => {
                 </View>
 
                 <Input
-                  onChangeText={formik.handleChange("confirmPassword")}
+                  onChangeText={handleOnChangeText("confirmPassword")}
                   onBlur={formik.handleBlur("confirmPassword")}
                   secureTextEntry={secretMap["confirmPassword"]}
                   value={formik.values.confirmPassword}
@@ -188,6 +192,19 @@ const RegisterScreen = ({ navigation }) => {
                       formik?.errors?.confirmPassword) ||
                       ""}
                   </Text>
+                </View>
+                <View style={{ height: 24 }}>
+                  {serverError ? (
+                    <Text
+                      style={{
+                        ...styles.errorText,
+                        color: theme.colors.error,
+                        textAlign: "center",
+                      }}
+                    >
+                      {serverError}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </View>

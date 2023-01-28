@@ -49,9 +49,10 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       email: "",
     },
+    validateOnChange: false,
     validationSchema: Yup.object().shape({
       email: Yup.string()
-        .required("Email field is required")
+        .required("Please enter an e-mail address")
         .email("Please enter a valid e-mail address"),
     }),
     onSubmit: async ({ email }) => {
