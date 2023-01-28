@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
 import { View, TouchableWithoutFeedback, TextInput } from "react-native";
 
-const AddItem = ({ handleCreateNewTask }) => {
+const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const theme = useTheme();
 
   const isToday = useSelector((state) => state.today.isToday);
@@ -35,9 +35,9 @@ const AddItem = ({ handleCreateNewTask }) => {
     }
   };
 
-  // if (!isToday) {
-  //   return null;
-  // }
+  if (!focusMode) {
+    return null;
+  }
 
   return (
     <View>

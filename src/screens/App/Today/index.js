@@ -256,6 +256,7 @@ const ListScreen = () => {
                       <AddItem
                         handleCreateNewTask={handleCreateNewTask}
                         currentDate={utcDate}
+                        focusMode={focusMode}
                       />
                     </View>
                   )}
