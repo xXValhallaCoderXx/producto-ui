@@ -39,6 +39,7 @@ const LoginScreen = ({ navigation }) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
+  const emailInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
@@ -134,8 +135,6 @@ const LoginScreen = ({ navigation }) => {
     const { accessToken, refreshToken, email } = _data;
 
     const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);
-    console.log("LOGIN : ", isFirstLoad);
-    console.log("LOGIN - EMAIL : ", email);
     if (!isFirstLoad || isFirstLoad !== "false") {
       dispatch(toggleFirstLoad(true));
     }
@@ -147,6 +146,7 @@ const LoginScreen = ({ navigation }) => {
   const handleOnPressPrimary = async () => {
     if (step === 1) {
       await emailForm.handleSubmit();
+      passwordInputRef.current.focus();
     } else if (step === 2) {
       passwordForm.handleSubmit();
     }
@@ -166,6 +166,7 @@ const LoginScreen = ({ navigation }) => {
       passwordForm.resetForm();
       navigation.navigate("Registration");
     } else {
+      emailInputRef.current.focus();
       setStep(nextStep);
     }
   };
@@ -215,6 +216,7 @@ const LoginScreen = ({ navigation }) => {
                 >
                   <Input
                     label="Email"
+                    ref={emailInputRef}
                     value={emailForm.values.email}
                     style={{
                       width: windowWidth * 0.85,

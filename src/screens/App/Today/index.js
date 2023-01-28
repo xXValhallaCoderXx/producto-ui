@@ -52,24 +52,21 @@ const ListScreen = () => {
   const [utcDate, setUtcDate] = useState(new Date());
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
-  const hehe = useGetTodaysTasksQuery(
-    { date: format(utcDate, "yyyy-MM-dd") }
-    // { pollingInterval: 5000 }
-  );
+  const hehe = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
   const { data: tasks, isLoading, isFetching, error } = hehe;
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
-  const [posY] = useState(new Animated.Value(0));
+
   const {
     data: incompleteTasks,
     isLoading: incompleteIsLoading,
     error: incError,
   } = useGetIncompleteTasksQuery({});
-  const height = useHeaderHeight();
+
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
-  const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
+  const [toggleTask] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
-  const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
+  const [toggleTaskFocus] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
   useEffect(() => {
