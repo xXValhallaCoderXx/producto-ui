@@ -10,7 +10,7 @@ import SkeletonBox from "../../../components/SkeletonBox";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import { api } from "../../../api";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
@@ -32,7 +32,7 @@ const ProfileScreen = ({ navigation }) => {
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
-  const { data, isLoading } = useGetProfileQuery({ timeStamp: Date.now() });
+  const { data, isLoading } = useGetProfileQuery();
 
   const { colors } = useTheme();
 
@@ -57,6 +57,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
+    dispatch(api.util.resetApiState());
     setIsLogoutModalVisible(false);
     dispatch(toggleIsAuthenticated(false));
   };

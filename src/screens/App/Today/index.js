@@ -65,7 +65,8 @@ const ListScreen = () => {
     error: incError,
   } = useGetIncompleteTasksQuery({});
   const height = useHeaderHeight();
-  const { data: userData } = useGetProfileQuery({ timeStamp: Date.now() });
+  const { data: userData, isLoading: userProfileLoading } =
+    useGetProfileQuery();
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
@@ -155,7 +156,6 @@ const ListScreen = () => {
         "getTodaysTasks",
         { date: format(utcDate, "yyyy-MM-dd") },
         (draft) => {
-          console.log("WHAT IS RES: ", res);
           const task = draft.find((todo) => todo.title === res.data.title);
           task.id = res.data.id;
           return draft;
@@ -300,7 +300,10 @@ const ListScreen = () => {
           onCancel={handleCloseIncompleteModal}
           currentDate={utcDate}
         />
-        <IntroBottomSheet user={userData?.email} />
+        <IntroBottomSheet
+          user={userData?.email}
+          isLoading={userProfileLoading}
+        />
       </GestureHandlerRootView>
     </TouchableWithoutFeedback>
   );

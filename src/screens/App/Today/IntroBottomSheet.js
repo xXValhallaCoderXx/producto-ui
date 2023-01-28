@@ -6,7 +6,7 @@ import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import productoLogo from "../../../assets/images/title-dark.png";
 import { toggleFirstLoad } from "../../../shared/slice/global-slice";
 
-const IntroBottomSheet = ({ user }) => {
+const IntroBottomSheet = ({ user, isLoading }) => {
   const dispatch = useDispatch();
   const { firstLoad } = useSelector((state) => state.global);
 
@@ -21,14 +21,17 @@ const IntroBottomSheet = ({ user }) => {
   );
 
   // callbacks
-  const handleSheetChanges = useCallback(async (index) => {
-    if (index === -1) {
-      await AsyncStorage.setItem(`@first-load-${user}`, "false");
-      dispatch(toggleFirstLoad(false));
-    }
-  }, []);
+  const handleSheetChanges = useCallback(
+    async (index) => {
+      if (index === -1) {
+        await AsyncStorage.setItem(`@first-load-${user}`, "false");
+        dispatch(toggleFirstLoad(false));
+      }
+    },
+    [user, isLoading]
+  );
 
-  if (firstLoad) {
+  if (!firstLoad || isLoading) {
     return null;
   }
 

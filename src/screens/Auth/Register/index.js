@@ -68,7 +68,9 @@ const RegisterScreen = ({ navigation }) => {
       if (result?.data?.data) {
         const { accessToken, refreshToken } = result?.data?.data;
         const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);
-        if (!isFirstLoad) {
+        console.log("REGISTER : ", isFirstLoad);
+        console.log("REGISTER-EMAIL : ", email);
+        if (!isFirstLoad || isFirstLoad !== "false") {
           dispatch(toggleFirstLoad(true));
         }
 

@@ -53,7 +53,6 @@ const UpdateEmail = ({ route, navigation }) => {
 
   const onConfirmEmailChange = async () => {
     const { email, password } = payload.current;
-    console.log("EMAIL APSS :", email + " " + password);
     const result = await updateEmail({ email, password });
 
     if (!result.error) {

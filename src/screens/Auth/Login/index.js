@@ -76,7 +76,6 @@ const LoginScreen = ({ navigation }) => {
     }),
 
     onSubmit: async ({ password }) => {
-      console.log("SUBMIT LOGIN", emailForm.values.email);
       loginApi({ email: emailForm.values.email, password });
     },
   });
@@ -113,7 +112,6 @@ const LoginScreen = ({ navigation }) => {
   }, [verifyResult.isSuccess, verifyResult.isFetching]);
 
   useEffect(() => {
-    console.log("LOGIN API RESULT: ", loginApiResult);
     if (loginApiResult.isSuccess) {
       toast.show("Login Success!", {
         type: "success",
@@ -136,7 +134,9 @@ const LoginScreen = ({ navigation }) => {
     const { accessToken, refreshToken, email } = _data;
 
     const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);
-    if (!isFirstLoad) {
+    console.log("LOGIN : ", isFirstLoad);
+    console.log("LOGIN - EMAIL : ", email);
+    if (!isFirstLoad || isFirstLoad !== "false") {
       dispatch(toggleFirstLoad(true));
     }
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);

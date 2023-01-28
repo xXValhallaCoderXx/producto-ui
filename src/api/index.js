@@ -5,20 +5,6 @@ import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
 
 // import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
-import axios from "axios";
-// Define a service using a base URL and expected endpoints
-// const baseQuery = fetchBaseQuery({
-//   baseUrl: `${Constants.manifest.extra.baseUrl}/api/v1`,
-//   prepareHeaders: async (headers) => {
-//     // If we have a token set in state, let's assume that we should be passing it.
-//     const jwtToken = await AsyncStorage.getItem("@producto-jwt-token");
-//     if (jwtToken) {
-//       headers.set("authorization", `Bearer ${jwtToken}`);
-//     }
-//     headers.set("Content-Type", "application/json");
-//     return headers;
-//   },
-// });
 
 const refetchBaseQuery = fetchBaseQuery({
   // baseUrl: `http://10.0.2.2:3000/api/v1`,
@@ -27,7 +13,6 @@ const refetchBaseQuery = fetchBaseQuery({
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
-    console.log("BASE API: ", jwtToken);
     headers.set("authorization", `Bearer ${jwtToken}`);
     headers.set("Content-Type", "application/json");
     return headers;
@@ -48,7 +33,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
       const refreshToken = await SecureStore.getItemAsync(
         REFRESH_JWT_KEY_STORE
       );
-      console.log("API MIDDLEWARE - 401");
       if (refreshToken) {
         try {
           const res = await refetchBaseQuery(
@@ -133,7 +117,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
-    console.log("API ERROR: ", JSON.stringify(err));
     return err;
   }
 };
@@ -144,7 +127,6 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
-    console.log("BASE API: ", jwtToken);
     if (jwtToken) {
       headers.set("authorization", `Bearer ${jwtToken}`);
     }
