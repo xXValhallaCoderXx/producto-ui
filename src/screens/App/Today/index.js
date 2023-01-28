@@ -164,12 +164,8 @@ const ListScreen = () => {
     );
     toast.show("", {
       type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
       placement: "top",
       title: `Task created!`,
-      description: "",
     });
     return;
   };

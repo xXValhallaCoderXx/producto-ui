@@ -11,6 +11,7 @@ import IoniIcons from "react-native-vector-icons/Ionicons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { toggleEditMode } from "../today-slice";
 import { format } from "date-fns";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DraggableListContainer = ({
   tasks,
@@ -32,23 +33,22 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    setData(tasks);
+    sortData();
   }, [tasks]);
 
-  // const sortData = async () => {
-  //   const hasData = await AsyncStorage.getItem(currentDate);
-
-  //   if (hasData && hasData.length > 0) {
-  //     let tempResult = [];
-  //     JSON.parse(hasData).forEach((item) => {
-  //       const x = data.find((task) => task?.id === item);
-  //       tempResult.push(x);
-  //     });
-  //     setData(tempResult);
-  //   } else {
-  //     setData(tasks);
-  //   }
-  // };
+  const sortData = async () => {
+    const hasData = await AsyncStorage.getItem(currentDate);
+    if (hasData && hasData.length > 0) {
+      let tempResult = [];
+      JSON.parse(hasData).forEach((item) => {
+        const x = tasks.find((task) => task?.id === item);
+        tempResult.push(x);
+      });
+      setData(tempResult);
+    } else {
+      setData(tasks);
+    }
+  };
 
   let countRef = useRef(0).current;
   let countTimer = useRef(null);
@@ -182,9 +182,9 @@ const DraggableListContainer = ({
     <DraggableFlatList
       data={data}
       onDragEnd={async ({ data }) => {
-        // const itemSort = data.map((item) => item.id);
-        // const objectToStore = JSON.stringify(itemSort);
-        // AsyncStorage.setItem(currentDate, objectToStore);
+        const itemSort = data.map((item) => item.id);
+        const objectToStore = JSON.stringify(itemSort);
+        AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
       }}
       keyExtractor={(item) => item.id}
