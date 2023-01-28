@@ -8,6 +8,7 @@ const ConfirmationModal = ({
   isLoading,
   title,
   description,
+  confirmLabel,
 }) => {
   const theme = useTheme();
 
@@ -27,19 +28,19 @@ const ConfirmationModal = ({
 
         <Dialog.Actions>
           <Button
-            onPress={onConfirm}
-            title="Save"
-            textColor={theme.colors.primary}
-            type="clear"
-            disabled={isLoading}
-            style={{ width: 40 }}
-          />
-          <Button
             title="Cancel"
             textColor={theme.colors.error}
             onPress={onCancel}
             type="clear"
             // disabled={isLoading}
+          />
+          <Button
+            onPress={onConfirm}
+            title={confirmLabel ?? "Save"}
+            textColor={theme.colors.primary}
+            type="clear"
+            disabled={isLoading}
+            style={{ width: 40 }}
           />
         </Dialog.Actions>
       </Dialog>

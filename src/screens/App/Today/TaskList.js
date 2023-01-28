@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { View } from "react-native";
 
 import { useUpdateTaskMutation } from "../../../api/task-api";
-import DeleteTaskModal from "./DeleteModal";
 import { Text, useTheme } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 import { useToast } from "react-native-toast-notifications";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const TaskList = ({
   tasks,
@@ -82,10 +82,13 @@ const TaskList = ({
           onToggleFocus={onToggleFocus}
         />
       )}
-      <DeleteTaskModal
+      <ConfirmationModal
         isVisible={isDeleteModalVisible}
-        onPress={handleDeleteTask}
+        title="Delete Task"
+        description="Are you sure you want to delete this task?"
+        onConfirm={handleDeleteTask}
         onCancel={toggleDeleteModal}
+        confirmLabel="Confirm"
         isLoading={deleteTaskApiResults.isLoading}
       />
     </View>

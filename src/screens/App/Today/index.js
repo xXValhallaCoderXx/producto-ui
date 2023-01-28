@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import { useHeaderHeight } from "@react-navigation/elements";
-
+import { toggleEditMode } from "./today-slice";
 import {
   StyleSheet,
   View,
@@ -120,6 +120,7 @@ const ListScreen = () => {
   };
 
   const handleOnChangeDate = (direction) => () => {
+    dispatch(toggleEditMode({ editMode: false }));
     if (direction === "back") {
       const subUtcDate = sub(new Date(utcDate), { days: 1 });
       setUtcDate(subUtcDate);
@@ -201,7 +202,7 @@ const ListScreen = () => {
     // e.stopPropagation();
     Keyboard.dismiss();
   };
-
+  console.log("EDIT MODE", editMode);
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}

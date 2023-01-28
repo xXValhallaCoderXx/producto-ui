@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from "react";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { View, Modal, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { format } from "date-fns";
+import { Modal, Portal } from "react-native-paper";
 const CalendarWidget = ({
   calendarOpen,
   toggleCalendar,
@@ -62,12 +63,12 @@ const CalendarWidget = ({
   }, []);
 
   return (
-    <Modal
-      transparent={true}
-      visible={calendarOpen}
-      onRequestClose={toggleCalendar}
-    >
-      <Pressable style={styles.modalContainer} onPress={toggleCalendar}>
+    <Portal>
+      <Modal
+        visible={calendarOpen}
+        onDismiss={toggleCalendar}
+        style={{ justifyContent: "center", alignItems: "center" }}
+      >
         <View style={styles.modal}>
           <Calendar
             initialDate={format(currentDate, "yyyy-MM-dd")}
@@ -90,16 +91,17 @@ const CalendarWidget = ({
             enableSwipeMonths={true}
           />
         </View>
-      </Pressable>
-    </Modal>
+      </Modal>
+    </Portal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  modal: {
+    width: 350,
+    height: 360,
+    borderRadius: 5,
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -107,13 +109,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
-    elevation: 1,
-  },
-  modal: {
-    width: 350,
-    height: 360,
-    borderRadius: 5,
-    elevation: 3,
   },
 });
 
