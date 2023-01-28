@@ -14,11 +14,14 @@ import * as Localization from "expo-localization";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { MainInput as Input } from "../../../components";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRegisterMutation } from "../../../api/auth-api";
 import { useFormik } from "formik";
 import { Text, useTheme } from "react-native-paper";
-import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+import {
+  toggleIsAuthenticated,
+  toggleFirstLoad,
+} from "../../../shared/slice/global-slice";
 import FooterActions from "./FooterAction";
 import {
   JWT_KEY_STORE,
@@ -64,6 +67,11 @@ const RegisterScreen = ({ navigation }) => {
       const result = await registerApi({ email, password, timezone });
       if (result?.data?.data) {
         const { accessToken, refreshToken } = result?.data?.data;
+        const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);
+        if (!isFirstLoad) {
+          dispatch(toggleFirstLoad(true));
+        }
+
         await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
         await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
         dispatch(toggleIsAuthenticated(true));
@@ -90,10 +98,6 @@ const RegisterScreen = ({ navigation }) => {
     if (registerApiResult.isSuccess) {
       toast.show("Email succesffully updated", {
         type: "success",
-        duration: 2500,
-        offset: 30,
-        animationType: "zoom-in",
-        placement: "bottom",
         title: "Registration Success!",
         description: "Welcome to Productö",
       });
@@ -109,7 +113,6 @@ const RegisterScreen = ({ navigation }) => {
     if (serverError) {
       setServerError("");
     }
-    console.log("E ", e);
     formik.setFieldValue(field, e);
   };
 

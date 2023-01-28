@@ -34,6 +34,7 @@ import {
 } from "../../../api/task-api";
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
+import { useGetProfileQuery } from "../../../api/user-api";
 import CalendarWidget from "./Calendar";
 import { useToast } from "react-native-toast-notifications";
 
@@ -64,6 +65,7 @@ const ListScreen = () => {
     error: incError,
   } = useGetIncompleteTasksQuery({});
   const height = useHeaderHeight();
+  const { data: userData } = useGetProfileQuery({ timeStamp: Date.now() });
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
@@ -184,18 +186,6 @@ const ListScreen = () => {
       placement: "top",
       title: "Selected tasks have been moved!",
     });
-    // const from = format(utcDate, "yyyy-MM-dd");
-    // const to = format(new Date(), "yyyy-MM-dd");
-    // await moveIncompleteTasks({ from, to });
-    // toast.show("", {
-    //   type: "success",
-    //   duration: 2500,
-    //   offset: 100,
-    //   animationType: "zoom-in",
-    //   placement: "top",
-    //   title: `Tasks moved to ${to}!`,
-    //   description: "",
-    // });
   };
 
   const handleOpenIncompleteModal = () => {
@@ -229,7 +219,7 @@ const ListScreen = () => {
       onPress={handleKeyboardDismiss}
       accessible={false}
     >
-      <View style={{ flex: 1, backgroundColor: "white" }}>
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
         <KeyboardAvoidingView
           keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -292,7 +282,6 @@ const ListScreen = () => {
             currentDate={utcDate}
             handleOnSelectDay={handleOnSelectDay}
           />
-          <IntroBottomSheet />
         </KeyboardAvoidingView>
 
         <View style={styles.moveIncomlpleteContainer}>
@@ -311,7 +300,8 @@ const ListScreen = () => {
           onCancel={handleCloseIncompleteModal}
           currentDate={utcDate}
         />
-      </View>
+        <IntroBottomSheet user={userData?.email} />
+      </GestureHandlerRootView>
     </TouchableWithoutFeedback>
   );
 };

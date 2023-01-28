@@ -27,7 +27,7 @@ const refetchBaseQuery = fetchBaseQuery({
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
-
+    console.log("BASE API: ", jwtToken);
     headers.set("authorization", `Bearer ${jwtToken}`);
     headers.set("Content-Type", "application/json");
     return headers;
@@ -144,6 +144,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
+    console.log("BASE API: ", jwtToken);
     if (jwtToken) {
       headers.set("authorization", `Bearer ${jwtToken}`);
     }

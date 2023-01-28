@@ -27,11 +27,13 @@ import { useToast } from "react-native-toast-notifications";
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const toast = useToast();
+
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
-  const { data, isLoading } = useGetProfileQuery({});
+  const { data, isLoading } = useGetProfileQuery({ timeStamp: Date.now() });
+
   const { colors } = useTheme();
 
   useEffect(() => {

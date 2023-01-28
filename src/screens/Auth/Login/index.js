@@ -6,7 +6,11 @@ import * as SecureStore from "expo-secure-store";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
 import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
-import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
+import {
+  toggleIsAuthenticated,
+  toggleFirstLoad,
+} from "../../../shared/slice/global-slice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Text } from "react-native-paper";
 import FooterActions from "./FooterAction";
@@ -56,7 +60,6 @@ const LoginScreen = ({ navigation }) => {
         .email("Please enter a valid e-mail address"),
     }),
     onSubmit: async ({ email }) => {
-      console.log("EMAI SUBMIT");
       verifyTigger({ email });
     },
   });
@@ -73,6 +76,7 @@ const LoginScreen = ({ navigation }) => {
     }),
 
     onSubmit: async ({ password }) => {
+      console.log("SUBMIT LOGIN", emailForm.values.email);
       loginApi({ email: emailForm.values.email, password });
     },
   });
@@ -109,6 +113,7 @@ const LoginScreen = ({ navigation }) => {
   }, [verifyResult.isSuccess, verifyResult.isFetching]);
 
   useEffect(() => {
+    console.log("LOGIN API RESULT: ", loginApiResult);
     if (loginApiResult.isSuccess) {
       toast.show("Login Success!", {
         type: "success",
@@ -116,7 +121,7 @@ const LoginScreen = ({ navigation }) => {
       });
       setTokenAndRedirect(loginApiResult.data);
     }
-  }, [loginApiResult.isError, loginApiResult.isSuccess]);
+  }, [loginApiResult.isSuccess]);
 
   useEffect(() => {
     if (loginApiResult.isError) {
@@ -127,8 +132,13 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [loginApiResult.isError]);
 
-  const setTokenAndRedirect = async (token) => {
-    const { accessToken, refreshToken } = token;
+  const setTokenAndRedirect = async (_data) => {
+    const { accessToken, refreshToken, email } = _data;
+
+    const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);
+    if (!isFirstLoad) {
+      dispatch(toggleFirstLoad(true));
+    }
     await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
     dispatch(toggleIsAuthenticated(true));
