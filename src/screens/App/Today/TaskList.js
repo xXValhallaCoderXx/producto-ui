@@ -63,7 +63,9 @@ const TaskList = ({
         <View style={{ paddingLeft: 5, marginTop: 15 }}>
           <Text>
             Add a task to start your{" "}
-            <Text style={{ fontWeight: "700" }}>productivity!</Text>
+            <Text style={{ fontWeight: "700", color: theme.colors.primary }}>
+              productivity!
+            </Text>
           </Text>
         </View>
       ) : (

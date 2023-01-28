@@ -10,6 +10,7 @@ const ProgressBar = ({ progress }) => {
       height={15}
       progress={progress}
       width={null}
+      unfilledColor="#F2F2F2"
       style={{ borderRadius: 20 }}
       color={theme.colors.primary}
     />
