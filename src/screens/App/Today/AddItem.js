@@ -42,31 +42,26 @@ const AddItem = ({ handleCreateNewTask }) => {
   return (
     <View>
       {addTask ? (
-        <View>
-          <View
+        <View
+          style={{
+            paddingLeft: 5,
+            flexDirection: "row",
+            // justifyContent: "space-between",
+          }}
+        >
+          <TextInput
+            placeholder="Enter task name..."
+            autoFocus
+            placeholderTextColor="#808080"
+            onChangeText={handleOnChange}
+            value={taskName}
+            onBlur={handleOnBlur}
+            underlineColorAndroid="transparent"
             style={{
-              paddingLeft: 5,
-              flexDirection: "row",
-              justifyContent: "space-between",
+              fontSize: 16,
+              backgroundColor: "white",
             }}
-          >
-            <View style={{ flex: 7 }}>
-              <TextInput
-                placeholder="Enter task name..."
-                autoFocus
-                placeholderTextColor="#808080"
-                onChangeText={handleOnChange}
-                value={taskName}
-                onBlur={handleOnBlur}
-                underlineColorAndroid="transparent"
-                style={{
-                  fontSize: 16,
-                  height: 50,
-                  backgroundColor: "white",
-                }}
-              />
-            </View>
-          </View>
+          />
         </View>
       ) : (
         <Button

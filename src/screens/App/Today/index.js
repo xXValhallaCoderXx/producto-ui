@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 import {
   StyleSheet,
@@ -58,7 +59,7 @@ const ListScreen = () => {
     isLoading: incompleteIsLoading,
     error: incError,
   } = useGetIncompleteTasksQuery({});
-
+  const height = useHeaderHeight();
   const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
@@ -206,67 +207,72 @@ const ListScreen = () => {
       onPress={handleKeyboardDismiss}
       accessible={false}
     >
-      {/* <View style={styles.container}> */}
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{
-          flex: 1,
-          backgroundColor: "white",
-          paddingHorizontal: 20,
-          paddingTop: 10,
-        }}
-      >
-        <View style={{ paddingHorizontal: 5 }}>
-          <Header
-            clientUtc={utcDate}
-            focusMode={focusMode}
-            onChangeDate={handleOnChangeDate}
-            onPressToday={handleOnPressToday}
-            onPressDate={handleOnPressDate}
-          />
-          <ProgressBar focusMode={focusMode} progress={progress} />
-        </View>
-
-        {isLoading || isFetching ? (
-          <View style={{ marginTop: 15 }}>
-            <SkeletonList />
+      <View style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            paddingHorizontal: 20,
+            paddingTop: 10,
+          }}
+        >
+          <View style={{ paddingHorizontal: 5 }}>
+            <Header
+              clientUtc={utcDate}
+              focusMode={focusMode}
+              onChangeDate={handleOnChangeDate}
+              onPressToday={handleOnPressToday}
+              onPressDate={handleOnPressDate}
+            />
+            <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
-        ) : (
-          <View style={styles.container}>
-            <View style={{ flex: 0.9 }}>
-              <View style={{ flex: 0.9, paddingTop: 10 }}>
-                <TaskList
-                  tasks={tasks || []}
-                  handleToggleTaskFocus={handleToggleTaskFocus}
-                  handleToggleTaskComplete={handleToggleTaskComplete}
-                  currentTask={currentTask}
-                  isLoadingToggle={isLoadingToggle}
-                  utcDate={utcDate}
-                />
-                {!editMode && (
-                  <View style={{ marginTop: 15, paddingLeft: 10 }}>
-                    <AddItem
-                      handleCreateNewTask={handleCreateNewTask}
-                      currentDate={utcDate}
-                    />
-                  </View>
-                )}
+
+          {isLoading || isFetching ? (
+            <View style={{ marginTop: 15 }}>
+              <SkeletonList />
+            </View>
+          ) : (
+            <View style={styles.container}>
+              <View style={{ flex: 0.9 }}>
+                <View style={{ flex: 0.9, paddingTop: 10 }}>
+                  <TaskList
+                    tasks={tasks || []}
+                    handleToggleTaskFocus={handleToggleTaskFocus}
+                    handleToggleTaskComplete={handleToggleTaskComplete}
+                    currentTask={currentTask}
+                    isLoadingToggle={isLoadingToggle}
+                    utcDate={utcDate}
+                  />
+                  {!editMode && (
+                    <View
+                      style={{
+                        marginTop: 15,
+                        paddingLeft: 10,
+                      }}
+                    >
+                      <AddItem
+                        handleCreateNewTask={handleCreateNewTask}
+                        currentDate={utcDate}
+                      />
+                    </View>
+                  )}
+                </View>
               </View>
             </View>
-          </View>
-        )}
-        <CalendarWidget
-          calendarOpen={calendarOpen}
-          toggleCalendar={handleToggleCalendar}
-          incompleteTasks={incompleteTasks}
-          currentDate={utcDate}
-          handleOnSelectDay={handleOnSelectDay}
-        />
-        <IntroBottomSheet />
-      </KeyboardAvoidingView>
+          )}
+          <CalendarWidget
+            calendarOpen={calendarOpen}
+            toggleCalendar={handleToggleCalendar}
+            incompleteTasks={incompleteTasks}
+            currentDate={utcDate}
+            handleOnSelectDay={handleOnSelectDay}
+          />
+          <IntroBottomSheet />
+        </KeyboardAvoidingView>
 
-      {/* <View style={styles.moveIncomlpleteContainer}>
+        <View style={styles.moveIncomlpleteContainer}>
           <View style={{ paddingBottom: 20 }}>
             <MoveIncomplete
               tasks={tasks}
@@ -275,8 +281,8 @@ const ListScreen = () => {
               onMoveIncomplete={handleMoveIncompleteTasks}
             />
           </View>
-        </View> */}
-      {/* </View> */}
+        </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
