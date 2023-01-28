@@ -207,7 +207,7 @@ const ListScreen = () => {
       onPress={handleKeyboardDismiss}
       accessible={false}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "white" }}>
         <KeyboardAvoidingView
           keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
           behavior={Platform.OS === "ios" ? "padding" : "height"}

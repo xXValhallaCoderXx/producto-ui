@@ -7,6 +7,8 @@ const taskApi = api.injectEndpoints({
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => {
+        console.log("RESULT: ", result);
+        console.log("ARG: ", arg);
         return result
           ? [...result.map(() => ({ type: "Tasks", id: arg.date })), "Tasks"]
           : ["Tasks"];
