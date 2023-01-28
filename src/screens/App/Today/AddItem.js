@@ -1,13 +1,14 @@
 import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
 import { View, TouchableWithoutFeedback, TextInput } from "react-native";
+import { toggleAddTaskMode } from "./today-slice";
 
 const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const theme = useTheme();
-
+  const dispatch = useDispatch();
+  const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
-  const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
 
@@ -19,14 +20,14 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const handleOnPress = () => {
     if (!addTask) {
       setTaskName("");
-      setAddTask(true);
+      dispatch(toggleAddTaskMode(true));
       addTaskInputRef.current && addTaskInputRef.current.focus();
     }
     // setError("");
   };
 
   const handleOnBlur = async () => {
-    setAddTask(false);
+    dispatch(toggleAddTaskMode(false));
     if (taskName.length > 0) {
       const newValue = taskName;
       setTaskName("");

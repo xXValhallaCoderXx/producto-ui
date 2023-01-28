@@ -9,10 +9,10 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
     <View style={{ paddingTop: 0, height: 20 }}>
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          height: 15,
+
+          height: 20,
         }}
       >
         {focusMode && (
@@ -27,6 +27,7 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
                 textAlign: "center",
                 color: theme.colors.primary,
                 fontWeight: "700",
+                // paddingBottom:
               }}
             >
               {Math.round(parseFloat(progress || 0) * 100)}%

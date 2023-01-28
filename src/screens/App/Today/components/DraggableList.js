@@ -24,6 +24,7 @@ const DraggableListContainer = ({
   const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
+  const addTaskMode = useSelector((state) => state.today.addTaskMode);
 
   const [updateTaskApi] = useUpdateTaskMutation();
   const focusMode = useSelector((state) => state.today.focusMode);
@@ -123,6 +124,7 @@ const DraggableListContainer = ({
       <ScaleDecorator>
         <List.Item
           title={item.title}
+          disabled={addTaskMode}
           titleStyle={{
             color: item.completed ? "gray" : "black",
 
