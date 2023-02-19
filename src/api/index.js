@@ -1,15 +1,15 @@
-import * as Constants from "expo-constants";
+import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
-
-// import { store } from "../config/store";
 import { globalSlice } from "../shared/slice/global-slice";
 
+const baseUrl = Constants.expoConfig.extra.baseUrl;
+console.log("BASE URL: ", baseUrl);
+
 const refetchBaseQuery = fetchBaseQuery({
-  // baseUrl: `http://10.0.2.2:3000/api/v1`,
-  // baseUrl: `https://deep-mails-jog-116-86-1-104.loca.lt/api/v1`,
-  baseUrl: `${Constants.default.manifest2.extra.expoClient.extra.baseUrl}/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `${baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -64,56 +64,6 @@ const customBaseQuery = async (args, api, extraOptions) => {
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
       }
     }
-
-    // if (!isAuthenticated && !isInit) {
-    //   if (args === "/user/profile" && result.meta.response.status === 200) {
-    //     // Remounting App
-
-    //     api.dispatch(globalSlice.actions.toggleInit(true));
-    //     api.dispatch(
-    //       globalSlice.actions.toggleIsAuthenticated(true)
-    //     );
-    //   }
-    // }
-    // if (!isInit && result.meta.response.status === 404) {
-    //   api.dispatch(globalSlice.actions.toggleInit(true));
-    //   api.dispatch(
-    //     globalSlice.actions.toggleIsAuthenticated(false)
-    //   );
-    // }
-
-    // Handle unauthorized
-    // if (result.meta.response.status === 401) {
-    //   const refreshToken = await SecureStore.getItemAsync(
-    //     REFRESH_JWT_KEY_STORE
-    //   );
-
-    //   if (refreshToken) {
-    //     try {
-    //       const res = await refetchBaseQuery(
-    //         "/auth/refresh-jwt",
-    //         api,
-    //         extraOptions
-    //       );
-    //       const { accessToken, refreshToken } = res.data;
-    //       await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
-    //       await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
-    //       api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
-    //       result = await baseQuery(args, api, extraOptions);
-    //     } catch (err) {
-    //       await SecureStore.setItemAsync("producto-jwt-token", "");
-    //       await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
-    //       api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
-    //       ToastAndroid.show("You have been logged out", ToastAndroid.SHORT);
-    //     }
-    //   } else {
-    //     await SecureStore.setItemAsync("producto-jwt-token", "");
-    //     await SecureStore.setItemAsync("producto-jwt-refresh-token", "");
-    //     api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
-    //   }
-
-    // }
-
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
@@ -121,9 +71,8 @@ const customBaseQuery = async (args, api, extraOptions) => {
   }
 };
 const baseQuery = fetchBaseQuery({
-  // baseUrl: `https://deep-mails-jog-116-86-1-104.loca.lt/api/v1`,
-  // baseUrl: `http://10.0.2.2:3000/api/v1`,
-  baseUrl: `${Constants.default.manifest2.extra.expoClient.extra.baseUrl}/api/v1`,
+  baseUrl: `${baseUrl}/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);
