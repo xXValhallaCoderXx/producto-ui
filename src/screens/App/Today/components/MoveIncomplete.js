@@ -21,8 +21,8 @@ const MoveIncomplete = ({
       disabled={
         isLoading ||
         isAfter(currentDate, new Date()) ||
-        tasks.length === 0 ||
-        tasks.every((task) => task.completed === true)
+        tasks?.length === 0 ||
+        tasks?.every((task) => task.completed === true)
       }
       loading={isLoading}
       containerStyle={{ width: 160, borderRadius: 8 }}

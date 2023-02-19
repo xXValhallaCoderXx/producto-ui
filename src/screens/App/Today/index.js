@@ -100,6 +100,12 @@ const ListScreen = () => {
     if (createTaskResult.isSuccess) {
       const { data } = createTaskResult;
 
+      toast.show("", {
+        type: "success",
+        placement: "top",
+        title: `Task created!`,
+      });
+
       dispatch(
         api.util.updateQueryData(
           "getTodaysTasks",
@@ -111,12 +117,6 @@ const ListScreen = () => {
           }
         )
       );
-
-      toast.show("", {
-        type: "success",
-        placement: "top",
-        title: `Task created!`,
-      });
     }
   }, [createTaskResult.isSuccess]);
 
@@ -167,7 +167,7 @@ const ListScreen = () => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    await createTask({
+    createTask({
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
       date: format(utcDate, "yyyy-MM-dd"),
@@ -221,8 +221,8 @@ const ListScreen = () => {
     >
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
         <KeyboardAvoidingView
-          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : 0}
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : -110}
+          behavior={Platform.OS === "ios" ? "padding" : "padding"}
           style={{
             flex: 1,
             backgroundColor: "white",
@@ -261,7 +261,7 @@ const ListScreen = () => {
                     <View
                       style={{
                         marginTop: 15,
-                        paddingLeft: tasks.length === 0 ? 5 : isToday ? 5 : 15,
+                        paddingLeft: tasks?.length === 0 ? 5 : isToday ? 5 : 15,
                       }}
                     >
                       <AddItem

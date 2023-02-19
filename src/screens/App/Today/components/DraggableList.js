@@ -38,7 +38,7 @@ const DraggableListContainer = ({
 
   const sortData = async () => {
     const hasData = await AsyncStorage.getItem(currentDate);
-    if (hasData && hasData.length > 0) {
+    if (hasData && hasData.length === tasks.length) {
       let tempResult = [];
       JSON.parse(hasData).forEach((item) => {
         const task = tasks.find((task) => task?.id === item);
