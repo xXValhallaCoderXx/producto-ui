@@ -20,7 +20,10 @@ const TaskList = ({
   const focusMode = useSelector((state) => state.today.focusMode);
 
   // const onCheckTask = (_task) =>  handleToggleTaskComplete(_task);
-  const onToggleFocus = (_task) => () => handleToggleTaskFocus(_task);
+  const onToggleFocus = (_task) => (e) => {
+    e.stopPropagation();
+    handleToggleTaskFocus(_task);
+  };
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
 

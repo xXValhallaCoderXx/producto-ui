@@ -148,7 +148,11 @@ const DraggableListContainer = ({
               }, 200);
             }
           }}
-          style={{ borderBottomColor: "white", borderBottomWidth: 1 }}
+          style={{
+            borderBottomColor: "white",
+            borderBottomWidth: 1,
+            marginLeft: -5,
+          }}
           right={() => (
             <View>
               <Checkbox.Android
@@ -161,14 +165,15 @@ const DraggableListContainer = ({
             focusMode && currentDate === todayDate ? (
               <View style={{ justifyContent: "center" }}>
                 <IoniIcons
+                  onPress={onToggleFocus(item)}
                   style={{
+                    padding: 5,
                     fontSize: 22,
                     marginRight: 10,
                     transform: [{ rotate: "45deg" }],
                   }}
                   color={item.focus ? theme.colors.primary : "black"}
                   name={"key-outline"}
-                  onPress={onToggleFocus(item)}
                 />
               </View>
             ) : null
