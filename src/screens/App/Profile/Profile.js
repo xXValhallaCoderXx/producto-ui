@@ -3,12 +3,17 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+  Image,
+} from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
 import ConfirmationModal from "../../../components/ConfirmationModal";
-
+import logoutIcon from "../../../assets/images/logout.png";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { api } from "../../../api";
 import {
@@ -102,8 +107,8 @@ const ProfileScreen = ({ navigation }) => {
           style={{
             color: "#6B7280",
             letterSpacing: 0.5,
-            fontWeight: "600",
-            fontSize: 16,
+            fontWeight: "500",
+            fontSize: 14,
           }}
         >
           ACCOUNT INFORMATION
@@ -118,6 +123,7 @@ const ProfileScreen = ({ navigation }) => {
             titleStyle={{
               color: colors.black,
               fontWeight: "600",
+              marginLeft: -15,
             }}
             onPress={navigateToChangeEmail}
             title="Email"
@@ -144,6 +150,7 @@ const ProfileScreen = ({ navigation }) => {
             titleStyle={{
               color: colors.black,
               fontWeight: "600",
+              marginLeft: -15,
             }}
             onPress={navigateToEditPassword}
             title="Password"
@@ -158,8 +165,8 @@ const ProfileScreen = ({ navigation }) => {
           style={{
             color: "#6B7280",
             letterSpacing: 0.5,
-            fontWeight: "600",
-            fontSize: 16,
+            fontWeight: "500",
+            fontSize: 14,
           }}
         >
           APP SETTINGS
@@ -174,6 +181,7 @@ const ProfileScreen = ({ navigation }) => {
             titleStyle={{
               color: colors.black,
               fontWeight: "600",
+              marginLeft: -15,
             }}
             onPress={navigateToChangeTimezone}
             title="Timezone"
@@ -201,11 +209,12 @@ const ProfileScreen = ({ navigation }) => {
             titleStyle={{
               color: colors.black,
               fontWeight: "600",
+              marginLeft: -15,
             }}
             onPress={toggleAutoTaskModal}
             title="Auto Move Tasks"
             description="Automatically move all incompleted tasks to “today”."
-            descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
+            descriptionStyle={{ maxWidth: 240, marginTop: 2, marginLeft: -15 }}
             right={() => (
               <View style={{ justifyContent: "center" }}>
                 <Switch
@@ -224,12 +233,22 @@ const ProfileScreen = ({ navigation }) => {
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
             style={{ width: "100%" }}
-            contentStyle={{ justifyContent: "flex-start" }}
-            labelStyle={{ color: colors.secondary, fontSize: 26 }}
+            contentStyle={{
+              justifyContent: "flex-start",
+            }}
+            labelStyle={{
+              color: colors.secondary,
+              fontSize: 18,
+              paddingLeft: 15,
+            }}
             onPress={toggleLogoutModal}
-            icon={"door"}
+            icon={logoutIcon}
           >
-            <Text style={{ justifyContent: "center", fontSize: 16 }}>
+            <Text
+              style={{
+                fontSize: 16,
+              }}
+            >
               Logout
             </Text>
           </Button>
