@@ -69,6 +69,7 @@ const ListScreen = () => {
   const [toggleTaskFocus] = useToggleTaskFocusMutation();
   const [moveIncompleteTasks, moveIncompleteTasksResult] =
     useMoveIncompleteTasksMutation();
+
   useEffect(() => {
     setTheme();
   }, []);
@@ -94,6 +95,30 @@ const ListScreen = () => {
       });
     }
   }, [createTaskResult.isError]);
+
+  useEffect(() => {
+    if (createTaskResult.isSuccess) {
+      const { data } = createTaskResult;
+
+      dispatch(
+        api.util.updateQueryData(
+          "getTodaysTasks",
+          { date: format(utcDate, "yyyy-MM-dd") },
+          (draft) => {
+            const task = draft.find((todo) => todo.title === data.title);
+            task.id = data.id;
+            return draft;
+          }
+        )
+      );
+
+      toast.show("", {
+        type: "success",
+        placement: "top",
+        title: `Task created!`,
+      });
+    }
+  }, [createTaskResult.isSuccess]);
 
   const setTheme = async () => {
     Platform.OS === "android" &&
@@ -142,29 +167,11 @@ const ListScreen = () => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    const res = await createTask({
+    await createTask({
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
       date: format(utcDate, "yyyy-MM-dd"),
     });
-
-    dispatch(
-      api.util.updateQueryData(
-        "getTodaysTasks",
-        { date: format(utcDate, "yyyy-MM-dd") },
-        (draft) => {
-          const task = draft.find((todo) => todo.title === res.data.title);
-          task.id = res.data.id;
-          return draft;
-        }
-      )
-    );
-    toast.show("", {
-      type: "success",
-      placement: "top",
-      title: `Task created!`,
-    });
-    return;
   };
 
   const handleMoveIncompleteTasks = async (items) => {

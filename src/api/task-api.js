@@ -6,13 +6,6 @@ const taskApi = api.injectEndpoints({
       query: ({ date }) => {
         return `/task?date=${date}`;
       },
-      // providesTags: (result, error, arg) => {
-      //   console.log("RESULT: ", result);
-      //   console.log("ARG: ", arg);
-      //   return result
-      //     ? [...result.map(() => ({ type: "Tasks", id: arg.date })), "Tasks"]
-      //     : ["Tasks"];
-      // },
       providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
     }),
     getIncompleteTasks: builder.query({

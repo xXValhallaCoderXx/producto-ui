@@ -5,7 +5,6 @@ import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
 import { globalSlice } from "../shared/slice/global-slice";
 
 const baseUrl = Constants.expoConfig.extra.baseUrl;
-console.log("BASE URL: ", baseUrl);
 
 const refetchBaseQuery = fetchBaseQuery({
   // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,

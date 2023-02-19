@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
-  console.log("VERIFY RESULT: ", verifyResult);
+
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
     password: true,

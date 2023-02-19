@@ -54,7 +54,6 @@ const UpdateEmail = ({ route, navigation }) => {
   const onConfirmEmailChange = async () => {
     const { email, password } = payload.current;
     const result = await updateEmail({ email, password });
-
     if (!result.error) {
       const { tokens } = result?.data;
       await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
