@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import * as Yup from "yup";
+import * as SecureStore from "expo-secure-store";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
@@ -90,15 +95,6 @@ const EditPassword = ({ navigation }) => {
   const onConfirmPasswordChange = async () => {
     const { newPassword, currentPassword } = payload.current;
     await updatePassword({ newPassword, currentPassword });
-
-    if (!result.error) {
-      const { tokens } = result?.data;
-      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
-      await SecureStore.setItemAsync(
-        REFRESH_JWT_KEY_STORE,
-        tokens.refreshToken
-      );
-    }
   };
 
   const onCancelEmailChange = () => {
