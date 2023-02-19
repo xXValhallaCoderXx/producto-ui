@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { useToast } from "react-native-toast-notifications";
 import ProductoButton from "../../../components/Button";
-import { TextInput, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import { useUpdateEmailMutation } from "../../../api/auth-api";
@@ -13,7 +13,7 @@ import {
 } from "../../../shared/constants";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import { MainInput as Input } from "../../../components";
-const UpdateEmail = ({ route, navigation }) => {
+const UpdateEmail = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
   const payload = useRef({});
