@@ -5,14 +5,16 @@ import {
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
+  Image,
 } from "react-native";
-import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
 import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFocusMode, toggleIsToday } from "../today-slice";
+import lockOpen from "../../../../assets/images/lock-open.png";
+import lockClosed from "../../../../assets/images/lock-closed.png";
 
 const TodayHeader = ({
   focusMode,
@@ -105,12 +107,15 @@ const TodayHeader = ({
           </View>
         </View>
         {isToday ? (
-          <EvilIcon
+          <TouchableOpacity
             onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
-            style={{ fontSize: 40 }}
-            color={theme.colors.primary}
-            name={focusMode ? "unlock" : "lock"}
-          />
+            style={{ marginRight: 10 }}
+          >
+            <Image
+              source={focusMode ? lockOpen : lockClosed}
+              style={{ height: 20 }}
+            />
+          </TouchableOpacity>
         ) : null}
       </View>
     </View>

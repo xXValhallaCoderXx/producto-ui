@@ -11,21 +11,22 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-
+          justifyContent: "space-between",
           height: 20,
         }}
       >
         {focusMode && (
           <>
-            <View style={{ width: "84%" }}>
+            <View style={{ width: "85%" }}>
               <ProgressBar progress={isNaN(progress) ? 0 : progress} />
             </View>
-            <View style={{ paddingLeft: 10 }}>
+            <View>
               <Text
                 h6
                 style={{
                   color: theme.colors.primary,
                   fontWeight: "700",
+                  marginRight: 7,
                 }}
               >
                 {Math.round(parseFloat(progress || 0) * 100)} %

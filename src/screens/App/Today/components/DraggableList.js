@@ -41,8 +41,10 @@ const DraggableListContainer = ({
     if (hasData && hasData.length > 0) {
       let tempResult = [];
       JSON.parse(hasData).forEach((item) => {
-        const x = tasks.find((task) => task?.id === item);
-        tempResult.push(x);
+        const task = tasks.find((task) => task?.id === item);
+        if (task) {
+          tempResult.push(task);
+        }
       });
       setData(tempResult);
     } else {
@@ -78,10 +80,10 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive }) => {
-    if (item && item.id === editTask) {
+    if (item && item?.id === editTask) {
       return (
         <View
-          key={item.id}
+          key={item?.id}
           onLongPress={drag}
           style={{
             paddingLeft: focusMode && currentDate === todayDate ? 5 : 15,
@@ -105,7 +107,7 @@ const DraggableListContainer = ({
             style={{
               justifyContent: "flex-end",
               ...styles.listRow,
-              marginRight: 15,
+              marginRight: 10,
               height: 35,
             }}
           >
@@ -123,13 +125,13 @@ const DraggableListContainer = ({
     return (
       <ScaleDecorator>
         <List.Item
-          title={item.title}
+          title={item?.title}
           disabled={addTaskMode}
           titleStyle={{
-            color: item.completed ? "gray" : "black",
+            color: item?.completed ? "gray" : "black",
 
             marginLeft: !focusMode ? -10 : 0,
-            textDecorationLine: item.completed ? "line-through" : "none",
+            textDecorationLine: item?.completed ? "line-through" : "none",
           }}
           onLongPress={drag}
           onPress={() => {
@@ -138,8 +140,8 @@ const DraggableListContainer = ({
               clearTimeout(countTimer.current);
               countRef = 0;
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setEditTask(item.id);
-              setTaskValue(item.title);
+              setEditTask(item?.id);
+              setTaskValue(item?.title);
               dispatch(toggleEditMode({ editMode: true }));
             } else {
               countTimer.current = setTimeout(() => {
@@ -151,12 +153,12 @@ const DraggableListContainer = ({
           style={{
             borderBottomColor: "white",
             borderBottomWidth: 1,
-            marginLeft: -5,
+            // marginLeft: -5,
           }}
           right={() => (
-            <View>
+            <View style={{ marginRight: -5 }}>
               <Checkbox.Android
-                status={item.completed ? "checked" : "unchecked"}
+                status={item?.completed ? "checked" : "unchecked"}
                 onPress={handleOnCheckTask(item)}
               />
             </View>
@@ -172,7 +174,7 @@ const DraggableListContainer = ({
                     marginRight: 10,
                     transform: [{ rotate: "45deg" }],
                   }}
-                  color={item.focus ? theme.colors.primary : "black"}
+                  color={item?.focus ? theme.colors.primary : "black"}
                   name={"key-outline"}
                 />
               </View>
@@ -187,12 +189,12 @@ const DraggableListContainer = ({
     <DraggableFlatList
       data={data}
       onDragEnd={async ({ data }) => {
-        const itemSort = data.map((item) => item.id);
+        const itemSort = data.map((item) => item?.id);
         const objectToStore = JSON.stringify(itemSort);
         AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
       }}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item?.id}
       renderItem={renderItem}
       keyboardShouldPersistTaps="handled"
     />

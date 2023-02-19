@@ -237,7 +237,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
       <View style={{ flex: 2, alignItems: "center" }}>
         <Text type="h4" color="secondary" customStyle={{ textAlign: "center" }}>
-          v0.0.1
+          v0.5.0
         </Text>
       </View>
 
