@@ -172,6 +172,7 @@ const DraggableListContainer = ({
                     padding: 5,
                     fontSize: 22,
                     marginRight: 10,
+                    marginLeft: -2,
                     transform: [{ rotate: "45deg" }],
                   }}
                   color={item?.focus ? theme.colors.primary : "black"}

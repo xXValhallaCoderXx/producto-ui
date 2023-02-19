@@ -24,9 +24,7 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
             </View>
             <View
               style={{
-                width: 70,
-                // paddingLeft: 15,
-
+                width: 55,
                 alignItems: "flex-end",
               }}
             >
@@ -35,7 +33,7 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
                 style={{
                   color: theme.colors.primary,
                   fontWeight: "700",
-                  paddingRight: 15,
+                  paddingRight: 5,
                 }}
               >
                 {humanReadbleProgess} %

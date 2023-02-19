@@ -68,7 +68,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
-            marginLeft: -8,
+            marginLeft: -10,
           }}
           labelStyle={{
             fontWeight: "600",
