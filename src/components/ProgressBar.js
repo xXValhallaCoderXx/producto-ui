@@ -1,17 +1,12 @@
-import Progress from "react-native-progress/Bar";
-import { useTheme } from "react-native-paper";
+import { useTheme, ProgressBar as Progress } from "react-native-paper";
 
-const ProgressBar = ({ progress }) => {
+const ProgressBar = ({ progress, visible = true }) => {
   const theme = useTheme();
 
   return (
     <Progress
-      borderColor="white"
-      height={15}
       progress={progress}
-      width={null}
-      unfilledColor="#F2F2F2"
-      style={{ borderRadius: 20 }}
+      style={{ borderRadius: 20, height: 15 }}
       color={theme.colors.primary}
     />
   );
