@@ -45,7 +45,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
         <View
           style={{
             flexDirection: "row",
-            // justifyContent: "space-between",
+            paddingLeft: 5,
           }}
         >
           <TextInput
@@ -69,6 +69,9 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           contentStyle={{
             justifyContent: "flex-start",
             marginLeft: -8,
+          }}
+          labelStyle={{
+            fontWeight: "600",
           }}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}

@@ -109,7 +109,7 @@ const TodayHeader = ({
         {isToday ? (
           <TouchableOpacity
             onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
-            style={{ marginRight: 10 }}
+            style={{ marginRight: 5 }}
           >
             <Image
               source={focusMode ? lockOpen : lockClosed}

@@ -6,7 +6,7 @@ const ProgressBar = ({ progress, visible = true }) => {
   return (
     <Progress
       progress={progress}
-      style={{ borderRadius: 20, height: 15 }}
+      style={{ borderRadius: 20, height: 15, backgroundColor: "#F2F2F2" }}
       color={theme.colors.primary}
     />
   );

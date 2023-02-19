@@ -5,6 +5,8 @@ import ProgressBar from "../../../components/ProgressBar";
 const ProgressBarContainer = ({ focusMode, progress }) => {
   const theme = useTheme();
 
+  const humanReadbleProgess = Math.round(parseFloat(progress || 0) * 100);
+
   return (
     <View style={{ paddingTop: 0, height: 20 }}>
       <View
@@ -20,16 +22,16 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
             <View style={{ width: "85%" }}>
               <ProgressBar progress={isNaN(progress) ? 0 : progress} />
             </View>
-            <View>
+            <View style={{ paddingLeft: 5 }}>
               <Text
                 h6
                 style={{
                   color: theme.colors.primary,
                   fontWeight: "700",
-                  marginRight: 7,
+                  marginRight: humanReadbleProgess === 100 ? 7 : 5,
                 }}
               >
-                {Math.round(parseFloat(progress || 0) * 100)} %
+                {humanReadbleProgess} %
               </Text>
             </View>
           </>
