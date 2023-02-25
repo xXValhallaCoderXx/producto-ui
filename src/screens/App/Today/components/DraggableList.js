@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DraggableFlatList, {
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
@@ -8,6 +8,7 @@ import { useTheme, Checkbox, List } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IoniIcons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
 import { toggleEditMode } from "../today-slice";
 import { format } from "date-fns";
@@ -38,6 +39,7 @@ const DraggableListContainer = ({
 
   const sortData = async () => {
     const hasData = await AsyncStorage.getItem(currentDate);
+    console.log("HAS DATA: ", hasData);
     if (hasData && hasData.length === tasks.length) {
       let tempResult = [];
       JSON.parse(hasData).forEach((item) => {
@@ -51,9 +53,6 @@ const DraggableListContainer = ({
       setData(tasks);
     }
   };
-
-  let countRef = useRef(0).current;
-  let countTimer = useRef(null);
 
   const handleOnBlur = async (e) => {
     e.stopPropagation();
@@ -82,112 +81,111 @@ const DraggableListContainer = ({
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item?.id === editTask) {
       return (
-        <View
-          key={item?.id}
-          onLongPress={drag}
-          style={{
-            paddingLeft: focusMode && currentDate === todayDate ? 25 : 15,
-            paddingRight: 15,
-            ...styles.editItem,
-          }}
-        >
-          <View>
-            <TextInput
-              onChangeText={handleOnChange}
-              value={value}
-              onBlur={handleOnBlur}
-              autoFocus
-              underlineColorAndroid="transparent"
-              style={{
-                fontSize: 16,
-                backgroundColor: "white",
-              }}
-            />
-          </View>
-          <View
+        <ScaleDecorator>
+          <List.Item
+            key={item?.id}
             style={{
-              justifyContent: "flex-end",
-              ...styles.listRow,
-              marginRight: 10,
-              height: 35,
+              paddingLeft: focusMode && currentDate === todayDate ? 25 : 15,
+              paddingRight: 15,
+              ...styles.editItem,
+              // backgroundColor: "red",
             }}
-          >
-            <TouchableOpacity onPress={onPressDelete(item)}>
-              <FontAwesome
-                name="trash-o"
-                color={"#6B7280"}
-                style={{ fontSize: 25 }}
+            left={() => (
+              <TextInput
+                onChangeText={handleOnChange}
+                value={value}
+                onBlur={handleOnBlur}
+                underlineColorAndroid="transparent"
+                style={{
+                  fontSize: 16,
+                  backgroundColor: "white",
+                }}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
+            )}
+            right={() => (
+              <View
+                style={{
+                  justifyContent: "flex-end",
+                  ...styles.listRow,
+                  marginRight: 5,
+                  height: 35,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={onPressDelete(item)}
+                  style={{ marginRight: 15 }}
+                >
+                  <FontAwesome
+                    name="trash-o"
+                    color={"#6B7280"}
+                    style={{ fontSize: 25 }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onLongPress={drag}>
+                  <MaterialIcons
+                    name="drag-indicator"
+                    color={"#6B7280"}
+                    style={{ fontSize: 25 }}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+          ></List.Item>
+        </ScaleDecorator>
       );
     }
     return (
-      <ScaleDecorator>
-        <List.Item
-          title={item?.title}
-          disabled={addTaskMode}
-          titleStyle={{
-            color: item?.completed ? "gray" : "black",
-
-            // marginLeft: !focusMode ? -10 : 0,
-            textDecorationLine: item?.completed ? "line-through" : "none",
-          }}
-          onLongPress={drag}
-          onPress={() => {
-            countRef++;
-            if (countRef == 2) {
-              clearTimeout(countTimer.current);
-              countRef = 0;
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              setEditTask(item?.id);
-              setTaskValue(item?.title);
-              dispatch(toggleEditMode({ editMode: true }));
-            } else {
-              countTimer.current = setTimeout(() => {
-                onCheckTask(item);
-                countRef = 0;
-              }, 200);
-            }
-          }}
-          style={{
-            borderBottomColor: "white",
-            // backgroundColor: "red",
-            paddingLeft: !focusMode ? 15 : 25,
-            paddingRight: 15,
-            borderBottomWidth: 1,
-            // marginLeft: -5,
-          }}
-          right={() => (
-            <Checkbox.Android
-              status={item?.completed ? "checked" : "unchecked"}
-              onPress={handleOnCheckTask(item)}
-            />
-          )}
-          left={() =>
-            focusMode && currentDate === todayDate ? (
-              <View
+      <List.Item
+        title={item?.title}
+        disabled={addTaskMode}
+        titleStyle={{
+          color: item?.completed ? "gray" : "black",
+          // marginLeft: !focusMode ? -10 : 0,
+          textDecorationLine: item?.completed ? "line-through" : "none",
+        }}
+        onLongPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          setEditTask(item?.id);
+          setTaskValue(item?.title);
+          dispatch(toggleEditMode({ editMode: true }));
+        }}
+        onPress={() => onCheckTask(item)}
+        style={{
+          borderBottomColor: "white",
+          // backgroundColor: "red",
+          paddingLeft: !focusMode ? 15 : 25,
+          paddingRight: 15,
+          borderBottomWidth: 1,
+          // marginLeft: -5,
+        }}
+        right={() => (
+          <Checkbox.Android
+            status={item?.completed ? "checked" : "unchecked"}
+            onPress={handleOnCheckTask(item)}
+          />
+        )}
+        left={() =>
+          focusMode && currentDate === todayDate ? (
+            <View
+              style={{
+                justifyContent: "center",
+              }}
+            >
+              <IoniIcons
+                onPress={onToggleFocus(item)}
                 style={{
-                  justifyContent: "center",
-                }}
-              >
-                <IoniIcons
-                  onPress={onToggleFocus(item)}
-                  style={{
-                    fontSize: 22,
-                    marginRight: 10,
+                  fontSize: 22,
+                  marginRight: 10,
 
-                    transform: [{ rotate: "45deg" }],
-                  }}
-                  color={item?.focus ? theme.colors.primary : "black"}
-                  name={"key-outline"}
-                />
-              </View>
-            ) : null
-          }
-        />
-      </ScaleDecorator>
+                  transform: [{ rotate: "45deg" }],
+                }}
+                color={item?.focus ? theme.colors.primary : "black"}
+                name={"key-outline"}
+              />
+            </View>
+          ) : null
+        }
+      />
     );
   };
 
@@ -196,6 +194,7 @@ const DraggableListContainer = ({
       data={data}
       onDragEnd={async ({ data }) => {
         const itemSort = data.map((item) => item?.id);
+
         const objectToStore = JSON.stringify(itemSort);
         AsyncStorage.setItem(currentDate, objectToStore);
         setData(data);
@@ -217,9 +216,9 @@ const styles = StyleSheet.create({
     height: 52,
   },
   editItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    // flexDirection: "row",
+    // justifyContent: "space-between",
+    // alignItems: "center",
     // paddingLeft: 15,
     height: 52,
   },
