@@ -86,7 +86,8 @@ const DraggableListContainer = ({
           key={item?.id}
           onLongPress={drag}
           style={{
-            paddingLeft: focusMode && currentDate === todayDate ? 5 : 15,
+            paddingLeft: focusMode && currentDate === todayDate ? 25 : 15,
+            paddingRight: 15,
             ...styles.editItem,
           }}
         >
@@ -130,7 +131,7 @@ const DraggableListContainer = ({
           titleStyle={{
             color: item?.completed ? "gray" : "black",
 
-            marginLeft: !focusMode ? -10 : 0,
+            // marginLeft: !focusMode ? -10 : 0,
             textDecorationLine: item?.completed ? "line-through" : "none",
           }}
           onLongPress={drag}
@@ -152,27 +153,31 @@ const DraggableListContainer = ({
           }}
           style={{
             borderBottomColor: "white",
+            // backgroundColor: "red",
+            paddingLeft: !focusMode ? 15 : 25,
+            paddingRight: 15,
             borderBottomWidth: 1,
             // marginLeft: -5,
           }}
           right={() => (
-            <View style={{ marginRight: -5 }}>
-              <Checkbox.Android
-                status={item?.completed ? "checked" : "unchecked"}
-                onPress={handleOnCheckTask(item)}
-              />
-            </View>
+            <Checkbox.Android
+              status={item?.completed ? "checked" : "unchecked"}
+              onPress={handleOnCheckTask(item)}
+            />
           )}
           left={() =>
             focusMode && currentDate === todayDate ? (
-              <View style={{ justifyContent: "center" }}>
+              <View
+                style={{
+                  justifyContent: "center",
+                }}
+              >
                 <IoniIcons
                   onPress={onToggleFocus(item)}
                   style={{
-                    padding: 5,
                     fontSize: 22,
                     marginRight: 10,
-                    marginLeft: -2,
+
                     transform: [{ rotate: "45deg" }],
                   }}
                   color={item?.focus ? theme.colors.primary : "black"}

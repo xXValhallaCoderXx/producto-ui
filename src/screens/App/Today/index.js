@@ -52,7 +52,10 @@ const ListScreen = () => {
   const [utcDate, setUtcDate] = useState(new Date());
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
-  const hehe = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
+  const hehe = useGetTodaysTasksQuery(
+    { date: format(utcDate, "yyyy-MM-dd") },
+    { pollingInterval: 600000 }
+  );
   const { data: tasks, isLoading, isFetching, error } = hehe;
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
 
@@ -67,8 +70,8 @@ const ListScreen = () => {
   const [toggleTask] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [toggleTaskFocus] = useToggleTaskFocusMutation();
-  const [moveIncompleteTasks, moveIncompleteTasksResult] =
-    useMoveIncompleteTasksMutation();
+  // const [moveIncompleteTasks, moveIncompleteTasksResult] =
+  //   useMoveIncompleteTasksMutation();
 
   useEffect(() => {
     setTheme();
@@ -226,11 +229,11 @@ const ListScreen = () => {
           style={{
             flex: 1,
             backgroundColor: "white",
-            paddingHorizontal: 20,
+            paddingHorizontal: 0,
             paddingTop: 10,
           }}
         >
-          <View style={{ paddingHorizontal: 5 }}>
+          <View style={{ paddingHorizontal: 20 }}>
             <Header
               clientUtc={utcDate}
               focusMode={focusMode}
@@ -241,7 +244,7 @@ const ListScreen = () => {
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
 
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <View style={{ marginTop: 15 }}>
               <SkeletonList />
             </View>
@@ -289,7 +292,7 @@ const ListScreen = () => {
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
-              isLoading={moveIncompleteTasksResult.isLoading}
+              isLoading={moveTasksApiResult.isLoading}
               onMoveIncomplete={handleOpenIncompleteModal}
             />
           </View>

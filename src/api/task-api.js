@@ -7,6 +7,7 @@ const taskApi = api.injectEndpoints({
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
+      // keepUnusedDataFor: 5,
     }),
     getIncompleteTasks: builder.query({
       query: () => {
@@ -137,14 +138,14 @@ const taskApi = api.injectEndpoints({
         }
       },
     }),
-    moveIncompleteTasks: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
-      query: ({ from, to }) => ({
-        url: `/task/move-incomplete`,
-        method: "POST",
-        body: { from, to },
-      }),
-    }),
+    // moveIncompleteTasks: builder.mutation({
+    //   invalidatesTags: ["Tasks", "IncompleteTasks"],
+    //   query: ({ from, to }) => ({
+    //     url: `/task/move-incomplete`,
+    //     method: "POST",
+    //     body: { from, to },
+    //   }),
+    // }),
     deleteTask: builder.mutation({
       invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ id }) => {
@@ -162,7 +163,7 @@ export const {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation,
+  // useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
   useUpdateTaskMutation,
   useGetIncompleteDetailTasksQuery,
