@@ -214,7 +214,6 @@ const ListScreen = () => {
 
   const handleKeyboardDismiss = (e) => {
     // e.stopPropagation();
-    console.log("IS HIS");
     Keyboard.dismiss();
   };
 

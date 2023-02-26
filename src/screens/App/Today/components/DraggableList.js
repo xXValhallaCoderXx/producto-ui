@@ -212,13 +212,14 @@ const DraggableListContainer = ({
       onDragBegin={() => {
         dragRef.current = true;
       }}
-      onDragEnd={async ({ data }) => {
-        // const itemSort = data.map((item) => item?.id);
+      onDragEnd={async ({ data: _data }) => {
+        const itemSort = _data.map((item) => item?.id);
         // console.log("ON DRAG END: ", itemSort);
         // const objectToStore = JSON.stringify(itemSort);
         // AsyncStorage.setItem(currentDate, objectToStore);
+        // sortData();
         dragRef.current = false;
-        setData(data);
+        setData(_data);
       }}
       keyExtractor={(item) => item?.id}
       renderItem={renderItem}
