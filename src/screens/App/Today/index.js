@@ -214,6 +214,7 @@ const ListScreen = () => {
 
   const handleKeyboardDismiss = (e) => {
     // e.stopPropagation();
+    console.log("IS HIS");
     Keyboard.dismiss();
   };
 
@@ -245,7 +246,7 @@ const ListScreen = () => {
           </View>
 
           {isLoading ? (
-            <View style={{ marginTop: 15 }}>
+            <View style={{ marginTop: 15, paddingLeft: 20, paddingRight: 10 }}>
               <SkeletonList />
             </View>
           ) : (
@@ -264,7 +265,7 @@ const ListScreen = () => {
                     <View
                       style={{
                         marginTop: 15,
-                        paddingLeft: tasks?.length === 0 ? 5 : isToday ? 5 : 15,
+                        paddingLeft: tasks?.length === 0 ? 5 : isToday ? 0 : 15,
                       }}
                     >
                       <AddItem

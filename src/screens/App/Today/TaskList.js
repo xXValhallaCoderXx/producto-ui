@@ -61,7 +61,7 @@ const TaskList = ({
   return (
     <View>
       {tasks.length === 0 ? (
-        <View style={{ paddingLeft: 20, marginTop: 15 }}>
+        <View style={{ paddingLeft: 25, marginTop: 15 }}>
           <Text>
             Add a task to start your{" "}
             <Text style={{ fontWeight: "700", color: theme.colors.primary }}>

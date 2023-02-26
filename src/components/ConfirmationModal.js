@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import Button from "./Button";
+import { Keyboard } from "react-native";
 import { useTheme, Text, Dialog, Portal } from "react-native-paper";
 
 const ConfirmationModal = ({
@@ -11,11 +13,34 @@ const ConfirmationModal = ({
   confirmLabel,
 }) => {
   const theme = useTheme();
+  const [bottom, setBottom] = useState(0);
+
+  useEffect(() => {
+    function onKeyboardChange(e) {
+      if (e.endCoordinates.screenY < e.startCoordinates.screenY)
+        setBottom(e.endCoordinates.height / 2);
+      else setBottom(0);
+    }
+
+    if (Platform.OS === "ios") {
+      const subscription = Keyboard.addListener(
+        "keyboardWillChangeFrame",
+        onKeyboardChange
+      );
+      return () => subscription.remove();
+    }
+
+    const subscriptions = [
+      Keyboard.addListener("keyboardDidHide", onKeyboardChange),
+      Keyboard.addListener("keyboardDidShow", onKeyboardChange),
+    ];
+    return () => subscriptions.forEach((subscription) => subscription.remove());
+  }, []);
 
   return (
     <Portal>
       <Dialog
-        style={{ backgroundColor: "white", borderRadius: 8 }}
+        style={{ backgroundColor: "white", borderRadius: 8, bottom }}
         visible={isVisible}
         onDismiss={onCancel}
       >

@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DraggableFlatList, {
-  ScaleDecorator,
+  OpacityDecorator,
 } from "react-native-draggable-flatlist";
-import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import * as Haptics from "expo-haptics";
 import { useTheme, Checkbox, List } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,6 +30,8 @@ const DraggableListContainer = ({
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const theme = useTheme();
+  const inputRef = useRef(null);
+  const dragRef = useRef(false);
   const [editTask, setEditTask] = useState(null);
   const [value, setTaskValue] = useState("");
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
@@ -34,12 +42,18 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    sortData();
+    // sortData();
+    setData(tasks);
   }, [tasks]);
 
   const sortData = async () => {
     const hasData = await AsyncStorage.getItem(currentDate);
-    console.log("HAS DATA: ", hasData);
+    console.log("SORT DATA STORED ", hasData);
+
+    const taskIds = tasks.map((task) => task.id);
+    const localData = data.map((task) => task.id);
+    console.log("CURRENT TASKS: ", taskIds);
+    console.log("LOCAL DATA: ", localData);
     if (hasData && hasData.length === tasks.length) {
       let tempResult = [];
       JSON.parse(hasData).forEach((item) => {
@@ -55,15 +69,17 @@ const DraggableListContainer = ({
   };
 
   const handleOnBlur = async (e) => {
-    e.stopPropagation();
-    setEditTask(null);
-    setTaskValue("");
-    dispatch(toggleEditMode({ editMode: false }));
-    await updateTaskApi({
-      id: editTask,
-      title: value,
-      date: format(utcDate, "yyyy-MM-dd"),
-    });
+    if (!dragRef.current) {
+      e.stopPropagation();
+      setEditTask(null);
+      setTaskValue("");
+      dispatch(toggleEditMode({ editMode: false }));
+      await updateTaskApi({
+        id: editTask,
+        title: value,
+        date: format(utcDate, "yyyy-MM-dd"),
+      });
+    }
   };
 
   const handleOnChange = (_value) => {
@@ -81,19 +97,21 @@ const DraggableListContainer = ({
   const renderItem = ({ item, drag, isActive }) => {
     if (item && item?.id === editTask) {
       return (
-        <ScaleDecorator>
+        <OpacityDecorator>
           <List.Item
             key={item?.id}
             style={{
-              paddingLeft: focusMode && currentDate === todayDate ? 25 : 15,
+              // paddingLeft: focusMode && currentDate === todayDate ? 25 : 30,
+              paddingLeft: 30,
               paddingRight: 15,
               ...styles.editItem,
-              // backgroundColor: "red",
             }}
             left={() => (
               <TextInput
                 onChangeText={handleOnChange}
                 value={value}
+                autoFocus
+                ref={inputRef}
                 onBlur={handleOnBlur}
                 underlineColorAndroid="transparent"
                 style={{
@@ -121,6 +139,7 @@ const DraggableListContainer = ({
                     style={{ fontSize: 25 }}
                   />
                 </TouchableOpacity>
+
                 <TouchableOpacity onLongPress={drag}>
                   <MaterialIcons
                     name="drag-indicator"
@@ -131,13 +150,13 @@ const DraggableListContainer = ({
               </View>
             )}
           ></List.Item>
-        </ScaleDecorator>
+        </OpacityDecorator>
       );
     }
     return (
       <List.Item
         title={item?.title}
-        disabled={addTaskMode}
+        disabled={addTaskMode || editTask}
         titleStyle={{
           color: item?.completed ? "gray" : "black",
           // marginLeft: !focusMode ? -10 : 0,
@@ -152,11 +171,9 @@ const DraggableListContainer = ({
         onPress={() => onCheckTask(item)}
         style={{
           borderBottomColor: "white",
-          // backgroundColor: "red",
           paddingLeft: !focusMode ? 15 : 25,
           paddingRight: 15,
           borderBottomWidth: 1,
-          // marginLeft: -5,
         }}
         right={() => (
           <Checkbox.Android
@@ -192,16 +209,21 @@ const DraggableListContainer = ({
   return (
     <DraggableFlatList
       data={data}
+      onDragBegin={() => {
+        dragRef.current = true;
+      }}
       onDragEnd={async ({ data }) => {
-        const itemSort = data.map((item) => item?.id);
-
-        const objectToStore = JSON.stringify(itemSort);
-        AsyncStorage.setItem(currentDate, objectToStore);
+        // const itemSort = data.map((item) => item?.id);
+        // console.log("ON DRAG END: ", itemSort);
+        // const objectToStore = JSON.stringify(itemSort);
+        // AsyncStorage.setItem(currentDate, objectToStore);
+        dragRef.current = false;
         setData(data);
       }}
       keyExtractor={(item) => item?.id}
       renderItem={renderItem}
-      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="none"
+      keyboardShouldPersistTaps="always"
     />
   );
 };

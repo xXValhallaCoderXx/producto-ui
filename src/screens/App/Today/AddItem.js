@@ -45,7 +45,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
         <View
           style={{
             flexDirection: "row",
-            paddingLeft: 20,
+            paddingLeft: 25,
           }}
         >
           <TextInput
@@ -68,7 +68,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
-            // marginLeft: -10,
+            paddingLeft: 10,
           }}
           labelStyle={{
             fontWeight: "600",
