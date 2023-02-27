@@ -43,29 +43,86 @@ const DraggableListContainer = ({
 
   useEffect(() => {
     // sortData();
+    // console.log("TASKS ", tasks);
     setData(tasks);
   }, [tasks]);
 
   const sortData = async () => {
     const hasData = await AsyncStorage.getItem(currentDate);
-    console.log("SORT DATA STORED ", hasData);
 
-    const taskIds = tasks.map((task) => task.id);
-    const localData = data.map((task) => task.id);
-    console.log("CURRENT TASKS: ", taskIds);
-    console.log("LOCAL DATA: ", localData);
-    if (hasData && hasData.length === tasks.length) {
-      let tempResult = [];
-      JSON.parse(hasData).forEach((item) => {
-        const task = tasks.find((task) => task?.id === item);
-        if (task) {
-          tempResult.push(task);
+    const parsedHasData = JSON.parse(hasData);
+
+    if (parsedHasData) {
+      function removeValue(_task, index, arr) {
+        // If the value at the current array index matches the specified value (2)
+        if (parsedHasData.includes(_task.id)) {
+          // Removes the value from the original array
+          arr.splice(index, 1);
+          return true;
         }
-      });
-      setData(tempResult);
+        return false;
+      }
+
+      if (hasData && parsedHasData.length !== tasks.length) {
+        // If new task has been added
+        const tasksCopy = [...tasks];
+        const tempArray = [];
+        parsedHasData.forEach((item) => {
+          const task = tasks.find((task) => task?.id === item);
+          if (task) {
+            tempArray.push(task);
+          }
+        });
+
+        const x = tasksCopy.filter(removeValue);
+        // const tempArray = [];
+        // JSON.parse(hasData).forEach((item) => {
+        //   const task = tasks.find((task) => task?.id === item);
+        //   if (task) {
+        //     tempArray.push(task);
+        //   }
+        // });
+
+        // console.log("SORTED ", sortedTasks);
+        console.log("TASK COPY: ", tasksCopy);
+        console.log("XXX", x);
+        // setData(tempArray.push(...x));
+      } else {
+        const tempArray = [];
+        JSON.parse(hasData).forEach((item) => {
+          const task = tasks.find((task) => task?.id === item);
+          if (task) {
+            tempArray.push(task);
+          }
+        });
+        setData(tempArray);
+      }
     } else {
       setData(tasks);
     }
+
+    // const getStoredItems = tasksCopy.filter((task) =>
+    //   storedItems.includes(task.id)
+    // );
+    // console.log("GET STORED ITEMS", getStoredItems);
+    // console.log("FILTERED STATE: ", tasks);
+
+    // const taskIds = tasks.map((task) => task.id);
+    // const localData = data.map((task) => task.id);
+    // console.log("CURRENT TASKS: ", taskIds);
+    // console.log("LOCAL DATA: ", localData);
+    // if (hasData && hasData.length === tasks.length) {
+    //   let tempResult = [];
+    // JSON.parse(hasData).forEach((item) => {
+    //   const task = tasks.find((task) => task?.id === item);
+    //   if (task) {
+    //     tempResult.push(task);
+    //   }
+    // });
+    //   setData(tempResult);
+    // } else {
+    //   setData(tasks);
+    // }
   };
 
   const handleOnBlur = async (e) => {
@@ -214,14 +271,15 @@ const DraggableListContainer = ({
         dragRef.current = true;
       }}
       onDragEnd={async ({ data: _data }) => {
-        const itemSort = _data.map((item) => item?.id);
-        console.log("ON DRAG END", itemSort);
+        // const itemSort = _data.map((item) => item?.id);
+        // console.log("ON DRAG END", itemSort);
         // console.log("ON DRAG END: ", itemSort);
         // const objectToStore = JSON.stringify(itemSort);
-        // AsyncStorage.setItem(currentDate, objectToStore);
+
         // sortData();
         dragRef.current = false;
         setData(_data);
+        // await AsyncStorage.setItem(currentDate, objectToStore);
       }}
       keyExtractor={(item) => item?.id}
       renderItem={renderItem}
