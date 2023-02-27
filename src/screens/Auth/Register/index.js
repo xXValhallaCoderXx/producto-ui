@@ -65,6 +65,7 @@ const RegisterScreen = ({ navigation }) => {
     onSubmit: async ({ email, password }) => {
       const timezone = Localization.timezone;
       const result = await registerApi({ email, password, timezone });
+
       if (result?.data?.data) {
         const { accessToken, refreshToken } = result?.data?.data;
         const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);

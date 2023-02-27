@@ -30,23 +30,6 @@ const MoveIncomplete = ({
       title="Move Incomplete"
     />
   );
-
-  // if (tasks.every((task) => task.completed === true)) {
-  //   return null;
-  // } else {
-  //   return (
-  //     <ProductoButton
-  //       onPress={onMoveIncomplete}
-  //       disabled={
-  //         isLoading || isAfter(currentDate, new Date()) || tasks.length === 0
-  //       }
-  //       loading={isLoading}
-  //       containerStyle={{ width: 160, borderRadius: 8 }}
-  //       type="contained"
-  //       title="Move Incomplete"
-  //     />
-  //   );
-  // }
 };
 
 export default MoveIncomplete;

@@ -7,8 +7,8 @@ import { globalSlice } from "../shared/slice/global-slice";
 const baseUrl = Constants.expoConfig.extra.baseUrl;
 
 const refetchBaseQuery = fetchBaseQuery({
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
-  // baseUrl: `${baseUrl}/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `${baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(REFRESH_JWT_KEY_STORE);
@@ -39,6 +39,7 @@ const customBaseQuery = async (args, api, extraOptions) => {
             api,
             extraOptions
           );
+          console.log("WHAT IS THIS : ", res);
           const { accessToken, refreshToken } = res.data;
           await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
           await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, refreshToken);
@@ -70,8 +71,8 @@ const customBaseQuery = async (args, api, extraOptions) => {
   }
 };
 const baseQuery = fetchBaseQuery({
-  // baseUrl: `${baseUrl}/api/v1`,
-  baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
+  baseUrl: `${baseUrl}/api/v1`,
+  // baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.
     const jwtToken = await SecureStore.getItemAsync(JWT_KEY_STORE);

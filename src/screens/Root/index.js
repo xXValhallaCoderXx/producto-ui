@@ -10,12 +10,11 @@ import { useGetProfileQuery } from "../../api/user-api";
 
 const Stack = createNativeStackNavigator();
 
-const RootScreen = ({ navigation }) => {
+const RootScreen = () => {
   useGetProfileQuery();
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
-  const [animatedEnded, setAnimatedEnded] = useState(false);
   const { isAuthenticated, init, firstLoad } = useSelector(
     (state) => state.global
   );

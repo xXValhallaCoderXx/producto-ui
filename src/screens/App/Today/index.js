@@ -264,7 +264,6 @@ const ListScreen = () => {
                     <View
                       style={{
                         marginTop: 15,
-                        paddingLeft: tasks?.length === 0 ? 5 : isToday ? 0 : 15,
                       }}
                     >
                       <AddItem

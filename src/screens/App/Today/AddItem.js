@@ -1,7 +1,12 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
-import { View, TouchableWithoutFeedback, TextInput } from "react-native";
+import {
+  View,
+  TouchableWithoutFeedback,
+  TextInput,
+  Platform,
+} from "react-native";
 import { toggleAddTaskMode } from "./today-slice";
 
 const AddItem = ({ handleCreateNewTask, focusMode }) => {
@@ -46,6 +51,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           style={{
             flexDirection: "row",
             paddingLeft: 25,
+            marginTop: Platform.OS === "ios" ? 5 : 0,
           }}
         >
           <TextInput
@@ -68,7 +74,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
-            paddingLeft: 10,
+            paddingLeft: 8,
           }}
           labelStyle={{
             fontWeight: "600",

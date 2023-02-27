@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "./Button";
-import { Keyboard } from "react-native";
+import { Platform } from "react-native";
+import { useKeyboard } from "@react-native-community/hooks";
 import { useTheme, Text, Dialog, Portal } from "react-native-paper";
 
 const ConfirmationModal = ({
@@ -13,35 +14,23 @@ const ConfirmationModal = ({
   confirmLabel,
 }) => {
   const theme = useTheme();
-  // const [bottom, setBottom] = useState(0);
+  const keyboard = useKeyboard();
+  const [bottom, setBottom] = useState(0);
 
-  // useEffect(() => {
-  //   function onKeyboardChange(e) {
-  //     console.log("E: ", e);
-  //     if (e.endCoordinates.screenY < e.startCoordinates.screenY)
-  //       setBottom(e.endCoordinates.height / 2);
-  //     else setBottom(0);
-  //   }
-
-  //   if (Platform.OS === "ios") {
-  //     const subscription = Keyboard.addListener(
-  //       "keyboardWillChangeFrame",
-  //       onKeyboardChange
-  //     );
-  //     return () => subscription.remove();
-  //   }
-
-  //   const subscriptions = [
-  //     Keyboard.addListener("keyboardDidHide", onKeyboardChange),
-  //     Keyboard.addListener("keyboardDidShow", onKeyboardChange),
-  //   ];
-  //   return () => subscriptions.forEach((subscription) => subscription.remove());
-  // }, []);
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      if (keyboard.keyboardShown) {
+        setBottom(keyboard.keyboardHeight / 2);
+      } else {
+        setBottom(0);
+      }
+    }
+  }, [keyboard.keyboardShown]);
 
   return (
     <Portal>
       <Dialog
-        style={{ backgroundColor: "white", borderRadius: 8 }}
+        style={{ backgroundColor: "white", borderRadius: 8, bottom }}
         visible={isVisible}
         onDismiss={onCancel}
       >
