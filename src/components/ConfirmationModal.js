@@ -13,34 +13,35 @@ const ConfirmationModal = ({
   confirmLabel,
 }) => {
   const theme = useTheme();
-  const [bottom, setBottom] = useState(0);
+  // const [bottom, setBottom] = useState(0);
 
-  useEffect(() => {
-    function onKeyboardChange(e) {
-      if (e.endCoordinates.screenY < e.startCoordinates.screenY)
-        setBottom(e.endCoordinates.height / 2);
-      else setBottom(0);
-    }
+  // useEffect(() => {
+  //   function onKeyboardChange(e) {
+  //     console.log("E: ", e);
+  //     if (e.endCoordinates.screenY < e.startCoordinates.screenY)
+  //       setBottom(e.endCoordinates.height / 2);
+  //     else setBottom(0);
+  //   }
 
-    if (Platform.OS === "ios") {
-      const subscription = Keyboard.addListener(
-        "keyboardWillChangeFrame",
-        onKeyboardChange
-      );
-      return () => subscription.remove();
-    }
+  //   if (Platform.OS === "ios") {
+  //     const subscription = Keyboard.addListener(
+  //       "keyboardWillChangeFrame",
+  //       onKeyboardChange
+  //     );
+  //     return () => subscription.remove();
+  //   }
 
-    const subscriptions = [
-      Keyboard.addListener("keyboardDidHide", onKeyboardChange),
-      Keyboard.addListener("keyboardDidShow", onKeyboardChange),
-    ];
-    return () => subscriptions.forEach((subscription) => subscription.remove());
-  }, []);
+  //   const subscriptions = [
+  //     Keyboard.addListener("keyboardDidHide", onKeyboardChange),
+  //     Keyboard.addListener("keyboardDidShow", onKeyboardChange),
+  //   ];
+  //   return () => subscriptions.forEach((subscription) => subscription.remove());
+  // }, []);
 
   return (
     <Portal>
       <Dialog
-        style={{ backgroundColor: "white", borderRadius: 8, bottom }}
+        style={{ backgroundColor: "white", borderRadius: 8 }}
         visible={isVisible}
         onDismiss={onCancel}
       >
