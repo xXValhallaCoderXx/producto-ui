@@ -101,8 +101,8 @@ const DraggableListContainer = ({
           <List.Item
             key={item?.id}
             style={{
-              // paddingLeft: focusMode && currentDate === todayDate ? 25 : 30,
-              paddingLeft: 30,
+              paddingLeft: focusMode && currentDate === todayDate ? 20 : 20,
+              // paddingLeft: 30,
               paddingRight: 15,
               ...styles.editItem,
             }}
@@ -125,7 +125,8 @@ const DraggableListContainer = ({
                 style={{
                   justifyContent: "flex-end",
                   ...styles.listRow,
-                  marginRight: 5,
+                  marginRight: 10,
+
                   height: 35,
                 }}
               >
@@ -159,7 +160,7 @@ const DraggableListContainer = ({
         disabled={addTaskMode || editTask}
         titleStyle={{
           color: item?.completed ? "gray" : "black",
-          // marginLeft: !focusMode ? -10 : 0,
+          marginLeft: 5,
           textDecorationLine: item?.completed ? "line-through" : "none",
         }}
         onLongPress={() => {
@@ -171,9 +172,9 @@ const DraggableListContainer = ({
         onPress={() => onCheckTask(item)}
         style={{
           borderBottomColor: "white",
-          paddingLeft: !focusMode ? 15 : 25,
+          // paddingLeft: !focusMode ? 15 : 15,
           paddingRight: 15,
-          borderBottomWidth: 1,
+          // borderBottomWidth: 1,
         }}
         right={() => (
           <Checkbox.Android
@@ -193,7 +194,7 @@ const DraggableListContainer = ({
                 style={{
                   fontSize: 22,
                   marginRight: 10,
-
+                  marginLeft: 17,
                   transform: [{ rotate: "45deg" }],
                 }}
                 color={item?.focus ? theme.colors.primary : "black"}
@@ -214,6 +215,7 @@ const DraggableListContainer = ({
       }}
       onDragEnd={async ({ data: _data }) => {
         const itemSort = _data.map((item) => item?.id);
+        console.log("ON DRAG END", itemSort);
         // console.log("ON DRAG END: ", itemSort);
         // const objectToStore = JSON.stringify(itemSort);
         // AsyncStorage.setItem(currentDate, objectToStore);
