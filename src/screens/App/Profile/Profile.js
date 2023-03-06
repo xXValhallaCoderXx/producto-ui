@@ -244,7 +244,7 @@ const ProfileScreen = ({ navigation }) => {
             color="secondary"
             customStyle={{ textAlign: "center" }}
           >
-            v0.5.0
+            v0.5.1
           </Text>
         </View>
       </View>
