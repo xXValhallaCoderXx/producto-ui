@@ -108,14 +108,18 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
                       <List.Item
                         key={item.id}
                         title={item.title}
+                        titleStyle={{ marginLeft: -5 }}
+                        style={{ paddingLeft: 0, paddingRight: 0 }}
                         onPress={onClickCheckbox(item)}
                         right={() => (
-                          <Checkbox.Android
-                            status={
-                              checkedDates[item.id] ? "checked" : "unchecked"
-                            }
-                            onPress={onClickCheckbox(item)}
-                          />
+                          <View style={{ marginRight: -5 }}>
+                            <Checkbox.Android
+                              status={
+                                checkedDates[item.id] ? "checked" : "unchecked"
+                              }
+                              onPress={onClickCheckbox(item)}
+                            />
+                          </View>
                         )}
                       />
                     );
