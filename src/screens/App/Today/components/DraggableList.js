@@ -178,11 +178,13 @@ const DraggableListContainer = ({
                   autoFocus
                   ref={inputRef}
                   onBlur={handleOnBlur}
+                  multiline
                   underlineColorAndroid="transparent"
                   style={{
                     marginLeft: 10,
                     fontSize: 16,
                     backgroundColor: "white",
+                    maxWidth: "80%",
                   }}
                 />
               </View>
@@ -212,11 +214,13 @@ const DraggableListContainer = ({
     return (
       <List.Item
         title={item?.title}
+        titleNumberOfLines={4}
         disabled={addTaskMode || editTask}
         titleStyle={{
           color: item?.completed ? "gray" : "black",
           marginLeft: 5,
           textDecorationLine: item?.completed ? "line-through" : "none",
+          maxWidth: "90%",
         }}
         onLongPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
