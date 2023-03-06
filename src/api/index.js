@@ -5,8 +5,9 @@ import { JWT_KEY_STORE, REFRESH_JWT_KEY_STORE } from "../shared/constants";
 import { globalSlice } from "../shared/slice/global-slice";
 
 const baseUrl = Constants.expoConfig.extra.baseUrl;
-
+console.log("BASE RUL: ", baseUrl);
 const refetchBaseQuery = fetchBaseQuery({
+  // baseUrl: `http://192.168.10.132:3000/api/v1`,
   baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   // baseUrl: `${baseUrl}/api/v1`,
   prepareHeaders: async (headers) => {
@@ -20,10 +21,10 @@ const refetchBaseQuery = fetchBaseQuery({
 
 const customBaseQuery = async (args, api, extraOptions) => {
   let result;
-  //
+  console.log("START API", args, api, extraOptions);
   try {
     result = await baseQuery(args, api, extraOptions);
-
+    console.log("RESULT RESPONSE: ", result);
     if (
       result?.error?.status === 401 ||
       result?.error?.status === "FETCH_ERROR"
@@ -57,6 +58,13 @@ const customBaseQuery = async (args, api, extraOptions) => {
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
         // api.dispatch(globalSlice.actions.toggleInit(true));
       }
+    } else if ((result.error.status = "FETCH_ERROR")) {
+      if (result.error.error === "TypeError: Network request failed") {
+        await SecureStore.setItemAsync(JWT_KEY_STORE, "");
+        await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
+        api.dispatch(globalSlice.actions.toggleIsAuthenticated(false));
+        api.dispatch(globalSlice.actions.toggleInit(true));
+      }
     } else if (result?.meta?.response?.status === 200) {
       // const isAuthenticated = api.getState().global.isAuthenticated;
       const isInit = api.getState().global.init;
@@ -64,14 +72,17 @@ const customBaseQuery = async (args, api, extraOptions) => {
         api.dispatch(globalSlice.actions.toggleIsAuthenticated(true));
       }
     }
+    console.log("LALALA");
     api.dispatch(globalSlice.actions.toggleInit(true));
     return result;
   } catch (err) {
+    console.log("ERROR: ", err);
     return err;
   }
 };
 const baseQuery = fetchBaseQuery({
   // baseUrl: `${baseUrl}/api/v1`,
+  // baseUrl: `http://192.168.10.132:3000/api/v1`,
   baseUrl: `https://producto-dev.herokuapp.com/api/v1`,
   prepareHeaders: async (headers) => {
     // If we have a token set in state, let's assume that we should be passing it.

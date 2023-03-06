@@ -182,14 +182,13 @@ const DraggableListContainer = ({
                 style={{
                   justifyContent: "flex-end",
                   ...styles.listRow,
-                  marginRight: 10,
-
+                  marginRight: 3,
                   height: 35,
                 }}
               >
                 <TouchableOpacity
                   onPress={onPressDelete(item)}
-                  style={{ marginRight: 15 }}
+                  style={{ marginRight: 18 }}
                 >
                   <FontAwesome
                     name="trash-o"
@@ -202,7 +201,7 @@ const DraggableListContainer = ({
                   <MaterialIcons
                     name="drag-indicator"
                     color={"#6B7280"}
-                    style={{ fontSize: 25 }}
+                    style={{ fontSize: 32 }}
                   />
                 </TouchableOpacity>
               </View>
@@ -229,9 +228,7 @@ const DraggableListContainer = ({
         onPress={() => onCheckTask(item)}
         style={{
           borderBottomColor: "white",
-          // paddingLeft: !focusMode ? 15 : 15,
-          paddingRight: 15,
-          // borderBottomWidth: 1,
+          paddingRight: 17,
         }}
         right={() => (
           <Checkbox.Android

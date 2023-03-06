@@ -132,6 +132,7 @@ const LoginScreen = ({ navigation }) => {
   }, [loginApiResult.isError]);
 
   const setTokenAndRedirect = async (_data) => {
+    console.log("SET TOKEN: ", _data);
     const { accessToken, refreshToken, email } = _data;
 
     const isFirstLoad = await AsyncStorage.getItem(`@first-load-${email}`);

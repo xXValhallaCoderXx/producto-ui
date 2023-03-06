@@ -224,7 +224,7 @@ const ListScreen = () => {
     >
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
         <KeyboardAvoidingView
-          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : -110}
+          // keyboardVerticalOffset={Platform.OS === "ios" ? 110 : -110}
           behavior={Platform.OS === "ios" ? "padding" : "padding"}
           style={{
             flex: 1,
@@ -250,8 +250,8 @@ const ListScreen = () => {
             </View>
           ) : (
             <View style={styles.container}>
-              <View style={{ flex: 0.9 }}>
-                <View style={{ flex: 0.9, paddingTop: 10 }}>
+              <View style={{ flex: 0.95 }}>
+                <View style={{ flex: 0.95, paddingTop: 10 }}>
                   <TaskList
                     tasks={tasks || []}
                     handleToggleTaskFocus={handleToggleTaskFocus}
