@@ -29,18 +29,18 @@ const RootScreen = () => {
 
     const fadeAnimation = Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 1000,
+      duration: 750,
       useNativeDriver: true,
     });
     const fadeAnimation2 = Animated.timing(fadeAnim2, {
       toValue: 1,
-      duration: 1000,
+      duration: 750,
       useNativeDriver: true,
     });
 
     const scaleAnimation = Animated.timing(imageScaleAnim, {
       toValue: 1,
-      duration: 1500,
+      duration: 1000,
       useNativeDriver: true,
     });
 
