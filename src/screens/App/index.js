@@ -28,6 +28,9 @@ export default function App() {
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: "gray",
         tabBarHideOnKeyboard: true,
+        tabBarLabelStyle: {
+          fontWeight: "700",
+        },
         tabBarStyle: {
           height: 75,
           paddingTop: 10,
