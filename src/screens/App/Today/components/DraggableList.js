@@ -159,48 +159,46 @@ const DraggableListContainer = ({
             key={item?.id}
             style={{
               paddingLeft: focusMode && currentDate === todayDate ? 20 : 20,
-              // paddingLeft: 30,
-              paddingRight: 15,
+              paddingLeft: 15,
+              paddingRight: 25,
               ...styles.editItem,
             }}
             left={() => (
-              <TextInput
-                onChangeText={handleOnChange}
-                value={value}
-                autoFocus
-                ref={inputRef}
-                onBlur={handleOnBlur}
-                underlineColorAndroid="transparent"
-                style={{
-                  fontSize: 16,
-                  backgroundColor: "white",
-                }}
-              />
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity onLongPress={drag}>
+                  <MaterialIcons
+                    name="drag-indicator"
+                    color={"#6B7280"}
+                    style={{ fontSize: 35 }}
+                  />
+                </TouchableOpacity>
+                <TextInput
+                  onChangeText={handleOnChange}
+                  value={value}
+                  autoFocus
+                  ref={inputRef}
+                  onBlur={handleOnBlur}
+                  underlineColorAndroid="transparent"
+                  style={{
+                    marginLeft: 10,
+                    fontSize: 16,
+                    backgroundColor: "white",
+                  }}
+                />
+              </View>
             )}
             right={() => (
               <View
                 style={{
                   justifyContent: "flex-end",
                   ...styles.listRow,
-                  marginRight: 10,
 
                   height: 35,
                 }}
               >
-                <TouchableOpacity
-                  onPress={onPressDelete(item)}
-                  style={{ marginRight: 15 }}
-                >
+                <TouchableOpacity onPress={onPressDelete(item)}>
                   <FontAwesome
                     name="trash-o"
-                    color={"#6B7280"}
-                    style={{ fontSize: 25 }}
-                  />
-                </TouchableOpacity>
-
-                <TouchableOpacity onLongPress={drag}>
-                  <MaterialIcons
-                    name="drag-indicator"
                     color={"#6B7280"}
                     style={{ fontSize: 25 }}
                   />
