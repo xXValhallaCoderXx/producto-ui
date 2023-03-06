@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { useToast } from "react-native-toast-notifications";
 import ProductoButton from "../../../components/Button";
-import { TextInput, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { useFormik } from "formik";
 import { View } from "react-native";
 import { useUpdateEmailMutation } from "../../../api/auth-api";
@@ -11,10 +11,13 @@ import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
-
-const UpdateEmail = ({ route, navigation }) => {
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import { MainInput as Input } from "../../../components";
+const UpdateEmail = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
+  const payload = useRef({});
+  const [isOpen, setIsOpen] = useState(false);
   const [secretMap, setSecretMap] = useState({
     password: true,
   });
@@ -40,18 +43,30 @@ const UpdateEmail = ({ route, navigation }) => {
     }),
 
     onSubmit: async ({ email, password }) => {
-      const result = await updateEmail({ email, password });
-
-      if (!result.error) {
-        const { tokens } = result?.data;
-        await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
-        await SecureStore.setItemAsync(
-          REFRESH_JWT_KEY_STORE,
-          tokens.refreshToken
-        );
-      }
+      payload.current = {
+        email,
+        password,
+      };
+      setIsOpen(true);
     },
   });
+
+  const onConfirmEmailChange = async () => {
+    const { email, password } = payload.current;
+    const result = await updateEmail({ email, password });
+    if (!result.error) {
+      const { tokens } = result?.data;
+      await SecureStore.setItemAsync(JWT_KEY_STORE, tokens.accessToken);
+      await SecureStore.setItemAsync(
+        REFRESH_JWT_KEY_STORE,
+        tokens.refreshToken
+      );
+    }
+  };
+
+  const onCancelEmailChange = () => {
+    setIsOpen(false);
+  };
 
   const handlePassToggle = (key) => () => {
     setSecretMap({
@@ -62,7 +77,9 @@ const UpdateEmail = ({ route, navigation }) => {
 
   useEffect(() => {
     if (updateEmailResult.isSuccess) {
+      payload.current = {};
       navigation.navigate("Accounts");
+
       toast.show("Email succesfully updated", {
         type: "success",
         duration: 2500,
@@ -74,9 +91,10 @@ const UpdateEmail = ({ route, navigation }) => {
       });
     }
     if (updateEmailResult.isError) {
+      payload.current = {};
       const message = Array.isArray(updateEmailResult?.error?.data?.message)
-      ? updateEmailResult?.error?.data?.message[0]
-      : updateEmailResult?.error?.data?.message;
+        ? updateEmailResult?.error?.data?.message[0]
+        : updateEmailResult?.error?.data?.message;
 
       toast.show("Email update error", {
         type: "error",
@@ -85,68 +103,52 @@ const UpdateEmail = ({ route, navigation }) => {
         animationType: "zoom-in",
         placement: "bottom",
         title: "Error updating email!",
-        description: message ?? "Sorry, an error occured"
+        description: message ?? "Sorry, an error occured",
       });
-
     }
   }, [updateEmailResult]);
 
   return (
-    <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
-    >
+    <View style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
       <Text style={{ marginBottom: 15 }}>
         Enter your current password, and your new email you would like to change
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("password")}
+      <Input
         autoFocus
+        label="Password"
+        onChangeText={formik.handleChange("password")}
         onBlur={formik.handleBlur("password")}
         value={formik.values.password}
-        mode="outlined"
-        label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["password"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 2 }}
-            onPress={handlePassToggle("password")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["password"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("password")}
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.password || ""}
+          {(formik.touched["password"] && formik?.errors?.password) || ""}
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="New Email"
         onChangeText={formik.handleChange("email")}
         onBlur={formik.handleBlur("email")}
         value={formik.values.email}
-        mode="outlined"
-        label="New Email"
         placeholder="Enter a new email"
         keyboardType="email-address"
-        style={{
-          marginTop: 5,
-          backgroundColor: "white",
-        }}
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.email || ""}
+          {(formik.touched["email"] && formik?.errors?.email) || ""}
         </Text>
       </View>
 
@@ -155,10 +157,16 @@ const UpdateEmail = ({ route, navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={formik.handleSubmit}
-        disabled={
-          updateEmailResult.isLoading || !formik.isValid || !formik.dirty
-        }
+        disabled={updateEmailResult.isLoading}
         loading={updateEmailResult.isLoading}
+      />
+      <ConfirmationModal
+        isVisible={isOpen}
+        title="Change email"
+        description="This will be your new email to login with"
+        onConfirm={onConfirmEmailChange}
+        onCancel={onCancelEmailChange}
+        isLoading={updateEmailResult.isLoading}
       />
     </View>
   );

@@ -2,16 +2,27 @@ import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { format, add, sub } from "date-fns";
-import { useTheme } from "@rneui/themed";
 import * as NavigationBar from "expo-navigation-bar";
-import { StyleSheet, View, Animated, Platform, KeyboardAvoidingView } from "react-native";
-import Header from "./Header";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { toggleEditMode } from "./today-slice";
+import {
+  StyleSheet,
+  View,
+  Animated,
+  Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
+import Header from "./components/Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
-import MoveIncomplete from "./MoveIncomplete";
+import MoveIncomplete from "./components/MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
+import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
+
 import {
   useGetTodaysTasksQuery,
   useToggleTaskMutation,
@@ -19,11 +30,12 @@ import {
   useToggleTaskFocusMutation,
   useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
+  useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
 import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
+import { useGetProfileQuery } from "../../../api/user-api";
 import CalendarWidget from "./Calendar";
-import LayoutView from "../../../components/LayoutView";
 import { useToast } from "react-native-toast-notifications";
 
 const ListScreen = () => {
@@ -31,37 +43,43 @@ const ListScreen = () => {
   const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
+  const isToday = useSelector((state) => state.today.isToday);
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
+  const editMode = useSelector((state) => state.today.editMode);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
+  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
-  const {
-    data: tasks,
-    isLoading,
-    isFetching,
-    error,
-  } = useGetTodaysTasksQuery({ date: format(utcDate, "yyyy-MM-dd") });
-  const [posY] = useState(new Animated.Value(0));
+  const hehe = useGetTodaysTasksQuery(
+    { date: format(utcDate, "yyyy-MM-dd") },
+    { pollingInterval: 600000 }
+  );
+  const { data: tasks, isLoading, isFetching, error } = hehe;
+  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+
   const {
     data: incompleteTasks,
     isLoading: incompleteIsLoading,
     error: incError,
   } = useGetIncompleteTasksQuery({});
 
-  const [toggleTask, toggleTaskApi] = useToggleTaskMutation();
+  const { data: userData, isLoading: userProfileLoading } =
+    useGetProfileQuery();
+  const [toggleTask] = useToggleTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
-  const [toggleTaskFocus, toggleFocusResult] = useToggleTaskFocusMutation();
-  const [moveIncompleteTasks, moveIncompleteTasksResult] =
-    useMoveIncompleteTasksMutation();
+  const [toggleTaskFocus] = useToggleTaskFocusMutation();
+  // const [moveIncompleteTasks, moveIncompleteTasksResult] =
+  //   useMoveIncompleteTasksMutation();
+
   useEffect(() => {
     setTheme();
   }, []);
 
   useEffect(() => {
     Animated.timing(posXanim, {
-      toValue: focusMode ? 160 : 130,
+      toValue: focusMode ? 0 : 50,
       duration: 350,
       useNativeDriver: true,
     }).start();
@@ -69,9 +87,41 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (createTaskResult.isError) {
-      ToastAndroid.show(`Error creating task!`, ToastAndroid.SHORT);
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Error creating task!`,
+        description: "",
+      });
     }
   }, [createTaskResult.isError]);
+
+  useEffect(() => {
+    if (createTaskResult.isSuccess) {
+      const { data } = createTaskResult;
+
+      toast.show("", {
+        type: "success",
+        placement: "top",
+        title: `Task created!`,
+      });
+
+      dispatch(
+        api.util.updateQueryData(
+          "getTodaysTasks",
+          { date: format(utcDate, "yyyy-MM-dd") },
+          (draft) => {
+            const task = draft.find((todo) => todo.title === data.title);
+            task.id = data.id;
+            return draft;
+          }
+        )
+      );
+    }
+  }, [createTaskResult.isSuccess]);
 
   const setTheme = async () => {
     Platform.OS === "android" &&
@@ -101,6 +151,7 @@ const ListScreen = () => {
   };
 
   const handleOnChangeDate = (direction) => () => {
+    dispatch(toggleEditMode({ editMode: false }));
     if (direction === "back") {
       const subUtcDate = sub(new Date(utcDate), { days: 1 });
       setUtcDate(subUtcDate);
@@ -119,49 +170,33 @@ const ListScreen = () => {
   };
 
   const handleCreateNewTask = async (_title) => {
-    const res = await createTask({
+    createTask({
       title: _title,
       deadline: format(utcDate, "yyyy-MM-dd"),
       date: format(utcDate, "yyyy-MM-dd"),
     });
-
-    dispatch(
-      api.util.updateQueryData(
-        "getTodaysTasks",
-        { date: format(utcDate, "yyyy-MM-dd") },
-        (draft) => {
-          const task = draft.find((todo) => todo.title === res.data.title);
-          task.id = res.data.id;
-          return draft;
-        }
-      )
-    );
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: `Task created!`,
-      description: "",
-    });
-    return;
   };
 
-  const handleMoveIncompleteTasks = async () => {
-    const from = format(utcDate, "yyyy-MM-dd");
+  const handleMoveIncompleteTasks = async (items) => {
     const to = format(new Date(), "yyyy-MM-dd");
-    await moveIncompleteTasks({ from, to });
-
+    await moveTasksApi({ tasks: Object.keys(items), to });
+    setIsMoveIncompleteOpen(false);
     toast.show("", {
       type: "success",
       duration: 2500,
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: `Tasks moved to ${to}!`,
-      description: "",
+      title: "Selected tasks have been moved!",
     });
+  };
+
+  const handleOpenIncompleteModal = () => {
+    setIsMoveIncompleteOpen(true);
+  };
+
+  const handleCloseIncompleteModal = () => {
+    setIsMoveIncompleteOpen(false);
   };
 
   const handleOnPressToday = async () => {
@@ -176,53 +211,72 @@ const ListScreen = () => {
     setUtcDate(new Date(_day.dateString));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
-  console.log("FOCUS MODE: ", focusMode);
+
+  const handleKeyboardDismiss = (e) => {
+    // e.stopPropagation();
+    Keyboard.dismiss();
+  };
+
   return (
-    <LayoutView>
-      <GestureHandlerRootView style={styles.container}>
-        <Header
-          clientUtc={utcDate}
-          focusMode={focusMode}
-          onChangeDate={handleOnChangeDate}
-          onPressToday={handleOnPressToday}
-          onPressDate={handleOnPressDate}
-        />
-        <ProgressBar focusMode={focusMode} progress={progress} />
-
-        <View
-          contentContainerStyle={{ justifyContent: "space-between", flex: 1 }}
-          style={{ flex: 1 }}
+    <TouchableWithoutFeedback
+      onPress={handleKeyboardDismiss}
+      accessible={false}
+    >
+      <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
+        <KeyboardAvoidingView
+          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : -110}
+          behavior={Platform.OS === "ios" ? "padding" : "padding"}
+          style={{
+            flex: 1,
+            backgroundColor: "white",
+            paddingHorizontal: 0,
+            paddingTop: 10,
+          }}
         >
-          <View
-            style={{ height: 80, display: "flex", justifyContent: "center" }}
-          >
-            {isLoading || isFetching ? (
-              <View style={{ flex: 1, paddingTop: 20 }}>
-                <SkeletonList />
-              </View>
-            ) : (
-              <Animated.View
-                style={{ height: 400, transform: [{ translateY: posXanim }] }}
-              >
-               <KeyboardAvoidingView>
-               <TaskList
-                  tasks={tasks || []}
-                  handleToggleTaskFocus={handleToggleTaskFocus}
-                  handleToggleTaskComplete={handleToggleTaskComplete}
-                  currentTask={currentTask}
-                  isLoadingToggle={isLoadingToggle}
-                  utcDate={utcDate}
-                />
-
-                <AddItem
-                  handleCreateNewTask={handleCreateNewTask}
-                  currentDate={utcDate}
-                />
-               </KeyboardAvoidingView>
-              </Animated.View>
-            )}
+          <View style={{ paddingHorizontal: 20 }}>
+            <Header
+              clientUtc={utcDate}
+              focusMode={focusMode}
+              onChangeDate={handleOnChangeDate}
+              onPressToday={handleOnPressToday}
+              onPressDate={handleOnPressDate}
+            />
+            <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
 
+          {isLoading ? (
+            <View style={{ marginTop: 15, paddingLeft: 20, paddingRight: 10 }}>
+              <SkeletonList />
+            </View>
+          ) : (
+            <View style={styles.container}>
+              <View style={{ flex: 0.9 }}>
+                <View style={{ flex: 0.9, paddingTop: 10 }}>
+                  <TaskList
+                    tasks={tasks || []}
+                    handleToggleTaskFocus={handleToggleTaskFocus}
+                    handleToggleTaskComplete={handleToggleTaskComplete}
+                    currentTask={currentTask}
+                    isLoadingToggle={isLoadingToggle}
+                    utcDate={utcDate}
+                  />
+                  {!editMode && (
+                    <View
+                      style={{
+                        marginTop: 15,
+                      }}
+                    >
+                      <AddItem
+                        handleCreateNewTask={handleCreateNewTask}
+                        currentDate={utcDate}
+                        focusMode={focusMode}
+                      />
+                    </View>
+                  )}
+                </View>
+              </View>
+            </View>
+          )}
           <CalendarWidget
             calendarOpen={calendarOpen}
             toggleCalendar={handleToggleCalendar}
@@ -230,19 +284,30 @@ const ListScreen = () => {
             currentDate={utcDate}
             handleOnSelectDay={handleOnSelectDay}
           />
+        </KeyboardAvoidingView>
 
-          {isFetching || !focusMode ? null : (
+        <View style={styles.moveIncomlpleteContainer}>
+          <View style={{ paddingBottom: 20 }}>
             <MoveIncomplete
               tasks={tasks}
               currentDate={utcDate}
-              isLoading={moveIncompleteTasksResult.isLoading}
-              onMoveIncomplete={handleMoveIncompleteTasks}
+              isLoading={moveTasksApiResult.isLoading}
+              onMoveIncomplete={handleOpenIncompleteModal}
             />
-          )}
+          </View>
         </View>
-        <IntroBottomSheet />
+        <MoveIncompleteModal
+          isVisible={isMoveIncompleteOpen}
+          onPress={handleMoveIncompleteTasks}
+          onCancel={handleCloseIncompleteModal}
+          currentDate={utcDate}
+        />
+        <IntroBottomSheet
+          user={userData?.email}
+          isLoading={userProfileLoading}
+        />
       </GestureHandlerRootView>
-    </LayoutView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -250,7 +315,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    padding: 30,
+  },
+  moveIncomlpleteContainer: {
+    // flex: 0.15,
+    backgroundColor: "white",
+    paddingHorizontal: 20,
+    justifyContent: "flex-end",
   },
 });
 

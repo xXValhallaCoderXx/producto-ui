@@ -1,14 +1,19 @@
 import { useState, useRef } from "react";
-import { useSelector } from "react-redux";
-import { View, Text, TouchableWithoutFeedback, TextInput } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useTheme, Button, CheckBox } from "@rneui/themed";
+import { useSelector, useDispatch } from "react-redux";
+import { useTheme, Button } from "react-native-paper";
+import {
+  View,
+  TouchableWithoutFeedback,
+  TextInput,
+  Platform,
+} from "react-native";
+import { toggleAddTaskMode } from "./today-slice";
 
-const AddItem = ({ handleCreateNewTask }) => {
-  const { theme } = useTheme();
-  const isToday = useSelector((state) => state.today.isToday);
+const AddItem = ({ handleCreateNewTask, focusMode }) => {
+  const theme = useTheme();
+  const dispatch = useDispatch();
+  const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
-  const [addTask, setAddTask] = useState(false);
   const [taskName, setTaskName] = useState("");
   const [error, setError] = useState("");
 
@@ -18,17 +23,16 @@ const AddItem = ({ handleCreateNewTask }) => {
   };
 
   const handleOnPress = () => {
-  
-    if(!addTask){
+    if (!addTask) {
       setTaskName("");
-      setAddTask(true);
+      dispatch(toggleAddTaskMode(true));
       addTaskInputRef.current && addTaskInputRef.current.focus();
     }
     // setError("");
   };
 
   const handleOnBlur = async () => {
-    setAddTask(false);
+    dispatch(toggleAddTaskMode(false));
     if (taskName.length > 0) {
       const newValue = taskName;
       setTaskName("");
@@ -36,81 +40,49 @@ const AddItem = ({ handleCreateNewTask }) => {
     }
   };
 
-  if (!isToday) {
+  if (!focusMode) {
     return null;
   }
 
   return (
-    <View
-      style={{ marginTop: 35 }}
-      // keyboardShouldPersistTaps="handled"
-    >
+    <View>
       {addTask ? (
-        <View>
-          <View
+        <View
+          style={{
+            flexDirection: "row",
+            paddingLeft: 25,
+            marginTop: Platform.OS === "ios" ? 5 : 0,
+          }}
+        >
+          <TextInput
+            placeholder="Enter task name..."
+            autoFocus
+            placeholderTextColor="#808080"
+            onChangeText={handleOnChange}
+            value={taskName}
+            onBlur={handleOnBlur}
+            underlineColorAndroid="transparent"
             style={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              fontSize: 16,
+              backgroundColor: "white",
             }}
-          >
-            <View style={{ flex: 7 }}>
-              <TextInput
-                placeholder="Enter task name..."
-                autoFocus
-                placeholderTextColor="#808080"
-                onChangeText={handleOnChange}
-                value={taskName}
-                onBlur={handleOnBlur}
-                underlineColorAndroid="transparent"
-                style={{
-                  fontSize: 16,
-                  height: 50,
-                  backgroundColor: "white",
-                }}
-              />
-            </View>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                flex: 3,
-                justifyContent: "flex-end",
-                marginTop: 10,
-                paddingRight: 10,
-              }}
-            >
-              <CheckBox
-                checked={false}
-                containerStyle={{ padding: 0 }}
-                disabled={true}
-              />
-            </View>
-          </View>
-          {error ? (
-            <Text style={{ color: "#D14343", marginTop: -10, marginLeft: 10 }}>
-              {error}
-            </Text>
-          ) : null}
+          />
         </View>
       ) : (
         <Button
           type="clear"
+          icon="plus"
+          contentStyle={{
+            justifyContent: "flex-start",
+            paddingLeft: 8,
+          }}
+          labelStyle={{
+            fontWeight: "600",
+          }}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}
-          buttonStyle={{
-            display: "flex",
-            justifyContent: "flex-start",
-          
-          }}
-     
-          
           onPress={handleOnPress}
         >
-          <MaterialIcons
-            style={{ paddingRight: 4, color: theme.colors.primary }}
-            name={"add"}
-          />
           Add Item
         </Button>
       )}

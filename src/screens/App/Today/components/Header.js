@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
+  Image,
 } from "react-native";
-import EvilIcon from "react-native-vector-icons/EvilIcons";
 import { format } from "date-fns";
-import { Text as Text2 } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
-import { Text, useTheme } from "@rneui/themed";
+
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFocusMode, toggleIsToday } from "./today-slice";
+import { toggleFocusMode, toggleIsToday } from "../today-slice";
+import lockOpen from "../../../../assets/images/lock-open.png";
+import lockClosed from "../../../../assets/images/lock-closed.png";
 
 const TodayHeader = ({
   focusMode,
@@ -21,7 +23,7 @@ const TodayHeader = ({
   onPressToday,
   onPressDate,
 }) => {
-  const { theme } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector((state) => state.today.isToday);
 
@@ -46,9 +48,9 @@ const TodayHeader = ({
   return (
     <View>
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
-        <Text2
+        <Text
           style={{
-            marginLeft: Platform.OS === "ios" ? -26 : -6,
+            marginLeft: Platform.OS === "ios" ? -28 : -6,
             alignSelf: "flex-start",
             fontWeight: "700",
             color: isToday ? theme.colors.primary : "#6B7280",
@@ -57,7 +59,7 @@ const TodayHeader = ({
           {focusMode
             ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
             : null}
-        </Text2>
+        </Text>
       </TouchableOpacity>
       <View style={styles.container}>
         <View style={styles.row}>
@@ -69,10 +71,10 @@ const TodayHeader = ({
               >
                 <View>
                   <Text
-                    h4
+                    variant="titleLarge"
                     style={{
                       color: theme.colors.primary,
-                      fontWeight: "600",
+                      fontWeight: "700",
                     }}
                   >
                     Today
@@ -105,12 +107,15 @@ const TodayHeader = ({
           </View>
         </View>
         {isToday ? (
-          <EvilIcon
+          <TouchableOpacity
             onPress={() => dispatch(toggleFocusMode({ focusMode: !focusMode }))}
-            style={{ fontSize: 40, paddingRight: 8 }}
-            color={theme.colors.primary}
-            name={focusMode ? "unlock" : "lock"}
-          />
+            style={{ padding: 5 }}
+          >
+            <Image
+              source={focusMode ? lockOpen : lockClosed}
+              style={{ height: 24, width: 18 }}
+            />
+          </TouchableOpacity>
         ) : null}
       </View>
     </View>

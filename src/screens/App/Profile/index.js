@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AccountScreen from "./Profile";
+import ProfileScreen from "./Profile";
 import UpdatePassword from "./UpdatePassword";
 import UpdateEmail from "./UpdateEmail";
 import UpdateTimezone from "./UpdateTimezone";
@@ -15,7 +15,7 @@ const ProfileScreens = () => {
         };
       }}
     >
-      <Stack.Screen name="Accounts" component={AccountScreen} />
+      <Stack.Screen name="Accounts" component={ProfileScreen} />
       <Stack.Screen name="UpdateEmail" component={UpdateEmail} />
       <Stack.Screen name="UpdatePassword" component={UpdatePassword} />
       <Stack.Screen name="UpdateTimezone" component={UpdateTimezone} />

@@ -6,11 +6,8 @@ const taskApi = api.injectEndpoints({
       query: ({ date }) => {
         return `/task?date=${date}`;
       },
-      providesTags: (result, error, arg) => {
-        return result
-          ? [...result.map(() => ({ type: "Tasks", id: arg.date })), "Tasks"]
-          : ["Tasks"];
-      },
+      providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
+      // keepUnusedDataFor: 5,
     }),
     getIncompleteTasks: builder.query({
       query: () => {
@@ -59,7 +56,7 @@ const taskApi = api.injectEndpoints({
           optimisticUpdate.undo();
         }
       },
-      invalidatesTags: ["IncompleteTasks"]
+      invalidatesTags: ["IncompleteTasks"],
     }),
     toggleTaskFocus: builder.mutation({
       query: ({ id, focus, date }) => {
@@ -104,7 +101,7 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           // optimisticUpdate.undo();
-          dispatch(api.util.invalidateTags(['Tasks']))
+          dispatch(api.util.invalidateTags(["Tasks"]));
         }
       },
     }),
@@ -117,7 +114,10 @@ const taskApi = api.injectEndpoints({
           body: { title, deadline },
         };
       },
-      async onQueryStarted({ title, deadline, date }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(
+        { title, deadline, date },
+        { dispatch, queryFulfilled }
+      ) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
             draft.push({
@@ -126,8 +126,8 @@ const taskApi = api.injectEndpoints({
               id: Math.floor(Math.random() * 100),
               createdAt: deadline,
               deadline,
-              title
-            })
+              title,
+            });
             return draft;
           })
         );
@@ -135,18 +135,17 @@ const taskApi = api.injectEndpoints({
           await queryFulfilled;
         } catch (e) {
           optimisticUpdate.undo();
-          console.log(e);
         }
       },
     }),
-    moveIncompleteTasks: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
-      query: ({ from, to }) => ({
-        url: `/task/move-incomplete`,
-        method: "POST",
-        body: { from, to },
-      }),
-    }),
+    // moveIncompleteTasks: builder.mutation({
+    //   invalidatesTags: ["Tasks", "IncompleteTasks"],
+    //   query: ({ from, to }) => ({
+    //     url: `/task/move-incomplete`,
+    //     method: "POST",
+    //     body: { from, to },
+    //   }),
+    // }),
     deleteTask: builder.mutation({
       invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ id }) => {
@@ -164,10 +163,10 @@ export const {
   useToggleTaskMutation,
   useCreateTaskMutation,
   useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation,
+  // useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
   useUpdateTaskMutation,
   useGetIncompleteDetailTasksQuery,
   useMoveSpecificTasksMutation,
-  useDeleteTaskMutation
+  useDeleteTaskMutation,
 } = taskApi;

@@ -3,15 +3,19 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableWithoutFeedback,
+  Image,
+} from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
-import { Text as RnText } from "../../../components";
-import LogoutModal from "./components/LogoutModal";
 import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
-
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import logoutIcon from "../../../assets/images/logout.png";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import { api } from "../../../api";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
@@ -28,11 +32,13 @@ import { useToast } from "react-native-toast-notifications";
 const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const toast = useToast();
+
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
-  const { data, isLoading } = useGetProfileQuery({});
+  const { data, isLoading } = useGetProfileQuery();
+
   const { colors } = useTheme();
 
   useEffect(() => {
@@ -41,23 +47,24 @@ const ProfileScreen = ({ navigation }) => {
     }
   }, [!data?.prefs?.autoMove]);
 
-  const toggleLogoutModal = () => {
-    setIsLogoutModalVisible(!isLogoutModalVisible);
-  };
-
-  const toggleAutoTaskModal = async () => {
-    if (!data?.prefs?.autoMove) {
-      setisAutoTaskModalVisible(true);
-    }
-    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+  useEffect(() => {
+    setisAutoTaskModalVisible(false);
     toast.show("", {
       type: "success",
       duration: 2500,
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: "Auto Tasks Updated!",
+      title: "Autotasks updated!",
     });
+  }, updatePrefsResult.isSuccess);
+
+  const toggleLogoutModal = () => {
+    setIsLogoutModalVisible(!isLogoutModalVisible);
+  };
+
+  const toggleAutoTaskModal = async () => {
+    setisAutoTaskModalVisible(!isAutoTaskModalVisible);
   };
 
   const handleCloseModal = () => {
@@ -67,6 +74,7 @@ const ProfileScreen = ({ navigation }) => {
   const handleLogout = async () => {
     await SecureStore.setItemAsync(JWT_KEY_STORE, "");
     await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
+    dispatch(api.util.resetApiState());
     setIsLogoutModalVisible(false);
     dispatch(toggleIsAuthenticated(false));
   };
@@ -74,15 +82,8 @@ const ProfileScreen = ({ navigation }) => {
   const handleSubmitAutoTask = async (dates) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
-    setisAutoTaskModalVisible(false);
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Tasks have been moved!",
-    });
+    await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+    // await SecureStore.setItemAsync("AUTO_TASK_START", String(new Date));
   };
 
   const navigateToEditPassword = () => {
@@ -103,112 +104,89 @@ const ProfileScreen = ({ navigation }) => {
     });
   };
 
+  const listTitleStyle = {
+    color: colors.black,
+    fontWeight: "600",
+  };
+
   return (
     <View style={styles.screenContainer}>
-      <View style={styles.container}>
-        <View style={{ flex: 5 }}>
-          <RnText
-            customStyle={{ marginBottom: 10 }}
-            type="h4"
-            color="secondary"
-          >
-            ACCOUNT
-          </RnText>
+      <View>
+        <Text style={styles.titleStyle}>ACCOUNT INFORMATION</Text>
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToChangeEmail}
-              title="Email"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {data?.email}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
-          )}
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToEditPassword}
-              title="Password"
-              right={() => (
+        {isLoading ? (
+          <View style={{ marginBottom: 10, marginTop: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
+            onPress={navigateToChangeEmail}
+            title="Email"
+            right={() => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text type="h3" color="black">
+                  {data?.email}
+                </Text>
                 <MaterialIcons size={24} name="keyboard-arrow-right" />
-              )}
-            />
-          )}
-        </View>
-        <View style={{ flex: 9 }}>
-          <RnText
-            type="h4"
-            color="secondary"
-            customStyle={{ marginBottom: 20 }}
-          >
-            APP SETTINGS
-          </RnText>
+              </View>
+            )}
+          />
+        )}
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
+            onPress={navigateToEditPassword}
+            title="Password"
+            right={() => (
+              <MaterialIcons size={24} name="keyboard-arrow-right" />
+            )}
+          />
+        )}
+      </View>
+      <View style={{ marginTop: 15 }}>
+        <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={30} width={"100%"} />
-            </View>
-          ) : (
-            <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
-              onPress={navigateToChangeTimezone}
-              title="Timezone"
-              right={() => (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ marginBottom: 2, paddingRight: 5 }}
-                    type="h3"
-                    color="black"
-                  >
-                    {Localization.timezone}
-                  </Text>
-                  <MaterialIcons size={24} name="keyboard-arrow-right" />
-                </View>
-              )}
-            />
-          )}
+        {isLoading ? (
+          <View style={{ marginBottom: 10, marginTop: 10 }}>
+            <SkeletonBox height={30} width={"100%"} />
+          </View>
+        ) : (
+          <List.Item
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
+            onPress={navigateToChangeTimezone}
+            title="Timezone"
+            right={() => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text type="h3" color="black">
+                  {Localization.timezone}
+                </Text>
+                <MaterialIcons size={24} name="keyboard-arrow-right" />
+              </View>
+            )}
+          />
+        )}
 
-          {isLoading ? (
-            <View style={{ marginBottom: 10 }}>
-              <SkeletonBox height={70} width={"100%"} />
-            </View>
-          ) : (
+        {isLoading ? (
+          <View style={{ marginBottom: 10 }}>
+            <SkeletonBox height={70} width={"100%"} />
+          </View>
+        ) : (
+          <View>
             <List.Item
-              titleStyle={{
-                color: colors.black,
-                fontWeight: "600",
-              }}
+              titleStyle={listTitleStyle}
               onPress={toggleAutoTaskModal}
               title="Auto Move Tasks"
+              style={styles.listItem}
               description="Automatically move all incompleted tasks to “today”."
-              descriptionStyle={{ maxWidth: 240, marginTop: 2 }}
+              descriptionStyle={{ maxWidth: "80%", marginTop: 2 }}
               right={() => (
                 <View style={{ justifyContent: "center" }}>
                   <Switch
@@ -218,35 +196,68 @@ const ProfileScreen = ({ navigation }) => {
                 </View>
               )}
             />
-          )}
-        </View>
+            <Text style={{ paddingLeft: 20, marginTop: -5 }}>
+              Active From:{" "}
+            </Text>
+          </View>
+        )}
+      </View>
 
-        <View style={{ flex: 5, alignItems: "flex-start" }}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={{ flex: 0.5, justifyContent: "center" }}>
           <Button
             type="text"
-            TouchableComponent={TouchableOpacity}
-            labelStyle={{ color: colors.secondary, fontSize: 16 }}
+            TouchableComponent={TouchableWithoutFeedback}
+            style={{ width: "100%" }}
+            contentStyle={{
+              justifyContent: "flex-start",
+              paddingLeft: 10,
+            }}
+            labelStyle={{
+              color: colors.secondary,
+              fontSize: 18,
+              paddingLeft: 15,
+            }}
             onPress={toggleLogoutModal}
-            icon={"door"}
+            icon={logoutIcon}
           >
-            Logout
+            <Text
+              style={{
+                fontSize: 16,
+              }}
+            >
+              Logout
+            </Text>
           </Button>
         </View>
-        <View style={{ flex: 2 }}>
-          <RnText
+        <View
+          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text
             type="h4"
             color="secondary"
             customStyle={{ textAlign: "center" }}
           >
-            v0.0.1
-          </RnText>
+            v0.5.0
+          </Text>
         </View>
       </View>
-      <LogoutModal
+
+      <ConfirmationModal
         isVisible={isLogoutModalVisible}
-        onPress={handleLogout}
+        title="Log out"
+        description="  Are you sure you want to logout?"
+        onConfirm={handleLogout}
         onCancel={toggleLogoutModal}
+        confirmLabel="Log out"
       />
+
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
@@ -262,27 +273,20 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: "white",
-    display: "flex",
-    paddingTop: 55,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingTop: 35,
   },
-  container: {
-    display: "flex",
-    flex: 1,
-    flexDirection: "column",
+  titleStyle: {
+    color: "#6B7280",
+    letterSpacing: 0.5,
+    fontWeight: "500",
+    fontSize: 14,
+    marginLeft: 15,
   },
-  iconStyle: {
-    paddingRight: 5,
-    fontSize: 20,
-    paddingTop: 2,
-    paddingRight: 30,
-  },
-  buttonStyle: {
-    display: "flex",
-    justifyContent: "flex-start",
-    padding: 0,
-    marginLeft: -5,
+  listItem: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });
 

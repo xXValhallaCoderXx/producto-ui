@@ -12,7 +12,7 @@ const authApi = api.injectEndpoints({
       },
     }),
     register: builder.mutation({
-      query: ({ email, password , timezone}) => ({
+      query: ({ email, password, timezone }) => ({
         url: "/auth/register",
         method: "POST",
         body: { email, password, timezone },
@@ -20,7 +20,10 @@ const authApi = api.injectEndpoints({
     }),
     verifyEmail: builder.query({
       query: ({ email }) => {
-        return `/auth/verify-email?email=${email}`;
+        return {
+          url: `/auth/verify-email?email=${email}`,
+          method: "GET",
+        };
       },
     }),
     refreshToken: builder.query({
@@ -42,7 +45,7 @@ const authApi = api.injectEndpoints({
           body: { password, email },
         };
       },
-      invalidatesTags: ["User"]
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -52,5 +55,5 @@ export const {
   useRegisterMutation,
   useLazyVerifyEmailQuery,
   useLazyRefreshTokenQuery,
-  useUpdateEmailMutation
+  useUpdateEmailMutation,
 } = authApi;

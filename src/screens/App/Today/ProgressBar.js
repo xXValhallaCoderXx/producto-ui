@@ -1,45 +1,44 @@
 import { View } from "react-native";
-import { Text, useTheme, LinearProgress } from "@rneui/themed";
+import { useTheme, Text } from "react-native-paper";
+import ProgressBar from "../../../components/ProgressBar";
 
-const ProgressBar = ({ focusMode, progress }) => {
-  const { theme } = useTheme();
+const ProgressBarContainer = ({ focusMode, progress }) => {
+  const theme = useTheme();
+
+  const humanReadbleProgess = Math.round(parseFloat(progress || 0) * 100);
 
   return (
     <View style={{ paddingTop: 0, height: 20 }}>
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          height: 15,
+          justifyContent: "space-between",
+          height: 20,
         }}
       >
         {focusMode && (
           <>
-            <LinearProgress
+            <View style={{ flexGrow: 1 }}>
+              <ProgressBar progress={isNaN(progress) ? 0 : progress} />
+            </View>
+            <View
               style={{
-                marginVertical: 15,
-                height: 15,
-                borderRadius: 8,
-                flex: 0.85,
-              }}
-              trackColor="#F2F2F2"
-              animation={{duration: 200}}
-              value={progress}
-              color={theme.colors.primary}
-              variant="determinate"
-            />
-            <Text
-              h6
-              style={{
-                flex: 0.15,
-                textAlign: "center",
-                color: theme.colors.primary,
-                fontWeight: "700",
+                width: 55,
+                alignItems: "flex-end",
               }}
             >
-              {Math.round(parseFloat(progress || 0) * 100)}%
-            </Text>
+              <Text
+                h6
+                style={{
+                  color: theme.colors.primary,
+                  fontWeight: "700",
+                  paddingRight: 5,
+                }}
+              >
+                {humanReadbleProgess} %
+              </Text>
+            </View>
           </>
         )}
       </View>
@@ -47,4 +46,4 @@ const ProgressBar = ({ focusMode, progress }) => {
   );
 };
 
-export default ProgressBar;
+export default ProgressBarContainer;

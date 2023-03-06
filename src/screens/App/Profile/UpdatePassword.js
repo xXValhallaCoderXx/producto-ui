@@ -1,5 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as Yup from "yup";
+import * as SecureStore from "expo-secure-store";
+import {
+  JWT_KEY_STORE,
+  REFRESH_JWT_KEY_STORE,
+} from "../../../shared/constants";
 import ProductoButton from "../../../components/Button";
 import { TextInput, Text } from "react-native-paper";
 import { useFormik } from "formik";
@@ -7,10 +12,14 @@ import { useTheme } from "react-native-paper";
 import { View } from "react-native";
 import { useUpdatePasswordMutation } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
+import { MainInput as Input } from "../../../components";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const EditPassword = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
+  const payload = useRef({});
+  const [isOpen, setIsOpen] = useState(false);
   const [secretMap, setSecretMap] = useState({
     newPassword: true,
     currentPassword: true,
@@ -39,11 +48,16 @@ const EditPassword = ({ navigation }) => {
       confirmPassword: Yup.string()
         .min(6, "Please enter a minimum of 6 characters")
         .max(50, "Password exceeded 50 characters")
-        .required("Password field is required"),
+        .required("Password field is required")
+        .oneOf([Yup.ref("newPassword"), null], "Passwords must match"),
     }),
 
     onSubmit: async ({ currentPassword, newPassword }) => {
-      await updatePassword({ newPassword, currentPassword });
+      payload.current = {
+        newPassword,
+        currentPassword,
+      };
+      setIsOpen(true);
     },
   });
 
@@ -59,13 +73,14 @@ const EditPassword = ({ navigation }) => {
         title: "Sucessfully updated password!",
         description: "You may now login with your new password",
       });
+      setIsOpen(false);
       navigation.navigate("Accounts");
     }
     if (updatePasswordResult.isError) {
       const message = Array.isArray(updatePasswordResult?.error?.data?.message)
         ? updatePasswordResult?.error?.data?.message[0]
         : updatePasswordResult?.error?.data?.message;
-      toast.show("Password succesffully updated", {
+      toast.show("Password update unsuccesful123456", {
         type: "success",
         duration: 2500,
         offset: 30,
@@ -77,6 +92,15 @@ const EditPassword = ({ navigation }) => {
     }
   }, [updatePasswordResult]);
 
+  const onConfirmPasswordChange = async () => {
+    const { newPassword, currentPassword } = payload.current;
+    await updatePassword({ newPassword, currentPassword });
+  };
+
+  const onCancelEmailChange = () => {
+    setIsOpen(false);
+  };
+
   const handlePassToggle = (key) => () => {
     setSecretMap({
       ...secretMap,
@@ -87,96 +111,73 @@ const EditPassword = ({ navigation }) => {
   const handleOnSubmit = () => {
     formik.handleSubmit();
   };
-  console.log("FORMIK: ", formik.isValid);
+
   return (
-    <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
-    >
+    <View style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
       <Text style={{ marginBottom: 15 }}>
         Enter your current password, and your new password you wish to change
         to.
       </Text>
 
-      <TextInput
-        onChangeText={formik.handleChange("currentPassword")}
+      <Input
         autoFocus
+        label="Password"
+        onChangeText={formik.handleChange("currentPassword")}
         onBlur={formik.handleBlur("currentPassword")}
         value={formik.values.currentPassword}
-        mode="outlined"
-        label="Password"
         placeholder="Enter current password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["currentPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 4 }}
-            onPress={handlePassToggle("currentPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["currentPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("currentPassword")}
       />
 
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.currentPassword || ""}
+          {(formik.touched["currentPassword"] &&
+            formik?.errors?.currentPassword) ||
+            ""}
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="New Password"
         onChangeText={formik.handleChange("newPassword")}
         onBlur={formik.handleBlur("newPassword")}
         value={formik.values.newPassword}
-        mode="outlined"
-        label="New Password"
         placeholder="Enter new password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["newPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 4 }}
-            onPress={handlePassToggle("newPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["newPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("newPassword")}
       />
+
       <View style={{ height: 20, marginBottom: 10 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.newPassword || ""}
+          {(formik.touched["newPassword"] && formik?.errors?.newPassword) || ""}
         </Text>
       </View>
 
-      <TextInput
+      <Input
+        label="Confirm Password"
         onChangeText={formik.handleChange("confirmPassword")}
         onBlur={formik.handleBlur("confirmPassword")}
         value={formik.values.confirmPassword}
-        mode="outlined"
-        label="Confirm Password"
         placeholder="Confirm new password"
-        style={{
-          backgroundColor: "white",
-        }}
         secureTextEntry={secretMap["confirmPassword"]}
-        right={
-          <TextInput.Icon
-            style={{ paddingBottom: 4 }}
-            onPress={handlePassToggle("confirmPassword")}
-            icon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-          />
-        }
+        rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+        onPressIcon={handlePassToggle("confirmPassword")}
       />
+
       <View style={{ height: 20 }}>
         <Text
           style={{ marginTop: 5, marginLeft: 10, color: theme.colors.error }}
         >
-          {formik?.errors?.confirmPassword || ""}
+          {(formik.touched["confirmPassword"] &&
+            formik?.errors?.confirmPassword) ||
+            ""}
         </Text>
       </View>
 
@@ -185,10 +186,16 @@ const EditPassword = ({ navigation }) => {
         type="contained"
         style={{ marginTop: 30 }}
         onPress={handleOnSubmit}
-        disabled={
-          updatePasswordResult.isLoading || !formik.isValid || !formik.dirty
-        }
+        disabled={updatePasswordResult.isLoading}
         loading={updatePasswordResult.isLoading}
+      />
+      <ConfirmationModal
+        isVisible={isOpen}
+        title="Change password"
+        description="This will update your password"
+        onConfirm={onConfirmPasswordChange}
+        onCancel={onCancelEmailChange}
+        isLoading={updatePasswordResult.isLoading}
       />
     </View>
   );

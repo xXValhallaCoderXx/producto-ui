@@ -1,32 +1,49 @@
 import { Button } from "react-native-paper";
 
+const SIZE_MAP = {
+  sm: {
+    style: {
+      paddingHorizontal: 18,
+      paddingVertical: 8,
+    },
+    label: {
+      fontSize: 12,
+      fontWeight: "600",
+    },
+  },
+  md: {
+    style: {
+      paddingHorizontal: 0,
+      margin: 0,
+      paddingVertical: 3,
+    },
+    label: {
+      fontSize: 15,
+      fontWeight: "600",
+    },
+  },
+};
+
 const ProductoButton = ({
   onPress,
   title,
   style,
+  textColor,
   type = "outlined",
+  size = "md",
   disabled,
   loading,
 }) => {
   return (
     <Button
       mode={type}
-      size="sm"
       onPress={onPress}
-      style={{ borderRadius: 10, ...style }}
-      labelStyle={{ fontWeight: "700" }}
+      contentStyle={{ paddingHorizontal: 10 }}
+      style={{ borderRadius: 8, ...style, ...SIZE_MAP[size].style }}
+      labelStyle={{ ...SIZE_MAP[size].label }}
       loading={loading}
       disabled={disabled}
-      // buttonStyle={{
-      //   borderColor: "transparent",
-      //   borderWidth: 0,
-      //   borderRadius: 30,
-      // }}
-      // containerStyle={{
-      //   width: "70%",
-      //   marginHorizontal: 50,
-      //   marginVertical: 10,
-      // }}
+      textColor={textColor}
     >
       {title}
     </Button>
