@@ -113,9 +113,7 @@ const EditPassword = ({ navigation }) => {
   };
 
   return (
-    <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
-    >
+    <View style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
       <Text style={{ marginBottom: 15 }}>
         Enter your current password, and your new password you wish to change
         to.

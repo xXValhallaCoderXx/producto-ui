@@ -37,9 +37,7 @@ const UpdateTimezone = ({ route, navigation }) => {
   };
 
   return (
-    <View
-      style={{ backgroundColor: "white", flex: 1, padding: 30, paddingTop: 20 }}
-    >
+    <View style={{ backgroundColor: "white", flex: 1, padding: 20 }}>
       <Text style={{ marginBottom: 15 }}>
         Select which timezone, so we know when your day has ended
       </Text>

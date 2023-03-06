@@ -61,7 +61,7 @@ const TaskList = ({
   return (
     <View>
       {tasks.length === 0 && !focusMode ? (
-        <View style={{ paddingLeft: 25, marginTop: 15 }}>
+        <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
         </View>
       ) : (

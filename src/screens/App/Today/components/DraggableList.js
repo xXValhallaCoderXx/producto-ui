@@ -164,7 +164,11 @@ const DraggableListContainer = ({
               ...styles.editItem,
             }}
             left={() => (
-              <View style={{ flexDirection: "row" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                }}
+              >
                 <TouchableOpacity onLongPress={drag}>
                   <MaterialIcons
                     name="drag-indicator"
@@ -182,9 +186,11 @@ const DraggableListContainer = ({
                   underlineColorAndroid="transparent"
                   style={{
                     marginLeft: 10,
+
                     fontSize: 16,
                     backgroundColor: "white",
                     maxWidth: "80%",
+                    // height: 52,
                   }}
                 />
               </View>
@@ -193,6 +199,7 @@ const DraggableListContainer = ({
               <View
                 style={{
                   justifyContent: "flex-end",
+
                   ...styles.listRow,
 
                   height: 35,

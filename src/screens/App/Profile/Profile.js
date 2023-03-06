@@ -47,6 +47,18 @@ const ProfileScreen = ({ navigation }) => {
     }
   }, [!data?.prefs?.autoMove]);
 
+  useEffect(() => {
+    setisAutoTaskModalVisible(false);
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: "Autotasks updated!",
+    });
+  }, updatePrefsResult.isSuccess);
+
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
   };
@@ -71,15 +83,7 @@ const ProfileScreen = ({ navigation }) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
-    setisAutoTaskModalVisible(false);
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Autotasks updated!",
-    });
+    // await SecureStore.setItemAsync("AUTO_TASK_START", String(new Date));
   };
 
   const navigateToEditPassword = () => {
@@ -100,19 +104,15 @@ const ProfileScreen = ({ navigation }) => {
     });
   };
 
+  const listTitleStyle = {
+    color: colors.black,
+    fontWeight: "600",
+  };
+
   return (
     <View style={styles.screenContainer}>
-      <View style={{ flex: 5 }}>
-        <Text
-          style={{
-            color: "#6B7280",
-            letterSpacing: 0.5,
-            fontWeight: "500",
-            fontSize: 14,
-          }}
-        >
-          ACCOUNT INFORMATION
-        </Text>
+      <View>
+        <Text style={styles.titleStyle}>ACCOUNT INFORMATION</Text>
 
         {isLoading ? (
           <View style={{ marginBottom: 10, marginTop: 10 }}>
@@ -120,21 +120,13 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : (
           <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-              marginLeft: -15,
-            }}
-            style={{ paddingTop: 15, paddingBottom: 15 }}
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
             onPress={navigateToChangeEmail}
             title="Email"
             right={() => (
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{ marginBottom: 2, paddingRight: 5 }}
-                  type="h3"
-                  color="black"
-                >
+                <Text type="h3" color="black">
                   {data?.email}
                 </Text>
                 <MaterialIcons size={24} name="keyboard-arrow-right" />
@@ -148,12 +140,8 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : (
           <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-              marginLeft: -15,
-            }}
-            style={{ paddingTop: 15, paddingBottom: 15 }}
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
             onPress={navigateToEditPassword}
             title="Password"
             right={() => (
@@ -162,17 +150,8 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
       </View>
-      <View style={{ flex: 9 }}>
-        <Text
-          style={{
-            color: "#6B7280",
-            letterSpacing: 0.5,
-            fontWeight: "500",
-            fontSize: 14,
-          }}
-        >
-          APP SETTINGS
-        </Text>
+      <View style={{ marginTop: 15 }}>
+        <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
         {isLoading ? (
           <View style={{ marginBottom: 10, marginTop: 10 }}>
@@ -180,21 +159,13 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         ) : (
           <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-              marginLeft: -15,
-            }}
-            style={{ paddingTop: 15, paddingBottom: 15 }}
+            titleStyle={listTitleStyle}
+            style={styles.listItem}
             onPress={navigateToChangeTimezone}
             title="Timezone"
             right={() => (
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text
-                  style={{ marginBottom: 2, paddingRight: 5 }}
-                  type="h3"
-                  color="black"
-                >
+                <Text type="h3" color="black">
                   {Localization.timezone}
                 </Text>
                 <MaterialIcons size={24} name="keyboard-arrow-right" />
@@ -208,37 +179,45 @@ const ProfileScreen = ({ navigation }) => {
             <SkeletonBox height={70} width={"100%"} />
           </View>
         ) : (
-          <List.Item
-            titleStyle={{
-              color: colors.black,
-              fontWeight: "600",
-              marginLeft: -15,
-            }}
-            onPress={toggleAutoTaskModal}
-            title="Auto Move Tasks"
-            style={{ paddingTop: 15, paddingBottom: 15 }}
-            description="Automatically move all incompleted tasks to “today”."
-            descriptionStyle={{ maxWidth: 240, marginTop: 2, marginLeft: -15 }}
-            right={() => (
-              <View style={{ justifyContent: "center" }}>
-                <Switch
-                  onChange={toggleAutoTaskModal}
-                  value={data?.prefs?.autoMove}
-                />
-              </View>
-            )}
-          />
+          <View>
+            <List.Item
+              titleStyle={listTitleStyle}
+              onPress={toggleAutoTaskModal}
+              title="Auto Move Tasks"
+              style={styles.listItem}
+              description="Automatically move all incompleted tasks to “today”."
+              descriptionStyle={{ maxWidth: "80%", marginTop: 2 }}
+              right={() => (
+                <View style={{ justifyContent: "center" }}>
+                  <Switch
+                    onChange={toggleAutoTaskModal}
+                    value={data?.prefs?.autoMove}
+                  />
+                </View>
+              )}
+            />
+            <Text style={{ paddingLeft: 20, marginTop: -5 }}>
+              Active From:{" "}
+            </Text>
+          </View>
         )}
       </View>
 
-      <View style={{ flex: 5, alignItems: "flex-start" }}>
-        <View style={{ width: "100%" }}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <View style={{ flex: 0.5, justifyContent: "center" }}>
           <Button
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
             style={{ width: "100%" }}
             contentStyle={{
               justifyContent: "flex-start",
+              paddingLeft: 10,
             }}
             labelStyle={{
               color: colors.secondary,
@@ -257,11 +236,17 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </Button>
         </View>
-      </View>
-      <View style={{ flex: 2, alignItems: "center" }}>
-        <Text type="h4" color="secondary" customStyle={{ textAlign: "center" }}>
-          v0.5.0
-        </Text>
+        <View
+          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text
+            type="h4"
+            color="secondary"
+            customStyle={{ textAlign: "center" }}
+          >
+            v0.5.0
+          </Text>
+        </View>
       </View>
 
       <ConfirmationModal
@@ -288,9 +273,20 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: "white",
-    paddingTop: 55,
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingTop: 35,
+  },
+  titleStyle: {
+    color: "#6B7280",
+    letterSpacing: 0.5,
+    fontWeight: "500",
+    fontSize: 14,
+    marginLeft: 15,
+  },
+  listItem: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });
 
