@@ -60,14 +60,9 @@ const TaskList = ({
 
   return (
     <View>
-      {tasks.length === 0 ? (
+      {tasks.length === 0 && !focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 15 }}>
-          <Text>
-            Add a task to start your{" "}
-            <Text style={{ fontWeight: "700", color: theme.colors.primary }}>
-              productivity!
-            </Text>
-          </Text>
+          <Text>No task added to focus mode yet</Text>
         </View>
       ) : (
         <DraggbleList

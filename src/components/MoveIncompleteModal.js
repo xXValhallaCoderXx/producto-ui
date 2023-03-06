@@ -22,12 +22,13 @@ const MoveIncompleteModal = ({ isVisible, onPress, onCancel, currentDate }) => {
     if (data?.length > 0) {
       const dates = [];
       data?.forEach((item) => {
-        if (
-          format(new Date(item.deadline), "yyyy-MM-dd") ===
-          format(currentDate, "yyyy-MM-dd")
-        ) {
-          dates.push(item);
-        }
+        dates.push(item);
+        // if (
+        //   format(new Date(item.deadline), "yyyy-MM-dd") ===
+        //   format(currentDate, "yyyy-MM-dd")
+        // ) {
+        //   dates.push(item);
+        // }
       });
       setParsedDates(dates);
     }
@@ -74,14 +75,19 @@ const MoveIncompleteModal = ({ isVisible, onPress, onCancel, currentDate }) => {
           {parsedDates.length === 0 ? (
             <Text>No Overdue Tasks</Text>
           ) : (
-            <ScrollView style={{ maxHeight: 350 }}>
+            <ScrollView
+              style={{
+                maxHeight: 350,
+              }}
+            >
               {parsedDates.map((item) => {
                 return (
                   <List.Item
+                    style={{ paddingLeft: 0, marginLeft: -8 }}
                     key={item.id}
                     title={item.title}
                     onPress={onClickCheckbox(item)}
-                    right={() => (
+                    left={() => (
                       <Checkbox.Android
                         status={checkedDates[item.id] ? "checked" : "unchecked"}
                         onPress={onClickCheckbox(item)}
