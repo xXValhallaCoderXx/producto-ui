@@ -125,6 +125,7 @@ const ProfileScreen = ({ navigation }) => {
               fontWeight: "600",
               marginLeft: -15,
             }}
+            style={{ paddingTop: 15, paddingBottom: 15 }}
             onPress={navigateToChangeEmail}
             title="Email"
             right={() => (
@@ -152,6 +153,7 @@ const ProfileScreen = ({ navigation }) => {
               fontWeight: "600",
               marginLeft: -15,
             }}
+            style={{ paddingTop: 15, paddingBottom: 15 }}
             onPress={navigateToEditPassword}
             title="Password"
             right={() => (
@@ -183,6 +185,7 @@ const ProfileScreen = ({ navigation }) => {
               fontWeight: "600",
               marginLeft: -15,
             }}
+            style={{ paddingTop: 15, paddingBottom: 15 }}
             onPress={navigateToChangeTimezone}
             title="Timezone"
             right={() => (
@@ -213,6 +216,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
             onPress={toggleAutoTaskModal}
             title="Auto Move Tasks"
+            style={{ paddingTop: 15, paddingBottom: 15 }}
             description="Automatically move all incompleted tasks to “today”."
             descriptionStyle={{ maxWidth: 240, marginTop: 2, marginLeft: -15 }}
             right={() => (
