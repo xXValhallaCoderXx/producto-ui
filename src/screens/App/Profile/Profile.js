@@ -185,10 +185,10 @@ const ProfileScreen = ({ navigation }) => {
               description="Automatically move all incompleted tasks to “today”."
               descriptionStyle={{ maxWidth: "80%", marginTop: 2 }}
               right={() => (
-                <View style={{ justifyContent: "center" }}>
+                <View pointerEvents="none" style={{ justifyContent: "center" }}>
                   <Switch
-                    disabled
-                    onChange={toggleAutoTaskModal}
+                    // disabled
+                    // onChange={toggleAutoTaskModal}
                     value={data?.prefs?.autoMove}
                   />
                 </View>
