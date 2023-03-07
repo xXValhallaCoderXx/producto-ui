@@ -12,9 +12,9 @@ import { format } from "date-fns";
 import { View, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 
-const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
+const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
   const theme = useTheme();
-  const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
+  const { data, refetch } = useGetIncompleteDetailTasksQuery({});
   const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
   useEffect(() => {
@@ -142,6 +142,7 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel }) => {
             title="Confirm"
             textColor={theme.colors.primary}
             type="clear"
+            disabled={isLoading}
           />
         </Dialog.Actions>
       </Dialog>

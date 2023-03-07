@@ -47,18 +47,6 @@ const ProfileScreen = ({ navigation }) => {
     }
   }, [!data?.prefs?.autoMove]);
 
-  useEffect(() => {
-    setisAutoTaskModalVisible(false);
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Autotasks updated!",
-    });
-  }, updatePrefsResult.isSuccess);
-
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
   };
@@ -83,6 +71,15 @@ const ProfileScreen = ({ navigation }) => {
     const to = format(new Date(), "yyyy-MM-dd");
     await moveTasksApi({ tasks: Object.keys(dates), to });
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
+    setisAutoTaskModalVisible(false);
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: "Autotasks updated!",
+    });
     // await SecureStore.setItemAsync("AUTO_TASK_START", String(new Date));
   };
 
@@ -190,6 +187,7 @@ const ProfileScreen = ({ navigation }) => {
               right={() => (
                 <View style={{ justifyContent: "center" }}>
                   <Switch
+                    disabled
                     onChange={toggleAutoTaskModal}
                     value={data?.prefs?.autoMove}
                   />
@@ -262,8 +260,8 @@ const ProfileScreen = ({ navigation }) => {
         isVisible={isAutoTaskModalVisible}
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
-        isLoading={moveTasksApiResult.isLoading}
-        isSuccess={moveTasksApiResult.isSuccess}
+        isLoading={moveTasksApiResult.isLoading || updatePrefsResult.isLoading}
+        isSuccess={updatePrefsResult.isSuccess}
       />
     </View>
   );

@@ -58,9 +58,18 @@ const TaskList = ({
     setEditTask(null);
   };
 
+  const tasksToDisplay = () => {
+    return tasks.filter((task) => {
+      if (task.focus) {
+        return task;
+      }
+      return false;
+    });
+  };
+
   return (
     <View>
-      {tasks.length === 0 && !focusMode ? (
+      {tasksToDisplay().length === 0 && !focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
         </View>
