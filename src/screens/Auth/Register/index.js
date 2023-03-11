@@ -139,11 +139,10 @@ const RegisterScreen = ({ navigation }) => {
         >
           <View>
             <View style={{ alignItems: "center" }}>
-              <View style={{ width: "85%" }}>
+              <View style={{ width: "85%", maxWidth: 350 }}>
                 <Input
                   autoFocus
                   onChangeText={handleOnChangeText("email")}
-                  // onBlur={formik.handleBlur("email")}
                   value={formik.values.email}
                   label="E-mail"
                   keyboardType="email-address"
@@ -160,7 +159,6 @@ const RegisterScreen = ({ navigation }) => {
 
                 <Input
                   onChangeText={handleOnChangeText("password")}
-                  // onBlur={formik.handleBlur("password")}
                   value={formik.values.password}
                   label="Password"
                   placeholder="Enter Password"
@@ -218,7 +216,10 @@ const RegisterScreen = ({ navigation }) => {
             handleOnPressPrimary={formik.handleSubmit}
             handleOnPressSecondary={handleBackToLogin}
             disabledPrimary={registerApiResult.isLoading}
-            isLoading={registerApiResult.isLoading}
+            isLoading={
+              registerApiResult.isLoading ||
+              registerApiResult.status === "fulfilled"
+            }
           />
         </View>
       </KeyboardAvoidingView>

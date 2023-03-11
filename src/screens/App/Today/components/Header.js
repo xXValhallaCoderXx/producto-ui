@@ -124,17 +124,14 @@ const TodayHeader = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },
   row: {
-    display: "flex",
     flexDirection: "row",
   },
   dateContainer: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },

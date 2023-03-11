@@ -297,6 +297,7 @@ const ListScreen = () => {
           </View>
         </View>
         <MoveIncompleteModal
+          tasks={tasks}
           isVisible={isMoveIncompleteOpen}
           onPress={handleMoveIncompleteTasks}
           onCancel={handleCloseIncompleteModal}

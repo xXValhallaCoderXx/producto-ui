@@ -39,6 +39,7 @@ const LoginScreen = ({ navigation }) => {
   const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
+
   const emailInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
@@ -54,7 +55,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       email: "",
     },
-    validateOnChange: false,
+    // validateOnChange: false,
+    validateOnBlur: true,
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .required("Please enter an e-mail address")
@@ -69,6 +71,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       password: "",
     },
+    validateOnBlur: true,
+    validateOnChange: false,
     validationSchema: Yup.object().shape({
       password: Yup.string()
         .required("Password is required")
@@ -166,6 +170,7 @@ const LoginScreen = ({ navigation }) => {
       passwordForm.resetForm();
       navigation.navigate("Registration");
     } else {
+      passwordForm.setErrors({});
       emailInputRef.current.focus();
       setStep(nextStep);
     }
@@ -209,7 +214,6 @@ const LoginScreen = ({ navigation }) => {
               >
                 <View
                   style={{
-                    display: "flex",
                     alignItems: "center",
                     width: windowWidth,
                   }}
@@ -220,7 +224,7 @@ const LoginScreen = ({ navigation }) => {
                     value={emailForm.values.email}
                     style={{
                       width: windowWidth * 0.85,
-                      maxWidth: windowWidth * 0.9,
+                      maxWidth: 350,
                     }}
                     onChangeText={emailForm.handleChange("email")}
                     onBlur={emailForm.handleBlur("email")}
@@ -244,7 +248,6 @@ const LoginScreen = ({ navigation }) => {
                 </View>
                 <View
                   style={{
-                    display: "flex",
                     alignItems: "center",
                     width: windowWidth,
                   }}
@@ -255,7 +258,7 @@ const LoginScreen = ({ navigation }) => {
                     ref={passwordInputRef}
                     style={{
                       width: windowWidth * 0.85,
-                      maxWidth: windowWidth * 0.9,
+                      maxWidth: 350,
                     }}
                     onChangeText={passwordForm.handleChange("password")}
                     onBlur={passwordForm.handleBlur("password")}
@@ -265,7 +268,8 @@ const LoginScreen = ({ navigation }) => {
                   />
 
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {passwordForm.errors.password ? (
+                    {passwordForm.touched.password &&
+                    passwordForm.errors.password ? (
                       <Text
                         style={{
                           color: theme.colors.error,
@@ -286,7 +290,11 @@ const LoginScreen = ({ navigation }) => {
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleOnPressSecondary}
             step={step}
-            isLoading={verifyResult.isFetching || loginApiResult.isLoading}
+            isLoading={
+              verifyResult.isFetching ||
+              loginApiResult.isLoading ||
+              loginApiResult.status === "fulfilled"
+            }
           />
         </View>
       </KeyboardAvoidingView>
@@ -307,7 +315,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   inputWrapper: {
-    display: "flex",
     alignItems: "center",
     marginTop: 50,
   },

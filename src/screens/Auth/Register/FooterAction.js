@@ -1,8 +1,6 @@
 import ProductoButton from "../../../components/Button";
 import { View } from "react-native";
 
-const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
-
 const FooterActions = ({
   handleOnPressPrimary,
   handleOnPressSecondary,
@@ -18,7 +16,6 @@ const FooterActions = ({
     >
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
         }}
