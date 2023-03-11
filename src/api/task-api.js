@@ -7,29 +7,67 @@ const taskApi = api.injectEndpoints({
         return `/task?date=${date}`;
       },
       providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
-      // keepUnusedDataFor: 5,
+      keepUnusedDataFor: 0,
     }),
-    getIncompleteTasks: builder.query({
-      query: () => {
-        return `/task/incomplete`;
-      },
-      providesTags: ["IncompleteTasks"],
-    }),
-    moveSpecificTasks: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
-      query: ({ tasks, to }) => {
+
+    createTask: builder.mutation({
+      invalidatesTags: ["IncompleteTasks"],
+      query: ({ title, deadline, date }) => {
         return {
-          url: `/task/move-specific`,
+          url: `/task`,
           method: "POST",
-          body: { tasks, to },
+          body: { title, deadline },
         };
       },
-    }),
-    getIncompleteDetailTasks: builder.query({
-      query: () => {
-        return `/task/incomplete-detail`;
+      async onQueryStarted(
+        { title, deadline, date },
+        { dispatch, queryFulfilled }
+      ) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            console.log("DRAFT: ", draft);
+            console.log("WHAT IS DATE: ", date);
+            draft.push({
+              completed: false,
+              focus: false,
+              id: Math.floor(Math.random() * 100),
+              createdAt: deadline,
+              deadline,
+              title,
+            });
+            return draft;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
       },
-      providesTags: ["IncompleteTasks"],
+    }),
+
+    toggleTaskFocus: builder.mutation({
+      query: ({ id, focus, date }) => {
+        return {
+          url: `/task/${id}`,
+          method: "PATCH",
+          body: { focus },
+        };
+      },
+      async onQueryStarted({ id, focus, date }, { dispatch, queryFulfilled }) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            const optimisticTodo = draft.find((todo) => todo.id === id);
+            optimisticTodo.focus = focus;
+            return draft;
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
     }),
     toggleTask: builder.mutation({
       query: ({ id, completed, date }) => {
@@ -58,29 +96,32 @@ const taskApi = api.injectEndpoints({
       },
       invalidatesTags: ["IncompleteTasks"],
     }),
-    toggleTaskFocus: builder.mutation({
-      query: ({ id, focus, date }) => {
+    moveSpecificTasks: builder.mutation({
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      query: ({ tasks, to }) => {
         return {
-          url: `/task/${id}`,
-          method: "PATCH",
-          body: { focus },
+          url: `/task/move-specific`,
+          method: "POST",
+          body: { tasks, to },
         };
       },
-      async onQueryStarted({ id, focus, date }, { dispatch, queryFulfilled }) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            const optimisticTodo = draft.find((todo) => todo.id === id);
-            optimisticTodo.focus = focus;
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          optimisticUpdate.undo();
-        }
-      },
     }),
+
+    // WORKING ON CLEANUP
+    getIncompleteTasks: builder.query({
+      query: () => {
+        return `/task/incomplete`;
+      },
+      providesTags: ["IncompleteTasks"],
+    }),
+
+    getIncompleteDetailTasks: builder.query({
+      query: () => {
+        return `/task/incomplete-detail`;
+      },
+      providesTags: ["IncompleteTasks"],
+    }),
+
     updateTask: builder.mutation({
       query: ({ id, title, date }) => {
         return {
@@ -105,39 +146,7 @@ const taskApi = api.injectEndpoints({
         }
       },
     }),
-    createTask: builder.mutation({
-      invalidatesTags: ["IncompleteTasks"],
-      query: ({ title, deadline, date }) => {
-        return {
-          url: `/task`,
-          method: "POST",
-          body: { title, deadline },
-        };
-      },
-      async onQueryStarted(
-        { title, deadline, date },
-        { dispatch, queryFulfilled }
-      ) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            draft.push({
-              completed: false,
-              focus: false,
-              id: Math.floor(Math.random() * 100),
-              createdAt: deadline,
-              deadline,
-              title,
-            });
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          optimisticUpdate.undo();
-        }
-      },
-    }),
+
     // moveIncompleteTasks: builder.mutation({
     //   invalidatesTags: ["Tasks", "IncompleteTasks"],
     //   query: ({ from, to }) => ({

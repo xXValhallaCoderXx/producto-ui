@@ -25,8 +25,6 @@ const MoveIncompleteModal = ({
   const [checkedDates, setCheckedDates] = useState({});
 
   const todaysIncompleteTasks = useMemo(() => {
-    console.log("CURRENT DAE: ", currentDate);
-
     return tasks?.filter((task) => {
       console.log(isSameDay(currentDate, new Date(task?.deadline)));
       if (
@@ -38,12 +36,11 @@ const MoveIncompleteModal = ({
       return null;
     });
   }, [tasks]);
-  console.log("TODAYS: ", todaysIncompleteTasks);
 
   useEffect(() => {
     if (data?.length > 0) {
       const dates = [];
-      console.log("CURRENT DATE: ", currentDate);
+
       data?.forEach((item) => {
         if (currentDate) {
           if (

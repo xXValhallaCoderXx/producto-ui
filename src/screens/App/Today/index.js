@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { format, add, sub } from "date-fns";
+import { format, add, sub, parseISO } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { toggleEditMode } from "./today-slice";
@@ -52,11 +52,11 @@ const ListScreen = () => {
   const [utcDate, setUtcDate] = useState(new Date());
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
-  const hehe = useGetTodaysTasksQuery(
+  const todaysTasks = useGetTodaysTasksQuery(
     { date: format(utcDate, "yyyy-MM-dd") },
     { pollingInterval: 600000 }
   );
-  const { data: tasks, isLoading, isFetching, error } = hehe;
+  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
 
   const {
@@ -87,6 +87,7 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (createTaskResult.isError) {
+      // const { data } = createTaskResult;
       toast.show("", {
         type: "error",
         duration: 2500,
@@ -96,19 +97,29 @@ const ListScreen = () => {
         title: `Error creating task!`,
         description: "",
       });
+      // TODO - Test removing task from cache
+      // dispatch(
+      //   api.util.updateQueryData(
+      //     "getTodaysTasks",
+      //     { date: format(utcDate, "yyyy-MM-dd") },
+      //     (draft) => {
+      //       const tasks = draft.filter((todo) => todo.title !== data.title);
+      //       draft = tasks;
+      //       return draft;
+      //     }
+      //   )
+      // );
     }
   }, [createTaskResult.isError]);
 
   useEffect(() => {
     if (createTaskResult.isSuccess) {
       const { data } = createTaskResult;
-
       toast.show("", {
         type: "success",
         placement: "top",
         title: `Task created!`,
       });
-
       dispatch(
         api.util.updateQueryData(
           "getTodaysTasks",
@@ -138,14 +149,6 @@ const ListScreen = () => {
     }
   }, [tasks]);
 
-  const handleToggleTaskComplete = async (_task) => {
-    await toggleTask({
-      id: _task.id,
-      completed: !_task.completed,
-      date: format(utcDate, "yyyy-MM-dd"),
-    });
-  };
-
   const handleToggleCalendar = () => {
     dispatch(toggleCalendar());
   };
@@ -169,16 +172,9 @@ const ListScreen = () => {
     });
   };
 
-  const handleCreateNewTask = async (_title) => {
-    createTask({
-      title: _title,
-      deadline: format(utcDate, "yyyy-MM-dd"),
-      date: format(utcDate, "yyyy-MM-dd"),
-    });
-  };
-
   const handleMoveIncompleteTasks = async (items) => {
     const to = format(new Date(), "yyyy-MM-dd");
+    console.log("TO : ", to);
     await moveTasksApi({ tasks: Object.keys(items), to });
     setIsMoveIncompleteOpen(false);
     toast.show("", {
@@ -215,6 +211,23 @@ const ListScreen = () => {
   const handleKeyboardDismiss = (e) => {
     // e.stopPropagation();
     Keyboard.dismiss();
+  };
+
+  // NEW
+  const handleCreateNewTask = async (_title) => {
+    createTask({
+      title: _title,
+      deadline: format(utcDate, "yyyy-MM-dd"),
+      date: format(utcDate, "yyyy-MM-dd"),
+    });
+  };
+
+  const handleToggleTaskComplete = async (_task) => {
+    await toggleTask({
+      id: _task.id,
+      completed: !_task.completed,
+      date: format(utcDate, "yyyy-MM-dd"),
+    });
   };
 
   return (
