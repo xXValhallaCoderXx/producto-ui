@@ -1,9 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { format, add, sub, parseISO } from "date-fns";
+import { format, add, sub } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { toggleEditMode } from "./today-slice";
 import {
   StyleSheet,
@@ -25,10 +24,8 @@ import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 
 import {
   useGetTodaysTasksQuery,
-  useToggleTaskMutation,
   useCreateTaskMutation,
-  useToggleTaskFocusMutation,
-  useMoveIncompleteTasksMutation,
+  useUpdateTask2Mutation,
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
@@ -43,21 +40,19 @@ const ListScreen = () => {
   const toast = useToast();
   const [progress, setProgress] = useState(0);
   const [isLoadingToggle, setIsLoadingToggle] = useState(false);
-  const isToday = useSelector((state) => state.today.isToday);
   const [currentTask, setCurrentTask] = useState(false);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const editMode = useSelector((state) => state.today.editMode);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
-  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
 
-  const todaysTasks = useGetTodaysTasksQuery(
-    { date: format(utcDate, "yyyy-MM-dd") },
-    { pollingInterval: 600000 }
-  );
-  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
-  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+  const [updateTask] = useUpdateTask2Mutation();
+  const [createTask, createTaskResult] = useCreateTaskMutation();
+  const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
+  const todaysTasks = useGetTodaysTasksQuery({
+    date: format(utcDate, "yyyy-MM-dd"),
+  });
 
   const {
     data: incompleteTasks,
@@ -65,13 +60,12 @@ const ListScreen = () => {
     error: incError,
   } = useGetIncompleteTasksQuery({});
 
+  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
+
+  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
-  const [toggleTask] = useToggleTaskMutation();
-  const [createTask, createTaskResult] = useCreateTaskMutation();
-  const [toggleTaskFocus] = useToggleTaskFocusMutation();
-  // const [moveIncompleteTasks, moveIncompleteTasksResult] =
-  //   useMoveIncompleteTasksMutation();
 
   useEffect(() => {
     setTheme();
@@ -87,7 +81,6 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (createTaskResult.isError) {
-      // const { data } = createTaskResult;
       toast.show("", {
         type: "error",
         duration: 2500,
@@ -98,17 +91,6 @@ const ListScreen = () => {
         description: "",
       });
       // TODO - Test removing task from cache
-      // dispatch(
-      //   api.util.updateQueryData(
-      //     "getTodaysTasks",
-      //     { date: format(utcDate, "yyyy-MM-dd") },
-      //     (draft) => {
-      //       const tasks = draft.filter((todo) => todo.title !== data.title);
-      //       draft = tasks;
-      //       return draft;
-      //     }
-      //   )
-      // );
     }
   }, [createTaskResult.isError]);
 
@@ -164,29 +146,6 @@ const ListScreen = () => {
     }
   };
 
-  const handleToggleTaskFocus = async (_task) => {
-    await toggleTaskFocus({
-      id: _task.id,
-      focus: !_task.focus,
-      date: format(utcDate, "yyyy-MM-dd"),
-    });
-  };
-
-  const handleMoveIncompleteTasks = async (items) => {
-    const to = format(new Date(), "yyyy-MM-dd");
-    console.log("TO : ", to);
-    await moveTasksApi({ tasks: Object.keys(items), to });
-    setIsMoveIncompleteOpen(false);
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Selected tasks have been moved!",
-    });
-  };
-
   const handleOpenIncompleteModal = () => {
     setIsMoveIncompleteOpen(true);
   };
@@ -223,10 +182,36 @@ const ListScreen = () => {
   };
 
   const handleToggleTaskComplete = async (_task) => {
-    await toggleTask({
+    await updateTask({
       id: _task.id,
-      completed: !_task.completed,
+      data: {
+        completed: !_task.completed,
+      },
       date: format(utcDate, "yyyy-MM-dd"),
+    });
+  };
+
+  const handleToggleTaskFocus = async (_task) => {
+    await updateTask({
+      id: _task.id,
+      data: {
+        focus: !_task.focus,
+      },
+      date: format(utcDate, "yyyy-MM-dd"),
+    });
+  };
+
+  const handleMoveIncompleteTasks = async (items) => {
+    const to = format(new Date(), "yyyy-MM-dd");
+    await moveTasksApi({ tasks: Object.keys(items), to });
+    setIsMoveIncompleteOpen(false);
+    toast.show("", {
+      type: "success",
+      duration: 2500,
+      offset: 100,
+      animationType: "zoom-in",
+      placement: "top",
+      title: "Selected tasks have been moved!",
     });
   };
 
@@ -331,7 +316,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   moveIncomlpleteContainer: {
-    // flex: 0.15,
     backgroundColor: "white",
     paddingHorizontal: 20,
     justifyContent: "flex-end",
