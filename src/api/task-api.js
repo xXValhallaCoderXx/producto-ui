@@ -46,7 +46,7 @@ const taskApi = api.injectEndpoints({
       },
     }),
 
-    updateTask2: builder.mutation({
+    updateTask: builder.mutation({
       query: ({ id, data, date }) => {
         return {
           url: `/task/${id}`,
@@ -63,6 +63,9 @@ const taskApi = api.injectEndpoints({
             }
             if ("focus" in data) {
               optimisticTodo.focus = data.focus;
+            }
+            if ("title" in data) {
+              optimisticTodo.title = data.title;
             }
             return draft;
           })
@@ -101,30 +104,6 @@ const taskApi = api.injectEndpoints({
       providesTags: ["IncompleteTasks"],
     }),
 
-    updateTask: builder.mutation({
-      query: ({ id, title, date }) => {
-        return {
-          url: `/task/${id}`,
-          method: "PATCH",
-          body: { title },
-        };
-      },
-      async onQueryStarted({ id, title, date }, { dispatch, queryFulfilled }) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            const task = draft.find((todo) => todo.id === id);
-            task.title = title;
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          // optimisticUpdate.undo();
-          dispatch(api.util.invalidateTags(["Tasks"]));
-        }
-      },
-    }),
     deleteTask: builder.mutation({
       invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ id }) => {
@@ -145,5 +124,4 @@ export const {
   useGetIncompleteDetailTasksQuery,
   useMoveSpecificTasksMutation,
   useDeleteTaskMutation,
-  useUpdateTask2Mutation,
 } = taskApi;

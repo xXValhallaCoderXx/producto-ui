@@ -2,13 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Haptics from "expo-haptics";
 import { useTheme, Checkbox, List } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
@@ -133,7 +127,9 @@ const DraggableListContainer = ({
       dispatch(toggleEditMode({ editMode: false }));
       await updateTaskApi({
         id: editTask,
-        title: value,
+        data: {
+          title: value,
+        },
         date: format(utcDate, "yyyy-MM-dd"),
       });
     }

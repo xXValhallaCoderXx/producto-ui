@@ -25,7 +25,7 @@ import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 import {
   useGetTodaysTasksQuery,
   useCreateTaskMutation,
-  useUpdateTask2Mutation,
+  useUpdateTaskMutation,
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
@@ -47,18 +47,13 @@ const ListScreen = () => {
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
 
-  const [updateTask] = useUpdateTask2Mutation();
+  const [updateTask] = useUpdateTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
+  const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const todaysTasks = useGetTodaysTasksQuery({
     date: format(utcDate, "yyyy-MM-dd"),
   });
-
-  const {
-    data: incompleteTasks,
-    isLoading: incompleteIsLoading,
-    error: incError,
-  } = useGetIncompleteTasksQuery({});
 
   const { data: tasks, isLoading, isFetching, error } = todaysTasks;
 
