@@ -272,6 +272,7 @@ const ProfileScreen = ({ navigation }) => {
 
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
+        isAutotaskActive={data?.prefs?.autoMove}
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading || updatePrefsResult.isLoading}
