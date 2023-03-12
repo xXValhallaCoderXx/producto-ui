@@ -50,7 +50,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
         <View
           style={{
             flexDirection: "row",
-            paddingLeft: 25,
+            paddingLeft: 20,
             marginTop: Platform.OS === "ios" ? 5 : 0,
           }}
         >

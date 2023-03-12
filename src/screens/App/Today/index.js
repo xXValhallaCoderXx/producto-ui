@@ -46,7 +46,7 @@ const ListScreen = () => {
   const editMode = useSelector((state) => state.today.editMode);
   const posXanim = useRef(new Animated.Value(0)).current;
   const [utcDate, setUtcDate] = useState(new Date());
-
+  const isToday = useSelector((state) => state.today.isToday);
   const [updateTask] = useUpdateTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
@@ -217,7 +217,7 @@ const ListScreen = () => {
     >
       <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
         <KeyboardAvoidingView
-          keyboardVerticalOffset={Platform.OS === "ios" ? 110 : -110}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 155 : -110}
           behavior={Platform.OS === "ios" ? "padding" : "padding"}
           style={{
             flex: 1,
@@ -237,14 +237,14 @@ const ListScreen = () => {
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
 
-          {isLoading ? (
+          {isLoading || isFetching ? (
             <View style={{ marginTop: 15, paddingLeft: 20, paddingRight: 10 }}>
               <SkeletonList />
             </View>
           ) : (
             <View style={styles.container}>
-              <View style={{ flex: 0.9 }}>
-                <View style={{ flex: 0.9, paddingTop: 10 }}>
+              <View style={{ flex: isToday ? 0.96 : 0.94 }}>
+                <View style={{ flex: isToday ? 0.94 : 0.94, paddingTop: 10 }}>
                   <TaskList
                     tasks={tasks || []}
                     handleToggleTaskFocus={handleToggleTaskFocus}

@@ -181,7 +181,7 @@ const DraggableListContainer = ({
                   multiline
                   underlineColorAndroid="transparent"
                   style={{
-                    marginLeft: 10,
+                    marginLeft: 22,
                     marginTop: 3,
                     fontSize: 16,
                     backgroundColor: "white",

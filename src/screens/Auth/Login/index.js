@@ -5,10 +5,15 @@ import { useTheme } from "react-native-paper";
 import * as SecureStore from "expo-secure-store";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
-import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
+import {
+  KeyboardAvoidingView,
+  useWindowDimensions,
+  Button,
+} from "react-native";
 import {
   toggleIsAuthenticated,
   toggleFirstLoad,
+  setEmail,
 } from "../../../shared/slice/global-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -33,6 +38,7 @@ import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -112,6 +118,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isSuccess) {
+      dispatch(setEmail(emailForm.values.email));
       setStep(2);
     }
   }, [verifyResult.isSuccess, verifyResult.isFetching]);
@@ -174,6 +181,11 @@ const LoginScreen = ({ navigation }) => {
       emailInputRef.current.focus();
       setStep(nextStep);
     }
+  };
+
+  const handleForgotPassword = () => {
+    console.log("CLICK");
+    navigation.navigate("ForgotPassword");
   };
 
   return (
@@ -291,10 +303,32 @@ const LoginScreen = ({ navigation }) => {
                       </Text>
                     ) : null}
                   </View>
+                  <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "flex-start",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleForgotPassword}
+                      style={{ padding: 15 }}
+                    >
+                      <Text
+                        style={{
+                          color: theme.colors.primary,
+                          fontWeight: "600",
+                        }}
+                      >
+                        Forgot your password?
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </Animated.View>
           </View>
+
           <FooterActions
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleOnPressSecondary}
