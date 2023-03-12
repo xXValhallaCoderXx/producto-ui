@@ -26,7 +26,6 @@ const MoveIncompleteModal = ({
 
   const todaysIncompleteTasks = useMemo(() => {
     return tasks?.filter((task) => {
-      console.log(isSameDay(currentDate, new Date(task?.deadline)));
       if (
         format(new Date(task.deadline), "yyyy-MM-dd") ===
         format(currentDate, "yyyy-MM-dd")
