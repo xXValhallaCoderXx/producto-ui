@@ -74,18 +74,34 @@ const AutoTaskModal = ({ isVisible, onPress, onCancel, isLoading }) => {
           Move Tasks
         </Dialog.Title>
         <Dialog.Content>
-          <Text
-            style={{
-              marginBottom: 20,
-              color: "#6B7280",
-              fontSize: 16,
-              fontWeight: "400",
-            }}
-          >
-            Select incomplete tasks that you want to move to Today.
-          </Text>
-          {Object.keys(parsedDates).length === 0 && (
-            <Text>No Overdue Tasks</Text>
+          {Object.keys(parsedDates).length === 0 ? (
+            <View>
+              <Text
+                style={{
+                  marginBottom: 20,
+                  color: "#6B7280",
+                  fontSize: 16,
+                  fontWeight: "400",
+                }}
+              >
+                No Overdue Tasks
+              </Text>
+              <Text>
+                Newly created tasks will be automatically moved if not completed
+                on the day set
+              </Text>
+            </View>
+          ) : (
+            <Text
+              style={{
+                marginBottom: 20,
+                color: "#6B7280",
+                fontSize: 16,
+                fontWeight: "400",
+              }}
+            >
+              Select incomplete tasks that you want to move to Today.
+            </Text>
           )}
           <ScrollView style={{ maxHeight: 350 }}>
             {Object.keys(parsedDates).map((k) => {

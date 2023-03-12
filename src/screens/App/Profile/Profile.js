@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { useDispatch } from "react-redux";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
 import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
@@ -200,11 +200,7 @@ const ProfileScreen = ({ navigation }) => {
                   pointerEvents="none"
                   style={{ justifyContent: "center", paddingRight: 5 }}
                 >
-                  <Switch
-                    // disabled
-                    // onChange={toggleAutoTaskModal}
-                    value={data?.prefs?.autoMove}
-                  />
+                  <Switch value={data?.prefs?.autoMove} />
                 </View>
               )}
             />
@@ -260,7 +256,7 @@ const ProfileScreen = ({ navigation }) => {
             color="secondary"
             customStyle={{ textAlign: "center" }}
           >
-            v0.5.1
+            v0.5.5
           </Text>
         </View>
       </View>
@@ -268,7 +264,7 @@ const ProfileScreen = ({ navigation }) => {
       <ConfirmationModal
         isVisible={isLogoutModalVisible}
         title="Log out"
-        description="  Are you sure you want to logout?"
+        description="Are you sure you want to logout?"
         onConfirm={handleLogout}
         onCancel={toggleLogoutModal}
         confirmLabel="Log out"
