@@ -13,14 +13,17 @@ const FooterActions = ({
         onPress={handleOnPressSecondary}
         title={step === 1 ? "Create account" : "Change Email"}
         type="text"
+        contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
         disabled={isLoading}
         size="md"
       />
+
       <ProductoButton
         onPress={handleOnPressPrimary}
         type="contained"
         size="md"
-        loading={isLoading}
+        style={{ minWidth: 110 }}
+        // loading={isLoading}
         title={step === 1 ? "Next" : "Log in"}
         disabled={isLoading}
       />
@@ -32,6 +35,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 25,
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
   },
 });

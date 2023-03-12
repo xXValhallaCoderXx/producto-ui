@@ -17,6 +17,7 @@ const FooterActions = ({
       <View
         style={{
           flexDirection: "row",
+          alignItems: "center",
           justifyContent: "space-between",
         }}
       >
@@ -24,6 +25,7 @@ const FooterActions = ({
           onPress={handleOnPressSecondary}
           title={"Sign in instead"}
           type="text"
+          contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
           disabled={isLoading}
         />
         <ProductoButton

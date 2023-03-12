@@ -33,12 +33,13 @@ const ProductoButton = ({
   size = "md",
   disabled,
   loading,
+  contentStyle,
 }) => {
   return (
     <Button
       mode={type}
       onPress={onPress}
-      contentStyle={{ paddingHorizontal: 10 }}
+      contentStyle={{ paddingHorizontal: 10, ...contentStyle }}
       style={{ borderRadius: 8, ...style, ...SIZE_MAP[size].style }}
       labelStyle={{ ...SIZE_MAP[size].label }}
       loading={loading}
