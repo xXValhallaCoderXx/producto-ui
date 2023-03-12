@@ -75,7 +75,10 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           contentStyle={{
             justifyContent: "flex-start",
             paddingLeft: 8,
+            paddingTop: 5,
+            paddingBottom: 5,
           }}
+          style={{ borderRadius: 1 }}
           labelStyle={{
             fontWeight: "600",
           }}

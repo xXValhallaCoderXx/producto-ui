@@ -182,11 +182,10 @@ const DraggableListContainer = ({
                   underlineColorAndroid="transparent"
                   style={{
                     marginLeft: 10,
-
+                    marginTop: 3,
                     fontSize: 16,
                     backgroundColor: "white",
                     maxWidth: "80%",
-                    // height: 52,
                   }}
                 />
               </View>
