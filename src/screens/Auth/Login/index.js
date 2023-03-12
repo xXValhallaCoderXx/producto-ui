@@ -183,7 +183,12 @@ const LoginScreen = ({ navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "space-between",
+          }}
+        >
           <View>
             <View style={styles.titleContainer}>
               <Image
@@ -193,17 +198,15 @@ const LoginScreen = ({ navigation }) => {
                   width: 231,
                   height: 42,
                 }}
-              ></Image>
-              <View style={{ marginTop: 19 }}>
-                <Text style={styles.secondaryTitle}>
-                  Sign in, to unlock your productivity
-                </Text>
-              </View>
+              />
+              <Text style={{ ...styles.secondaryTitle, marginTop: 19 }}>
+                Sign in, to unlock your productivity
+              </Text>
             </View>
             <Animated.View
               style={{
                 ...styles.inputWrapper,
-                marginBottom: 30,
+
                 transform: [{ translateX: passwordInputPos }],
               }}
             >
@@ -218,48 +221,54 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth,
                   }}
                 >
-                  <Input
-                    label="Email"
-                    ref={emailInputRef}
-                    value={emailForm.values.email}
+                  <View
                     style={{
-                      width: windowWidth * 0.85,
-                      maxWidth: 350,
+                      paddingLeft: 25,
+                      paddingRight: 25,
+                      width: "100%",
+                      maxWidth: 450,
                     }}
-                    onChangeText={emailForm.handleChange("email")}
-                    onBlur={emailForm.handleBlur("email")}
-                    keyboardType="email-address"
-                  />
+                  >
+                    <Input
+                      label="Email"
+                      ref={emailInputRef}
+                      value={emailForm.values.email}
+                      style={{ width: "100%" }}
+                      onChangeText={emailForm.handleChange("email")}
+                      onBlur={emailForm.handleBlur("email")}
+                      keyboardType="email-address"
+                    />
 
-                  <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {emailForm.touched.email && emailForm.errors.email ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: windowWidth - windowWidth * 0.9,
-                        }}
-                      >
-                        {emailForm.errors.email}
-                      </Text>
-                    ) : null}
+                    <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                      {emailForm.touched.email && emailForm.errors.email ? (
+                        <Text
+                          style={{
+                            color: theme.colors.error,
+                            fontSize: 12,
+                            fontWeight: "400",
+                            paddingLeft: 15,
+                          }}
+                        >
+                          {emailForm.errors.email}
+                        </Text>
+                      ) : null}
+                    </View>
                   </View>
                 </View>
                 <View
                   style={{
                     alignItems: "center",
-                    width: windowWidth,
+                    width: "100%",
+                    paddingLeft: 25,
+                    paddingRight: 25,
+                    maxWidth: 450,
                   }}
                 >
                   <Input
                     label="Password"
                     value={passwordForm.values.password}
                     ref={passwordInputRef}
-                    style={{
-                      width: windowWidth * 0.85,
-                      maxWidth: 350,
-                    }}
+                    style={{ width: "100%" }}
                     onChangeText={passwordForm.handleChange("password")}
                     onBlur={passwordForm.handleBlur("password")}
                     secureTextEntry={secretMap["password"]}
@@ -275,7 +284,7 @@ const LoginScreen = ({ navigation }) => {
                           color: theme.colors.error,
                           fontSize: 12,
                           fontWeight: "400",
-                          paddingLeft: windowWidth - windowWidth * 0.9,
+                          paddingLeft: 15,
                         }}
                       >
                         {passwordForm.errors.password}

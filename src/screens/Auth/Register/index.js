@@ -139,7 +139,14 @@ const RegisterScreen = ({ navigation }) => {
         >
           <View>
             <View style={{ alignItems: "center" }}>
-              <View style={{ width: "85%", maxWidth: 350 }}>
+              <View
+                style={{
+                  width: "100%",
+                  maxWidth: 450,
+                  paddingLeft: 25,
+                  paddingRight: 25,
+                }}
+              >
                 <Input
                   autoFocus
                   onChangeText={handleOnChangeText("email")}
@@ -245,7 +252,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginTop: 5,
-    marginLeft: 10,
+    marginLeft: 15,
     fontWeight: "400",
   },
   secondaryTitle: {
