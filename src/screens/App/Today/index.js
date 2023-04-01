@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { format, add, sub } from "date-fns";
+import { format, add, sub, startOfDay, endOfDay, toISOString } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import { toggleEditMode } from "./today-slice";
 import {
@@ -57,13 +57,16 @@ const ListScreen = () => {
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
+
   const todaysTasks = useGetTodaysTasksQuery({
-    date: format(currentDate, "yyyy-MM-dd"),
+    start: startOfDay(currentDate).toISOString(),
+    end: endOfDay(currentDate).toISOString(),
   });
 
   const posXanim = useRef(new Animated.Value(0)).current;
 
   const { data: tasks, isLoading, isFetching, error } = todaysTasks;
+  console.log("DATA: ", tasks);
 
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
@@ -139,7 +142,7 @@ const ListScreen = () => {
   const handleOnChangeDate = (direction) => () => {
     dispatch(toggleEditMode({ editMode: false }));
     if (direction === "back") {
-      const subUtcDate = sub(new Date(currentDate), { days: 1 });
+      const subUtcDate = sub(currentDate, { days: 1 });
       dispatch(setCurrentDate(subUtcDate));
     } else {
       const addUtcDate = add(new Date(currentDate), { days: 1 });
@@ -177,8 +180,7 @@ const ListScreen = () => {
   const handleCreateNewTask = async (_title) => {
     createTask({
       title: _title,
-      deadline: format(currentDate, "yyyy-MM-dd"),
-      date: format(currentDate, "yyyy-MM-dd"),
+      deadline: currentDate.toISOString(),
     });
   };
 

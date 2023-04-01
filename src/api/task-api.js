@@ -3,16 +3,17 @@ import { api } from "./index";
 const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
-      query: ({ date }) => {
-        return `/task?date=${date}`;
-      },
+      query: (params) => ({
+        url: `/task`,
+        params,
+      }),
       providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
       keepUnusedDataFor: 0,
     }),
 
     createTask: builder.mutation({
-      invalidatesTags: ["IncompleteTasks"],
-      query: ({ title, deadline, date }) => {
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      query: ({ title, deadline }) => {
         return {
           url: `/task`,
           method: "POST",
