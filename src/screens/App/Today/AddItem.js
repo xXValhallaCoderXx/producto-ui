@@ -48,7 +48,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
         <View
           style={{
             paddingLeft: 25,
-            marginTop: 10,
+            marginTop: Platform.OS === "ios" ? 10 : 5,
           }}
         >
           <TextInput
