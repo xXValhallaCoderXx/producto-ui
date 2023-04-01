@@ -122,10 +122,6 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
-      toast.show("Login Success!", {
-        type: "success",
-        title: "Login Success!",
-      });
       setTokenAndRedirect(loginApiResult.data);
     }
   }, [loginApiResult.isSuccess]);
