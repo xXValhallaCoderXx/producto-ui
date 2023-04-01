@@ -34,7 +34,6 @@ import {
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
-import { api } from "../../../api";
 import { toggleCalendar } from "./today-slice";
 import { useGetProfileQuery } from "../../../api/user-api";
 import CalendarWidget from "./Calendar";
@@ -88,6 +87,19 @@ const ListScreen = () => {
       useNativeDriver: true,
     }).start();
   }, [focusMode]);
+
+  useEffect(() => {
+    if (moveTasksApiResult.isSuccess) {
+      toast.show("", {
+        type: "success",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: "Selected tasks have been moved!",
+      });
+    }
+  }, [moveTasksApiResult.isSuccess]);
 
   useEffect(() => {
     if (createTaskResult.isError) {
@@ -196,17 +208,9 @@ const ListScreen = () => {
   };
 
   const handleMoveIncompleteTasks = async (items) => {
-    const to = format(new Date(), "yyyy-MM-dd");
-    await moveTasksApi({ tasks: Object.keys(items), to });
+    const to = new Date().toISOString();
+    moveTasksApi({ tasks: Object.keys(items), to });
     setIsMoveIncompleteOpen(false);
-    toast.show("", {
-      type: "success",
-      duration: 2500,
-      offset: 100,
-      animationType: "zoom-in",
-      placement: "top",
-      title: "Selected tasks have been moved!",
-    });
   };
 
   return (
@@ -231,7 +235,7 @@ const ListScreen = () => {
             <ProgressBar focusMode={focusMode} progress={progress} />
           </View>
 
-          {isLoading || isFetching ? (
+          {isLoading ? (
             <View style={styles.skeletonContainer}>
               <SkeletonList />
             </View>

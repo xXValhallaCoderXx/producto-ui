@@ -7,7 +7,7 @@ import {
   TextInput,
   Platform,
 } from "react-native";
-import { toggleAddTaskMode } from "./today-slice";
+import { toggleAddTaskMode, selectIsToday } from "./today-slice";
 
 const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const theme = useTheme();
@@ -15,6 +15,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
+  const isToday = useSelector(selectIsToday);
   const [error, setError] = useState("");
 
   const handleOnChange = (value) => {
@@ -28,7 +29,6 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
       dispatch(toggleAddTaskMode(true));
       addTaskInputRef.current && addTaskInputRef.current.focus();
     }
-    // setError("");
   };
 
   const handleOnBlur = async () => {
@@ -40,7 +40,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
     }
   };
 
-  if (focusMode) {
+  if (focusMode || !isToday) {
     return null;
   }
 

@@ -103,7 +103,7 @@ const taskApi = api.injectEndpoints({
     }),
 
     deleteTask: builder.mutation({
-      // invalidatesTags: ["Tasks", "IncompleteTasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ id }) => {
         return {
           url: `/task/${id}`,

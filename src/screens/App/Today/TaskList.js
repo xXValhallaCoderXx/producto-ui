@@ -82,9 +82,6 @@ const TaskList = ({
       ) : (
         <DraggbleList
           tasks={tasks.filter((task) => {
-            // if (!focusMode && !task.focus && !task.completed) {
-            //   return false;
-            // }
             if (focusMode && task.focus) {
               return task;
             } else if (!focusMode) {
