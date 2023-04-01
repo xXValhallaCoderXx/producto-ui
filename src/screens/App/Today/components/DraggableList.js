@@ -147,7 +147,7 @@ const DraggableListContainer = ({
     handleOnPressDelete(_task.id);
   };
 
-  const renderItem = ({ item, drag, isActive }) => {
+  const renderItem = ({ item, drag, isActive, index }) => {
     if (item && item?.id === editTask) {
       return (
         <OpacityDecorator>
@@ -155,16 +155,10 @@ const DraggableListContainer = ({
             key={item?.id}
             style={{
               paddingLeft: focusMode && currentDate === todayDate ? 20 : 20,
-              paddingLeft: 15,
-              paddingRight: 25,
               ...styles.editItem,
             }}
             left={() => (
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
+              <View style={styles.leftContainer}>
                 <TouchableOpacity onLongPress={drag}>
                   <MaterialIcons
                     name="drag-indicator"
@@ -180,34 +174,18 @@ const DraggableListContainer = ({
                   onBlur={handleOnBlur}
                   multiline
                   underlineColorAndroid="transparent"
-                  style={{
-                    marginLeft: 22,
-                    marginTop: 3,
-                    fontSize: 16,
-                    backgroundColor: "white",
-                    maxWidth: "80%",
-                  }}
+                  style={styles.editTaskInput}
                 />
               </View>
             )}
             right={() => (
-              <View
-                style={{
-                  justifyContent: "flex-end",
-
-                  ...styles.listRow,
-
-                  height: 35,
-                }}
-              >
-                <TouchableOpacity onPress={onPressDelete(item)}>
-                  <FontAwesome
-                    name="trash-o"
-                    color={"#6B7280"}
-                    style={{ fontSize: 25 }}
-                  />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity onPress={onPressDelete(item)}>
+                <FontAwesome
+                  name="trash-o"
+                  color={"#6B7280"}
+                  style={{ fontSize: 25 }}
+                />
+              </TouchableOpacity>
             )}
           ></List.Item>
         </OpacityDecorator>
@@ -232,10 +210,7 @@ const DraggableListContainer = ({
         }}
         onPress={() => onCheckTask(item)}
         style={{
-          borderBottomColor: "white",
-          // paddingLeft: !focusMode ? 15 : 15,
           paddingRight: 15,
-          // borderBottomWidth: 1,
         }}
         right={() => (
           <Checkbox.Android
@@ -245,23 +220,12 @@ const DraggableListContainer = ({
         )}
         left={() =>
           focusMode && currentDate === todayDate ? (
-            <View
-              style={{
-                justifyContent: "center",
-              }}
-            >
-              <IoniIcons
-                onPress={onToggleFocus(item)}
-                style={{
-                  fontSize: 22,
-                  marginRight: 10,
-                  marginLeft: 17,
-                  transform: [{ rotate: "45deg" }],
-                }}
-                color={item?.focus ? theme.colors.primary : "black"}
-                name={"key-outline"}
-              />
-            </View>
+            <IoniIcons
+              onPress={onToggleFocus(item)}
+              style={styles.keyIcon}
+              color={item?.focus ? theme.colors.primary : "black"}
+              name={"key-outline"}
+            />
           ) : null
         }
       />
@@ -303,15 +267,32 @@ const styles = StyleSheet.create({
     height: 52,
   },
   editItem: {
-    // flexDirection: "row",
-    // justifyContent: "space-between",
-    // alignItems: "center",
-    // paddingLeft: 15,
+    paddingLeft: 15,
+    paddingRight: 25,
     height: 52,
   },
   listRow: {
     alignItems: "center",
     flexDirection: "row",
+    justifyContent: "flex-end",
+    height: 35,
+  },
+  editTaskInput: {
+    marginLeft: 22,
+    marginTop: 3,
+    fontSize: 16,
+    backgroundColor: "white",
+    maxWidth: "80%",
+  },
+  leftContainer: {
+    flexDirection: "row",
+  },
+  keyIcon: {
+    fontSize: 22,
+    marginRight: 10,
+    marginLeft: 17,
+    transform: [{ rotate: "45deg" }],
+    alignSelf: "center",
   },
 });
 
