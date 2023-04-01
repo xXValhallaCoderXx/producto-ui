@@ -3,7 +3,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
 import { add, sub, startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-import { toggleEditMode } from "./today-slice";
+
 import {
   StyleSheet,
   View,
@@ -24,6 +24,7 @@ import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 import {
   selectIsToday,
   setCurrentDate,
+  setEditingTask,
   selectCurrentDate,
 } from "./today-slice";
 
@@ -139,7 +140,7 @@ const ListScreen = () => {
   };
 
   const handleOnChangeDate = (direction) => () => {
-    dispatch(toggleEditMode({ editMode: false }));
+    dispatch(setEditingTask(null));
     if (direction === "back") {
       const subUtcDate = sub(currentDate, { days: 1 });
       dispatch(setCurrentDate(subUtcDate.toISOString()));

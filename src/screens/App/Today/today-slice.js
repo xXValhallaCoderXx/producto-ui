@@ -5,7 +5,6 @@ export const todaySlice = createSlice({
   name: "today-slice",
   initialState: {
     focusMode: false,
-    editMode: false,
     addTaskMode: false,
     calendarOpen: false,
     editingTask: null,
@@ -17,9 +16,6 @@ export const todaySlice = createSlice({
     },
     toggleCalendar: (state, action) => {
       state.calendarOpen = !state.calendarOpen;
-    },
-    toggleEditMode: (state, action) => {
-      state.editMode = action.payload.editMode ?? !state.editMode;
     },
     toggleAddTaskMode: (state, action) => {
       state.addTaskMode = action.payload ?? !state.addTaskMode;
@@ -50,7 +46,6 @@ export const {
   toggleFocusMode,
   toggleCalendar,
   toggleIsToday,
-  toggleEditMode,
   toggleAddTaskMode,
   setCurrentDate,
   setEditingTask,
