@@ -176,13 +176,9 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const handleForgotPassword = () => {
-    navigation.navigate("ForgotPassword");
-  };
-
-  console.log("EMAIL FORM: ", emailForm.touched);
-
-  console.log("PASSWORD FORM: ", passwordForm.touched);
+  // const handleForgotPassword = () => {
+  //   navigation.navigate("ForgotPassword");
+  // };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

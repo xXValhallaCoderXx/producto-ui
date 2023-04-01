@@ -75,8 +75,6 @@ const ListScreen = () => {
     setTheme();
   }, []);
 
-  console.log("TASKS: ", tasks);
-
   const setTheme = async () => {
     Platform.OS === "android" &&
       (await NavigationBar.setBackgroundColorAsync("white"));
@@ -115,17 +113,6 @@ const ListScreen = () => {
         placement: "top",
         title: `Task created!`,
       });
-      dispatch(
-        api.util.updateQueryData(
-          "getTodaysTasks",
-          { date: format(currentDate, "yyyy-MM-dd") },
-          (draft) => {
-            const task = draft.find((todo) => todo.title === data.title);
-            task.id = data.id;
-            return draft;
-          }
-        )
-      );
     }
   }, [createTaskResult.isSuccess]);
 
@@ -183,6 +170,9 @@ const ListScreen = () => {
     createTask({
       title: _title,
       deadline: currentDate.toISOString(),
+      date: format(currentDate, "yyyy-MM-dd"),
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
     });
   };
 

@@ -7,11 +7,14 @@ const taskApi = api.injectEndpoints({
         url: `/task`,
         params,
       }),
-      providesTags: (result, error, arg) => ["Tasks"],
+      providesTags: (result, error, arg) => {
+        console.log("ARG ", arg);
+        return [{ type: "Tasks", id: arg.date }];
+      },
     }),
 
     createTask: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      // invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ title, deadline }) => {
         return {
           url: `/task`,
@@ -20,24 +23,39 @@ const taskApi = api.injectEndpoints({
         };
       },
       async onQueryStarted(
-        { title, deadline, date },
+        { title, deadline, date, end, start },
         { dispatch, queryFulfilled }
       ) {
         const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            draft.push({
-              completed: false,
-              focus: false,
-              id: Math.floor(Math.random() * 100),
-              createdAt: deadline,
-              deadline,
-              title,
-            });
-            return draft;
-          })
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { date, end, start },
+            (draft) => {
+              draft.push({
+                completed: false,
+                focus: false,
+                id: Math.floor(Math.random() * 100),
+                createdAt: deadline,
+                deadline,
+                title,
+              });
+              return draft;
+            }
+          )
         );
         try {
-          await queryFulfilled;
+          const { data } = await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData(
+              "getTodaysTasks",
+              { date, start, end },
+              (draft) => {
+                const task = draft.find((todo) => todo.title === data.title);
+                task.id = data.id;
+                return draft;
+              }
+            )
+          );
         } catch (e) {
           optimisticUpdate.undo();
         }
