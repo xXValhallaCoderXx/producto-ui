@@ -179,7 +179,8 @@ const ListScreen = () => {
       data: {
         completed: !_task.completed,
       },
-      date: format(currentDate, "yyyy-MM-dd"),
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
     });
   };
 
@@ -189,7 +190,8 @@ const ListScreen = () => {
       data: {
         focus: !_task.focus,
       },
-      date: format(currentDate, "yyyy-MM-dd"),
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
     });
   };
 

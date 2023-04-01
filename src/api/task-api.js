@@ -63,7 +63,7 @@ const taskApi = api.injectEndpoints({
     }),
 
     updateTask: builder.mutation({
-      query: ({ id, data, date }) => {
+      query: ({ id, data, start }) => {
         return {
           url: `/task/${id}`,
           method: "PATCH",
@@ -71,22 +71,28 @@ const taskApi = api.injectEndpoints({
         };
       },
       // invalidatesTags: ["Tasks"],
-      async onQueryStarted({ id, data, date }, { dispatch, queryFulfilled }) {
+      async onQueryStarted(
+        { id, data, start, end },
+        { dispatch, queryFulfilled }
+      ) {
         const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            console.log("DRAAAFT: ", draft);
-            const optimisticTodo = draft.find((todo) => todo.id === id);
-            if ("completed" in data) {
-              optimisticTodo.completed = data.completed;
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { start, end },
+            (draft) => {
+              const optimisticTodo = draft.find((todo) => todo.id === id);
+              if ("completed" in data) {
+                optimisticTodo.completed = data.completed;
+              }
+              if ("focus" in data) {
+                optimisticTodo.focus = data.focus;
+              }
+              if ("title" in data) {
+                optimisticTodo.title = data.title;
+              }
+              return draft;
             }
-            if ("focus" in data) {
-              optimisticTodo.focus = data.focus;
-            }
-            if ("title" in data) {
-              optimisticTodo.title = data.title;
-            }
-            return draft;
-          })
+          )
         );
         try {
           await queryFulfilled;
