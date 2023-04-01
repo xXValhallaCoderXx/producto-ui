@@ -47,7 +47,7 @@ const ListScreen = () => {
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-  const editMode = useSelector((state) => state.today.editMode);
+  const editTaskId = useSelector((state) => state.today.editingTask);
 
   const [progress, setProgress] = useState(0);
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
@@ -249,7 +249,7 @@ const ListScreen = () => {
                     handleToggleTaskComplete={handleToggleTaskComplete}
                     utcDate={currentDate}
                   />
-                  {!editMode && (
+                  {!editTaskId && (
                     <View style={styles.editContainer}>
                       <AddItem
                         handleCreateNewTask={handleCreateNewTask}
