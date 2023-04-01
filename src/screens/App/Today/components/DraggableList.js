@@ -105,7 +105,7 @@ const DraggableListContainer = ({
                 <FontAwesome
                   name="trash-o"
                   color={"#6B7280"}
-                  style={{ fontSize: 25 }}
+                  style={{ fontSize: 25, marginTop: 5 }}
                 />
               </TouchableOpacity>
             )}
