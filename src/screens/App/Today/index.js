@@ -72,6 +72,13 @@ const ListScreen = () => {
     setTheme();
   }, []);
 
+  const setTheme = async () => {
+    Platform.OS === "android" &&
+      (await NavigationBar.setBackgroundColorAsync("white"));
+    Platform.OS === "android" &&
+      (await NavigationBar.setButtonStyleAsync("dark"));
+  };
+
   useEffect(() => {
     Animated.timing(posXanim, {
       toValue: focusMode ? 0 : 50,
@@ -116,13 +123,6 @@ const ListScreen = () => {
       );
     }
   }, [createTaskResult.isSuccess]);
-
-  const setTheme = async () => {
-    Platform.OS === "android" &&
-      (await NavigationBar.setBackgroundColorAsync("white"));
-    Platform.OS === "android" &&
-      (await NavigationBar.setButtonStyleAsync("dark"));
-  };
 
   useEffect(() => {
     if (tasks) {
@@ -225,12 +225,7 @@ const ListScreen = () => {
         <KeyboardAvoidingView
           keyboardVerticalOffset={Platform.OS === "ios" ? 155 : -110}
           behavior={Platform.OS === "ios" ? "padding" : "padding"}
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            paddingHorizontal: 0,
-            paddingTop: 10,
-          }}
+          style={styles.keyboardContainer}
         >
           <View style={{ paddingHorizontal: 20 }}>
             <Header
@@ -244,7 +239,7 @@ const ListScreen = () => {
           </View>
 
           {isLoading || isFetching ? (
-            <View style={{ marginTop: 15, paddingLeft: 20, paddingRight: 10 }}>
+            <View style={styles.skeletonContainer}>
               <SkeletonList />
             </View>
           ) : (
@@ -258,11 +253,7 @@ const ListScreen = () => {
                     utcDate={currentDate}
                   />
                   {!editMode && (
-                    <View
-                      style={{
-                        marginTop: 15,
-                      }}
-                    >
+                    <View style={styles.editContainer}>
                       <AddItem
                         handleCreateNewTask={handleCreateNewTask}
                         currentDate={currentDate}
@@ -284,14 +275,12 @@ const ListScreen = () => {
         </KeyboardAvoidingView>
 
         <View style={styles.moveIncomlpleteContainer}>
-          <View style={{ paddingBottom: 20 }}>
-            <MoveIncomplete
-              tasks={tasks}
-              currentDate={currentDate}
-              isLoading={moveTasksApiResult.isLoading}
-              onMoveIncomplete={handleOpenIncompleteModal}
-            />
-          </View>
+          <MoveIncomplete
+            tasks={tasks}
+            currentDate={currentDate}
+            isLoading={moveTasksApiResult.isLoading}
+            onMoveIncomplete={handleOpenIncompleteModal}
+          />
         </View>
         <MoveIncompleteModal
           tasks={tasks}
@@ -314,10 +303,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  keyboardContainer: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingHorizontal: 0,
+    paddingTop: 10,
+  },
+  skeletonContainer: {
+    marginTop: 15,
+    paddingLeft: 20,
+    paddingRight: 10,
+  },
+  editContainer: {
+    marginTop: 15,
+  },
   moveIncomlpleteContainer: {
     backgroundColor: "white",
     paddingHorizontal: 20,
     justifyContent: "flex-end",
+    paddingBottom: 20,
   },
 });
 
