@@ -191,11 +191,12 @@ const DraggableListContainer = ({
         </OpacityDecorator>
       );
     }
+
     return (
       <List.Item
         title={item?.title}
         titleNumberOfLines={4}
-        disabled={addTaskMode || editTask}
+        disabled={addTaskMode || !!editTask}
         titleStyle={{
           color: item?.completed ? "gray" : "black",
           marginLeft: 5,

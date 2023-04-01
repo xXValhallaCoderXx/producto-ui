@@ -21,6 +21,11 @@ import MoveIncomplete from "./components/MoveIncomplete";
 import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
 import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
+import {
+  selectIsToday,
+  setCurrentDate,
+  selectCurrentDate,
+} from "./today-slice";
 
 import {
   useGetTodaysTasksQuery,
@@ -38,26 +43,27 @@ import { useToast } from "react-native-toast-notifications";
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
-  const [progress, setProgress] = useState(0);
-  const [isLoadingToggle, setIsLoadingToggle] = useState(false);
-  const [currentTask, setCurrentTask] = useState(false);
+
+  const isToday = useSelector(selectIsToday);
+  const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const editMode = useSelector((state) => state.today.editMode);
-  const posXanim = useRef(new Animated.Value(0)).current;
-  const [utcDate, setUtcDate] = useState(new Date());
-  const isToday = useSelector((state) => state.today.isToday);
+
+  const [progress, setProgress] = useState(0);
+  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+
   const [updateTask] = useUpdateTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const todaysTasks = useGetTodaysTasksQuery({
-    date: format(utcDate, "yyyy-MM-dd"),
+    date: format(currentDate, "yyyy-MM-dd"),
   });
 
-  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
+  const posXanim = useRef(new Animated.Value(0)).current;
 
-  const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
 
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
@@ -100,7 +106,7 @@ const ListScreen = () => {
       dispatch(
         api.util.updateQueryData(
           "getTodaysTasks",
-          { date: format(utcDate, "yyyy-MM-dd") },
+          { date: format(currentDate, "yyyy-MM-dd") },
           (draft) => {
             const task = draft.find((todo) => todo.title === data.title);
             task.id = data.id;
@@ -133,11 +139,11 @@ const ListScreen = () => {
   const handleOnChangeDate = (direction) => () => {
     dispatch(toggleEditMode({ editMode: false }));
     if (direction === "back") {
-      const subUtcDate = sub(new Date(utcDate), { days: 1 });
-      setUtcDate(subUtcDate);
+      const subUtcDate = sub(new Date(currentDate), { days: 1 });
+      dispatch(setCurrentDate(subUtcDate));
     } else {
-      const addUtcDate = add(new Date(utcDate), { days: 1 });
-      setUtcDate(addUtcDate);
+      const addUtcDate = add(new Date(currentDate), { days: 1 });
+      dispatch(setCurrentDate(addUtcDate));
     }
   };
 
@@ -171,8 +177,8 @@ const ListScreen = () => {
   const handleCreateNewTask = async (_title) => {
     createTask({
       title: _title,
-      deadline: format(utcDate, "yyyy-MM-dd"),
-      date: format(utcDate, "yyyy-MM-dd"),
+      deadline: format(currentDate, "yyyy-MM-dd"),
+      date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
@@ -182,7 +188,7 @@ const ListScreen = () => {
       data: {
         completed: !_task.completed,
       },
-      date: format(utcDate, "yyyy-MM-dd"),
+      date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
@@ -192,7 +198,7 @@ const ListScreen = () => {
       data: {
         focus: !_task.focus,
       },
-      date: format(utcDate, "yyyy-MM-dd"),
+      date: format(currentDate, "yyyy-MM-dd"),
     });
   };
 
@@ -228,7 +234,7 @@ const ListScreen = () => {
         >
           <View style={{ paddingHorizontal: 20 }}>
             <Header
-              clientUtc={utcDate}
+              clientUtc={currentDate}
               focusMode={focusMode}
               onChangeDate={handleOnChangeDate}
               onPressToday={handleOnPressToday}
@@ -249,9 +255,7 @@ const ListScreen = () => {
                     tasks={tasks || []}
                     handleToggleTaskFocus={handleToggleTaskFocus}
                     handleToggleTaskComplete={handleToggleTaskComplete}
-                    currentTask={currentTask}
-                    isLoadingToggle={isLoadingToggle}
-                    utcDate={utcDate}
+                    utcDate={currentDate}
                   />
                   {!editMode && (
                     <View
@@ -261,7 +265,7 @@ const ListScreen = () => {
                     >
                       <AddItem
                         handleCreateNewTask={handleCreateNewTask}
-                        currentDate={utcDate}
+                        currentDate={currentDate}
                         focusMode={focusMode}
                       />
                     </View>
@@ -274,7 +278,7 @@ const ListScreen = () => {
             calendarOpen={calendarOpen}
             toggleCalendar={handleToggleCalendar}
             incompleteTasks={incompleteTasks}
-            currentDate={utcDate}
+            currentDate={currentDate}
             handleOnSelectDay={handleOnSelectDay}
           />
         </KeyboardAvoidingView>
@@ -283,7 +287,7 @@ const ListScreen = () => {
           <View style={{ paddingBottom: 20 }}>
             <MoveIncomplete
               tasks={tasks}
-              currentDate={utcDate}
+              currentDate={currentDate}
               isLoading={moveTasksApiResult.isLoading}
               onMoveIncomplete={handleOpenIncompleteModal}
             />
@@ -294,7 +298,7 @@ const ListScreen = () => {
           isVisible={isMoveIncompleteOpen}
           onPress={handleMoveIncompleteTasks}
           onCancel={handleCloseIncompleteModal}
-          currentDate={utcDate}
+          currentDate={currentDate}
         />
         <IntroBottomSheet
           user={userData?.email}
