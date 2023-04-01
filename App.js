@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from "react";
 import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RootScreens from "./src/screens/Root";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -73,7 +72,6 @@ export default function App() {
             renderToast={(toastOptions) => <Toast toast={toastOptions} />}
           >
             <PaperProvider theme={theme}>
-              {/* <StatusBar style="dark" backgroundColor="white" /> */}
               <NavigationContainer>
                 <Stack.Navigator
                   screenOptions={() => ({

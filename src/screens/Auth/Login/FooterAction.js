@@ -23,7 +23,6 @@ const FooterActions = ({
         type="contained"
         size="md"
         style={{ minWidth: 110 }}
-        // loading={isLoading}
         title={step === 1 ? "Next" : "Log in"}
         disabled={isLoading}
       />
@@ -33,7 +32,6 @@ const FooterActions = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 25,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

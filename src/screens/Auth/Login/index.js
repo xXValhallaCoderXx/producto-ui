@@ -5,11 +5,7 @@ import { useTheme } from "react-native-paper";
 import * as SecureStore from "expo-secure-store";
 import { useState, useRef, useEffect } from "react";
 import { useToast } from "react-native-toast-notifications";
-import {
-  KeyboardAvoidingView,
-  useWindowDimensions,
-  Button,
-} from "react-native";
+import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
   toggleIsAuthenticated,
   toggleFirstLoad,
@@ -20,7 +16,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text } from "react-native-paper";
 import FooterActions from "./FooterAction";
 import { MainInput as Input } from "../../../components";
-const titleDark = require("../../../assets/images/title-dark.png");
+
+import AuthLayout from "../../../components/layouts/AuthLayout";
 
 import {
   JWT_KEY_STORE,
@@ -29,7 +26,6 @@ import {
 import {
   StyleSheet,
   View,
-  Image,
   Animated,
   TouchableWithoutFeedback,
   Keyboard,
@@ -51,6 +47,7 @@ const LoginScreen = ({ navigation }) => {
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
+  const styles = useStyles(theme);
 
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
@@ -61,8 +58,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       email: "",
     },
-    // validateOnChange: false,
-    validateOnBlur: true,
+    validateOnBlur: false,
+    validateOnBlur: false,
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .required("Please enter an e-mail address")
@@ -77,8 +74,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       password: "",
     },
-    validateOnBlur: true,
-    validateOnChange: false,
+    validateOnBlur: false,
+    validateOnBlur: false,
     validationSchema: Yup.object().shape({
       password: Yup.string()
         .required("Password is required")
@@ -184,41 +181,30 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    console.log("CLICK");
     navigation.navigate("ForgotPassword");
   };
+
+  console.log("EMAIL FORM: ", emailForm.touched);
+
+  console.log("PASSWORD FORM: ", passwordForm.touched);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: "white" }}
+        {...(Platform.OS === "ios"
+          ? {
+              behavior: "padding",
+              keyboardVerticalOffset: 40,
+            }
+          : {})}
+        style={styles.container}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
-            <View style={styles.titleContainer}>
-              <Image
-                source={titleDark}
-                resizeMode="contain"
-                style={{
-                  width: 231,
-                  height: 42,
-                }}
-              />
-              <Text style={{ ...styles.secondaryTitle, marginTop: 19 }}>
-                Sign in, to unlock your productivity
-              </Text>
-            </View>
+        <AuthLayout>
+          <AuthLayout.Header subTitle="Sign in, to unlock your productivity" />
+          <AuthLayout.Content>
             <Animated.View
               style={{
-                ...styles.inputWrapper,
-
+                alignItems: "center",
                 transform: [{ translateX: passwordInputPos }],
               }}
             >
@@ -233,14 +219,7 @@ const LoginScreen = ({ navigation }) => {
                     width: windowWidth,
                   }}
                 >
-                  <View
-                    style={{
-                      paddingLeft: 25,
-                      paddingRight: 25,
-                      width: "100%",
-                      maxWidth: 450,
-                    }}
-                  >
+                  <View style={styles.stepOneContainer}>
                     <Input
                       label="Email"
                       ref={emailInputRef}
@@ -253,29 +232,14 @@ const LoginScreen = ({ navigation }) => {
 
                     <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                       {emailForm.touched.email && emailForm.errors.email ? (
-                        <Text
-                          style={{
-                            color: theme.colors.error,
-                            fontSize: 12,
-                            fontWeight: "400",
-                            paddingLeft: 15,
-                          }}
-                        >
+                        <Text style={styles.formError}>
                           {emailForm.errors.email}
                         </Text>
                       ) : null}
                     </View>
                   </View>
                 </View>
-                <View
-                  style={{
-                    alignItems: "center",
-                    width: "100%",
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                    maxWidth: 450,
-                  }}
-                >
+                <View style={styles.stepTwoContainer}>
                   <Input
                     label="Password"
                     value={passwordForm.values.password}
@@ -291,19 +255,12 @@ const LoginScreen = ({ navigation }) => {
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                     {passwordForm.touched.password &&
                     passwordForm.errors.password ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: 15,
-                        }}
-                      >
+                      <Text style={styles.formError}>
                         {passwordForm.errors.password}
                       </Text>
                     ) : null}
                   </View>
-                  <View
+                  {/* <View
                     style={{
                       width: "100%",
                       justifyContent: "flex-start",
@@ -323,44 +280,57 @@ const LoginScreen = ({ navigation }) => {
                         Forgot your password?
                       </Text>
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
                 </View>
               </View>
             </Animated.View>
-          </View>
-
-          <FooterActions
-            handleOnPressPrimary={handleOnPressPrimary}
-            handleOnPressSecondary={handleOnPressSecondary}
-            step={step}
-            isLoading={
-              verifyResult.isFetching ||
-              loginApiResult.isLoading ||
-              loginApiResult.status === "fulfilled"
-            }
-          />
-        </View>
+          </AuthLayout.Content>
+          <AuthLayout.Footer>
+            <FooterActions
+              handleOnPressPrimary={handleOnPressPrimary}
+              handleOnPressSecondary={handleOnPressSecondary}
+              step={step}
+              isLoading={
+                verifyResult.isFetching ||
+                loginApiResult.isLoading ||
+                loginApiResult.status === "fulfilled"
+              }
+            />
+          </AuthLayout.Footer>
+        </AuthLayout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    alignItems: "center",
-    marginTop: 30,
-  },
-  secondaryTitle: {
-    fontSize: 14,
-    color: "gray",
-    textAlign: "center",
-    marginLeft: -10,
-    fontWeight: "500",
-  },
-  inputWrapper: {
-    alignItems: "center",
-    marginTop: 50,
-  },
-});
+const useStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "white",
+    },
+    animatedInput: {
+      flex: "row",
+    },
+    stepOneContainer: {
+      paddingLeft: 25,
+      paddingRight: 25,
+      width: "100%",
+      maxWidth: 450,
+    },
+    stepTwoContainer: {
+      alignItems: "center",
+      width: "100%",
+      paddingLeft: 25,
+      paddingRight: 25,
+      maxWidth: 450,
+    },
+    formError: {
+      color: theme.colors.error,
+      fontSize: 12,
+      fontWeight: "400",
+      paddingLeft: 15,
+    },
+  });
 
 export default LoginScreen;
