@@ -8,13 +8,12 @@ const taskApi = api.injectEndpoints({
         params,
       }),
       providesTags: (result, error, arg) => {
-        console.log("ARG ", arg);
-        return [{ type: "Tasks", id: arg.date }];
+        return [{ type: "Tasks", id: arg.start }];
       },
     }),
 
     createTask: builder.mutation({
-      // invalidatesTags: ["Tasks", "IncompleteTasks"],
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ title, deadline }) => {
         return {
           url: `/task`,
@@ -23,13 +22,13 @@ const taskApi = api.injectEndpoints({
         };
       },
       async onQueryStarted(
-        { title, deadline, date, end, start },
+        { title, deadline, start, end },
         { dispatch, queryFulfilled }
       ) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData(
             "getTodaysTasks",
-            { date, end, start },
+            { end, start },
             (draft) => {
               draft.push({
                 completed: false,
@@ -48,10 +47,11 @@ const taskApi = api.injectEndpoints({
           dispatch(
             api.util.updateQueryData(
               "getTodaysTasks",
-              { date, start, end },
+              { start, end },
               (draft) => {
                 const task = draft.find((todo) => todo.title === data.title);
                 task.id = data.id;
+                task.createdAt = task.createdAt;
                 return draft;
               }
             )

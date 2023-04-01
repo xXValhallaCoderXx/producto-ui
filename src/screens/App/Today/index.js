@@ -61,7 +61,6 @@ const ListScreen = () => {
   const todaysTasks = useGetTodaysTasksQuery({
     start: startOfDay(currentDate).toISOString(),
     end: endOfDay(currentDate).toISOString(),
-    date: format(currentDate, "yyyy-MM-dd"),
   });
 
   const posXanim = useRef(new Animated.Value(0)).current;
@@ -107,7 +106,6 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (createTaskResult.isSuccess) {
-      const { data } = createTaskResult;
       toast.show("", {
         type: "success",
         placement: "top",
@@ -170,7 +168,6 @@ const ListScreen = () => {
     createTask({
       title: _title,
       deadline: currentDate.toISOString(),
-      date: format(currentDate, "yyyy-MM-dd"),
       start: startOfDay(currentDate).toISOString(),
       end: endOfDay(currentDate).toISOString(),
     });
