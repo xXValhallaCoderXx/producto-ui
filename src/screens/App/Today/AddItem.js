@@ -16,10 +16,8 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
   const isToday = useSelector(selectIsToday);
-  const [error, setError] = useState("");
 
   const handleOnChange = (value) => {
-    setError("");
     setTaskName(value);
   };
 
@@ -49,9 +47,8 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
       {addTask ? (
         <View
           style={{
-            flexDirection: "row",
-            paddingLeft: 20,
-            marginTop: Platform.OS === "ios" ? 5 : 0,
+            paddingLeft: 25,
+            marginTop: 10,
           }}
         >
           <TextInput
@@ -74,9 +71,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
-            paddingLeft: 8,
-            paddingTop: 5,
-            paddingBottom: 5,
+            paddingLeft: 10,
           }}
           style={{ borderRadius: 1 }}
           labelStyle={{

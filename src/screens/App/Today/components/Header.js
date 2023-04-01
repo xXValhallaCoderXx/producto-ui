@@ -47,10 +47,7 @@ const TodayHeader = ({
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
-                onPress={onPressToday}
-              >
+              <TouchableOpacity onPress={onPressToday}>
                 <View>
                   <Text
                     variant="titleLarge"
@@ -62,7 +59,7 @@ const TodayHeader = ({
                     Today
                   </Text>
                 </View>
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
               {focusMode ? null : (
                 <View style={styles.dateContainer}>
                   <TouchableOpacity

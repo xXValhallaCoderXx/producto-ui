@@ -8,7 +8,7 @@ import {
   Portal,
 } from "react-native-paper";
 
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useState, useMemo } from "react";
 
 const MoveIncompleteModal = ({
@@ -21,7 +21,6 @@ const MoveIncompleteModal = ({
   const theme = useTheme();
   const [checkedDates, setCheckedDates] = useState({});
 
-  console.log("MOVE INCOMPLETE TASKS: ", tasks);
   const parsedDates = useMemo(() => {
     if (tasks) {
       return tasks?.filter((_task) => _task.completed !== true);
@@ -78,7 +77,7 @@ const MoveIncompleteModal = ({
               {parsedDates.map((item) => {
                 return (
                   <List.Item
-                    style={{ paddingLeft: 0, marginLeft: -8 }}
+                    style={{ paddingLeft: 0 }}
                     key={item.id}
                     title={item.title}
                     onPress={onClickCheckbox(item)}

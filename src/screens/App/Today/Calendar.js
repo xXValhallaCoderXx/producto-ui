@@ -74,7 +74,6 @@ const CalendarWidget = ({
             initialDate={format(currentDate, "yyyy-MM-dd")}
             onDayPress={onDayPress}
             markingType={"custom"}
-            // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
             monthFormat={"MMMM yyyy"}
             renderArrow={(direction) => (
               <MaterialIcons
@@ -101,14 +100,14 @@ const styles = StyleSheet.create({
     width: 350,
     height: 360,
     borderRadius: 5,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    // elevation: 3,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 1,
+    // },
+    // shadowOpacity: 0.22,
+    // shadowRadius: 2.22,
   },
 });
 

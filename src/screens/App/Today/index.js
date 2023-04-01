@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { format, add, sub, startOfDay, endOfDay, isSameDay } from "date-fns";
+import { add, sub, startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import { toggleEditMode } from "./today-slice";
 import {
@@ -64,7 +64,7 @@ const ListScreen = () => {
 
   const posXanim = useRef(new Animated.Value(0)).current;
 
-  const { data: tasks, isLoading, isFetching, error } = todaysTasks;
+  const { data: tasks, isLoading } = todaysTasks;
 
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
