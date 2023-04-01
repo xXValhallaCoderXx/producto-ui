@@ -27,12 +27,6 @@ const TodayHeader = ({
   const dispatch = useDispatch();
   const isToday = useSelector(selectIsToday);
 
-  useEffect(() => {
-    if (!isToday) {
-      dispatch(toggleFocusMode({ focusMode: true }));
-    }
-  }, [isToday]);
-
   return (
     <View>
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>

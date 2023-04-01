@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect, useState, useRef } from "react";
-import { format, add, sub, startOfDay, endOfDay, toISOString } from "date-fns";
+import { format, add, sub, startOfDay, endOfDay, isSameDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 import { toggleEditMode } from "./today-slice";
 import {
@@ -61,12 +61,12 @@ const ListScreen = () => {
   const todaysTasks = useGetTodaysTasksQuery({
     start: startOfDay(currentDate).toISOString(),
     end: endOfDay(currentDate).toISOString(),
+    date: format(currentDate, "yyyy-MM-dd"),
   });
 
   const posXanim = useRef(new Animated.Value(0)).current;
 
   const { data: tasks, isLoading, isFetching, error } = todaysTasks;
-  console.log("DATA: ", tasks);
 
   const { data: userData, isLoading: userProfileLoading } =
     useGetProfileQuery();
@@ -74,6 +74,8 @@ const ListScreen = () => {
   useEffect(() => {
     setTheme();
   }, []);
+
+  console.log("TASKS: ", tasks);
 
   const setTheme = async () => {
     Platform.OS === "android" &&
@@ -143,10 +145,10 @@ const ListScreen = () => {
     dispatch(toggleEditMode({ editMode: false }));
     if (direction === "back") {
       const subUtcDate = sub(currentDate, { days: 1 });
-      dispatch(setCurrentDate(subUtcDate));
+      dispatch(setCurrentDate(subUtcDate.toISOString()));
     } else {
       const addUtcDate = add(new Date(currentDate), { days: 1 });
-      dispatch(setCurrentDate(addUtcDate));
+      dispatch(setCurrentDate(addUtcDate.toISOString()));
     }
   };
 
@@ -159,7 +161,7 @@ const ListScreen = () => {
   };
 
   const handleOnPressToday = async () => {
-    setUtcDate(new Date());
+    dispatch(setCurrentDate(new Date().toISOString()));
   };
 
   const handleOnPressDate = async () => {
@@ -167,7 +169,7 @@ const ListScreen = () => {
   };
 
   const handleOnSelectDay = (_day) => {
-    setUtcDate(new Date(_day.dateString));
+    dispatch(setCurrentDate(new Date(_day.dateString).toISOString()));
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
 
@@ -218,7 +220,6 @@ const ListScreen = () => {
     });
   };
 
-  console.log("FOCUS MODE: ", focusMode);
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}

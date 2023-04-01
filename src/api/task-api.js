@@ -3,12 +3,11 @@ import { api } from "./index";
 const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
-      query: (params) => ({
+      query: ({ date, ...params }) => ({
         url: `/task`,
         params,
       }),
-      providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
-      keepUnusedDataFor: 0,
+      providesTags: (result, error, arg) => ["Tasks"],
     }),
 
     createTask: builder.mutation({
@@ -53,9 +52,11 @@ const taskApi = api.injectEndpoints({
           body: data,
         };
       },
+      // invalidatesTags: ["Tasks"],
       async onQueryStarted({ id, data, date }, { dispatch, queryFulfilled }) {
         const optimisticUpdate = dispatch(
           api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
+            console.log("DRAAAFT: ", draft);
             const optimisticTodo = draft.find((todo) => todo.id === id);
             if ("completed" in data) {
               optimisticTodo.completed = data.completed;
