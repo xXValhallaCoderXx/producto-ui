@@ -21,13 +21,14 @@ import {
   toggleIsAuthenticated,
   toggleFirstLoad,
 } from "../../../shared/slice/global-slice";
-import FooterActions from "./FooterAction";
+
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import { useToast } from "react-native-toast-notifications";
 import AuthLayout from "../../../components/layouts/AuthLayout";
+import AuthFooter from "../../../components/layouts/AuthFooter";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -183,16 +184,25 @@ const RegisterScreen = ({ navigation }) => {
               </View>
             </View>
 
-            <View style={{ height: 24, marginTop: 40, alignItems: "center" }}>
+            <View
+              style={{
+                height: 24,
+                marginTop: 20,
+                marginBottom: 10,
+                alignItems: "center",
+              }}
+            >
               {serverError ? (
                 <Text style={styles.errorText}>{serverError}</Text>
               ) : null}
             </View>
           </AuthLayout.Content>
           <AuthLayout.Footer>
-            <FooterActions
-              handleOnPressPrimary={formik.handleSubmit}
-              handleOnPressSecondary={handleBackToLogin}
+            <AuthFooter
+              onPressPrimary={formik.handleSubmit}
+              onPressSecondary={handleBackToLogin}
+              primaryText="Create"
+              secondaryText="Sign in instead"
               disabledPrimary={registerApiResult.isLoading}
               isLoading={
                 registerApiResult.isLoading ||

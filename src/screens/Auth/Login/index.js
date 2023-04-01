@@ -14,7 +14,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Text } from "react-native-paper";
-import FooterActions from "./FooterAction";
+import AuthFooter from "../../../components/layouts/AuthFooter";
 import { MainInput as Input } from "../../../components";
 
 import AuthLayout from "../../../components/layouts/AuthLayout";
@@ -286,10 +286,11 @@ const LoginScreen = ({ navigation }) => {
             </Animated.View>
           </AuthLayout.Content>
           <AuthLayout.Footer>
-            <FooterActions
-              handleOnPressPrimary={handleOnPressPrimary}
-              handleOnPressSecondary={handleOnPressSecondary}
-              step={step}
+            <AuthFooter
+              onPressPrimary={handleOnPressPrimary}
+              onPressSecondary={handleOnPressSecondary}
+              primaryText={step === 1 ? "Next" : "Log in"}
+              secondaryText={step === 1 ? "Create account" : "Change Email"}
               isLoading={
                 verifyResult.isFetching ||
                 loginApiResult.isLoading ||

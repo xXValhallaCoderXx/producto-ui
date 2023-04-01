@@ -1,17 +1,19 @@
-import ProductoButton from "../../../components/Button";
+import ProductoButton from "../Button";
 import { View, StyleSheet } from "react-native";
 
-const FooterActions = ({
-  handleOnPressPrimary,
-  handleOnPressSecondary,
+const AuthFooter = ({
+  onPressPrimary,
+  onPressSecondary,
   isLoading,
-  step,
+  primaryText,
+  secondaryText,
+  disablePrimary,
 }) => {
   return (
     <View style={styles.container}>
       <ProductoButton
-        onPress={handleOnPressSecondary}
-        title={step === 1 ? "Create account" : "Change Email"}
+        onPress={onPressSecondary}
+        title={secondaryText}
         type="text"
         contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
         disabled={isLoading}
@@ -19,12 +21,12 @@ const FooterActions = ({
       />
 
       <ProductoButton
-        onPress={handleOnPressPrimary}
+        onPress={onPressPrimary}
         type="contained"
         size="md"
         style={{ minWidth: 110 }}
-        title={step === 1 ? "Next" : "Log in"}
-        disabled={isLoading}
+        title={primaryText}
+        disabled={isLoading || disablePrimary}
       />
     </View>
   );
@@ -38,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FooterActions;
+export default AuthFooter;
