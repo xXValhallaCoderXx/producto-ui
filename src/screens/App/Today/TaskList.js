@@ -15,11 +15,9 @@ const TaskList = ({
   utcDate,
 }) => {
   const toast = useToast();
-  const theme = useTheme();
   const [editTask, setEditTask] = useState(null);
   const focusMode = useSelector((state) => state.today.focusMode);
 
-  // const onCheckTask = (_task) =>  handleToggleTaskComplete(_task);
   const onToggleFocus = (_task) => (e) => {
     e.stopPropagation();
     handleToggleTaskFocus(_task);
@@ -69,7 +67,7 @@ const TaskList = ({
 
   return (
     <View>
-      {tasksToDisplay().length === 0 && !focusMode ? (
+      {tasksToDisplay().length === 0 && focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
         </View>
@@ -79,9 +77,9 @@ const TaskList = ({
             // if (!focusMode && !task.focus && !task.completed) {
             //   return false;
             // }
-            if (!focusMode && task.focus) {
+            if (focusMode && task.focus) {
               return task;
-            } else if (focusMode) {
+            } else if (!focusMode) {
               return task;
             }
             return false;

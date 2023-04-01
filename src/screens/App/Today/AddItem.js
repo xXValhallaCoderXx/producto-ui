@@ -40,7 +40,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
     }
   };
 
-  if (!focusMode) {
+  if (focusMode) {
     return null;
   }
 

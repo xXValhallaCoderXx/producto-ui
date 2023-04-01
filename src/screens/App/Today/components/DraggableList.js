@@ -154,7 +154,7 @@ const DraggableListContainer = ({
           <List.Item
             key={item?.id}
             style={{
-              paddingLeft: focusMode && currentDate === todayDate ? 20 : 20,
+              paddingLeft: !focusMode && currentDate === todayDate ? 20 : 20,
               ...styles.editItem,
             }}
             left={() => (
@@ -220,7 +220,7 @@ const DraggableListContainer = ({
           />
         )}
         left={() =>
-          focusMode && currentDate === todayDate ? (
+          !focusMode && currentDate === todayDate ? (
             <IoniIcons
               onPress={onToggleFocus(item)}
               style={styles.keyIcon}

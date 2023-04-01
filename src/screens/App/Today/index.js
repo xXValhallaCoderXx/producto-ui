@@ -216,6 +216,7 @@ const ListScreen = () => {
     });
   };
 
+  console.log("FOCUS MODE: ", focusMode);
   return (
     <TouchableWithoutFeedback
       onPress={handleKeyboardDismiss}

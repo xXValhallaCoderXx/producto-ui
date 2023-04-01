@@ -45,8 +45,8 @@ const TodayHeader = ({
           }}
         >
           {focusMode
-            ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
-            : null}
+            ? null
+            : format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
         </Text>
       </TouchableOpacity>
       <View style={styles.container}>
@@ -69,7 +69,7 @@ const TodayHeader = ({
                   </Text>
                 </View>
               </TouchableNativeFeedback>
-              {focusMode && (
+              {focusMode ? null : (
                 <View style={styles.dateContainer}>
                   <TouchableOpacity
                     background={TouchableNativeFeedback.Ripple(
@@ -100,7 +100,7 @@ const TodayHeader = ({
             style={{ padding: 5 }}
           >
             <Image
-              source={focusMode ? lockOpen : lockClosed}
+              source={focusMode ? lockClosed : lockOpen}
               style={{ height: 24, width: 18 }}
             />
           </TouchableOpacity>
