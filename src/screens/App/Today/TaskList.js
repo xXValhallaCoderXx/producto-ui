@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { View } from "react-native";
-
-import { Text, useTheme } from "react-native-paper";
+import { startOfDay, endOfDay } from "date-fns";
+import { selectCurrentDate } from "./today-slice";
+import { Text } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
+import { toggleEditMode } from "./today-slice";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 import { useToast } from "react-native-toast-notifications";
 import ConfirmationModal from "../../../components/ConfirmationModal";
@@ -15,8 +17,10 @@ const TaskList = ({
   utcDate,
 }) => {
   const toast = useToast();
+  const dispatch = useDispatch();
   const [editTask, setEditTask] = useState(null);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const currentDate = useSelector(selectCurrentDate);
 
   const onToggleFocus = (_task) => (e) => {
     e.stopPropagation();
@@ -27,8 +31,6 @@ const TaskList = ({
 
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
-      setIsDeleteModalVisible(false);
-      setEditTask(null);
       toast.show("", {
         type: "success",
         duration: 2500,
@@ -52,8 +54,14 @@ const TaskList = ({
   };
 
   const handleDeleteTask = async () => {
-    await deleteTaskApi({ id: editTask });
+    deleteTaskApi({
+      id: editTask,
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
+    setIsDeleteModalVisible(false);
     setEditTask(null);
+    dispatch(toggleEditMode({ editMode: false }));
   };
 
   const tasksToDisplay = () => {

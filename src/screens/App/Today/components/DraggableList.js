@@ -37,7 +37,8 @@ const DraggableListContainer = ({
 
   useEffect(() => {
     // sortData();
-    // console.log("TASKS ", tasks);
+    console.log("TASKS ", tasks.length);
+    setEditTask(null);
     setData(tasks);
   }, [tasks]);
 
@@ -78,8 +79,7 @@ const DraggableListContainer = ({
         // });
 
         // console.log("SORTED ", sortedTasks);
-        console.log("TASK COPY: ", tasksCopy);
-        console.log("XXX", x);
+
         // setData(tempArray.push(...x));
       } else {
         const tempArray = [];
@@ -204,6 +204,7 @@ const DraggableListContainer = ({
           maxWidth: "90%",
         }}
         onLongPress={() => {
+          console.log("ITEM: ", item);
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           setEditTask(item?.id);
           setTaskValue(item?.title);

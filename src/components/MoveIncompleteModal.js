@@ -21,6 +21,7 @@ const MoveIncompleteModal = ({
   const theme = useTheme();
   const [checkedDates, setCheckedDates] = useState({});
 
+  console.log("MOVE INCOMPLETE TASKS: ", tasks);
   const parsedDates = useMemo(() => {
     if (tasks) {
       return tasks?.filter((_task) => _task.completed !== true);

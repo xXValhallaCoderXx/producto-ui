@@ -63,7 +63,7 @@ const taskApi = api.injectEndpoints({
     }),
 
     updateTask: builder.mutation({
-      query: ({ id, data, start }) => {
+      query: ({ id, data }) => {
         return {
           url: `/task/${id}`,
           method: "PATCH",
@@ -102,6 +102,33 @@ const taskApi = api.injectEndpoints({
       },
     }),
 
+    deleteTask: builder.mutation({
+      // invalidatesTags: ["Tasks", "IncompleteTasks"],
+      query: ({ id }) => {
+        return {
+          url: `/task/${id}`,
+          method: "DELETE",
+        };
+      },
+      async onQueryStarted({ id, start, end }, { dispatch, queryFulfilled }) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { start, end },
+            (draft) => {
+              draft = draft.filter((todo) => todo.id !== id);
+              return draft;
+            }
+          )
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
+    }),
+
     moveSpecificTasks: builder.mutation({
       invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ tasks, to }) => {
@@ -126,16 +153,6 @@ const taskApi = api.injectEndpoints({
         return `/task/incomplete-detail`;
       },
       providesTags: ["IncompleteTasks"],
-    }),
-
-    deleteTask: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
-      query: ({ id }) => {
-        return {
-          url: `/task/${id}`,
-          method: "DELETE",
-        };
-      },
     }),
   }),
 });
