@@ -10,8 +10,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
-import { toggleEditMode } from "../today-slice";
-import { format } from "date-fns";
+import { setEditingTask, selectCurrentDate } from "../today-slice";
+import { format, startOfDay, endOfDay } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DraggableListContainer = ({
@@ -22,119 +22,43 @@ const DraggableListContainer = ({
   onToggleFocus,
 }) => {
   const dispatch = useDispatch();
-  const [data, setData] = useState([]);
+
   const theme = useTheme();
   const inputRef = useRef(null);
   const dragRef = useRef(false);
-  const [editTask, setEditTask] = useState(null);
-  const [value, setTaskValue] = useState("");
+
+  const [data, setData] = useState([]);
+  const [editTaskTitle, setEditTaskTitle] = useState("");
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
+  const editTaskId = useSelector((state) => state.today.editingTask);
 
   const [updateTaskApi] = useUpdateTaskMutation();
   const focusMode = useSelector((state) => state.today.focusMode);
+  const currentDateTime = useSelector(selectCurrentDate);
   const currentDate = format(utcDate, "yyyy-MM-dd");
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    setEditTask(null);
     setData(tasks);
   }, [tasks]);
-
-  const sortData = async () => {
-    const hasData = await AsyncStorage.getItem(currentDate);
-
-    const parsedHasData = JSON.parse(hasData);
-
-    if (parsedHasData) {
-      function removeValue(_task, index, arr) {
-        // If the value at the current array index matches the specified value (2)
-        if (parsedHasData.includes(_task.id)) {
-          // Removes the value from the original array
-          arr.splice(index, 1);
-          return true;
-        }
-        return false;
-      }
-
-      if (hasData && parsedHasData.length !== tasks.length) {
-        // If new task has been added
-        const tasksCopy = [...tasks];
-        const tempArray = [];
-        parsedHasData.forEach((item) => {
-          const task = tasks.find((task) => task?.id === item);
-          if (task) {
-            tempArray.push(task);
-          }
-        });
-
-        const x = tasksCopy.filter(removeValue);
-        // const tempArray = [];
-        // JSON.parse(hasData).forEach((item) => {
-        //   const task = tasks.find((task) => task?.id === item);
-        //   if (task) {
-        //     tempArray.push(task);
-        //   }
-        // });
-
-        // console.log("SORTED ", sortedTasks);
-
-        // setData(tempArray.push(...x));
-      } else {
-        const tempArray = [];
-        JSON.parse(hasData).forEach((item) => {
-          const task = tasks.find((task) => task?.id === item);
-          if (task) {
-            tempArray.push(task);
-          }
-        });
-        setData(tempArray);
-      }
-    } else {
-      setData(tasks);
-    }
-
-    // const getStoredItems = tasksCopy.filter((task) =>
-    //   storedItems.includes(task.id)
-    // );
-    // console.log("GET STORED ITEMS", getStoredItems);
-    // console.log("FILTERED STATE: ", tasks);
-
-    // const taskIds = tasks.map((task) => task.id);
-    // const localData = data.map((task) => task.id);
-    // console.log("CURRENT TASKS: ", taskIds);
-    // console.log("LOCAL DATA: ", localData);
-    // if (hasData && hasData.length === tasks.length) {
-    //   let tempResult = [];
-    // JSON.parse(hasData).forEach((item) => {
-    //   const task = tasks.find((task) => task?.id === item);
-    //   if (task) {
-    //     tempResult.push(task);
-    //   }
-    // });
-    //   setData(tempResult);
-    // } else {
-    //   setData(tasks);
-    // }
-  };
 
   const handleOnBlur = async (e) => {
     if (!dragRef.current) {
       e.stopPropagation();
-      setEditTask(null);
-      setTaskValue("");
-      dispatch(toggleEditMode({ editMode: false }));
-      await updateTaskApi({
-        id: editTask,
+      updateTaskApi({
+        id: editTaskId,
         data: {
-          title: value,
+          title: editTaskTitle,
         },
-        date: format(utcDate, "yyyy-MM-dd"),
+        start: startOfDay(currentDateTime).toISOString(),
+        end: endOfDay(currentDateTime).toISOString(),
       });
+      dispatch(setEditingTask(null));
     }
   };
 
   const handleOnChange = (_value) => {
-    setTaskValue(_value);
+    setEditTaskTitle(_value);
   };
 
   const handleOnCheckTask = (_task) => () => {
@@ -146,7 +70,7 @@ const DraggableListContainer = ({
   };
 
   const renderItem = ({ item, drag, isActive, index }) => {
-    if (item && item?.id === editTask) {
+    if (item?.id === editTaskId) {
       return (
         <OpacityDecorator>
           <List.Item
@@ -166,7 +90,7 @@ const DraggableListContainer = ({
                 </TouchableOpacity>
                 <TextInput
                   onChangeText={handleOnChange}
-                  value={value}
+                  value={editTaskTitle}
                   autoFocus
                   ref={inputRef}
                   onBlur={handleOnBlur}
@@ -194,7 +118,7 @@ const DraggableListContainer = ({
       <List.Item
         title={item?.title}
         titleNumberOfLines={4}
-        disabled={addTaskMode || !!editTask}
+        disabled={addTaskMode || !!editTaskId}
         titleStyle={{
           color: item?.completed ? "gray" : "black",
           marginLeft: 5,
@@ -203,9 +127,8 @@ const DraggableListContainer = ({
         }}
         onLongPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-          setEditTask(item?.id);
-          setTaskValue(item?.title);
-          dispatch(toggleEditMode({ editMode: true }));
+          setEditTaskTitle(item?.title);
+          dispatch(setEditingTask(item.id));
         }}
         onPress={() => onCheckTask(item)}
         style={{

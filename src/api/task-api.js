@@ -81,6 +81,7 @@ const taskApi = api.injectEndpoints({
             { start, end },
             (draft) => {
               const optimisticTodo = draft.find((todo) => todo.id === id);
+
               if ("completed" in data) {
                 optimisticTodo.completed = data.completed;
               }

@@ -8,6 +8,7 @@ export const todaySlice = createSlice({
     editMode: false,
     addTaskMode: false,
     calendarOpen: false,
+    editingTask: null,
     currentDate: new Date().toISOString(),
   },
   reducers: {
@@ -25,6 +26,9 @@ export const todaySlice = createSlice({
     },
     setCurrentDate: (state, action) => {
       state.currentDate = action.payload;
+    },
+    setEditingTask: (state, action) => {
+      state.editingTask = action.payload;
     },
   },
 });
@@ -49,6 +53,7 @@ export const {
   toggleEditMode,
   toggleAddTaskMode,
   setCurrentDate,
+  setEditingTask,
 } = todaySlice.actions;
 
 export default todaySlice.reducer;
