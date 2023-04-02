@@ -35,8 +35,7 @@ const ProfileScreen = ({ navigation }) => {
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const { data, isLoading } = useGetProfileQuery();
-  console.log("UPDATE PREF API RESULT: ", updatePrefsResult);
-  console.log("UPDATE data: ", data);
+
   const { colors } = useTheme();
 
   useEffect(() => {
@@ -77,7 +76,7 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleSubmitAutoTask = async (dates) => {
-    const to = format(new Date(), "yyyy-MM-dd");
+    const to = new Date().toISOString();
     await moveTasksApi({ tasks: Object.keys(dates), to });
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     setisAutoTaskModalVisible(false);

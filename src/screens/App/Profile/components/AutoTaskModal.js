@@ -35,6 +35,11 @@ const AutoTaskModal = ({
       const today = format(new Date(), "yyyy-MM-dd");
 
       data?.forEach((item) => {
+        console.log("ITEM DEADLINE: ", item.deadline);
+        console.log("LOCAL DATE: ", new Date(item.deadline));
+        var localDate = new Date(item.deadline).toLocaleString("en-US");
+
+        console.log("LOCAL DATE: ", localDate);
         if (format(new Date(item.deadline), "yyyy-MM-dd") !== today) {
           if (dates[item.deadline]) {
             dates[item.deadline].push(item);
