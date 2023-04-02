@@ -14,6 +14,21 @@ import { setEditingTask, selectCurrentDate } from "../today-slice";
 import { format, startOfDay, endOfDay } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+function mapOrder(array, order, key) {
+  array.sort(function (a, b) {
+    var A = a[key],
+      B = b[key];
+
+    if (order.indexOf(A) > order.indexOf(B)) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+
+  return array;
+}
+
 const DraggableListContainer = ({
   tasks,
   handleOnPressDelete,
@@ -39,8 +54,18 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    setData(tasks);
+    checkSortedTasksStorage();
   }, [tasks]);
+
+  const checkSortedTasksStorage = async () => {
+    const storedTasks = await AsyncStorage.getItem(todayDate);
+    if (storedTasks) {
+      const orderedArray = mapOrder(tasks, storedTasks, "id");
+      setData(orderedArray);
+    } else {
+      setData(tasks);
+    }
+  };
 
   const handleOnBlur = async (e) => {
     if (!dragRef.current) {
@@ -55,6 +80,12 @@ const DraggableListContainer = ({
       });
       dispatch(setEditingTask(null));
     }
+  };
+
+  const storeSortedTasks = async (_tasks) => {
+    const taskIds = _tasks.map((task) => task?.id);
+    const objectToStore = JSON.stringify(taskIds);
+    await AsyncStorage.setItem(todayDate, objectToStore);
   };
 
   const handleOnChange = (_value) => {
@@ -161,15 +192,9 @@ const DraggableListContainer = ({
         dragRef.current = true;
       }}
       onDragEnd={async ({ data: _data }) => {
-        // const itemSort = _data.map((item) => item?.id);
-        // console.log("ON DRAG END", itemSort);
-        // console.log("ON DRAG END: ", itemSort);
-        // const objectToStore = JSON.stringify(itemSort);
-
-        // sortData();
         dragRef.current = false;
+        storeSortedTasks(_data);
         setData(_data);
-        // await AsyncStorage.setItem(currentDate, objectToStore);
       }}
       keyExtractor={(item) => item?.id}
       renderItem={renderItem}
