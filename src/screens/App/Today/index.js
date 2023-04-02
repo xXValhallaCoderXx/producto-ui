@@ -62,6 +62,7 @@ const ListScreen = () => {
     start: startOfDay(currentDate).toISOString(),
     end: endOfDay(currentDate).toISOString(),
   });
+  console.log("TODAYS TASK: ", todaysTasks);
 
   const posXanim = useRef(new Animated.Value(0)).current;
 
@@ -134,6 +135,8 @@ const ListScreen = () => {
       setProgress(Math.round((completed / total) * 100) / 100);
     }
   }, [tasks]);
+
+  console.log("ROOT TAKS: ", tasks);
 
   const handleToggleCalendar = () => {
     dispatch(toggleCalendar());
