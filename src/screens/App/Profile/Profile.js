@@ -3,12 +3,7 @@ import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Localization from "expo-localization";
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Image,
-} from "react-native";
+import { StyleSheet, View, TouchableWithoutFeedback } from "react-native";
 import { List, Switch, Button, useTheme, Text } from "react-native-paper";
 import AutoTaskModal from "./components/AutoTaskModal";
 import SkeletonBox from "../../../components/SkeletonBox";
@@ -19,6 +14,7 @@ import { api } from "../../../api";
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
+  AUTOTASK_ACTIVE_FROM,
 } from "../../../shared/constants";
 
 import { useMoveSpecificTasksMutation } from "../../../api/task-api";
@@ -33,6 +29,7 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const toast = useToast();
 
+  const [autotaskDate, setAutotaskDate] = useState("");
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
@@ -46,6 +43,17 @@ const ProfileScreen = ({ navigation }) => {
       setisAutoTaskModalVisible(true);
     }
   }, [!data?.prefs?.autoMove]);
+
+  useEffect(() => {
+    checkAutotaskDate();
+  }, []);
+
+  const checkAutotaskDate = async () => {
+    const autotaskStarted = await SecureStore.getItemAsync(
+      AUTOTASK_ACTIVE_FROM
+    );
+    setAutotaskDate(autotaskStarted);
+  };
 
   const toggleLogoutModal = () => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
@@ -68,19 +76,21 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   const handleSubmitAutoTask = async (dates) => {
-    const to = format(new Date(), "yyyy-MM-dd");
+    const to = new Date().toISOString();
     await moveTasksApi({ tasks: Object.keys(dates), to });
     await updatePrefsApi({ autoMove: !data?.prefs?.autoMove });
     setisAutoTaskModalVisible(false);
+    await SecureStore.setItemAsync(AUTOTASK_ACTIVE_FROM, String(to));
     toast.show("", {
       type: "success",
       duration: 2500,
       offset: 100,
       animationType: "zoom-in",
       placement: "top",
-      title: "Autotasks updated!",
+      title: data?.prefs?.autoMove
+        ? "Autotasks disabled!"
+        : "Autotasks enabled!",
     });
-    // await SecureStore.setItemAsync("AUTO_TASK_START", String(new Date));
   };
 
   const navigateToEditPassword = () => {
@@ -185,18 +195,19 @@ const ProfileScreen = ({ navigation }) => {
               description="Automatically move all incompleted tasks to “today”."
               descriptionStyle={{ maxWidth: "80%", marginTop: 2 }}
               right={() => (
-                <View pointerEvents="none" style={{ justifyContent: "center" }}>
-                  <Switch
-                    // disabled
-                    // onChange={toggleAutoTaskModal}
-                    value={data?.prefs?.autoMove}
-                  />
+                <View
+                  pointerEvents="none"
+                  style={{ justifyContent: "center", paddingRight: 5 }}
+                >
+                  <Switch value={data?.prefs?.autoMove} />
                 </View>
               )}
             />
-            <Text style={{ paddingLeft: 20, marginTop: -5 }}>
-              Active From:{" "}
-            </Text>
+            {data?.prefs?.autoMove && autotaskDate && (
+              <Text style={{ paddingLeft: 23, marginTop: -5 }}>
+                Active From: {autotaskDate}
+              </Text>
+            )}
           </View>
         )}
       </View>
@@ -212,10 +223,12 @@ const ProfileScreen = ({ navigation }) => {
           <Button
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
-            style={{ width: "100%" }}
+            style={{ width: "100%", borderRadius: 1 }}
             contentStyle={{
               justifyContent: "flex-start",
-              paddingLeft: 10,
+              paddingLeft: 15,
+              paddingBottom: 5,
+              paddingTop: 5,
             }}
             labelStyle={{
               color: colors.secondary,
@@ -242,7 +255,7 @@ const ProfileScreen = ({ navigation }) => {
             color="secondary"
             customStyle={{ textAlign: "center" }}
           >
-            v0.5.1
+            v0.5.5
           </Text>
         </View>
       </View>
@@ -250,7 +263,7 @@ const ProfileScreen = ({ navigation }) => {
       <ConfirmationModal
         isVisible={isLogoutModalVisible}
         title="Log out"
-        description="  Are you sure you want to logout?"
+        description="Are you sure you want to logout?"
         onConfirm={handleLogout}
         onCancel={toggleLogoutModal}
         confirmLabel="Log out"
@@ -258,6 +271,7 @@ const ProfileScreen = ({ navigation }) => {
 
       <AutoTaskModal
         isVisible={isAutoTaskModalVisible}
+        isAutotaskActive={data?.prefs?.autoMove}
         onPress={handleSubmitAutoTask}
         onCancel={handleCloseModal}
         isLoading={moveTasksApiResult.isLoading || updatePrefsResult.isLoading}
@@ -278,13 +292,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     fontWeight: "500",
     fontSize: 14,
-    marginLeft: 15,
+    marginLeft: 23,
   },
   listItem: {
     marginTop: 10,
     marginBottom: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
 });
 

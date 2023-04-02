@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   View,
-  Image,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -22,16 +21,19 @@ import {
   toggleIsAuthenticated,
   toggleFirstLoad,
 } from "../../../shared/slice/global-slice";
-import FooterActions from "./FooterAction";
+
 import {
   JWT_KEY_STORE,
   REFRESH_JWT_KEY_STORE,
 } from "../../../shared/constants";
 import { useToast } from "react-native-toast-notifications";
+import AuthLayout from "../../../components/layouts/AuthLayout";
+import AuthFooter from "../../../components/layouts/AuthFooter";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const styles = useStyles(theme);
   const toast = useToast();
   const [serverError, setServerError] = useState("");
   const [registerApi, registerApiResult] = useRegisterMutation();
@@ -120,140 +122,113 @@ const RegisterScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: "white" }}
+        {...(Platform.OS === "ios"
+          ? {
+              behavior: "padding",
+              keyboardVerticalOffset: 40,
+            }
+          : {})}
+        style={styles.container}
       >
-        <View style={styles.titleContainer}>
-          <Image
-            style={styles.titleImage}
-            source={require("../../../assets/images/title-dark.png")}
-          />
-          <Text style={styles.secondaryTitle}>
-            Create an account, and unlock your productivity
-          </Text>
-        </View>
+        <AuthLayout>
+          <AuthLayout.Header subTitle="Create an account, and unlock your productivity" />
+          <AuthLayout.Content>
+            <View style={{ paddingHorizontal: 25 }}>
+              <Input
+                autoFocus
+                onChangeText={handleOnChangeText("email")}
+                value={formik.values.email}
+                label="E-mail"
+                keyboardType="email-address"
+                placeholder="Enter Email"
+              />
 
-        <View
-          style={{ flex: 1, justifyContent: "space-between", marginTop: 20 }}
-        >
-          <View>
-            <View style={{ alignItems: "center" }}>
-              <View style={{ width: "85%" }}>
-                <Input
-                  autoFocus
-                  onChangeText={handleOnChangeText("email")}
-                  // onBlur={formik.handleBlur("email")}
-                  value={formik.values.email}
-                  label="E-mail"
-                  keyboardType="email-address"
-                  placeholder="Enter Email"
-                />
+              <View style={{ height: 20, marginBottom: 10 }}>
+                <Text style={styles.errorText}>
+                  {(formik.touched["email"] && formik?.errors?.email) || ""}
+                </Text>
+              </View>
+              <Input
+                onChangeText={handleOnChangeText("password")}
+                value={formik.values.password}
+                label="Password"
+                placeholder="Enter Password"
+                secureTextEntry={secretMap["password"]}
+                rightIcon={secretMap["password"] ? "eye-off" : "eye"}
+                onPressIcon={handlePassToggle("password")}
+              />
 
-                <View style={{ height: 20, marginBottom: 10 }}>
-                  <Text
-                    style={{ ...styles.errorText, color: theme.colors.error }}
-                  >
-                    {(formik.touched["email"] && formik?.errors?.email) || ""}
-                  </Text>
-                </View>
+              <View style={{ height: 20, marginBottom: 10 }}>
+                <Text style={styles.errorText}>
+                  {(formik.touched["password"] && formik?.errors?.password) ||
+                    ""}
+                </Text>
+              </View>
+              <Input
+                onChangeText={handleOnChangeText("confirmPassword")}
+                // onBlur={formik.handleBlur("confirmPassword")}
+                secureTextEntry={secretMap["confirmPassword"]}
+                value={formik.values.confirmPassword}
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
+                onPressIcon={handlePassToggle("confirmPassword")}
+              />
 
-                <Input
-                  onChangeText={handleOnChangeText("password")}
-                  // onBlur={formik.handleBlur("password")}
-                  value={formik.values.password}
-                  label="Password"
-                  placeholder="Enter Password"
-                  secureTextEntry={secretMap["password"]}
-                  rightIcon={secretMap["password"] ? "eye-off" : "eye"}
-                  onPressIcon={handlePassToggle("password")}
-                />
-
-                <View style={{ height: 20, marginBottom: 10 }}>
-                  <Text
-                    style={{ ...styles.errorText, color: theme.colors.error }}
-                  >
-                    {(formik.touched["password"] && formik?.errors?.password) ||
-                      ""}
-                  </Text>
-                </View>
-
-                <Input
-                  onChangeText={handleOnChangeText("confirmPassword")}
-                  // onBlur={formik.handleBlur("confirmPassword")}
-                  secureTextEntry={secretMap["confirmPassword"]}
-                  value={formik.values.confirmPassword}
-                  label="Confirm Password"
-                  placeholder="Confirm Password"
-                  rightIcon={secretMap["confirmPassword"] ? "eye-off" : "eye"}
-                  onPressIcon={handlePassToggle("confirmPassword")}
-                />
-
-                <View style={{ height: 20 }}>
-                  <Text
-                    style={{ ...styles.errorText, color: theme.colors.error }}
-                  >
-                    {(formik.touched["confirmPassword"] &&
-                      formik?.errors?.confirmPassword) ||
-                      ""}
-                  </Text>
-                </View>
-                <View style={{ height: 24 }}>
-                  {serverError ? (
-                    <Text
-                      style={{
-                        ...styles.errorText,
-                        color: theme.colors.error,
-                        textAlign: "center",
-                      }}
-                    >
-                      {serverError}
-                    </Text>
-                  ) : null}
-                </View>
+              <View style={{ height: 20 }}>
+                <Text style={styles.errorText}>
+                  {(formik.touched["confirmPassword"] &&
+                    formik?.errors?.confirmPassword) ||
+                    ""}
+                </Text>
               </View>
             </View>
-          </View>
-          <FooterActions
-            handleOnPressPrimary={formik.handleSubmit}
-            handleOnPressSecondary={handleBackToLogin}
-            disabledPrimary={registerApiResult.isLoading}
-            isLoading={registerApiResult.isLoading}
-          />
-        </View>
+
+            <View
+              style={{
+                height: 24,
+                marginTop: 20,
+                marginBottom: 10,
+                alignItems: "center",
+              }}
+            >
+              {serverError ? (
+                <Text style={styles.errorText}>{serverError}</Text>
+              ) : null}
+            </View>
+          </AuthLayout.Content>
+          <AuthLayout.Footer>
+            <AuthFooter
+              onPressPrimary={formik.handleSubmit}
+              onPressSecondary={handleBackToLogin}
+              primaryText="Create"
+              secondaryText="Sign in instead"
+              disabledPrimary={registerApiResult.isLoading}
+              isLoading={
+                registerApiResult.isLoading ||
+                registerApiResult.status === "fulfilled"
+              }
+            />
+          </AuthLayout.Footer>
+        </AuthLayout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  titleImage: {
-    height: 40,
-    width: 220,
-    marginBottom: 20,
-  },
-  inputContainer: {
-    backgroundColor: "white",
-    marginTop: 10,
-  },
-  errorText: {
-    marginTop: 5,
-    marginLeft: 10,
-    fontWeight: "400",
-  },
-  secondaryTitle: {
-    fontSize: 14,
-    color: "gray",
-    textAlign: "center",
-    marginLeft: -10,
-    fontWeight: "500",
-  },
-});
+const useStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "white",
+    },
+    errorText: {
+      fontSize: 12,
+      marginTop: 5,
+      marginLeft: 15,
+      fontWeight: "400",
+      color: theme.colors.error,
+    },
+  });
 
 export default RegisterScreen;

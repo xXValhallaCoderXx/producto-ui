@@ -12,7 +12,7 @@ import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFocusMode, toggleIsToday } from "../today-slice";
+import { toggleFocusMode, selectIsToday } from "../today-slice";
 import lockOpen from "../../../../assets/images/lock-open.png";
 import lockClosed from "../../../../assets/images/lock-closed.png";
 
@@ -25,25 +25,7 @@ const TodayHeader = ({
 }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const isToday = useSelector((state) => state.today.isToday);
-
-  useEffect(() => {
-    if (clientUtc) {
-      const currentDate = format(clientUtc, "yyyy-MM-dd");
-      const todayDate = format(new Date(), "yyyy-MM-dd");
-      if (currentDate === todayDate) {
-        dispatch(toggleIsToday(true));
-      } else {
-        dispatch(toggleIsToday(false));
-      }
-    }
-  }, [clientUtc]);
-
-  useEffect(() => {
-    if (!isToday) {
-      dispatch(toggleFocusMode({ focusMode: true }));
-    }
-  }, [isToday]);
+  const isToday = useSelector(selectIsToday);
 
   return (
     <View>
@@ -57,18 +39,15 @@ const TodayHeader = ({
           }}
         >
           {focusMode
-            ? format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()
-            : null}
+            ? null
+            : format(new Date(clientUtc), "	EEE, d LLL yyyy").toUpperCase()}
         </Text>
       </TouchableOpacity>
       <View style={styles.container}>
         <View style={styles.row}>
           <View>
             <View style={{ ...styles.dateContainer, height: 50 }}>
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple("#2962ff1f", true)}
-                onPress={onPressToday}
-              >
+              <TouchableOpacity onPress={onPressToday}>
                 <View>
                   <Text
                     variant="titleLarge"
@@ -80,8 +59,8 @@ const TodayHeader = ({
                     Today
                   </Text>
                 </View>
-              </TouchableNativeFeedback>
-              {focusMode && (
+              </TouchableOpacity>
+              {focusMode ? null : (
                 <View style={styles.dateContainer}>
                   <TouchableOpacity
                     background={TouchableNativeFeedback.Ripple(
@@ -112,7 +91,7 @@ const TodayHeader = ({
             style={{ padding: 5 }}
           >
             <Image
-              source={focusMode ? lockOpen : lockClosed}
+              source={focusMode ? lockClosed : lockOpen}
               style={{ height: 24, width: 18 }}
             />
           </TouchableOpacity>
@@ -124,17 +103,14 @@ const TodayHeader = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },
   row: {
-    display: "flex",
     flexDirection: "row",
   },
   dateContainer: {
-    display: "flex",
     flexDirection: "row",
     alignItems: "center",
   },

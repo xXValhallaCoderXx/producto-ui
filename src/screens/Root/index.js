@@ -15,18 +15,9 @@ const RootScreen = () => {
   const [fadeAnim] = useState(new Animated.Value(0));
   const [fadeAnim2] = useState(new Animated.Value(0));
   const [imageScaleAnim] = useState(new Animated.Value(4.5));
-  const { isAuthenticated, init, firstLoad } = useSelector(
-    (state) => state.global
-  );
+  const { isAuthenticated, init } = useSelector((state) => state.global);
 
   useEffect(() => {
-    async function prepare() {
-      Platform.OS === "android" &&
-        (await NavigationBar.setBackgroundColorAsync("white"));
-      Platform.OS === "android" &&
-        (await NavigationBar.setButtonStyleAsync("dark"));
-    }
-
     const fadeAnimation = Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 750,
@@ -47,7 +38,6 @@ const RootScreen = () => {
     fadeAnimation.start();
     scaleAnimation.start();
     fadeAnimation2.start();
-    prepare();
   }, []);
 
   if (!init) {

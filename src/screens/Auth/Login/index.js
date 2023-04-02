@@ -9,13 +9,15 @@ import { KeyboardAvoidingView, useWindowDimensions } from "react-native";
 import {
   toggleIsAuthenticated,
   toggleFirstLoad,
+  setEmail,
 } from "../../../shared/slice/global-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Text } from "react-native-paper";
-import FooterActions from "./FooterAction";
+import AuthFooter from "../../../components/layouts/AuthFooter";
 import { MainInput as Input } from "../../../components";
-const titleDark = require("../../../assets/images/title-dark.png");
+
+import AuthLayout from "../../../components/layouts/AuthLayout";
 
 import {
   JWT_KEY_STORE,
@@ -24,7 +26,6 @@ import {
 import {
   StyleSheet,
   View,
-  Image,
   Animated,
   TouchableWithoutFeedback,
   Keyboard,
@@ -33,17 +34,20 @@ import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
   const toast = useToast();
   const dispatch = useDispatch();
   const passwordInputRef = useRef(null);
+
   const emailInputRef = useRef(null);
   const windowWidth = useWindowDimensions().width;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
+  const styles = useStyles(theme);
 
   const [step, setStep] = useState(1);
   const [secretMap, setSecretMap] = useState({
@@ -54,7 +58,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       email: "",
     },
-    validateOnChange: false,
+    validateOnBlur: false,
+    validateOnBlur: false,
     validationSchema: Yup.object().shape({
       email: Yup.string()
         .required("Please enter an e-mail address")
@@ -69,6 +74,8 @@ const LoginScreen = ({ navigation }) => {
     initialValues: {
       password: "",
     },
+    validateOnBlur: false,
+    validateOnBlur: false,
     validationSchema: Yup.object().shape({
       password: Yup.string()
         .required("Password is required")
@@ -108,16 +115,13 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (verifyResult.isSuccess) {
+      dispatch(setEmail(emailForm.values.email));
       setStep(2);
     }
   }, [verifyResult.isSuccess, verifyResult.isFetching]);
 
   useEffect(() => {
     if (loginApiResult.isSuccess) {
-      toast.show("Login Success!", {
-        type: "success",
-        title: "Login Success!",
-      });
       setTokenAndRedirect(loginApiResult.data);
     }
   }, [loginApiResult.isSuccess]);
@@ -166,39 +170,33 @@ const LoginScreen = ({ navigation }) => {
       passwordForm.resetForm();
       navigation.navigate("Registration");
     } else {
+      passwordForm.setErrors({});
       emailInputRef.current.focus();
       setStep(nextStep);
     }
   };
 
+  // const handleForgotPassword = () => {
+  //   navigation.navigate("ForgotPassword");
+  // };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, backgroundColor: "white" }}
+        {...(Platform.OS === "ios"
+          ? {
+              behavior: "padding",
+              keyboardVerticalOffset: 40,
+            }
+          : {})}
+        style={styles.container}
       >
-        <View style={{ flex: 1, justifyContent: "space-between" }}>
-          <View>
-            <View style={styles.titleContainer}>
-              <Image
-                source={titleDark}
-                resizeMode="contain"
-                style={{
-                  width: 231,
-                  height: 42,
-                }}
-              ></Image>
-              <View style={{ marginTop: 19 }}>
-                <Text style={styles.secondaryTitle}>
-                  Sign in, to unlock your productivity
-                </Text>
-              </View>
-            </View>
+        <AuthLayout>
+          <AuthLayout.Header subTitle="Sign in, to unlock your productivity" />
+          <AuthLayout.Content>
             <Animated.View
               style={{
-                ...styles.inputWrapper,
-                marginBottom: 30,
+                alignItems: "center",
                 transform: [{ translateX: passwordInputPos }],
               }}
             >
@@ -209,54 +207,36 @@ const LoginScreen = ({ navigation }) => {
               >
                 <View
                   style={{
-                    display: "flex",
                     alignItems: "center",
                     width: windowWidth,
                   }}
                 >
-                  <Input
-                    label="Email"
-                    ref={emailInputRef}
-                    value={emailForm.values.email}
-                    style={{
-                      width: windowWidth * 0.85,
-                      maxWidth: windowWidth * 0.9,
-                    }}
-                    onChangeText={emailForm.handleChange("email")}
-                    onBlur={emailForm.handleBlur("email")}
-                    keyboardType="email-address"
-                  />
+                  <View style={styles.stepOneContainer}>
+                    <Input
+                      label="Email"
+                      ref={emailInputRef}
+                      value={emailForm.values.email}
+                      style={{ width: "100%" }}
+                      onChangeText={emailForm.handleChange("email")}
+                      onBlur={emailForm.handleBlur("email")}
+                      keyboardType="email-address"
+                    />
 
-                  <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {emailForm.touched.email && emailForm.errors.email ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: windowWidth - windowWidth * 0.9,
-                        }}
-                      >
-                        {emailForm.errors.email}
-                      </Text>
-                    ) : null}
+                    <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                      {emailForm.touched.email && emailForm.errors.email ? (
+                        <Text style={styles.formError}>
+                          {emailForm.errors.email}
+                        </Text>
+                      ) : null}
+                    </View>
                   </View>
                 </View>
-                <View
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: windowWidth,
-                  }}
-                >
+                <View style={styles.stepTwoContainer}>
                   <Input
                     label="Password"
                     value={passwordForm.values.password}
                     ref={passwordInputRef}
-                    style={{
-                      width: windowWidth * 0.85,
-                      maxWidth: windowWidth * 0.9,
-                    }}
+                    style={{ width: "100%" }}
                     onChangeText={passwordForm.handleChange("password")}
                     onBlur={passwordForm.handleBlur("password")}
                     secureTextEntry={secretMap["password"]}
@@ -265,52 +245,85 @@ const LoginScreen = ({ navigation }) => {
                   />
 
                   <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                    {passwordForm.errors.password ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: windowWidth - windowWidth * 0.9,
-                        }}
-                      >
+                    {passwordForm.touched.password &&
+                    passwordForm.errors.password ? (
+                      <Text style={styles.formError}>
                         {passwordForm.errors.password}
                       </Text>
                     ) : null}
                   </View>
+                  {/* <View
+                    style={{
+                      width: "100%",
+                      justifyContent: "flex-start",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={handleForgotPassword}
+                      style={{ padding: 15 }}
+                    >
+                      <Text
+                        style={{
+                          color: theme.colors.primary,
+                          fontWeight: "600",
+                        }}
+                      >
+                        Forgot your password?
+                      </Text>
+                    </TouchableOpacity>
+                  </View> */}
                 </View>
               </View>
             </Animated.View>
-          </View>
-          <FooterActions
-            handleOnPressPrimary={handleOnPressPrimary}
-            handleOnPressSecondary={handleOnPressSecondary}
-            step={step}
-            isLoading={verifyResult.isFetching || loginApiResult.isLoading}
-          />
-        </View>
+          </AuthLayout.Content>
+          <AuthLayout.Footer>
+            <AuthFooter
+              onPressPrimary={handleOnPressPrimary}
+              onPressSecondary={handleOnPressSecondary}
+              primaryText={step === 1 ? "Next" : "Log in"}
+              secondaryText={step === 1 ? "Create account" : "Change Email"}
+              isLoading={
+                verifyResult.isFetching ||
+                loginApiResult.isLoading ||
+                loginApiResult.status === "fulfilled"
+              }
+            />
+          </AuthLayout.Footer>
+        </AuthLayout>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    alignItems: "center",
-    marginTop: 30,
-  },
-  secondaryTitle: {
-    fontSize: 14,
-    color: "gray",
-    textAlign: "center",
-    marginLeft: -10,
-    fontWeight: "500",
-  },
-  inputWrapper: {
-    display: "flex",
-    alignItems: "center",
-    marginTop: 50,
-  },
-});
+const useStyles = (theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: "white",
+    },
+    animatedInput: {
+      flex: "row",
+    },
+    stepOneContainer: {
+      paddingLeft: 25,
+      paddingRight: 25,
+      width: "100%",
+      maxWidth: 450,
+    },
+    stepTwoContainer: {
+      alignItems: "center",
+      width: "100%",
+      paddingLeft: 25,
+      paddingRight: 25,
+      maxWidth: 450,
+    },
+    formError: {
+      color: theme.colors.error,
+      fontSize: 12,
+      fontWeight: "400",
+      paddingLeft: 15,
+    },
+  });
 
 export default LoginScreen;

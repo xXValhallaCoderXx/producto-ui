@@ -7,32 +7,26 @@ import {
   Checkbox,
   Portal,
 } from "react-native-paper";
-import { useGetIncompleteDetailTasksQuery } from "../api/task-api";
-import { format } from "date-fns";
-import { ScrollView } from "react-native";
-import { useEffect, useState } from "react";
 
-const MoveIncompleteModal = ({ isVisible, onPress, onCancel, currentDate }) => {
+import { ScrollView, View } from "react-native";
+import { useState, useMemo } from "react";
+
+const MoveIncompleteModal = ({
+  isVisible,
+  onPress,
+  onCancel,
+  tasks,
+  currentDate,
+}) => {
   const theme = useTheme();
-  const { isLoading, data, refetch } = useGetIncompleteDetailTasksQuery({});
-  const [parsedDates, setParsedDates] = useState([]);
   const [checkedDates, setCheckedDates] = useState({});
 
-  useEffect(() => {
-    if (data?.length > 0) {
-      const dates = [];
-      data?.forEach((item) => {
-        dates.push(item);
-        // if (
-        //   format(new Date(item.deadline), "yyyy-MM-dd") ===
-        //   format(currentDate, "yyyy-MM-dd")
-        // ) {
-        //   dates.push(item);
-        // }
-      });
-      setParsedDates(dates);
+  const parsedDates = useMemo(() => {
+    if (tasks) {
+      return tasks?.filter((_task) => _task.completed !== true);
     }
-  }, [data, isLoading, currentDate]);
+    return [];
+  }, [currentDate]);
 
   const onClickCheckbox = (task) => () => {
     const updatedDates = {
@@ -83,7 +77,7 @@ const MoveIncompleteModal = ({ isVisible, onPress, onCancel, currentDate }) => {
               {parsedDates.map((item) => {
                 return (
                   <List.Item
-                    style={{ paddingLeft: 0, marginLeft: -8 }}
+                    style={{ paddingLeft: 0 }}
                     key={item.id}
                     title={item.title}
                     onPress={onClickCheckbox(item)}

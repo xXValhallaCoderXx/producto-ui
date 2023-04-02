@@ -17,7 +17,7 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
           height: 20,
         }}
       >
-        {focusMode && (
+        {focusMode ? null : (
           <>
             <View style={{ flexGrow: 1 }}>
               <ProgressBar progress={isNaN(progress) ? 0 : progress} />

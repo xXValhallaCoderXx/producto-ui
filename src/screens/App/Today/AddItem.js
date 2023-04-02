@@ -7,7 +7,7 @@ import {
   TextInput,
   Platform,
 } from "react-native";
-import { toggleAddTaskMode } from "./today-slice";
+import { toggleAddTaskMode, selectIsToday } from "./today-slice";
 
 const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const theme = useTheme();
@@ -15,10 +15,9 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
   const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
-  const [error, setError] = useState("");
+  const isToday = useSelector(selectIsToday);
 
   const handleOnChange = (value) => {
-    setError("");
     setTaskName(value);
   };
 
@@ -28,7 +27,6 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
       dispatch(toggleAddTaskMode(true));
       addTaskInputRef.current && addTaskInputRef.current.focus();
     }
-    // setError("");
   };
 
   const handleOnBlur = async () => {
@@ -40,7 +38,7 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
     }
   };
 
-  if (!focusMode) {
+  if (focusMode || !isToday) {
     return null;
   }
 
@@ -49,9 +47,8 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
       {addTask ? (
         <View
           style={{
-            flexDirection: "row",
             paddingLeft: 25,
-            marginTop: Platform.OS === "ios" ? 5 : 0,
+            marginTop: Platform.OS === "ios" ? 10 : 5,
           }}
         >
           <TextInput
@@ -74,8 +71,9 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           icon="plus"
           contentStyle={{
             justifyContent: "flex-start",
-            paddingLeft: 8,
+            paddingLeft: 10,
           }}
+          style={{ borderRadius: 1 }}
           labelStyle={{
             fontWeight: "600",
           }}

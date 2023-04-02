@@ -20,6 +20,7 @@ const MoveIncomplete = ({
       onPress={onMoveIncomplete}
       disabled={
         isLoading ||
+        !tasks ||
         isAfter(currentDate, new Date()) ||
         tasks?.length === 0 ||
         tasks?.every((task) => task.completed === true)

@@ -1,6 +1,7 @@
 module.exports = ({ config }) => {
   return {
     ...config,
+    plugins: ["expo-localization"],
     runtimeVersion: {
       policy: "sdkVersion",
     },
@@ -29,4 +30,5 @@ module.exports = ({ config }) => {
       },
     },
   };
+  a;
 };

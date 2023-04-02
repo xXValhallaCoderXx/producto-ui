@@ -1,13 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
+import { isSameDay, parseISO } from "date-fns";
 
 export const todaySlice = createSlice({
   name: "today-slice",
   initialState: {
-    focusMode: true,
-    editMode: false,
+    focusMode: false,
     addTaskMode: false,
     calendarOpen: false,
-    isToday: true,
+    editingTask: null,
+    currentDate: new Date().toISOString(),
   },
   reducers: {
     toggleFocusMode: (state, action) => {
@@ -16,24 +17,38 @@ export const todaySlice = createSlice({
     toggleCalendar: (state, action) => {
       state.calendarOpen = !state.calendarOpen;
     },
-    toggleIsToday: (state, action) => {
-      state.isToday = action.payload;
-    },
-    toggleEditMode: (state, action) => {
-      state.editMode = action.payload.editMode ?? !state.editMode;
-    },
     toggleAddTaskMode: (state, action) => {
       state.addTaskMode = action.payload ?? !state.addTaskMode;
     },
+    setCurrentDate: (state, action) => {
+      state.currentDate = action.payload;
+    },
+    setEditingTask: (state, action) => {
+      state.editingTask = action.payload;
+    },
   },
+});
+
+const selectSelf = (state) => state;
+
+export const selectIsToday = createSelector(selectSelf, (state) => {
+  if (isSameDay(new Date(state.today.currentDate), new Date())) {
+    return true;
+  }
+  return false;
+});
+
+export const selectCurrentDate = createSelector(selectSelf, (state) => {
+  return parseISO(state.today.currentDate);
 });
 
 export const {
   toggleFocusMode,
   toggleCalendar,
   toggleIsToday,
-  toggleEditMode,
   toggleAddTaskMode,
+  setCurrentDate,
+  setEditingTask,
 } = todaySlice.actions;
 
 export default todaySlice.reducer;

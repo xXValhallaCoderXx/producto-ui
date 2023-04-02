@@ -3,18 +3,133 @@ import { api } from "./index";
 const taskApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getTodaysTasks: builder.query({
-      query: ({ date }) => {
-        return `/task?date=${date}`;
+      query: ({ date, ...params }) => ({
+        url: `/task`,
+        params,
+      }),
+      providesTags: (result, error, arg) => {
+        return [{ type: "Tasks", id: arg.start }];
       },
-      providesTags: (result, error, arg) => [{ type: "Tasks", id: arg.date }],
-      // keepUnusedDataFor: 5,
     }),
-    getIncompleteTasks: builder.query({
-      query: () => {
-        return `/task/incomplete`;
+
+    createTask: builder.mutation({
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      query: ({ title, deadline }) => {
+        return {
+          url: `/task`,
+          method: "POST",
+          body: { title, deadline },
+        };
       },
-      providesTags: ["IncompleteTasks"],
+      async onQueryStarted(
+        { title, deadline, start, end },
+        { dispatch, queryFulfilled }
+      ) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { end, start },
+            (draft) => {
+              draft.push({
+                completed: false,
+                focus: false,
+                id: Math.floor(Math.random() * 100),
+                createdAt: deadline,
+                deadline,
+                title,
+              });
+              return draft;
+            }
+          )
+        );
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            api.util.updateQueryData(
+              "getTodaysTasks",
+              { start, end },
+              (draft) => {
+                const task = draft.find((todo) => todo.title === data.title);
+                task.id = data.id;
+                task.createdAt = task.createdAt;
+                return draft;
+              }
+            )
+          );
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
     }),
+
+    updateTask: builder.mutation({
+      query: ({ id, data }) => {
+        return {
+          url: `/task/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      // invalidatesTags: ["Tasks"],
+      async onQueryStarted(
+        { id, data, start, end },
+        { dispatch, queryFulfilled }
+      ) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { start, end },
+            (draft) => {
+              const optimisticTodo = draft.find((todo) => todo.id === id);
+
+              if ("completed" in data) {
+                optimisticTodo.completed = data.completed;
+              }
+              if ("focus" in data) {
+                optimisticTodo.focus = data.focus;
+              }
+              if ("title" in data) {
+                optimisticTodo.title = data.title;
+              }
+              return draft;
+            }
+          )
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
+    }),
+
+    deleteTask: builder.mutation({
+      invalidatesTags: ["Tasks", "IncompleteTasks"],
+      query: ({ id }) => {
+        return {
+          url: `/task/${id}`,
+          method: "DELETE",
+        };
+      },
+      async onQueryStarted({ id, start, end }, { dispatch, queryFulfilled }) {
+        const optimisticUpdate = dispatch(
+          api.util.updateQueryData(
+            "getTodaysTasks",
+            { start, end },
+            (draft) => {
+              draft = draft.filter((todo) => todo.id !== id);
+              return draft;
+            }
+          )
+        );
+        try {
+          await queryFulfilled;
+        } catch (e) {
+          optimisticUpdate.undo();
+        }
+      },
+    }),
+
     moveSpecificTasks: builder.mutation({
       invalidatesTags: ["Tasks", "IncompleteTasks"],
       query: ({ tasks, to }) => {
@@ -25,145 +140,27 @@ const taskApi = api.injectEndpoints({
         };
       },
     }),
+
+    // WORKING ON CLEANUP
+    getIncompleteTasks: builder.query({
+      query: () => {
+        return `/task/incomplete`;
+      },
+      providesTags: ["IncompleteTasks"],
+    }),
+
     getIncompleteDetailTasks: builder.query({
       query: () => {
         return `/task/incomplete-detail`;
       },
       providesTags: ["IncompleteTasks"],
     }),
-    toggleTask: builder.mutation({
-      query: ({ id, completed, date }) => {
-        return {
-          url: `/task/${id}`,
-          method: "PATCH",
-          body: { completed },
-        };
-      },
-      async onQueryStarted(
-        { id, completed, date },
-        { dispatch, queryFulfilled }
-      ) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            const optimisticTodo = draft.find((todo) => todo.id === id);
-            optimisticTodo.completed = completed;
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          optimisticUpdate.undo();
-        }
-      },
-      invalidatesTags: ["IncompleteTasks"],
-    }),
-    toggleTaskFocus: builder.mutation({
-      query: ({ id, focus, date }) => {
-        return {
-          url: `/task/${id}`,
-          method: "PATCH",
-          body: { focus },
-        };
-      },
-      async onQueryStarted({ id, focus, date }, { dispatch, queryFulfilled }) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            const optimisticTodo = draft.find((todo) => todo.id === id);
-            optimisticTodo.focus = focus;
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          optimisticUpdate.undo();
-        }
-      },
-    }),
-    updateTask: builder.mutation({
-      query: ({ id, title, date }) => {
-        return {
-          url: `/task/${id}`,
-          method: "PATCH",
-          body: { title },
-        };
-      },
-      async onQueryStarted({ id, title, date }, { dispatch, queryFulfilled }) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            const task = draft.find((todo) => todo.id === id);
-            task.title = title;
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          // optimisticUpdate.undo();
-          dispatch(api.util.invalidateTags(["Tasks"]));
-        }
-      },
-    }),
-    createTask: builder.mutation({
-      invalidatesTags: ["IncompleteTasks"],
-      query: ({ title, deadline, date }) => {
-        return {
-          url: `/task`,
-          method: "POST",
-          body: { title, deadline },
-        };
-      },
-      async onQueryStarted(
-        { title, deadline, date },
-        { dispatch, queryFulfilled }
-      ) {
-        const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getTodaysTasks", { date }, (draft) => {
-            draft.push({
-              completed: false,
-              focus: false,
-              id: Math.floor(Math.random() * 100),
-              createdAt: deadline,
-              deadline,
-              title,
-            });
-            return draft;
-          })
-        );
-        try {
-          await queryFulfilled;
-        } catch (e) {
-          optimisticUpdate.undo();
-        }
-      },
-    }),
-    // moveIncompleteTasks: builder.mutation({
-    //   invalidatesTags: ["Tasks", "IncompleteTasks"],
-    //   query: ({ from, to }) => ({
-    //     url: `/task/move-incomplete`,
-    //     method: "POST",
-    //     body: { from, to },
-    //   }),
-    // }),
-    deleteTask: builder.mutation({
-      invalidatesTags: ["Tasks", "IncompleteTasks"],
-      query: ({ id }) => {
-        return {
-          url: `/task/${id}`,
-          method: "DELETE",
-        };
-      },
-    }),
   }),
 });
 
 export const {
   useGetTodaysTasksQuery,
-  useToggleTaskMutation,
   useCreateTaskMutation,
-  useToggleTaskFocusMutation,
-  // useMoveIncompleteTasksMutation,
   useGetIncompleteTasksQuery,
   useUpdateTaskMutation,
   useGetIncompleteDetailTasksQuery,

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { View } from "react-native";
-
-import { Text, useTheme } from "react-native-paper";
+import { startOfDay, endOfDay } from "date-fns";
+import { selectCurrentDate } from "./today-slice";
+import { Text } from "react-native-paper";
 import DraggbleList from "./components/DraggableList";
+import { setEditingTask } from "./today-slice";
 import { useDeleteTaskMutation } from "../../../api/task-api";
 import { useToast } from "react-native-toast-notifications";
 import ConfirmationModal from "../../../components/ConfirmationModal";
@@ -15,11 +17,12 @@ const TaskList = ({
   utcDate,
 }) => {
   const toast = useToast();
-  const theme = useTheme();
-  const [editTask, setEditTask] = useState(null);
+  const dispatch = useDispatch();
   const focusMode = useSelector((state) => state.today.focusMode);
+  const currentDate = useSelector(selectCurrentDate);
 
-  // const onCheckTask = (_task) =>  handleToggleTaskComplete(_task);
+  const editTaskId = useSelector((state) => state.today.editingTask);
+
   const onToggleFocus = (_task) => (e) => {
     e.stopPropagation();
     handleToggleTaskFocus(_task);
@@ -29,8 +32,6 @@ const TaskList = ({
 
   useEffect(() => {
     if (deleteTaskApiResults.isSuccess) {
-      setIsDeleteModalVisible(false);
-      setEditTask(null);
       toast.show("", {
         type: "success",
         duration: 2500,
@@ -45,17 +46,21 @@ const TaskList = ({
 
   const handleOnPressDelete = (_id) => {
     setIsDeleteModalVisible(true);
-    setEditTask(_id);
   };
 
   const toggleDeleteModal = () => {
     setIsDeleteModalVisible(!isDeleteModalVisible);
-    setEditTask(null);
+    // setEditTask(null);
   };
 
   const handleDeleteTask = async () => {
-    await deleteTaskApi({ id: editTask });
-    setEditTask(null);
+    deleteTaskApi({
+      id: editTaskId,
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
+    setIsDeleteModalVisible(false);
+    dispatch(setEditingTask(null));
   };
 
   const tasksToDisplay = () => {
@@ -69,19 +74,16 @@ const TaskList = ({
 
   return (
     <View>
-      {tasksToDisplay().length === 0 && !focusMode ? (
+      {tasksToDisplay().length === 0 && focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
         </View>
       ) : (
         <DraggbleList
           tasks={tasks.filter((task) => {
-            // if (!focusMode && !task.focus && !task.completed) {
-            //   return false;
-            // }
-            if (!focusMode && task.focus) {
+            if (focusMode && task.focus) {
               return task;
-            } else if (focusMode) {
+            } else if (!focusMode) {
               return task;
             }
             return false;

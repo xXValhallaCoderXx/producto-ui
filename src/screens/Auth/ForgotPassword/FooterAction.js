@@ -1,8 +1,6 @@
 import ProductoButton from "../../../components/Button";
 import { View } from "react-native";
 
-const validEmailRegex = /^[a-zA-Z]+[a-zA-Z0-9_.]+@[a-zA-Z.]+[a-zA-Z]$/;
-
 const FooterActions = ({
   handleOnPressPrimary,
   handleOnPressSecondary,
@@ -18,8 +16,8 @@ const FooterActions = ({
     >
       <View
         style={{
-          display: "flex",
           flexDirection: "row",
+          alignItems: "center",
           justifyContent: "space-between",
         }}
       >
@@ -27,13 +25,14 @@ const FooterActions = ({
           onPress={handleOnPressSecondary}
           title={"Sign in instead"}
           type="text"
+          contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
           disabled={isLoading}
         />
         <ProductoButton
           onPress={handleOnPressPrimary}
           type="contained"
           loading={isLoading}
-          title={"Create"}
+          title={"Send OTP"}
           disabled={isLoading || disabledPrimary}
         />
       </View>
