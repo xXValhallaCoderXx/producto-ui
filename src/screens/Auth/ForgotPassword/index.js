@@ -63,8 +63,6 @@ const RegisterScreen = ({ navigation }) => {
     await formik.handleSubmit();
   };
 
-  console.log("FMORIK : ", formik.errors);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
