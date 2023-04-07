@@ -6,7 +6,6 @@ const FooterActions = ({
   handleOnPressSecondary,
   isLoading,
   disabledPrimary,
-  step,
 }) => {
   return (
     <View

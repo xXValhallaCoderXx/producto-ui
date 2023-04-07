@@ -33,8 +33,8 @@ import {
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
+  useRequestOtpMutation,
 } from "../../../api/auth-api";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ProductoButton from "../../../components/Button";
 
 const LoginScreen = ({ navigation }) => {
@@ -47,6 +47,7 @@ const LoginScreen = ({ navigation }) => {
   const windowWidth = useWindowDimensions().width;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
+  const [requestOtpApi, requestOtpApiResult] = useRequestOtpMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
   const styles = useStyles(theme);
 
@@ -54,6 +55,15 @@ const LoginScreen = ({ navigation }) => {
   const [secretMap, setSecretMap] = useState({
     password: true,
   });
+
+  useEffect(() => {
+    if (requestOtpApiResult.isSuccess) {
+      emailForm.resetForm();
+      passwordForm.resetForm();
+      setStep(1);
+      navigation.navigate("ForgotPassword");
+    }
+  }, [requestOtpApiResult]);
 
   const emailForm = useFormik({
     initialValues: {
@@ -178,10 +188,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    emailForm.resetForm();
-    passwordForm.resetForm();
-    setStep(1);
-    navigation.navigate("ForgotPassword");
+    requestOtpApi({ email: emailForm.values.email });
   };
 
   return (
@@ -280,6 +287,7 @@ const LoginScreen = ({ navigation }) => {
                       onPress={handleForgotPassword}
                       title={"Forgot Password"}
                       type="text"
+                      disabled={requestOtpApiResult.isLoading}
                       style={{ marginLeft: -8 }}
                       // contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
                       // disabled={isLoading}

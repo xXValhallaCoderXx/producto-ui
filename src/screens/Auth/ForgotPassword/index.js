@@ -8,8 +8,10 @@ import {
 } from "react-native";
 
 import * as Yup from "yup";
-
-import { useState } from "react";
+import * as SecureStore from "expo-secure-store";
+import { JWT_KEY_STORE } from "../../../shared/constants";
+import { useVerifyOtpMutation } from "../../../api/auth-api";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MainInput as Input } from "../../../components";
 import { useFormik } from "formik";
@@ -21,6 +23,7 @@ const RegisterScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const styles = useStyles(theme);
   const [serverError, setServerError] = useState("");
+  const [verifyOtpApi, verifyOtpApiResult] = useVerifyOtpMutation();
   const userEmail = useSelector((state) => state.global.email);
 
   const formik = useFormik({
@@ -31,11 +34,25 @@ const RegisterScreen = ({ navigation }) => {
     validationSchema: Yup.object().shape({
       code: Yup.string()
         .required("OTP code is required")
-        .min("OTP code is a minimum of 6 characters"),
+        .min(6, "OTP code must be a minimum of 6 characters"),
     }),
 
-    onSubmit: async ({ email }) => {},
+    onSubmit: async ({ code }) => {
+      verifyOtpApi({ email: userEmail, code });
+    },
   });
+
+  useEffect(() => {
+    if (verifyOtpApiResult.isSuccess) {
+      setTokenAndRedirect(verifyOtpApiResult.data);
+    }
+  }, [verifyOtpApiResult]);
+
+  const setTokenAndRedirect = async (_data) => {
+    const { accessToken } = _data;
+    await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+    navigation.navigate("EnterPassword");
+  };
 
   const handleBackToLogin = () => {
     formik.resetForm();
@@ -44,7 +61,6 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleOnPressPrimary = async () => {
     await formik.handleSubmit();
-    // navigation.navigate("EnterPassword");
   };
 
   console.log("FMORIK : ", formik.errors);
@@ -94,6 +110,11 @@ const RegisterScreen = ({ navigation }) => {
                 <View style={{ width: "100%", height: 25, marginTop: 10 }}>
                   {formik.errors.code ? (
                     <Text style={styles.formError}>{formik.errors.code}</Text>
+                  ) : null}
+                  {verifyOtpApiResult.isError ? (
+                    <Text style={styles.formError}>
+                      {verifyOtpApiResult?.error?.data?.message}
+                    </Text>
                   ) : null}
                 </View>
               </View>
