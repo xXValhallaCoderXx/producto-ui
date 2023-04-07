@@ -11,8 +11,8 @@ import * as Yup from "yup";
 import * as SecureStore from "expo-secure-store";
 import { JWT_KEY_STORE } from "../../../shared/constants";
 import { useVerifyOtpMutation } from "../../../api/auth-api";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { MainInput as Input } from "../../../components";
 import { useFormik } from "formik";
 import { Text, useTheme } from "react-native-paper";
@@ -20,9 +20,7 @@ import FooterActions from "./FooterAction";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const styles = useStyles(theme);
-  const [serverError, setServerError] = useState("");
   const [verifyOtpApi, verifyOtpApiResult] = useVerifyOtpMutation();
   const userEmail = useSelector((state) => state.global.email);
 
