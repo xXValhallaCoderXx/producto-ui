@@ -26,14 +26,14 @@ const FooterActions = ({
           title={"Sign in instead"}
           type="text"
           contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
-          disabled={isLoading}
+          disabled={isLoading ?? false}
         />
         <ProductoButton
           onPress={handleOnPressPrimary}
           type="contained"
           loading={isLoading}
           title={"Send OTP"}
-          disabled={isLoading || disabledPrimary}
+          disabled={(isLoading || disabledPrimary) ?? false}
         />
       </View>
     </View>
