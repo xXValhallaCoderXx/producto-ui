@@ -106,8 +106,8 @@ const EnterNewPasswordScreen = ({ navigation }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        // keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        // behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1, backgroundColor: "white" }}
       >
         <View style={styles.titleContainer}>
