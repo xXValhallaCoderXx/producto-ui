@@ -8,66 +8,64 @@ import {
 } from "react-native";
 
 import * as Yup from "yup";
-
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import * as SecureStore from "expo-secure-store";
+import { JWT_KEY_STORE } from "../../../shared/constants";
+import { useVerifyOtpMutation } from "../../../api/auth-api";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { MainInput as Input } from "../../../components";
 import { useFormik } from "formik";
 import { Text, useTheme } from "react-native-paper";
 import FooterActions from "./FooterAction";
-import { useToast } from "react-native-toast-notifications";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
-  const [step, setStep] = useState(1);
-  const dispatch = useDispatch();
-  const toast = useToast();
-  const [serverError, setServerError] = useState("");
+  const styles = useStyles(theme);
+  const [verifyOtpApi, verifyOtpApiResult] = useVerifyOtpMutation();
   const userEmail = useSelector((state) => state.global.email);
 
-  //   const formik = useFormik({
-  //     initialValues: {
-  //       email: "",
-  //     },
-  //     validateOnChange: false,
-  //     validationSchema: Yup.object().shape({
-  //       email: Yup.string()
-  //         .required("Email field is required")
-  //         .email("Please enter a valid e-mail address"),
-  //     }),
+  const formik = useFormik({
+    initialValues: {
+      code: "",
+    },
+    // validateOnChange: false,
+    validationSchema: Yup.object().shape({
+      code: Yup.string()
+        .required("OTP code is required")
+        .min(6, "OTP code must be a minimum of 6 characters"),
+    }),
 
-  //     onSubmit: async ({ email }) => {
-  //       setStep(2);
-  //       //   if (result?.data?.data) {
-  //       //   }
-  //     },
-  //   });
+    onSubmit: async ({ code }) => {
+      verifyOtpApi({ email: userEmail, code });
+    },
+  });
+
+  useEffect(() => {
+    if (verifyOtpApiResult.isSuccess) {
+      setTokenAndRedirect(verifyOtpApiResult.data);
+    }
+  }, [verifyOtpApiResult]);
+
+  const setTokenAndRedirect = async (_data) => {
+    const { accessToken } = _data;
+    await SecureStore.setItemAsync(JWT_KEY_STORE, accessToken);
+    navigation.navigate("EnterPassword");
+  };
 
   const handleBackToLogin = () => {
-    // formik.resetForm();
+    formik.resetForm();
     navigation.navigate("Login");
   };
 
-  const handleOnPressPrimary = () => {
-    if (step === 1) {
-      setStep(2);
-      //   formik.handleSubmit();
-    } else {
-    }
-  };
-
-  const handleOnChangeText = (field) => (e) => {
-    if (serverError) {
-      setServerError("");
-    }
-    // formik.setFieldValue(field, e);
+  const handleOnPressPrimary = async () => {
+    await formik.handleSubmit();
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        // keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
+        // behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
         <View style={styles.titleContainer}>
@@ -76,67 +74,48 @@ const RegisterScreen = ({ navigation }) => {
             source={require("../../../assets/images/title-dark.png")}
           />
           <Text style={styles.secondaryTitle}>
-            {step === 1
-              ? "Enter your email to recieve a OTP code"
-              : "Please enter your OTP code"}
+            An E-mail has been sent to{" "}
+            <Text style={{ fontWeight: 600 }}>{userEmail}</Text>
           </Text>
         </View>
 
         <View
           style={{ flex: 1, justifyContent: "space-between", marginTop: 20 }}
         >
-          {step === 1 ? (
-            <View>
-              <View style={{ alignItems: "center" }}>
-                <View
-                  style={{
-                    width: "100%",
-                    maxWidth: 450,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                  }}
-                >
-                  <Text>
-                    You are requesting for an OTP to be sent to {userEmail}
-                  </Text>
+          <View>
+            <View style={{ alignItems: "center" }}>
+              <View
+                style={{
+                  width: "100%",
+                  maxWidth: 450,
+                  paddingLeft: 25,
+                  paddingRight: 25,
+                }}
+              >
+                <Text style={{ textAlign: "left", marginBottom: 10 }}>
+                  Please enter your OTP code below
+                </Text>
+                <Input
+                  value={formik.values.code}
+                  placeholder="OTP Code..."
+                  style={{ width: "100%" }}
+                  onChangeText={formik.handleChange("code")}
+                  onBlur={formik.handleBlur("code")}
+                  keyboardType="email-address"
+                />
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {formik.errors.code ? (
+                    <Text style={styles.formError}>{formik.errors.code}</Text>
+                  ) : null}
+                  {verifyOtpApiResult.isError ? (
+                    <Text style={styles.formError}>
+                      {verifyOtpApiResult?.error?.data?.message}
+                    </Text>
+                  ) : null}
                 </View>
               </View>
             </View>
-          ) : (
-            <View
-              style={{
-                paddingLeft: 25,
-                paddingRight: 25,
-                width: "100%",
-                maxWidth: 450,
-              }}
-            >
-              <Input
-                label="Email"
-                // ref={emailInputRef}
-                // value={emailForm.values.email}
-                style={{ width: "100%" }}
-                // onChangeText={emailForm.handleChange("email")}
-                // onBlur={emailForm.handleBlur("email")}
-                // keyboardType="email-address"
-              />
-
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {/* {emailForm.touched.email && emailForm.errors.email ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: 15,
-                        }}
-                      >
-                        {emailForm.errors.email}
-                      </Text>
-                    ) : null} */}
-              </View>
-            </View>
-          )}
+          </View>
           <FooterActions
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleBackToLogin}
@@ -149,34 +128,41 @@ const RegisterScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  titleImage: {
-    height: 40,
-    width: 220,
-    marginBottom: 20,
-  },
-  inputContainer: {
-    backgroundColor: "white",
-    marginTop: 10,
-  },
-  errorText: {
-    marginTop: 5,
-    marginLeft: 15,
-    fontWeight: "400",
-  },
-  secondaryTitle: {
-    fontSize: 14,
-    color: "gray",
-    textAlign: "center",
-    marginLeft: -10,
-    fontWeight: "500",
-  },
-});
+const useStyles = (theme) =>
+  StyleSheet.create({
+    titleContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 30,
+      marginBottom: 20,
+    },
+    titleImage: {
+      height: 40,
+      width: 220,
+      marginBottom: 20,
+    },
+    inputContainer: {
+      backgroundColor: "white",
+      marginTop: 10,
+    },
+    errorText: {
+      marginTop: 5,
+      marginLeft: 15,
+      fontWeight: "400",
+    },
+    secondaryTitle: {
+      fontSize: 14,
+      color: "gray",
+      textAlign: "center",
+      marginLeft: -10,
+      fontWeight: "500",
+    },
+    formError: {
+      color: theme.colors.error,
+      fontSize: 12,
+      fontWeight: "400",
+      paddingLeft: 15,
+    },
+  });
 
 export default RegisterScreen;

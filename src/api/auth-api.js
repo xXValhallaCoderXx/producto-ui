@@ -47,6 +47,33 @@ const authApi = api.injectEndpoints({
       },
       invalidatesTags: ["User"],
     }),
+    requestOtp: builder.mutation({
+      query: ({ email }) => {
+        return {
+          url: `/auth/otp-request`,
+          method: "POST",
+          body: { email },
+        };
+      },
+    }),
+    verifyOtp: builder.mutation({
+      query: ({ email, code }) => {
+        return {
+          url: `/auth/otp-verify`,
+          method: "POST",
+          body: { email, code },
+        };
+      },
+    }),
+    forgotPasswordUpdate: builder.mutation({
+      query: ({ newPassword }) => {
+        return {
+          url: `/auth/forgot-password-update`,
+          method: "POST",
+          body: { newPassword },
+        };
+      },
+    }),
   }),
 });
 
@@ -56,4 +83,7 @@ export const {
   useLazyVerifyEmailQuery,
   useLazyRefreshTokenQuery,
   useUpdateEmailMutation,
+  useRequestOtpMutation,
+  useVerifyOtpMutation,
+  useForgotPasswordUpdateMutation,
 } = authApi;

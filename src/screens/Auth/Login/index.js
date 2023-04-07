@@ -33,8 +33,9 @@ import {
 import {
   useLoginMutation,
   useLazyVerifyEmailQuery,
+  useRequestOtpMutation,
 } from "../../../api/auth-api";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import ProductoButton from "../../../components/Button";
 
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -46,6 +47,7 @@ const LoginScreen = ({ navigation }) => {
   const windowWidth = useWindowDimensions().width;
   const passwordInputPos = useRef(new Animated.Value(windowWidth / 2)).current;
   const [loginApi, loginApiResult] = useLoginMutation();
+  const [requestOtpApi, requestOtpApiResult] = useRequestOtpMutation();
   const [verifyTigger, verifyResult] = useLazyVerifyEmailQuery();
   const styles = useStyles(theme);
 
@@ -53,6 +55,15 @@ const LoginScreen = ({ navigation }) => {
   const [secretMap, setSecretMap] = useState({
     password: true,
   });
+
+  useEffect(() => {
+    if (requestOtpApiResult.isSuccess) {
+      emailForm.resetForm();
+      passwordForm.resetForm();
+      setStep(1);
+      navigation.navigate("ForgotPassword");
+    }
+  }, [requestOtpApiResult]);
 
   const emailForm = useFormik({
     initialValues: {
@@ -176,9 +187,9 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  // const handleForgotPassword = () => {
-  //   navigation.navigate("ForgotPassword");
-  // };
+  const handleForgotPassword = () => {
+    requestOtpApi({ email: emailForm.values.email });
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -232,6 +243,19 @@ const LoginScreen = ({ navigation }) => {
                   </View>
                 </View>
                 <View style={styles.stepTwoContainer}>
+                  <View
+                    style={{
+                      width: "100%",
+                      marginBottom: 20,
+                    }}
+                  >
+                    <Text>
+                      Continue as{" "}
+                      <Text style={{ fontWeight: 600 }}>
+                        {emailForm.values.email}
+                      </Text>
+                    </Text>
+                  </View>
                   <Input
                     label="Password"
                     value={passwordForm.values.password}
@@ -252,27 +276,24 @@ const LoginScreen = ({ navigation }) => {
                       </Text>
                     ) : null}
                   </View>
-                  {/* <View
+                  <View
                     style={{
                       width: "100%",
                       justifyContent: "flex-start",
                       alignItems: "flex-start",
                     }}
                   >
-                    <TouchableOpacity
+                    <ProductoButton
                       onPress={handleForgotPassword}
-                      style={{ padding: 15 }}
-                    >
-                      <Text
-                        style={{
-                          color: theme.colors.primary,
-                          fontWeight: "600",
-                        }}
-                      >
-                        Forgot your password?
-                      </Text>
-                    </TouchableOpacity>
-                  </View> */}
+                      title={"Forgot Password"}
+                      type="text"
+                      disabled={requestOtpApiResult.isLoading}
+                      style={{ marginLeft: -8 }}
+                      // contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
+                      // disabled={isLoading}
+                      size="md"
+                    />
+                  </View>
                 </View>
               </View>
             </Animated.View>
