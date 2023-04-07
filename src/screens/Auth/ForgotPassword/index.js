@@ -15,52 +15,39 @@ import { MainInput as Input } from "../../../components";
 import { useFormik } from "formik";
 import { Text, useTheme } from "react-native-paper";
 import FooterActions from "./FooterAction";
-import { useToast } from "react-native-toast-notifications";
 
 const RegisterScreen = ({ navigation }) => {
   const theme = useTheme();
-  const [step, setStep] = useState(1);
   const dispatch = useDispatch();
-  const toast = useToast();
+  const styles = useStyles(theme);
   const [serverError, setServerError] = useState("");
   const userEmail = useSelector((state) => state.global.email);
 
-  //   const formik = useFormik({
-  //     initialValues: {
-  //       email: "",
-  //     },
-  //     validateOnChange: false,
-  //     validationSchema: Yup.object().shape({
-  //       email: Yup.string()
-  //         .required("Email field is required")
-  //         .email("Please enter a valid e-mail address"),
-  //     }),
+  const formik = useFormik({
+    initialValues: {
+      code: "",
+    },
+    // validateOnChange: false,
+    validationSchema: Yup.object().shape({
+      code: Yup.string()
+        .required("OTP code is required")
+        .min("OTP code is a minimum of 6 characters"),
+    }),
 
-  //     onSubmit: async ({ email }) => {
-  //       setStep(2);
-  //       //   if (result?.data?.data) {
-  //       //   }
-  //     },
-  //   });
+    onSubmit: async ({ email }) => {},
+  });
 
   const handleBackToLogin = () => {
-    // formik.resetForm();
+    formik.resetForm();
     navigation.navigate("Login");
   };
 
-  const handleOnPressPrimary = () => {
-    if (step === 1) {
-      setStep(2);
-      //   formik.handleSubmit();
-    } else if (step === 2) {
-      navigation.navigate("EnterPassword");
-    }
+  const handleOnPressPrimary = async () => {
+    await formik.handleSubmit();
+    // navigation.navigate("EnterPassword");
   };
 
-  const PAGE_TITLE = {
-    1: "Enter your email to recieve a OTP code",
-    2: "Please enter your OTP code",
-  };
+  console.log("FMORIK : ", formik.errors);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -74,84 +61,49 @@ const RegisterScreen = ({ navigation }) => {
             style={styles.titleImage}
             source={require("../../../assets/images/title-dark.png")}
           />
-          <Text style={styles.secondaryTitle}>{PAGE_TITLE[step]}</Text>
+          <Text style={styles.secondaryTitle}>
+            An E-mail has been sent to{" "}
+            <Text style={{ fontWeight: 600 }}>{userEmail}</Text>
+          </Text>
         </View>
 
         <View
           style={{ flex: 1, justifyContent: "space-between", marginTop: 20 }}
         >
-          {step === 1 ? (
-            <View>
-              <View style={{ alignItems: "center" }}>
-                <View
-                  style={{
-                    width: "100%",
-                    maxWidth: 450,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                  }}
-                >
-                  <Text style={{ textAlign: "left", marginBottom: 10 }}>
-                    You are requesting for an OTP to be sent to
-                  </Text>
-                  <Input
-                    // label="Email"
-                    value={userEmail}
-                    style={{ width: "100%" }}
-                    // onChangeText={emailForm.handleChange("email")}
-                    // onBlur={emailForm.handleBlur("email")}
-                    keyboardType="email-address"
-                  />
+          <View>
+            <View style={{ alignItems: "center" }}>
+              <View
+                style={{
+                  width: "100%",
+                  maxWidth: 450,
+                  paddingLeft: 25,
+                  paddingRight: 25,
+                }}
+              >
+                <Text style={{ textAlign: "left", marginBottom: 10 }}>
+                  Please enter your OTP code below
+                </Text>
+                <Input
+                  value={formik.values.code}
+                  placeholder="OTP Code..."
+                  style={{ width: "100%" }}
+                  onChangeText={formik.handleChange("code")}
+                  onBlur={formik.handleBlur("code")}
+                  keyboardType="email-address"
+                />
+                <View style={{ width: "100%", height: 25, marginTop: 10 }}>
+                  {formik.errors.code ? (
+                    <Text style={styles.formError}>{formik.errors.code}</Text>
+                  ) : null}
                 </View>
               </View>
             </View>
-          ) : step === 2 ? (
-            <View
-              style={{
-                paddingLeft: 25,
-                paddingRight: 25,
-                width: "100%",
-                maxWidth: 450,
-              }}
-            >
-              <Input
-                label="OTP"
-                placeholder="Enter Your OTP Code..."
-                // ref={emailInputRef}
-                // value={emailForm.values.email}
-                style={{ width: "100%" }}
-                // onChangeText={emailForm.handleChange("email")}
-                // onBlur={emailForm.handleBlur("email")}
-                // keyboardType="email-address"
-              />
-            </View>
-          ) : (
-            <View
-              style={{
-                paddingLeft: 25,
-                paddingRight: 25,
-                width: "100%",
-                maxWidth: 450,
-              }}
-            >
-              <Input
-                label="Password"
-                placeholder="Enter your new password..."
-                // ref={emailInputRef}
-                // value={emailForm.values.email}
-                style={{ width: "100%" }}
-                // onChangeText={emailForm.handleChange("email")}
-                // onBlur={emailForm.handleBlur("email")}
-                // keyboardType="email-address"
-              />
-            </View>
-          )}
+          </View>
           <FooterActions
             handleOnPressPrimary={handleOnPressPrimary}
             handleOnPressSecondary={handleBackToLogin}
             disabledPrimary={false}
             isLoading={false}
-            step={step}
           />
         </View>
       </KeyboardAvoidingView>
@@ -159,34 +111,41 @@ const RegisterScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  titleImage: {
-    height: 40,
-    width: 220,
-    marginBottom: 20,
-  },
-  inputContainer: {
-    backgroundColor: "white",
-    marginTop: 10,
-  },
-  errorText: {
-    marginTop: 5,
-    marginLeft: 15,
-    fontWeight: "400",
-  },
-  secondaryTitle: {
-    fontSize: 14,
-    color: "gray",
-    textAlign: "center",
-    marginLeft: -10,
-    fontWeight: "500",
-  },
-});
+const useStyles = (theme) =>
+  StyleSheet.create({
+    titleContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 30,
+      marginBottom: 20,
+    },
+    titleImage: {
+      height: 40,
+      width: 220,
+      marginBottom: 20,
+    },
+    inputContainer: {
+      backgroundColor: "white",
+      marginTop: 10,
+    },
+    errorText: {
+      marginTop: 5,
+      marginLeft: 15,
+      fontWeight: "400",
+    },
+    secondaryTitle: {
+      fontSize: 14,
+      color: "gray",
+      textAlign: "center",
+      marginLeft: -10,
+      fontWeight: "500",
+    },
+    formError: {
+      color: theme.colors.error,
+      fontSize: 12,
+      fontWeight: "400",
+      paddingLeft: 15,
+    },
+  });
 
 export default RegisterScreen;

@@ -6,7 +6,6 @@ const FooterActions = ({
   handleOnPressSecondary,
   isLoading,
   disabledPrimary,
-  step,
 }) => {
   return (
     <View
@@ -33,7 +32,7 @@ const FooterActions = ({
           onPress={handleOnPressPrimary}
           type="contained"
           loading={isLoading}
-          title={step === 1 ? "Request OTP" : "Confirm OTP"}
+          title={"Submit OTP"}
           disabled={isLoading || disabledPrimary}
         />
       </View>
