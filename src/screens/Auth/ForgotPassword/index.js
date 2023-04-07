@@ -52,22 +52,21 @@ const RegisterScreen = ({ navigation }) => {
     if (step === 1) {
       setStep(2);
       //   formik.handleSubmit();
-    } else {
+    } else if (step === 2) {
+      navigation.navigate("EnterPassword");
     }
   };
 
-  const handleOnChangeText = (field) => (e) => {
-    if (serverError) {
-      setServerError("");
-    }
-    // formik.setFieldValue(field, e);
+  const PAGE_TITLE = {
+    1: "Enter your email to recieve a OTP code",
+    2: "Please enter your OTP code",
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <KeyboardAvoidingView
-        keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        // keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 20}
+        // behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1, backgroundColor: "white" }}
       >
         <View style={styles.titleContainer}>
@@ -75,11 +74,7 @@ const RegisterScreen = ({ navigation }) => {
             style={styles.titleImage}
             source={require("../../../assets/images/title-dark.png")}
           />
-          <Text style={styles.secondaryTitle}>
-            {step === 1
-              ? "Enter your email to recieve a OTP code"
-              : "Please enter your OTP code"}
-          </Text>
+          <Text style={styles.secondaryTitle}>{PAGE_TITLE[step]}</Text>
         </View>
 
         <View
@@ -96,11 +91,39 @@ const RegisterScreen = ({ navigation }) => {
                     paddingRight: 25,
                   }}
                 >
-                  <Text>
-                    You are requesting for an OTP to be sent to {userEmail}
+                  <Text style={{ textAlign: "left", marginBottom: 10 }}>
+                    You are requesting for an OTP to be sent to
                   </Text>
+                  <Input
+                    // label="Email"
+                    value={userEmail}
+                    style={{ width: "100%" }}
+                    // onChangeText={emailForm.handleChange("email")}
+                    // onBlur={emailForm.handleBlur("email")}
+                    keyboardType="email-address"
+                  />
                 </View>
               </View>
+            </View>
+          ) : step === 2 ? (
+            <View
+              style={{
+                paddingLeft: 25,
+                paddingRight: 25,
+                width: "100%",
+                maxWidth: 450,
+              }}
+            >
+              <Input
+                label="OTP"
+                placeholder="Enter Your OTP Code..."
+                // ref={emailInputRef}
+                // value={emailForm.values.email}
+                style={{ width: "100%" }}
+                // onChangeText={emailForm.handleChange("email")}
+                // onBlur={emailForm.handleBlur("email")}
+                // keyboardType="email-address"
+              />
             </View>
           ) : (
             <View
@@ -112,7 +135,8 @@ const RegisterScreen = ({ navigation }) => {
               }}
             >
               <Input
-                label="Email"
+                label="Password"
+                placeholder="Enter your new password..."
                 // ref={emailInputRef}
                 // value={emailForm.values.email}
                 style={{ width: "100%" }}
@@ -120,21 +144,6 @@ const RegisterScreen = ({ navigation }) => {
                 // onBlur={emailForm.handleBlur("email")}
                 // keyboardType="email-address"
               />
-
-              <View style={{ width: "100%", height: 25, marginTop: 10 }}>
-                {/* {emailForm.touched.email && emailForm.errors.email ? (
-                      <Text
-                        style={{
-                          color: theme.colors.error,
-                          fontSize: 12,
-                          fontWeight: "400",
-                          paddingLeft: 15,
-                        }}
-                      >
-                        {emailForm.errors.email}
-                      </Text>
-                    ) : null} */}
-              </View>
             </View>
           )}
           <FooterActions
@@ -142,6 +151,7 @@ const RegisterScreen = ({ navigation }) => {
             handleOnPressSecondary={handleBackToLogin}
             disabledPrimary={false}
             isLoading={false}
+            step={step}
           />
         </View>
       </KeyboardAvoidingView>

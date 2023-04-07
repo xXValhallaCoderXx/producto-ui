@@ -35,6 +35,7 @@ import {
   useLazyVerifyEmailQuery,
 } from "../../../api/auth-api";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import ProductoButton from "../../../components/Button";
 
 const LoginScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -176,9 +177,12 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  // const handleForgotPassword = () => {
-  //   navigation.navigate("ForgotPassword");
-  // };
+  const handleForgotPassword = () => {
+    emailForm.resetForm();
+    passwordForm.resetForm();
+    setStep(1);
+    navigation.navigate("ForgotPassword");
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -232,6 +236,19 @@ const LoginScreen = ({ navigation }) => {
                   </View>
                 </View>
                 <View style={styles.stepTwoContainer}>
+                  <View
+                    style={{
+                      width: "100%",
+                      marginBottom: 20,
+                    }}
+                  >
+                    <Text>
+                      Continue as{" "}
+                      <Text style={{ fontWeight: 600 }}>
+                        {emailForm.values.email}
+                      </Text>
+                    </Text>
+                  </View>
                   <Input
                     label="Password"
                     value={passwordForm.values.password}
@@ -252,27 +269,23 @@ const LoginScreen = ({ navigation }) => {
                       </Text>
                     ) : null}
                   </View>
-                  {/* <View
+                  <View
                     style={{
                       width: "100%",
                       justifyContent: "flex-start",
                       alignItems: "flex-start",
                     }}
                   >
-                    <TouchableOpacity
+                    <ProductoButton
                       onPress={handleForgotPassword}
-                      style={{ padding: 15 }}
-                    >
-                      <Text
-                        style={{
-                          color: theme.colors.primary,
-                          fontWeight: "600",
-                        }}
-                      >
-                        Forgot your password?
-                      </Text>
-                    </TouchableOpacity>
-                  </View> */}
+                      title={"Forgot Password"}
+                      type="text"
+                      style={{ marginLeft: -8 }}
+                      // contentStyle={{ paddingTop: 5, paddingBottom: 5 }}
+                      // disabled={isLoading}
+                      size="md"
+                    />
+                  </View>
                 </View>
               </View>
             </Animated.View>
