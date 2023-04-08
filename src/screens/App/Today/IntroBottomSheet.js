@@ -17,7 +17,7 @@ const IntroBottomSheet = ({ user, isLoading }) => {
   const bottomSheetRef = useRef(null);
 
   // variables
-  const snapPoints = useMemo(() => ["25%", "60%"], []);
+  const snapPoints = useMemo(() => ["25%", "35%"], []);
 
   const renderBackdrop = useCallback(
     (props) => <BottomSheetBackdrop opacity={0.5} {...props} />,
@@ -49,39 +49,26 @@ const IntroBottomSheet = ({ user, isLoading }) => {
       backdropComponent={renderBackdrop}
     >
       <View style={styles.contentContainer}>
-        <Text
+        {/* <Text
           style={{
             color: "#6B7280",
-            fontSize: 25,
-            marginBottom: 5,
+            fontSize: 20,
+            // marginBottom: 5,
+            paddingRight: 5,
             fontWeight: "600",
           }}
         >
-          Welcome To
-        </Text>
-        <Image source={productoLogo} style={{ width: 220, height: 40 }} />
+          Welcome to
+        </Text> */}
+        <Image source={productoLogo} style={{ width: 140, height: 25 }} />
       </View>
       <View style={{ padding: 30 }}>
         <Text
           style={{
             color: "#5048E5",
-            fontSize: 16,
-            fontWeight: "600",
-            marginBottom: 5,
-          }}
-        >
-          Discover Your Productivity
-        </Text>
-        <Text style={{ color: "#6B7280", fontSize: 12 }}>
-          Regain clarity with your life, by getting all those little things
-          done, with Producto you have all the tools you need.
-        </Text>
-        <Text
-          style={{
-            color: "#5048E5",
             fontSize: 14,
             fontWeight: "600",
-            marginTop: 15,
+
             marginBottom: 5,
           }}
         >
@@ -110,31 +97,6 @@ const IntroBottomSheet = ({ user, isLoading }) => {
             focus mode you will only see the tasks you select.
           </Text>
         </View>
-
-        <Text
-          style={{
-            color: "#5048E5",
-            fontSize: 14,
-            fontWeight: "600",
-            marginTop: 15,
-            marginBottom: 5,
-          }}
-        >
-          Instructions
-        </Text>
-
-        <Text style={{ color: "#6B7280", fontSize: 12 }}>
-          - Long press on tasks to edit, delete or sort them into a different
-          order.
-        </Text>
-        <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 5 }}>
-          - Toggle "Auto-tasks" on in Profile settings, to automatically move
-          tasks made on previous days, which werent completed.
-        </Text>
-        <Text style={{ color: "#6B7280", fontSize: 12, marginTop: 5 }}>
-          - Click on the date above, to open the calendar to see if you missed
-          any tasks, on previous days.
-        </Text>
       </View>
     </BottomSheet>
   );
@@ -142,6 +104,9 @@ const IntroBottomSheet = ({ user, isLoading }) => {
 
 const styles = StyleSheet.create({
   contentContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingTop: 10,
     borderColor: "gray",
     alignItems: "center",
   },
