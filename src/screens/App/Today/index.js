@@ -72,6 +72,7 @@ const ListScreen = () => {
 
   useEffect(() => {
     setTheme();
+    dispatch(setCurrentDate(new Date().toISOString()));
   }, []);
 
   const setTheme = async () => {

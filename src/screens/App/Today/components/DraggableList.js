@@ -26,7 +26,6 @@ const DraggableListContainer = ({
   const theme = useTheme();
   const inputRef = useRef(null);
   const dragRef = useRef(false);
-
   const [data, setData] = useState([]);
   const [editTaskTitle, setEditTaskTitle] = useState("");
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
@@ -39,8 +38,49 @@ const DraggableListContainer = ({
   const todayDate = format(new Date(), "yyyy-MM-dd");
 
   useEffect(() => {
-    setData(tasks);
+    sortData();
   }, [tasks]);
+
+  const sortData = async () => {
+    const hasData = await AsyncStorage.getItem(currentDate);
+    const parsedHasData = JSON.parse(hasData);
+    if (parsedHasData) {
+      function removeValue(_task, index, arr) {
+        // If the value at the current array index matches the specified value (2)
+        if (parsedHasData.includes(_task.id)) {
+          // Removes the value from the original array
+          arr.splice(index, 1);
+          return true;
+        }
+        return false;
+      }
+      if (hasData && parsedHasData.length !== tasks.length) {
+        // If new task has been added
+        const tasksCopy = [...tasks];
+        const tempArray = [];
+        parsedHasData.forEach((item) => {
+          const task = tasks.find((task) => task?.id === item);
+          if (task) {
+            tempArray.push(task);
+          }
+        });
+
+        const x = tasksCopy.filter(removeValue);
+        setData(tempArray.push(...x));
+      } else {
+        const tempArray = [];
+        JSON.parse(hasData).forEach((item) => {
+          const task = tasks.find((task) => task?.id === item);
+          if (task) {
+            tempArray.push(task);
+          }
+        });
+        setData(tempArray);
+      }
+    } else {
+      setData(tasks);
+    }
+  };
 
   const handleOnBlur = async (e) => {
     if (!dragRef.current) {
@@ -161,15 +201,11 @@ const DraggableListContainer = ({
         dragRef.current = true;
       }}
       onDragEnd={async ({ data: _data }) => {
-        // const itemSort = _data.map((item) => item?.id);
-        // console.log("ON DRAG END", itemSort);
-        // console.log("ON DRAG END: ", itemSort);
-        // const objectToStore = JSON.stringify(itemSort);
-
-        // sortData();
         dragRef.current = false;
+        const itemSort = _data.map((item) => item.id);
+        const objectToStore = JSON.stringify(itemSort);
+        AsyncStorage.setItem(currentDate, objectToStore);
         setData(_data);
-        // await AsyncStorage.setItem(currentDate, objectToStore);
       }}
       keyExtractor={(item) => item?.id}
       renderItem={renderItem}
