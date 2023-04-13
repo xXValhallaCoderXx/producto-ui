@@ -7,6 +7,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.bloopdevstudios.producto",
+      versionCode: 1,
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",
