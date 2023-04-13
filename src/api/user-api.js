@@ -8,6 +8,15 @@ const userApi = api.injectEndpoints({
       },
       providesTags: ["User"],
     }),
+    deleteAccount: builder.query({
+      query: () => {
+        return {
+          url: "/user/delete-account",
+          method: "GET",
+        };
+      },
+      providesTags: ["User"],
+    }),
     updatePrefs: builder.mutation({
       invalidatesTags: ["User"],
       query: ({ ...prefs }) => {
@@ -19,8 +28,8 @@ const userApi = api.injectEndpoints({
       },
       async onQueryStarted({ ...prefs }, { dispatch, queryFulfilled }) {
         const optimisticUpdate = dispatch(
-          api.util.updateQueryData("getProfile", { }, (draft) => {
-            draft.prefs.autoMove = !draft.prefs.autoMove
+          api.util.updateQueryData("getProfile", {}, (draft) => {
+            draft.prefs.autoMove = !draft.prefs.autoMove;
             return draft;
           })
         );
@@ -47,4 +56,5 @@ export const {
   useGetProfileQuery,
   useUpdatePrefsMutation,
   useUpdatePasswordMutation,
+  useLazyDeleteAccountQuery,
 } = userApi;

@@ -44,7 +44,7 @@ const ConfirmationModal = ({
         <Dialog.Actions>
           <Button
             title="Cancel"
-            textColor={theme.colors.error}
+            textColor={theme.colors.secondary}
             onPress={onCancel}
             type="clear"
             // disabled={isLoading}
@@ -52,7 +52,7 @@ const ConfirmationModal = ({
           <Button
             onPress={onConfirm}
             title={confirmLabel ?? "Save"}
-            textColor={theme.colors.primary}
+            textColor={theme.colors.error}
             type="clear"
             disabled={isLoading}
             style={{ width: 40 }}
