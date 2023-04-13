@@ -52,6 +52,15 @@ const ProfileScreen = ({ navigation }) => {
       dispatch(api.util.resetApiState());
       dispatch(toggleIsAuthenticated(false));
       setIsDeleteModalVisible(false);
+    } else if (deleteAccountResult.isError) {
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: "Sorry, an error occured",
+      });
     }
   }, [deleteAccountResult]);
 
@@ -178,7 +187,7 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
       </View>
-      <View style={{ marginTop: 15 }}>
+      <View style={{ marginTop: 25 }}>
         <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
         {isLoading ? (
@@ -233,6 +242,25 @@ const ProfileScreen = ({ navigation }) => {
         )}
       </View>
 
+      <List.Item
+        titleStyle={listTitleStyle}
+        style={{ ...styles.listItem, marginTop: 20 }}
+        onPress={navigateToChangeEmail}
+        title="App version no."
+        right={() => (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingRight: 10,
+            }}
+          >
+            <Text type="h3" color="black">
+              v1.0.2
+            </Text>
+          </View>
+        )}
+      />
       <View
         style={{
           flex: 1,
@@ -240,7 +268,7 @@ const ProfileScreen = ({ navigation }) => {
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flex: 0.5, justifyContent: "center" }}>
+        <View style={{ flex: 0.2, justifyContent: "center" }}>
           <Button
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
@@ -268,7 +296,7 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </Button>
         </View>
-        <View style={{ flex: 0.5, justifyContent: "center" }}>
+        <View style={{ flex: 0.9, justifyContent: "center" }}>
           <Button
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
@@ -294,17 +322,6 @@ const ProfileScreen = ({ navigation }) => {
               Delete account
             </Text>
           </Button>
-        </View>
-        <View
-          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text
-            type="h4"
-            color="secondary"
-            customStyle={{ textAlign: "center" }}
-          >
-            v0.5.5
-          </Text>
         </View>
       </View>
 
@@ -351,8 +368,8 @@ const styles = StyleSheet.create({
     marginLeft: 23,
   },
   listItem: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 0,
     paddingLeft: 15,
     paddingRight: 15,
   },
