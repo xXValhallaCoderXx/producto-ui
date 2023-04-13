@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as SecureStore from "expo-secure-store";
@@ -22,6 +21,7 @@ import { toggleIsAuthenticated } from "../../../shared/slice/global-slice";
 import {
   useGetProfileQuery,
   useUpdatePrefsMutation,
+  useLazyDeleteAccountQuery,
 } from "../../../api/user-api";
 import { useToast } from "react-native-toast-notifications";
 
@@ -30,10 +30,13 @@ const ProfileScreen = ({ navigation }) => {
   const toast = useToast();
 
   const [autotaskDate, setAutotaskDate] = useState("");
+  const [triggerDeleteAccount, deleteAccountResult] =
+    useLazyDeleteAccountQuery();
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
   const [updatePrefsApi, updatePrefsResult] = useUpdatePrefsMutation();
   const [isAutoTaskModalVisible, setisAutoTaskModalVisible] = useState(false);
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const { data, isLoading } = useGetProfileQuery();
 
   const { colors } = useTheme();
@@ -43,6 +46,23 @@ const ProfileScreen = ({ navigation }) => {
       setisAutoTaskModalVisible(true);
     }
   }, [!data?.prefs?.autoMove]);
+
+  useEffect(() => {
+    if (deleteAccountResult.isSuccess) {
+      dispatch(api.util.resetApiState());
+      dispatch(toggleIsAuthenticated(false));
+      setIsDeleteModalVisible(false);
+    } else if (deleteAccountResult.isError) {
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: "Sorry, an error occured",
+      });
+    }
+  }, [deleteAccountResult]);
 
   useEffect(() => {
     checkAutotaskDate();
@@ -59,6 +79,10 @@ const ProfileScreen = ({ navigation }) => {
     setIsLogoutModalVisible(!isLogoutModalVisible);
   };
 
+  const toggleDeleteModal = () => {
+    setIsDeleteModalVisible(!isDeleteModalVisible);
+  };
+
   const toggleAutoTaskModal = async () => {
     setisAutoTaskModalVisible(!isAutoTaskModalVisible);
   };
@@ -73,6 +97,12 @@ const ProfileScreen = ({ navigation }) => {
     dispatch(api.util.resetApiState());
     setIsLogoutModalVisible(false);
     dispatch(toggleIsAuthenticated(false));
+  };
+
+  const handleDeleteUser = async () => {
+    triggerDeleteAccount();
+    await SecureStore.setItemAsync(JWT_KEY_STORE, "");
+    await SecureStore.setItemAsync(REFRESH_JWT_KEY_STORE, "");
   };
 
   const handleSubmitAutoTask = async (dates) => {
@@ -157,7 +187,7 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
       </View>
-      <View style={{ marginTop: 15 }}>
+      <View style={{ marginTop: 25 }}>
         <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
         {isLoading ? (
@@ -190,7 +220,7 @@ const ProfileScreen = ({ navigation }) => {
             <List.Item
               titleStyle={listTitleStyle}
               onPress={toggleAutoTaskModal}
-              title="Auto Move Tasks"
+              title="Auto-move tasks"
               style={styles.listItem}
               description="Automatically move all incompleted tasks to “today”."
               descriptionStyle={{ maxWidth: "80%", marginTop: 2 }}
@@ -212,6 +242,25 @@ const ProfileScreen = ({ navigation }) => {
         )}
       </View>
 
+      <List.Item
+        titleStyle={listTitleStyle}
+        style={{ ...styles.listItem, marginTop: 20 }}
+        onPress={navigateToChangeEmail}
+        title="App version no."
+        right={() => (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingRight: 10,
+            }}
+          >
+            <Text type="h3" color="black">
+              v1.0.2
+            </Text>
+          </View>
+        )}
+      />
       <View
         style={{
           flex: 1,
@@ -219,7 +268,7 @@ const ProfileScreen = ({ navigation }) => {
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flex: 0.5, justifyContent: "center" }}>
+        <View style={{ flex: 0.2, justifyContent: "center" }}>
           <Button
             type="text"
             TouchableComponent={TouchableWithoutFeedback}
@@ -247,16 +296,32 @@ const ProfileScreen = ({ navigation }) => {
             </Text>
           </Button>
         </View>
-        <View
-          style={{ flex: 0.5, justifyContent: "center", alignItems: "center" }}
-        >
-          <Text
-            type="h4"
-            color="secondary"
-            customStyle={{ textAlign: "center" }}
+        <View style={{ flex: 0.9, justifyContent: "center" }}>
+          <Button
+            type="text"
+            TouchableComponent={TouchableWithoutFeedback}
+            style={{ width: "100%", borderRadius: 1 }}
+            contentStyle={{
+              justifyContent: "flex-start",
+              paddingLeft: 15,
+              paddingBottom: 5,
+              paddingTop: 5,
+            }}
+            labelStyle={{
+              color: colors.error,
+              fontSize: 18,
+            }}
+            onPress={toggleDeleteModal}
           >
-            v0.5.5
-          </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: colors.error,
+              }}
+            >
+              Delete account
+            </Text>
+          </Button>
         </View>
       </View>
 
@@ -267,6 +332,14 @@ const ProfileScreen = ({ navigation }) => {
         onConfirm={handleLogout}
         onCancel={toggleLogoutModal}
         confirmLabel="Log out"
+      />
+      <ConfirmationModal
+        isVisible={isDeleteModalVisible}
+        title="Delete account"
+        description="If you delete your account, all of your tasks will also be removed"
+        onConfirm={handleDeleteUser}
+        onCancel={toggleDeleteModal}
+        confirmLabel="Delete"
       />
 
       <AutoTaskModal
@@ -295,8 +368,8 @@ const styles = StyleSheet.create({
     marginLeft: 23,
   },
   listItem: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 0,
     paddingLeft: 15,
     paddingRight: 15,
   },
