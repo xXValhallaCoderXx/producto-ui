@@ -73,4 +73,6 @@ buck-out/
 web-build/
 dist/
 
+google-api-json.json
+
 # @end expo-cli
