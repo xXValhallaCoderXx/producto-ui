@@ -7,7 +7,7 @@ module.exports = ({ config }) => {
     },
     android: {
       package: "com.bloopdevstudios.producto",
-      versionCode: 1,
+      versionCode: 2,
       adaptiveIcon: {
         foregroundImage: "./assets/splash-icon.png",
         backgroundColor: "#FFFFFF",
@@ -16,6 +16,7 @@ module.exports = ({ config }) => {
     ios: {
       bundleIdentifier: "com.bloopdevstudios.producto",
       supportsTablet: true,
+      buildNumber: 2,
     },
     updates: {
       fallbackToCacheTimeout: 0,

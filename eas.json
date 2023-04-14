@@ -10,9 +10,14 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-api-json.json",
+      }
+    }
   }
 }
