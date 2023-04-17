@@ -1,21 +1,21 @@
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
+import { isAfter, isSameDay } from "date-fns";
 import {
   View,
   TouchableWithoutFeedback,
   TextInput,
   Platform,
 } from "react-native";
-import { toggleAddTaskMode, selectIsToday } from "./today-slice";
+import { toggleAddTaskMode } from "./today-slice";
 
-const AddItem = ({ handleCreateNewTask, focusMode }) => {
+const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
-  const isToday = useSelector(selectIsToday);
 
   const handleOnChange = (value) => {
     setTaskName(value);
@@ -38,7 +38,10 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
     }
   };
 
-  if (focusMode || !isToday) {
+  if (
+    focusMode ||
+    !(isSameDay(currentDate, new Date()) || isAfter(currentDate, new Date()))
+  ) {
     return null;
   }
 

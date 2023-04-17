@@ -288,10 +288,10 @@ const ListScreen = () => {
           onCancel={handleCloseIncompleteModal}
           currentDate={currentDate}
         />
-        <IntroBottomSheet
+        {/* <IntroBottomSheet
           user={userData?.email}
           isLoading={userProfileLoading}
-        />
+        /> */}
       </GestureHandlerRootView>
     </TouchableWithoutFeedback>
   );
