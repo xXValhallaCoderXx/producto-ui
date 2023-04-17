@@ -74,14 +74,14 @@ const TaskList = ({
 
   return (
     <View>
-      {tasksToDisplay().length === 0 && focusMode ? (
+      {tasks.length === 0 && focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
         </View>
       ) : (
         <DraggbleList
           tasks={tasks.filter((task) => {
-            if (focusMode && task.focus) {
+            if (focusMode && !task.completed) {
               return task;
             } else if (!focusMode) {
               return task;

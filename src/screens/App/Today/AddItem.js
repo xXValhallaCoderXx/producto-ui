@@ -1,21 +1,28 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
+import { useKeyboard } from "@react-native-community/hooks";
 import {
   View,
   TouchableWithoutFeedback,
   TextInput,
   Platform,
 } from "react-native";
-import { toggleAddTaskMode, selectIsToday } from "./today-slice";
+import { toggleAddTaskMode } from "./today-slice";
 
-const AddItem = ({ handleCreateNewTask, focusMode }) => {
+const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const keyboard = useKeyboard();
   const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
-  const isToday = useSelector(selectIsToday);
+
+  useEffect(() => {
+    if (!keyboard.keyboardShown) {
+      createTask();
+    }
+  }, [!keyboard.keyboardShown]);
 
   const handleOnChange = (value) => {
     setTaskName(value);
@@ -30,6 +37,10 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
   };
 
   const handleOnBlur = async () => {
+    await createTask();
+  };
+
+  const createTask = async () => {
     dispatch(toggleAddTaskMode(false));
     if (taskName.length > 0) {
       const newValue = taskName;
@@ -38,7 +49,14 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
     }
   };
 
-  if (focusMode || !isToday) {
+  // if (
+  //   focusMode ||
+  //   !(isSameDay(currentDate, new Date()) || isAfter(currentDate, new Date()))
+  // ) {
+  //   return null;
+  // }
+
+  if (focusMode) {
     return null;
   }
 
@@ -72,10 +90,13 @@ const AddItem = ({ handleCreateNewTask, focusMode }) => {
           contentStyle={{
             justifyContent: "flex-start",
             paddingLeft: 10,
+            paddingTop: 8,
+            paddingBottom: 8,
           }}
           style={{ borderRadius: 1 }}
           labelStyle={{
-            fontWeight: "600",
+            fontWeight: "700",
+            // fontSize: 16,
           }}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}

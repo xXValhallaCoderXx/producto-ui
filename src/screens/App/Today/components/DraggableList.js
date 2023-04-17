@@ -31,7 +31,7 @@ const DraggableListContainer = ({
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
   const editTaskId = useSelector((state) => state.today.editingTask);
   const userEmail = useSelector((state) => state.global.email);
-
+  const [localIsChecked, setLocalIsChecked] = useState({ id: "" });
   const [updateTaskApi] = useUpdateTaskMutation();
   const focusMode = useSelector((state) => state.today.focusMode);
   const currentDateTime = useSelector(selectCurrentDate);
@@ -107,7 +107,19 @@ const DraggableListContainer = ({
   };
 
   const handleOnCheckTask = (_task) => () => {
-    onCheckTask(_task);
+    // onCheckTask(_task);
+    if (focusMode) {
+      setLocalIsChecked({ id: _task.id });
+      setTimeout(() => {
+        onCheckTask(_task);
+      }, 300);
+    } else {
+      if (!_task.id) {
+        setLocalIsChecked({ id: _task.id });
+      }
+      setLocalIsChecked({ id: "" });
+      onCheckTask(_task);
+    }
   };
 
   const onPressDelete = (_task) => () => {
@@ -126,7 +138,7 @@ const DraggableListContainer = ({
             }}
             left={() => (
               <View style={styles.leftContainer}>
-                <TouchableOpacity onLongPress={drag}>
+                <TouchableOpacity style={{ marginTop: 5 }} onLongPress={drag}>
                   <MaterialIcons
                     name="drag-indicator"
                     color={"#6B7280"}
@@ -146,13 +158,15 @@ const DraggableListContainer = ({
               </View>
             )}
             right={() => (
-              <TouchableOpacity onPress={onPressDelete(item)}>
-                <FontAwesome
-                  name="trash-o"
-                  color={"#6B7280"}
-                  style={{ fontSize: 25, marginTop: 5 }}
-                />
-              </TouchableOpacity>
+              <View style={{ justifyContent: "center" }}>
+                <TouchableOpacity onPress={onPressDelete(item)}>
+                  <FontAwesome
+                    name="trash-o"
+                    color={"#6B7280"}
+                    style={{ fontSize: 20, marginTop: 5 }}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
           ></List.Item>
         </OpacityDecorator>
@@ -165,9 +179,13 @@ const DraggableListContainer = ({
         titleNumberOfLines={4}
         disabled={addTaskMode || !!editTaskId}
         titleStyle={{
-          color: item?.completed ? "gray" : "black",
+          color:
+            item?.completed || localIsChecked.id === item.id ? "gray" : "black",
           marginLeft: 5,
-          textDecorationLine: item?.completed ? "line-through" : "none",
+          textDecorationLine:
+            item?.completed || localIsChecked.id === item.id
+              ? "line-through"
+              : "none",
           maxWidth: "90%",
         }}
         onLongPress={() => {
@@ -175,26 +193,46 @@ const DraggableListContainer = ({
           setEditTaskTitle(item?.title);
           dispatch(setEditingTask(item.id));
         }}
-        onPress={() => onCheckTask(item)}
+        onPress={() => {
+          if (focusMode) {
+            setLocalIsChecked({ id: item.id });
+            setTimeout(() => {
+              onCheckTask(item);
+            }, 300);
+          } else {
+            if (!item.id) {
+              setLocalIsChecked({ id: item.id });
+            }
+            setLocalIsChecked({ id: "" });
+            onCheckTask(item);
+          }
+        }}
         style={{
           paddingRight: 15,
+          height: 60,
         }}
         right={() => (
-          <Checkbox.Android
-            status={item?.completed ? "checked" : "unchecked"}
-            onPress={handleOnCheckTask(item)}
-          />
-        )}
-        left={() =>
-          !focusMode && currentDate === todayDate ? (
-            <IoniIcons
-              onPress={onToggleFocus(item)}
-              style={styles.keyIcon}
-              color={item?.focus ? theme.colors.primary : "black"}
-              name={"key-outline"}
+          <View style={{ marginTop: 3 }}>
+            <Checkbox.Android
+              status={
+                item?.completed || localIsChecked.id === item.id
+                  ? "checked"
+                  : "unchecked"
+              }
+              onPress={handleOnCheckTask(item)}
             />
-          ) : null
-        }
+          </View>
+        )}
+        // left={() =>
+        //   !focusMode && currentDate === todayDate ? (
+        //     <IoniIcons
+        //       onPress={onToggleFocus(item)}
+        //       style={styles.keyIcon}
+        //       color={item?.focus ? theme.colors.primary : "black"}
+        //       name={"key-outline"}
+        //     />
+        //   ) : null
+        // }
       />
     );
   };
@@ -235,7 +273,7 @@ const styles = StyleSheet.create({
   editItem: {
     paddingLeft: 15,
     paddingRight: 25,
-    height: 52,
+    height: 60,
   },
   listRow: {
     alignItems: "center",

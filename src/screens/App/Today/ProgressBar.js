@@ -17,30 +17,28 @@ const ProgressBarContainer = ({ focusMode, progress }) => {
           height: 20,
         }}
       >
-        {focusMode ? null : (
-          <>
-            <View style={{ flexGrow: 1 }}>
-              <ProgressBar progress={isNaN(progress) ? 0 : progress} />
-            </View>
-            <View
+        <>
+          <View style={{ flexGrow: 1 }}>
+            <ProgressBar progress={isNaN(progress) ? 0 : progress} />
+          </View>
+          <View
+            style={{
+              width: 55,
+              alignItems: "flex-end",
+            }}
+          >
+            <Text
+              h6
               style={{
-                width: 55,
-                alignItems: "flex-end",
+                color: theme.colors.primary,
+                fontWeight: "700",
+                paddingRight: 5,
               }}
             >
-              <Text
-                h6
-                style={{
-                  color: theme.colors.primary,
-                  fontWeight: "700",
-                  paddingRight: 5,
-                }}
-              >
-                {humanReadbleProgess} %
-              </Text>
-            </View>
-          </>
-        )}
+              {humanReadbleProgess} %
+            </Text>
+          </View>
+        </>
       </View>
     </View>
   );

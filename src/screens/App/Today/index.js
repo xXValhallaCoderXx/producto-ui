@@ -244,7 +244,12 @@ const ListScreen = () => {
           ) : (
             <View style={styles.container}>
               <View style={{ flex: isToday ? 0.96 : 0.94 }}>
-                <View style={{ flex: isToday ? 0.94 : 0.94, paddingTop: 10 }}>
+                <View
+                  style={{
+                    flex: isToday ? 0.94 : 0.94,
+                    paddingTop: 10,
+                  }}
+                >
                   <TaskList
                     tasks={tasks || []}
                     handleToggleTaskFocus={handleToggleTaskFocus}
@@ -288,10 +293,10 @@ const ListScreen = () => {
           onCancel={handleCloseIncompleteModal}
           currentDate={currentDate}
         />
-        <IntroBottomSheet
+        {/* <IntroBottomSheet
           user={userData?.email}
           isLoading={userProfileLoading}
-        />
+        /> */}
       </GestureHandlerRootView>
     </TouchableWithoutFeedback>
   );
