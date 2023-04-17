@@ -1,5 +1,5 @@
 import ProductoButton from "../../../../components/Button";
-import { format, isAfter } from "date-fns";
+import { format, isBefore, isAfter, isSameDay } from "date-fns";
 
 const MoveIncomplete = ({
   onMoveIncomplete,
@@ -11,7 +11,7 @@ const MoveIncomplete = ({
     return null;
   }
 
-  if (format(currentDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd")) {
+  if (isBefore(new Date(), currentDate) || isSameDay(new Date(), currentDate)) {
     return null;
   }
 
