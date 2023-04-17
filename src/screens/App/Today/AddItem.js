@@ -1,7 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
-import { isAfter, isSameDay } from "date-fns";
+import { useKeyboard } from "@react-native-community/hooks";
 import {
   View,
   TouchableWithoutFeedback,
@@ -13,9 +13,16 @@ import { toggleAddTaskMode } from "./today-slice";
 const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const keyboard = useKeyboard();
   const addTask = useSelector((state) => state.today.addTaskMode);
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
+
+  useEffect(() => {
+    if (!keyboard.keyboardShown) {
+      createTask();
+    }
+  }, [!keyboard.keyboardShown]);
 
   const handleOnChange = (value) => {
     setTaskName(value);
@@ -30,6 +37,10 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
   };
 
   const handleOnBlur = async () => {
+    await createTask();
+  };
+
+  const createTask = async () => {
     dispatch(toggleAddTaskMode(false));
     if (taskName.length > 0) {
       const newValue = taskName;
@@ -38,10 +49,14 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
     }
   };
 
-  if (
-    focusMode ||
-    !(isSameDay(currentDate, new Date()) || isAfter(currentDate, new Date()))
-  ) {
+  // if (
+  //   focusMode ||
+  //   !(isSameDay(currentDate, new Date()) || isAfter(currentDate, new Date()))
+  // ) {
+  //   return null;
+  // }
+
+  if (focusMode) {
     return null;
   }
 
@@ -75,10 +90,13 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
           contentStyle={{
             justifyContent: "flex-start",
             paddingLeft: 10,
+            paddingTop: 8,
+            paddingBottom: 8,
           }}
           style={{ borderRadius: 1 }}
           labelStyle={{
-            fontWeight: "600",
+            fontWeight: "700",
+            // fontSize: 16,
           }}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}

@@ -107,7 +107,19 @@ const DraggableListContainer = ({
   };
 
   const handleOnCheckTask = (_task) => () => {
-    onCheckTask(_task);
+    // onCheckTask(_task);
+    if (focusMode) {
+      setLocalIsChecked({ id: _task.id });
+      setTimeout(() => {
+        onCheckTask(_task);
+      }, 300);
+    } else {
+      if (!_task.id) {
+        setLocalIsChecked({ id: _task.id });
+      }
+      setLocalIsChecked({ id: "" });
+      onCheckTask(_task);
+    }
   };
 
   const onPressDelete = (_task) => () => {
@@ -126,7 +138,7 @@ const DraggableListContainer = ({
             }}
             left={() => (
               <View style={styles.leftContainer}>
-                <TouchableOpacity onLongPress={drag}>
+                <TouchableOpacity style={{ marginTop: 5 }} onLongPress={drag}>
                   <MaterialIcons
                     name="drag-indicator"
                     color={"#6B7280"}
@@ -146,13 +158,15 @@ const DraggableListContainer = ({
               </View>
             )}
             right={() => (
-              <TouchableOpacity onPress={onPressDelete(item)}>
-                <FontAwesome
-                  name="trash-o"
-                  color={"#6B7280"}
-                  style={{ fontSize: 25, marginTop: 5 }}
-                />
-              </TouchableOpacity>
+              <View style={{ justifyContent: "center" }}>
+                <TouchableOpacity onPress={onPressDelete(item)}>
+                  <FontAwesome
+                    name="trash-o"
+                    color={"#6B7280"}
+                    style={{ fontSize: 20, marginTop: 5 }}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
           ></List.Item>
         </OpacityDecorator>
@@ -195,16 +209,19 @@ const DraggableListContainer = ({
         }}
         style={{
           paddingRight: 15,
+          height: 60,
         }}
         right={() => (
-          <Checkbox.Android
-            status={
-              item?.completed || localIsChecked.id === item.id
-                ? "checked"
-                : "unchecked"
-            }
-            onPress={handleOnCheckTask(item)}
-          />
+          <View style={{ marginTop: 3 }}>
+            <Checkbox.Android
+              status={
+                item?.completed || localIsChecked.id === item.id
+                  ? "checked"
+                  : "unchecked"
+              }
+              onPress={handleOnCheckTask(item)}
+            />
+          </View>
         )}
         // left={() =>
         //   !focusMode && currentDate === todayDate ? (
@@ -256,7 +273,7 @@ const styles = StyleSheet.create({
   editItem: {
     paddingLeft: 15,
     paddingRight: 25,
-    height: 52,
+    height: 60,
   },
   listRow: {
     alignItems: "center",
