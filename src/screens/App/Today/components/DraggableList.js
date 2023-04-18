@@ -151,6 +151,7 @@ const DraggableListContainer = ({
                   autoFocus
                   ref={inputRef}
                   onBlur={handleOnBlur}
+                  blurOnSubmit={true}
                   multiline
                   underlineColorAndroid="transparent"
                   style={styles.editTaskInput}
