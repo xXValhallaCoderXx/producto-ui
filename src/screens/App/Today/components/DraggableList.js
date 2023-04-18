@@ -209,7 +209,7 @@ const DraggableListContainer = ({
         }}
         style={{
           paddingRight: 15,
-          height: 60,
+          minHeight: 60,
         }}
         right={() => (
           <View style={{ marginTop: 3 }}>
@@ -268,12 +268,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingLeft: 18,
     paddingRight: 6,
-    height: 52,
   },
   editItem: {
     paddingLeft: 15,
     paddingRight: 25,
-    height: 60,
+    minHeight: 60,
   },
   listRow: {
     alignItems: "center",
