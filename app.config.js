@@ -16,7 +16,7 @@ module.exports = ({ config }) => {
     ios: {
       bundleIdentifier: "com.bloopdevstudios.producto",
       supportsTablet: true,
-      buildNumber: 3,
+      buildNumber: "3",
     },
     updates: {
       fallbackToCacheTimeout: 0,
