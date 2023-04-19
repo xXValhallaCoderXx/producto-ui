@@ -1,3 +1,4 @@
+import * as Sentry from "sentry-expo";
 import { useState, useCallback, useEffect } from "react";
 import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
@@ -16,9 +17,15 @@ import Toast from "./src/components/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
+Sentry.init({
+  dsn: "https://d6daab397b164138946fc445afb30f8b@o4505036216074240.ingest.sentry.io/4505036217647104",
+  enableInExpoDevelopment: true,
+  debug: true,
+});
+
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function App() {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
@@ -88,3 +95,5 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+export default Sentry.Native.wrap(App);
