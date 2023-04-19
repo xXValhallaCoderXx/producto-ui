@@ -18,7 +18,6 @@ import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
 import AddItem from "./AddItem";
 import MoveIncomplete from "./components/MoveIncomplete";
-import IntroBottomSheet from "./IntroBottomSheet";
 import SkeletonList from "./components/SkeletonList";
 import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 import {
@@ -36,7 +35,6 @@ import {
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
 import { toggleCalendar } from "./today-slice";
-import { useGetProfileQuery } from "../../../api/user-api";
 import CalendarWidget from "./Calendar";
 import { useToast } from "react-native-toast-notifications";
 
@@ -66,9 +64,6 @@ const ListScreen = () => {
   const posXanim = useRef(new Animated.Value(0)).current;
 
   const { data: tasks, isLoading } = todaysTasks;
-
-  const { data: userData, isLoading: userProfileLoading } =
-    useGetProfileQuery();
 
   useEffect(() => {
     setTheme();
