@@ -212,8 +212,8 @@ const DraggableListContainer = ({
           paddingRight: 15,
           minHeight: 60,
         }}
-        right={() => (
-          <View style={{ marginTop: 3 }}>
+        left={() => (
+          <View style={{ marginTop: 3, paddingLeft: 5 }}>
             <Checkbox.Android
               status={
                 item?.completed || localIsChecked.id === item.id

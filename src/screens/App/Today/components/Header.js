@@ -13,8 +13,6 @@ import IonIcon from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
 import { toggleFocusMode, selectIsToday } from "../today-slice";
-import lockOpen from "../../../../assets/images/lock-open.png";
-import lockClosed from "../../../../assets/images/lock-closed.png";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 const TodayHeader = ({
@@ -85,7 +83,7 @@ const TodayHeader = ({
             style={{ padding: 5 }}
           >
             <Ionicons
-              name={focusMode ? "eye-outline" : "eye-off-outline"}
+              name={focusMode ? "eye-off-outline" : "eye-outline"}
               size={32}
               color="#1c1b1f"
             />
