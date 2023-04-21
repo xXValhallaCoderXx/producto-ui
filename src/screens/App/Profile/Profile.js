@@ -9,6 +9,8 @@ import SkeletonBox from "../../../components/SkeletonBox";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import logoutIcon from "../../../assets/images/logout.png";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { format } from "date-fns";
+
 import { api } from "../../../api";
 import {
   JWT_KEY_STORE,
@@ -235,7 +237,8 @@ const ProfileScreen = ({ navigation }) => {
             />
             {data?.prefs?.autoMove && autotaskDate && (
               <Text style={{ paddingLeft: 23, marginTop: -5 }}>
-                Active From: {autotaskDate}
+                Active From:{" "}
+                {format(new Date(autotaskDate), "d LLL yyyy").toUpperCase()}
               </Text>
             )}
           </View>
