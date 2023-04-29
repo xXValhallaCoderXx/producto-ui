@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { startOfDay, endOfDay } from "date-fns";
 import { selectCurrentDate } from "./today-slice";
 import { Text } from "react-native-paper";
@@ -63,17 +67,12 @@ const TaskList = ({
     dispatch(setEditingTask(null));
   };
 
-  const tasksToDisplay = () => {
-    return tasks.filter((task) => {
-      if (task.focus) {
-        return task;
-      }
-      return false;
-    });
-  };
-
   return (
-    <View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 155 : 50}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       {tasks.length === 0 && focusMode ? (
         <View style={{ paddingLeft: 25, marginTop: 20 }}>
           <Text>No task added to focus mode yet</Text>
@@ -103,7 +102,7 @@ const TaskList = ({
         confirmLabel="Confirm"
         isLoading={deleteTaskApiResults.isLoading}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

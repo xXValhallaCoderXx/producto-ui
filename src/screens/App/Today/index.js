@@ -4,19 +4,10 @@ import { useEffect, useState, useRef } from "react";
 import { add, sub, startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 
-import {
-  StyleSheet,
-  View,
-  Animated,
-  Platform,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { StyleSheet, View, Animated, Platform } from "react-native";
 import Header from "./components/Header";
 import ProgressBar from "./ProgressBar";
 import TaskList from "./TaskList";
-import AddItem from "./AddItem";
 import MoveIncomplete from "./components/MoveIncomplete";
 import SkeletonList from "./components/SkeletonList";
 import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
@@ -42,11 +33,9 @@ const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
 
-  const isToday = useSelector(selectIsToday);
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-  const editTaskId = useSelector((state) => state.today.editingTask);
 
   const [progress, setProgress] = useState(0);
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
@@ -167,20 +156,20 @@ const ListScreen = () => {
     dispatch(toggleCalendar({ calendarOpen: false }));
   };
 
-  const handleKeyboardDismiss = (e) => {
-    // e.stopPropagation();
-    Keyboard.dismiss();
-  };
+  // const handleKeyboardDismiss = (e) => {
+  //   // e.stopPropagation();
+  //   Keyboard.dismiss();
+  // };
 
   // NEW
-  const handleCreateNewTask = async (_title) => {
-    createTask({
-      title: _title,
-      deadline: currentDate.toISOString(),
-      start: startOfDay(currentDate).toISOString(),
-      end: endOfDay(currentDate).toISOString(),
-    });
-  };
+  // const handleCreateNewTask = async (_title) => {
+  //   createTask({
+  //     title: _title,
+  //     deadline: currentDate.toISOString(),
+  //     start: startOfDay(currentDate).toISOString(),
+  //     end: endOfDay(currentDate).toISOString(),
+  //   });
+  // };
 
   const handleToggleTaskComplete = async (_task) => {
     await updateTask({
@@ -211,115 +200,64 @@ const ListScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback
-      onPress={handleKeyboardDismiss}
-      accessible={false}
-    >
-      <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
-        <KeyboardAvoidingView
-          keyboardVerticalOffset={Platform.OS === "ios" ? 155 : -110}
-          behavior={Platform.OS === "ios" ? "padding" : "padding"}
-          style={styles.keyboardContainer}
-        >
-          <View style={{ paddingHorizontal: 20 }}>
-            <Header
-              clientUtc={currentDate}
-              focusMode={focusMode}
-              onChangeDate={handleOnChangeDate}
-              onPressToday={handleOnPressToday}
-              onPressDate={handleOnPressDate}
-            />
-            <ProgressBar focusMode={focusMode} progress={progress} />
-          </View>
-
-          {isLoading ? (
-            <View style={styles.skeletonContainer}>
-              <SkeletonList />
-            </View>
-          ) : (
-            <View style={styles.container}>
-              <View style={{ flex: isToday ? 0.96 : 0.94 }}>
-                <View
-                  style={{
-                    flex: isToday ? 0.94 : 0.94,
-                    paddingTop: 10,
-                  }}
-                >
-                  <TaskList
-                    tasks={tasks || []}
-                    handleToggleTaskFocus={handleToggleTaskFocus}
-                    handleToggleTaskComplete={handleToggleTaskComplete}
-                    utcDate={currentDate}
-                  />
-                  {!editTaskId && (
-                    <View style={styles.editContainer}>
-                      <AddItem
-                        handleCreateNewTask={handleCreateNewTask}
-                        currentDate={currentDate}
-                        focusMode={focusMode}
-                      />
-                    </View>
-                  )}
-                </View>
-              </View>
-            </View>
-          )}
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
-            currentDate={currentDate}
-            handleOnSelectDay={handleOnSelectDay}
-          />
-        </KeyboardAvoidingView>
-
-        <View style={styles.moveIncomlpleteContainer}>
-          <MoveIncomplete
-            tasks={tasks}
-            currentDate={currentDate}
-            isLoading={moveTasksApiResult.isLoading}
-            onMoveIncomplete={handleOpenIncompleteModal}
-          />
-        </View>
-        <MoveIncompleteModal
-          tasks={tasks}
-          isVisible={isMoveIncompleteOpen}
-          onPress={handleMoveIncompleteTasks}
-          onCancel={handleCloseIncompleteModal}
-          currentDate={currentDate}
+    <View style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}>
+      <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+        <Header
+          clientUtc={currentDate}
+          focusMode={focusMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
         />
-        {/* <IntroBottomSheet
-          user={userData?.email}
-          isLoading={userProfileLoading}
-        /> */}
-      </GestureHandlerRootView>
-    </TouchableWithoutFeedback>
+        <ProgressBar focusMode={focusMode} progress={progress} />
+      </View>
+
+      {isLoading ? (
+        <View style={styles.skeletonContainer}>
+          <SkeletonList />
+        </View>
+      ) : (
+        <TaskList
+          tasks={tasks || []}
+          handleToggleTaskFocus={handleToggleTaskFocus}
+          handleToggleTaskComplete={handleToggleTaskComplete}
+          utcDate={currentDate}
+        />
+      )}
+      <CalendarWidget
+        calendarOpen={calendarOpen}
+        toggleCalendar={handleToggleCalendar}
+        incompleteTasks={incompleteTasks}
+        currentDate={currentDate}
+        handleOnSelectDay={handleOnSelectDay}
+      />
+
+      <View style={styles.moveIncomlpleteContainer}>
+        <MoveIncomplete
+          tasks={tasks}
+          currentDate={currentDate}
+          isLoading={moveTasksApiResult.isLoading}
+          onMoveIncomplete={handleOpenIncompleteModal}
+        />
+      </View>
+      <MoveIncompleteModal
+        tasks={tasks}
+        isVisible={isMoveIncompleteOpen}
+        onPress={handleMoveIncompleteTasks}
+        onCancel={handleCloseIncompleteModal}
+        currentDate={currentDate}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  keyboardContainer: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingHorizontal: 0,
-    paddingTop: 10,
-  },
   skeletonContainer: {
     marginTop: 15,
-    paddingLeft: 20,
-    paddingRight: 10,
-  },
-  editContainer: {
-    marginTop: 15,
+    paddingHorizontal: 20,
   },
   moveIncomlpleteContainer: {
-    backgroundColor: "white",
     paddingHorizontal: 20,
-    justifyContent: "flex-end",
     paddingBottom: 20,
   },
 });

@@ -16,8 +16,6 @@ const CalendarWidget = ({
     if (incompleteTasks.length > 0) {
       const parsedData = {};
 
-      console.log("INCOMPLETED TASKS: ", incompleteTasks);
-
       if (!incompleteTasks.includes(format(currentDate, "yyyy-MM-dd"))) {
         parsedData[format(currentDate, "yyyy-MM-dd")] = {
           // marked: true,

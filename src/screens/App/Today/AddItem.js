@@ -18,11 +18,11 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
   const addTaskInputRef = useRef(null);
   const [taskName, setTaskName] = useState("");
 
-  useEffect(() => {
-    if (!keyboard.keyboardShown) {
-      createTask();
-    }
-  }, [!keyboard.keyboardShown]);
+  // useEffect(() => {
+  //   if (!keyboard.keyboardShown) {
+  //     createTask();
+  //   }
+  // }, [!keyboard.keyboardShown]);
 
   const handleOnChange = (value) => {
     setTaskName(value);
@@ -48,13 +48,6 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
       await handleCreateNewTask(newValue);
     }
   };
-
-  // if (
-  //   focusMode ||
-  //   !(isSameDay(currentDate, new Date()) || isAfter(currentDate, new Date()))
-  // ) {
-  //   return null;
-  // }
 
   if (focusMode) {
     return null;

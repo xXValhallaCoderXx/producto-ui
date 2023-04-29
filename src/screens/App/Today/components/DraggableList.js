@@ -2,17 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
-import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import KeyboardAwareDraggablelist from "./KeyboardAwareDraggablelist";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+} from "react-native";
 import * as Haptics from "expo-haptics";
 import { useTheme, Checkbox, List } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import IoniIcons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useUpdateTaskMutation } from "../../../../api/task-api";
+import {
+  useUpdateTaskMutation,
+  useCreateTaskMutation,
+} from "../../../../api/task-api";
 import { setEditingTask, selectCurrentDate } from "../today-slice";
 import { format, startOfDay, endOfDay } from "date-fns";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AddItem from "../AddItem";
 
 const DraggableListContainer = ({
   tasks,
@@ -27,6 +39,7 @@ const DraggableListContainer = ({
   const inputRef = useRef(null);
   const dragRef = useRef(false);
   const [data, setData] = useState([]);
+  const [createTask, createTaskResult] = useCreateTaskMutation();
   const [editTaskTitle, setEditTaskTitle] = useState("");
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
   const editTaskId = useSelector((state) => state.today.editingTask);
@@ -41,6 +54,15 @@ const DraggableListContainer = ({
   useEffect(() => {
     sortData();
   }, [tasks]);
+
+  const handleCreateNewTask = async (_title) => {
+    createTask({
+      title: _title,
+      deadline: currentDate.toISOString(),
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
+  };
 
   const sortData = async () => {
     try {
@@ -195,6 +217,7 @@ const DraggableListContainer = ({
           dispatch(setEditingTask(item.id));
         }}
         onPress={() => {
+          console.log("LALAL");
           if (focusMode) {
             setLocalIsChecked({ id: item.id });
             setTimeout(() => {
@@ -213,7 +236,7 @@ const DraggableListContainer = ({
           minHeight: 60,
         }}
         left={() => (
-          <View style={{ marginTop: 3, paddingLeft: 5 }}>
+          <View pointerEvents="none" style={{ marginTop: 3, paddingLeft: 5 }}>
             <Checkbox.Android
               status={
                 item?.completed || localIsChecked.id === item.id
@@ -224,16 +247,6 @@ const DraggableListContainer = ({
             />
           </View>
         )}
-        // left={() =>
-        //   !focusMode && currentDate === todayDate ? (
-        //     <IoniIcons
-        //       onPress={onToggleFocus(item)}
-        //       style={styles.keyIcon}
-        //       color={item?.focus ? theme.colors.primary : "black"}
-        //       name={"key-outline"}
-        //     />
-        //   ) : null
-        // }
       />
     );
   };
@@ -254,10 +267,19 @@ const DraggableListContainer = ({
         );
         setData(_data);
       }}
-      keyExtractor={(item) => item?.id}
+      keyExtractor={(item) => item?.id ?? Math.random()}
       renderItem={renderItem}
-      keyboardDismissMode="none"
+      // keyboardDismissMode="none"
       keyboardShouldPersistTaps="always"
+      ListFooterComponent={() => {
+        return (
+          <AddItem
+            handleCreateNewTask={handleCreateNewTask}
+            currentDate={currentDate}
+            focusMode={focusMode}
+          />
+        );
+      }}
     />
   );
 };
