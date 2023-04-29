@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import DraggableFlatList, {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
-import KeyboardAwareDraggablelist from "./KeyboardAwareDraggablelist";
+
 import {
   View,
   StyleSheet,

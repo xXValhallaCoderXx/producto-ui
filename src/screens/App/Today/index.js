@@ -200,7 +200,9 @@ const ListScreen = () => {
   };
 
   return (
-    <View style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}>
+    <GestureHandlerRootView
+      style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}
+    >
       <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
         <Header
           clientUtc={currentDate}
@@ -247,7 +249,7 @@ const ListScreen = () => {
         onCancel={handleCloseIncompleteModal}
         currentDate={currentDate}
       />
-    </View>
+    </GestureHandlerRootView>
   );
 };
 
