@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, View } from "react-native";
 import { startOfDay, endOfDay } from "date-fns";
 import { selectCurrentDate } from "./today-slice";
 import { Text } from "react-native-paper";
@@ -70,7 +66,7 @@ const TaskList = ({
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 155 : 50}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 155 : editTaskId ? 0 : 40}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       {tasks.length === 0 && focusMode ? (

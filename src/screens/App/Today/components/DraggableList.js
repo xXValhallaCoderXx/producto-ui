@@ -270,7 +270,7 @@ const DraggableListContainer = ({
       keyExtractor={(item) => item?.id ?? Math.random()}
       renderItem={renderItem}
       // keyboardDismissMode="none"
-      keyboardShouldPersistTaps="always"
+      keyboardShouldPersistTaps="handled"
       ListFooterComponent={() => {
         return (
           <AddItem
