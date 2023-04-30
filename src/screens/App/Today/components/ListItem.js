@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Checkbox, List } from "react-native-paper";
 import { View, StyleSheet, TouchableOpacity, TextInput } from "react-native";
 import { OpacityDecorator } from "react-native-draggable-flatlist";
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay } from "date-fns";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
@@ -18,7 +18,7 @@ const ListItem = ({ drag, item }) => {
   const editTaskId = useSelector((state) => state.today.editingTask);
   const [editTaskTitle, setEditTaskTitle] = useState("");
   const [localIsChecked, setLocalIsChecked] = useState({ id: "" });
-  const [updateTask] = useUpdateTaskMutation();
+  const [updateTaskApi] = useUpdateTaskMutation();
 
   const handleOnChange = (_value) => {
     setEditTaskTitle(_value);
@@ -26,18 +26,29 @@ const ListItem = ({ drag, item }) => {
 
   const handleOnBlur = (e) => {
     e.stopPropagation();
-    updateTask({
+    updateTaskApi({
       id: editTaskId,
       data: {
         title: editTaskTitle,
       },
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
     });
     dispatch(setEditingTask(null));
   };
 
   const handlePressDelete = () => {};
 
-  const handleOnCheckTask = () => {};
+  const handleOnCheckTask = () => {
+    updateTaskApi({
+      id: item.id,
+      data: {
+        completed: !item.completed,
+      },
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
+  };
   if (item?.id === editTaskId) {
     return (
       <OpacityDecorator>
@@ -104,7 +115,6 @@ const ListItem = ({ drag, item }) => {
         dispatch(setEditingTask(item.id));
       }}
       onPress={() => {
-        console.log("ORESS");
         if (focusMode) {
           setLocalIsChecked({ id: item.id });
           setTimeout(() => {

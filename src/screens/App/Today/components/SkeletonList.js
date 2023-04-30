@@ -1,145 +1,43 @@
 import { View } from "react-native";
 import SkeletonBox from "../../../../components/SkeletonBox";
 
+const SkeletonRow = () => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        gap: 20,
+        marginBottom: 20,
+      }}
+    >
+      <View style={{ flex: 1 }}>
+        <SkeletonBox width={"80%"} />
+      </View>
+      <View style={{ flex: 4 }}>
+        <SkeletonBox width={"100%"} />
+      </View>
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <SkeletonBox width={"90%"} />
+      </View>
+    </View>
+  );
+};
+
 const SkeletonList = () => {
   return (
     <View>
-      <View
-        style={{
-          flexDirection: "row",
-          marginBottom: 20,
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
-      <View
-        style={{
-          marginBottom: 20,
-          flexDirection: "row",
-          justifyContent: "space-around",
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <SkeletonBox width={40} />
-        </View>
-        <View style={{ flex: 4 }}>
-          <SkeletonBox width={"100%"} />
-        </View>
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <SkeletonBox width={30} />
-        </View>
-      </View>
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
     </View>
   );
 };

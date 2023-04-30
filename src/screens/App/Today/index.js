@@ -29,6 +29,7 @@ import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 import Header from "./components/Header";
 import AddItem from "./components/AddItem";
 import ListItem from "./components/ListItem";
+import SkeletonList from "./components/SkeletonList";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const ListScreen = () => {
 
   const posXanim = useRef(new Animated.Value(0)).current;
 
-  const { data: tasks, isLoading } = todaysTasks;
+  const { data: tasks, isLoading, isFetching } = todaysTasks;
 
   useEffect(() => {
     setTheme();
@@ -144,26 +145,34 @@ const ListScreen = () => {
     <KeyboardAvoidingView
       behavior="padding"
       keyboardVerticalOffset={155}
-      style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}
+      style={{
+        paddingTop: 10,
+        flex: 1,
+        backgroundColor: "white",
+        alignContent: "space-between",
+        justifyContent: "space-between",
+      }}
     >
-      <DraggableFlatList
-        data={tasks || []}
-        stickyHeaderIndices={[0]}
-        keyExtractor={(item) => item?.id}
-        renderItem={ListItem}
-        keyboardDismissMode="none"
-        keyboardShouldPersistTaps="handled"
-        ListHeaderComponent={Header}
-        ListFooterComponent={AddItem}
-      />
-
-      <CalendarWidget
-        calendarOpen={calendarOpen}
-        toggleCalendar={handleToggleCalendar}
-        incompleteTasks={incompleteTasks}
-        currentDate={currentDate}
-        handleOnSelectDay={handleOnSelectDay}
-      />
+      {isLoading || isFetching ? (
+        <View>
+          <Header />
+          <View style={{ paddingTop: 20, paddingHorizontal: 20 }}>
+            <SkeletonList />
+          </View>
+        </View>
+      ) : (
+        <DraggableFlatList
+          data={tasks || []}
+          stickyHeaderIndices={[0]}
+          keyExtractor={(item) => item?.id}
+          renderItem={ListItem}
+          ListHeaderComponentStyle={{ paddingBottom: 20 }}
+          keyboardDismissMode="none"
+          keyboardShouldPersistTaps="handled"
+          ListHeaderComponent={Header}
+          ListFooterComponent={AddItem}
+        />
+      )}
 
       <View style={styles.moveIncomlpleteContainer}>
         <MoveIncomplete
@@ -173,6 +182,14 @@ const ListScreen = () => {
           onMoveIncomplete={handleOpenIncompleteModal}
         />
       </View>
+      <CalendarWidget
+        calendarOpen={calendarOpen}
+        toggleCalendar={handleToggleCalendar}
+        incompleteTasks={incompleteTasks}
+        currentDate={currentDate}
+        handleOnSelectDay={handleOnSelectDay}
+      />
+
       <MoveIncompleteModal
         tasks={tasks}
         isVisible={isMoveIncompleteOpen}
@@ -185,13 +202,8 @@ const ListScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  skeletonContainer: {
-    marginTop: 15,
-    paddingHorizontal: 20,
-  },
   moveIncomlpleteContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 20,
   },
 });
 

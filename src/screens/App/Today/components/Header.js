@@ -21,6 +21,7 @@ import {
   setCurrentDate,
 } from "../today-slice";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import ProgressBar from "../../../../components/ProgressBar";
 
 const TodayHeader = () => {
   const theme = useTheme();
@@ -113,6 +114,7 @@ const TodayHeader = () => {
           </TouchableOpacity>
         }
       </View>
+      <ProgressBar progress={0.5} />
     </View>
   );
 };
