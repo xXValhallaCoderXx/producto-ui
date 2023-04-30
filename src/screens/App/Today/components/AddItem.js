@@ -53,7 +53,6 @@ const AddItem = () => {
 
   const handleOnBlur = () => {
     if (value) {
-      console.log("HMMM");
       createTaskApi({
         title: value,
         deadline: currentDate.toISOString(),
