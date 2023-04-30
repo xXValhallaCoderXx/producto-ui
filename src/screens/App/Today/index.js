@@ -153,10 +153,11 @@ const ListScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ?? "padding"}
+      behavior={Platform.OS === "ios" ? "padding" : ""}
       keyboardVerticalOffset={155}
       style={{
         paddingTop: 10,
+        paddingBottom: 10,
         flex: 1,
         backgroundColor: "white",
         alignContent: "space-between",

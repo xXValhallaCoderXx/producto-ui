@@ -6,20 +6,15 @@ const ToastContainer = ({ toast }) => {
   const { title, description = "" } = toast;
   return (
     <View style={[styles.card, styles.shadowProp, styles.elevation]}>
-      <View style={{ backgroundColor: "#5048E5", width: 5 }} />
-      <View>
-        <View style={styles.content}>
-          <View style={styles.titleRow}>
-            <MaterialIcons color="#5048E5" size={24} name="check-circle" />
-
-            <View style={{ paddingLeft: 10 }}>
-              <Text>{title}</Text>
-              <Text style={{ marginTop: 3 }} variant="bodySmall">
-                {description}
-              </Text>
-            </View>
-          </View>
-        </View>
+      {/* <View
+        style={{ backgroundColor: "#5048E5", width: 5 }}
+      /> */}
+      <MaterialIcons color="#5048E5" size={24} name="check-circle" />
+      <View style={{ flexDirection: "row", paddingLeft: 15 }}>
+        <Text>{title}</Text>
+        <Text style={{ marginTop: 3 }} variant="bodySmall">
+          {description}
+        </Text>
       </View>
     </View>
   );
@@ -29,21 +24,25 @@ export default ToastContainer;
 
 const styles = StyleSheet.create({
   content: {
-    flexDirection: "column",
-    paddingHorizontal: 10,
-    paddingVertical: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+    // paddingHorizontal: 10,
+    // paddingVertical: 15,
   },
   titleRow: {
     flexDirection: "row",
   },
   card: {
     backgroundColor: "white",
-    borderRadius: 8,
-    marginTop: Platform.OS === "android" ? 40 : 60,
-    marginBottom: Platform.OS === "android" ? 80 : 120,
+    borderRadius: 30,
+    paddingVertical: 15,
+    // marginTop: Platform.OS === "android" ? 40 : 60,
+    // marginBottom: Platform.OS === "android" ? 80 : 120,
     width: "85%",
-    marginVertical: 10,
+    // marginVertical: 10,
     flexDirection: "row",
+    paddingLeft: 10,
+    alignItems: "center",
   },
   shadowProp: {
     shadowOffset: { width: -2, height: 4 },

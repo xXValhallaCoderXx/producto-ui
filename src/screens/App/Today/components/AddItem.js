@@ -32,14 +32,13 @@ const AddItem = () => {
         description: "",
       });
       // TODO - Test removing task from cache
-
-      if (createTaskApiResult.isSuccess) {
-        toast.show("", {
-          type: "success",
-          placement: "top",
-          title: `Task created!`,
-        });
-      }
+    }
+    if (createTaskApiResult.isSuccess) {
+      toast.show("", {
+        type: "success",
+        placement: "top",
+        title: `Task created!`,
+      });
     }
   }, [createTaskApiResult]);
 
@@ -53,6 +52,7 @@ const AddItem = () => {
 
   const handleOnBlur = () => {
     if (value) {
+      console.log("HMMM");
       createTaskApi({
         title: value,
         deadline: currentDate.toISOString(),
