@@ -59,16 +59,14 @@ const AddItem = ({ handleCreateNewTask, focusMode, currentDate }) => {
         <View
           style={{
             paddingLeft: 25,
-            marginTop: Platform.OS === "ios" ? 10 : 5,
           }}
         >
           <TextInput
             placeholder="Enter task name..."
-            autoFocus
             placeholderTextColor="#808080"
             onChangeText={handleOnChange}
             value={taskName}
-            onBlur={handleOnBlur}
+            // onBlur={handleOnBlur}
             underlineColorAndroid="transparent"
             style={{
               fontSize: 16,

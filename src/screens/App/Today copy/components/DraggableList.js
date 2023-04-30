@@ -1,22 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Keyboard, Dimensions } from "react-native";
 import DraggableFlatList, {
   OpacityDecorator,
 } from "react-native-draggable-flatlist";
-
+import { useKeyboard } from "@react-native-community/hooks";
+import KeyboardAwareDraggable from "./KeyboardAwareDraggablelist";
 import {
   View,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   KeyboardAvoidingView,
 } from "react-native";
 import * as Haptics from "expo-haptics";
-import { useTheme, Checkbox, List } from "react-native-paper";
+import { Checkbox, List } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import IoniIcons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import {
   useUpdateTaskMutation,
   useCreateTaskMutation,
@@ -31,14 +32,16 @@ const DraggableListContainer = ({
   handleOnPressDelete,
   utcDate,
   onCheckTask,
-  onToggleFocus,
+  height,
 }) => {
   const dispatch = useDispatch();
-
-  const theme = useTheme();
+  const scrollRef = useRef(null);
+  const keyboard = useKeyboard();
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const inputRef = useRef(null);
+  const [flatListHeight, setFlatListHeight] = useState(0);
   const dragRef = useRef(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(["sss"]);
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const [editTaskTitle, setEditTaskTitle] = useState("");
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
@@ -55,6 +58,10 @@ const DraggableListContainer = ({
     sortData();
   }, [tasks]);
 
+  useEffect(() => {
+    setKeyboardHeight(keyboard.coordinates.end.height);
+  }, [keyboard.keyboardShown]);
+
   const handleCreateNewTask = async (_title) => {
     createTask({
       title: _title,
@@ -68,6 +75,7 @@ const DraggableListContainer = ({
     try {
       const hasData = await AsyncStorage.getItem(`${currentDate}-${userEmail}`);
       const parsedHasData = JSON.parse(hasData);
+
       if (parsedHasData) {
         function removeValue(_task, index, arr) {
           // If the value at the current array index matches the specified value (2)
@@ -78,7 +86,8 @@ const DraggableListContainer = ({
           }
           return false;
         }
-        if (hasData && parsedHasData.length !== tasks.length) {
+
+        if (parsedHasData.length > 0 && tasks.length !== parsedHasData.length) {
           // If new task has been added
           const tasksCopy = [...tasks];
           const tempArray = [];
@@ -90,7 +99,7 @@ const DraggableListContainer = ({
           });
 
           const x = tasksCopy.filter(removeValue);
-          setData(tempArray.push(...x));
+          setData([...tempArray, ...x]);
         } else {
           const tempArray = [];
           JSON.parse(hasData).forEach((item) => {
@@ -148,7 +157,26 @@ const DraggableListContainer = ({
     handleOnPressDelete(_task.id);
   };
 
-  const renderItem = ({ item, drag, isActive, index }) => {
+  const handleScrollPosition = (_index) => () => {
+    // const inputPosition = _index * 50; // assume each item is 50 pixels tall
+    // console.log("INPUT PSOION: ", inputPosition);
+    // const screenHeight = Dimensions.get("window").height; // use window.innerHeight for web or Dimensions.get('window').height for mobile
+    // const availableSpace = screenHeight - keyboard.coordinates.end.height;
+    // console.log("AVAIL: ", availableSpace);
+    // const keyboardSpace = availableSpace - 50; // assume keyboard is 50 pixels tall
+    // const newPosition = inputPosition - keyboardSpace;
+    // // scroll the list to the correct position
+    // console.log("NEW POSITION: ", newPosition);
+    // if (newPosition > 0) {
+    //   scrollRef.current.scrollToOffset({ offset: newPosition });
+    // }
+    // scrollRef.current.scrollToIndex({ index: _index, viewPosition: 0.5 });
+  };
+
+  console.log("SCREEN: ", Dimensions.get("screen").height);
+  // console.log("KEYBOARD HEIGHT: ", keyboard.coordinates.end.height);
+  // console.log("KEYBOARD COORDIANTES: ", keyboard.coordinates);
+  const renderItem = ({ item, drag, isActive, getIndex }) => {
     if (item?.id === editTaskId) {
       return (
         <OpacityDecorator>
@@ -171,10 +199,11 @@ const DraggableListContainer = ({
                   onChangeText={handleOnChange}
                   value={editTaskTitle}
                   autoFocus
-                  ref={inputRef}
                   onBlur={handleOnBlur}
-                  blurOnSubmit={true}
-                  multiline
+                  // onFocus={handleScrollPosition(getIndex())}
+                  // blurOnSubmit={true}
+                  // multiline
+                  // numberOfLines={3}
                   underlineColorAndroid="transparent"
                   style={styles.editTaskInput}
                 />
@@ -217,7 +246,6 @@ const DraggableListContainer = ({
           dispatch(setEditingTask(item.id));
         }}
         onPress={() => {
-          console.log("LALAL");
           if (focusMode) {
             setLocalIsChecked({ id: item.id });
             setTimeout(() => {
@@ -254,6 +282,7 @@ const DraggableListContainer = ({
   return (
     <DraggableFlatList
       data={data}
+      ref={scrollRef}
       onDragBegin={() => {
         dragRef.current = true;
       }}
@@ -269,8 +298,8 @@ const DraggableListContainer = ({
       }}
       keyExtractor={(item) => item?.id ?? Math.random()}
       renderItem={renderItem}
-      // keyboardDismissMode="none"
       keyboardShouldPersistTaps="handled"
+      ListFooterComponentStyle={{ backgroundColor: "red" }}
       ListFooterComponent={() => {
         return (
           <AddItem
@@ -285,40 +314,21 @@ const DraggableListContainer = ({
 };
 
 const styles = StyleSheet.create({
-  listContent: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingLeft: 18,
-    paddingRight: 6,
-  },
   editItem: {
     paddingLeft: 15,
     paddingRight: 25,
     minHeight: 60,
   },
-  listRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    height: 35,
-  },
   editTaskInput: {
     marginLeft: 22,
     marginTop: 3,
     fontSize: 16,
+
     backgroundColor: "white",
     maxWidth: "80%",
   },
   leftContainer: {
     flexDirection: "row",
-  },
-  keyIcon: {
-    fontSize: 22,
-    marginRight: 10,
-    marginLeft: 17,
-    transform: [{ rotate: "45deg" }],
-    alignSelf: "center",
   },
 });
 

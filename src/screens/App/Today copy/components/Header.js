@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { add, sub, startOfDay, endOfDay } from "date-fns";
 import {
   StyleSheet,
   View,
@@ -13,44 +12,22 @@ import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  toggleFocusMode,
-  selectIsToday,
-  selectCurrentDate,
-  setEditingTask,
-  setCurrentDate,
-} from "../today-slice";
+import { toggleFocusMode, selectIsToday } from "../today-slice";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-const TodayHeader = () => {
+const TodayHeader = ({
+  focusMode,
+  onChangeDate,
+  clientUtc,
+  onPressToday,
+  onPressDate,
+}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector(selectIsToday);
-  const clientUtc = useSelector(selectCurrentDate);
-  const focusMode = useSelector((state) => state.today.focusMode);
-
-  const onPressDate = () => {
-    console.log("DATE");
-  };
-
-  const onPressToday = () => {
-    console.log("DATE");
-  };
-
-  const onChangeDate = (direction) => () => {
-    console.log("eheh");
-    dispatch(setEditingTask(null));
-    if (direction === "back") {
-      const subUtcDate = sub(clientUtc, { days: 1 });
-      dispatch(setCurrentDate(subUtcDate.toISOString()));
-    } else {
-      const addUtcDate = add(new Date(clientUtc), { days: 1 });
-      dispatch(setCurrentDate(addUtcDate.toISOString()));
-    }
-  };
 
   return (
-    <View style={{ paddingHorizontal: 20, backgroundColor: "white" }}>
+    <View>
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
         <Text
           style={{

@@ -1,9 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
+
 import { useEffect, useState, useRef } from "react";
-import { startOfDay, endOfDay } from "date-fns";
+import { add, sub, startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
 
-import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
   View,
@@ -11,22 +11,29 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from "react-native";
-
-import { setCurrentDate, selectCurrentDate } from "./today-slice";
+import Header from "./components/Header";
+import ProgressBar from "./ProgressBar";
+import TaskList from "./TaskList";
+import MoveIncomplete from "./components/MoveIncomplete";
+import SkeletonList from "./components/SkeletonList";
+import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
+import {
+  selectIsToday,
+  setCurrentDate,
+  setEditingTask,
+  selectCurrentDate,
+} from "./today-slice";
 
 import {
   useGetTodaysTasksQuery,
   useCreateTaskMutation,
+  useUpdateTaskMutation,
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
 } from "../../../api/task-api";
 import { toggleCalendar } from "./today-slice";
-
+import CalendarWidget from "./Calendar";
 import { useToast } from "react-native-toast-notifications";
-
-import Header from "./components/Header";
-import AddItem from "./components/AddItem";
-import ListItem from "./components/ListItem";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
@@ -35,7 +42,11 @@ const ListScreen = () => {
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
+
+  const [progress, setProgress] = useState(0);
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
+
+  const [updateTask] = useUpdateTaskMutation();
   const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
@@ -119,6 +130,17 @@ const ListScreen = () => {
     dispatch(toggleCalendar());
   };
 
+  const handleOnChangeDate = (direction) => () => {
+    dispatch(setEditingTask(null));
+    if (direction === "back") {
+      const subUtcDate = sub(currentDate, { days: 1 });
+      dispatch(setCurrentDate(subUtcDate.toISOString()));
+    } else {
+      const addUtcDate = add(new Date(currentDate), { days: 1 });
+      dispatch(setCurrentDate(addUtcDate.toISOString()));
+    }
+  };
+
   const handleOpenIncompleteModal = () => {
     setIsMoveIncompleteOpen(true);
   };
@@ -127,9 +149,54 @@ const ListScreen = () => {
     setIsMoveIncompleteOpen(false);
   };
 
+  const handleOnPressToday = async () => {
+    dispatch(setCurrentDate(new Date().toISOString()));
+  };
+
+  const handleOnPressDate = async () => {
+    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
+  };
+
   const handleOnSelectDay = (_day) => {
     dispatch(setCurrentDate(new Date(_day.dateString).toISOString()));
     dispatch(toggleCalendar({ calendarOpen: false }));
+  };
+
+  // const handleKeyboardDismiss = (e) => {
+  //   // e.stopPropagation();
+  //   Keyboard.dismiss();
+  // };
+
+  // NEW
+  // const handleCreateNewTask = async (_title) => {
+  //   createTask({
+  //     title: _title,
+  //     deadline: currentDate.toISOString(),
+  //     start: startOfDay(currentDate).toISOString(),
+  //     end: endOfDay(currentDate).toISOString(),
+  //   });
+  // };
+
+  const handleToggleTaskComplete = async (_task) => {
+    await updateTask({
+      id: _task.id,
+      data: {
+        completed: !_task.completed,
+      },
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
+  };
+
+  const handleToggleTaskFocus = async (_task) => {
+    await updateTask({
+      id: _task.id,
+      data: {
+        focus: !_task.focus,
+      },
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
   };
 
   const handleMoveIncompleteTasks = async (items) => {
@@ -139,21 +206,30 @@ const ListScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
-      keyboardVerticalOffset={155}
-      style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}
-    >
-      <DraggableFlatList
-        data={tasks || []}
-        stickyHeaderIndices={[0]}
-        keyExtractor={(item) => item?.id}
-        renderItem={ListItem}
-        keyboardShouldPersistTaps="handled"
-        ListHeaderComponent={Header}
-        ListFooterComponent={AddItem}
-      />
+    <View style={{ paddingTop: 10, flex: 1, backgroundColor: "white" }}>
+      <View style={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+        <Header
+          clientUtc={currentDate}
+          focusMode={focusMode}
+          onChangeDate={handleOnChangeDate}
+          onPressToday={handleOnPressToday}
+          onPressDate={handleOnPressDate}
+        />
+        <ProgressBar focusMode={focusMode} progress={progress} />
+      </View>
 
+      {isLoading ? (
+        <View style={styles.skeletonContainer}>
+          <SkeletonList />
+        </View>
+      ) : (
+        <TaskList
+          tasks={tasks || []}
+          handleToggleTaskFocus={handleToggleTaskFocus}
+          handleToggleTaskComplete={handleToggleTaskComplete}
+          utcDate={currentDate}
+        />
+      )}
       <CalendarWidget
         calendarOpen={calendarOpen}
         toggleCalendar={handleToggleCalendar}
@@ -177,7 +253,7 @@ const ListScreen = () => {
         onCancel={handleCloseIncompleteModal}
         currentDate={currentDate}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 };
 

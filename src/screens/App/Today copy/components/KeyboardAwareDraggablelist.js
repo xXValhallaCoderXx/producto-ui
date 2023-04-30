@@ -4,7 +4,7 @@ import listToKeyboardEvents from "react-native-keyboard-aware-scroll-view/lib/Ke
 const config = {
   enableOnAndroid: true,
   enableAutomaticScroll: true,
-  enableResetScrollToCoords: true,
+  enableResetScrollToCoords: false,
 };
 
 export default listToKeyboardEvents(config)(DraggableFlatList);
