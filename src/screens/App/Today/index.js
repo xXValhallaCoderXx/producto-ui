@@ -1,7 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo } from "react";
 import { startOfDay, endOfDay } from "date-fns";
-import * as NavigationBar from "expo-navigation-bar";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
@@ -57,16 +56,14 @@ const ListScreen = () => {
   const { data: tasks, isLoading } = todaysTasks;
 
   useEffect(() => {
-    setTheme();
     dispatch(setCurrentDate(new Date().toISOString()));
   }, []);
 
-  const setTheme = async () => {
-    Platform.OS === "android" &&
-      (await NavigationBar.setBackgroundColorAsync("white"));
-    Platform.OS === "android" &&
-      (await NavigationBar.setButtonStyleAsync("dark"));
-  };
+  useEffect(() => {
+    const total = tasks?.length;
+    const completed = tasks?.filter((task) => task.completed).length;
+    dispatch(setProgress(Math.round((completed / total) * 100) / 100));
+  }, [tasks]);
 
   useEffect(() => {
     if (moveTasksApiResult.isSuccess) {
@@ -137,11 +134,7 @@ const ListScreen = () => {
   };
 
   const processedTasks = useMemo(() => {
-    const total = tasks?.length;
-    const completed = tasks?.filter((task) => task.completed).length;
-    dispatch(setProgress(Math.round((completed / total) * 100) / 100));
-
-    return tasks?.filter((task) => {
+    const filteredTasks = tasks?.filter((task) => {
       if (focusMode && !task.completed) {
         return task;
       } else if (!focusMode) {
@@ -149,25 +142,20 @@ const ListScreen = () => {
       }
       return false;
     });
+
+    return filteredTasks;
   }, [tasks, focusMode]);
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : ""}
       keyboardVerticalOffset={155}
-      style={{
-        paddingTop: 10,
-        paddingBottom: 10,
-        flex: 1,
-        backgroundColor: "white",
-        alignContent: "space-between",
-        justifyContent: "space-between",
-      }}
+      style={styles.keyboardContainer}
     >
       {isLoading ? (
         <View>
           <Header />
-          <View style={{ paddingTop: 20, paddingHorizontal: 20 }}>
+          <View style={styles.skeletonContainer}>
             <SkeletonList />
           </View>
         </View>
@@ -228,6 +216,18 @@ const styles = StyleSheet.create({
   moveIncomlpleteContainer: {
     paddingHorizontal: 20,
     flex: 1,
+  },
+  keyboardContainer: {
+    paddingTop: 10,
+    paddingBottom: 10,
+    flex: 1,
+    backgroundColor: "white",
+    alignContent: "space-between",
+    justifyContent: "space-between",
+  },
+  skeletonContainer: {
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
 });
 
