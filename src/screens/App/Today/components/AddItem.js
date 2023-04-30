@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { startOfDay, endOfDay } from "date-fns";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
 import { useToast } from "react-native-toast-notifications";
@@ -56,6 +57,8 @@ const AddItem = () => {
       createTaskApi({
         title: value,
         deadline: currentDate.toISOString(),
+        start: startOfDay(currentDate).toISOString(),
+        end: endOfDay(currentDate).toISOString(),
       });
     }
     setValue("");
