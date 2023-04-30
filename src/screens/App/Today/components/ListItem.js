@@ -135,7 +135,6 @@ const ListItem = ({ drag, item }) => {
       }}
       style={{
         paddingRight: 15,
-        minHeight: 60,
       }}
       left={() => (
         <View pointerEvents="none" style={{ paddingLeft: 5 }}>
