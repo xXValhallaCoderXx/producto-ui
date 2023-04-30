@@ -1,67 +1,64 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
-import { useKeyboard } from "@react-native-community/hooks";
 import {
   View,
   TouchableWithoutFeedback,
   TextInput,
-  Platform,
+  StyleSheet,
 } from "react-native";
-import { toggleAddTaskMode } from "../today-slice";
+import { toggleAddTaskMode, selectCurrentDate } from "../today-slice";
+import { useCreateTaskMutation } from "../../../../api/task-api";
 
 const AddItem = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
-  const keyboard = useKeyboard();
   const addTask = useSelector((state) => state.today.addTaskMode);
-  const addTaskInputRef = useRef(null);
-  const [taskName, setTaskName] = useState("");
+  const currentDate = useSelector(selectCurrentDate);
+  const [createTaskApi] = useCreateTaskMutation();
+  const [value, setValue] = useState("");
 
   const handleOnPress = () => {
     dispatch(toggleAddTaskMode(true));
   };
 
-  const handleOnChange = () => {
+  const handleOnChange = (_value) => {
+    setValue(_value);
+  };
+
+  const handleOnBlur = () => {
+    if (value) {
+      createTaskApi({
+        title: value,
+        deadline: currentDate.toISOString(),
+      });
+    }
+    setValue("");
     dispatch(toggleAddTaskMode(false));
   };
 
   return (
     <View>
       {addTask ? (
-        <View
-          style={{
-            paddingLeft: 25,
-          }}
-        >
+        <View style={styles.inputWrapper}>
           <TextInput
             placeholder="Enter task name..."
             placeholderTextColor="#808080"
             onChangeText={handleOnChange}
-            value={taskName}
-            // onBlur={handleOnBlur}
+            value={value}
+            autoFocus
+            onBlur={handleOnBlur}
             underlineColorAndroid="transparent"
-            style={{
-              fontSize: 16,
-              backgroundColor: "white",
-            }}
+            style={styles.inputStyle}
           />
         </View>
       ) : (
         <Button
           type="clear"
           icon="plus"
-          contentStyle={{
-            justifyContent: "flex-start",
-            paddingLeft: 10,
-            paddingTop: 8,
-            paddingBottom: 8,
-          }}
-          style={{ borderRadius: 1 }}
-          labelStyle={{
-            fontWeight: "700",
-            // fontSize: 16,
-          }}
+          contentStyle={styles.btnContent}
+          style={styles.btnStyle}
+          labelStyle={styles.label}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}
           onPress={handleOnPress}
@@ -72,5 +69,28 @@ const AddItem = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  inputStyle: {
+    fontSize: 16,
+    backgroundColor: "white",
+  },
+  inputWrapper: {
+    paddingLeft: 25,
+    paddingTop: 17,
+  },
+  btnContent: {
+    justifyContent: "flex-start",
+    paddingLeft: 10,
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+  btnLabel: {
+    fontWeight: "700",
+  },
+  btnStyle: {
+    borderRadius: 1,
+  },
+});
 
 export default AddItem;

@@ -23,7 +23,9 @@ import {
 import { toggleCalendar } from "./today-slice";
 
 import { useToast } from "react-native-toast-notifications";
-
+import CalendarWidget from "./components/Calendar";
+import MoveIncomplete from "./components/MoveIncomplete";
+import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
 import Header from "./components/Header";
 import AddItem from "./components/AddItem";
 import ListItem from "./components/ListItem";
@@ -109,9 +111,9 @@ const ListScreen = () => {
 
   useEffect(() => {
     if (tasks) {
-      const total = tasks.length;
-      const completed = tasks.filter((task) => task.completed).length;
-      setProgress(Math.round((completed / total) * 100) / 100);
+      // const total = tasks.length;
+      // const completed = tasks.filter((task) => task.completed).length;
+      // setProgress(Math.round((completed / total) * 100) / 100);
     }
   }, [tasks]);
 
@@ -149,6 +151,7 @@ const ListScreen = () => {
         stickyHeaderIndices={[0]}
         keyExtractor={(item) => item?.id}
         renderItem={ListItem}
+        keyboardDismissMode="none"
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={Header}
         ListFooterComponent={AddItem}
