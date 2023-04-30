@@ -167,10 +167,8 @@ const ListScreen = () => {
       ) : (
         <View
           style={{
-            flex:
-              addTaskMode || editTaskMode || isAfter(currentDate, new Date())
-                ? 1
-                : 0.9,
+            flex: 1,
+            backgroundColor: "white",
           }}
         >
           <DraggableFlatList
@@ -184,24 +182,18 @@ const ListScreen = () => {
             ListHeaderComponent={Header}
             ListFooterComponent={AddItem}
           />
+          {addTaskMode ||
+          editTaskMode ||
+          isAfter(currentDate, new Date()) ? null : (
+            <MoveIncomplete
+              tasks={tasks}
+              currentDate={currentDate}
+              isLoading={moveTasksApiResult.isLoading}
+              onMoveIncomplete={handleOpenIncompleteModal}
+            />
+          )}
         </View>
       )}
-
-      <View
-        style={{
-          flex:
-            addTaskMode || editTaskMode || isAfter(currentDate, new Date())
-              ? 0
-              : 0.1,
-        }}
-      >
-        <MoveIncomplete
-          tasks={tasks}
-          currentDate={currentDate}
-          isLoading={moveTasksApiResult.isLoading}
-          onMoveIncomplete={handleOpenIncompleteModal}
-        />
-      </View>
 
       <CalendarWidget
         calendarOpen={calendarOpen}
@@ -236,11 +228,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   keyboardContainer: {
-    paddingTop: 10,
-    paddingBottom: 10,
+    // paddingBottom: 10,
     flex: 1,
+    justifyContent: "flex-end",
     backgroundColor: "white",
-    justifyContent: "space-between",
   },
   skeletonContainer: {
     paddingTop: 20,

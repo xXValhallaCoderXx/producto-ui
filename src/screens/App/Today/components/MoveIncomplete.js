@@ -20,7 +20,11 @@ const MoveIncomplete = ({
   }
 
   return (
-    <View style={{ paddingTop: 10, paddingHorizontal: 20 }}>
+    <View
+      style={{
+        paddingHorizontal: 20,
+      }}
+    >
       <ProductoButton
         onPress={onMoveIncomplete}
         disabled={
