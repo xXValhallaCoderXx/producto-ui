@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { startOfDay, endOfDay } from "date-fns";
+import { startOfDay, endOfDay, isAfter } from "date-fns";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
@@ -41,6 +41,8 @@ const ListScreen = () => {
   const previousArgs = useRef(null);
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const addTaskMode = useSelector((state) => state.today.addTaskMode);
+  const editTaskMode = useSelector((state) => state.today.editingTask);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
   const deleteTaskId = useSelector((state) => state.today.deleteTaskId);
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
@@ -163,22 +165,35 @@ const ListScreen = () => {
           </View>
         </View>
       ) : (
-        <DraggableFlatList
-          data={processedTasks || []}
-          stickyHeaderIndices={[0]}
-          bounces={false}
-          keyExtractor={(item) => item?.id}
-          renderItem={ListItem}
-          keyboardDismissMode="none"
-          keyboardShouldPersistTaps="handled"
-          ListHeaderComponent={Header}
-          ListFooterComponent={AddItem}
-        />
+        <View
+          style={{
+            flex:
+              addTaskMode || editTaskMode || isAfter(currentDate, new Date())
+                ? 1
+                : 0.9,
+          }}
+        >
+          <DraggableFlatList
+            data={processedTasks || []}
+            stickyHeaderIndices={[0]}
+            bounces={false}
+            keyExtractor={(item) => item?.id}
+            renderItem={ListItem}
+            keyboardDismissMode="none"
+            keyboardShouldPersistTaps="handled"
+            ListHeaderComponent={Header}
+            ListFooterComponent={AddItem}
+          />
+        </View>
       )}
 
       <View
-        onPress={handleKeyboardDismiss}
-        style={styles.moveIncomlpleteContainer}
+        style={{
+          flex:
+            addTaskMode || editTaskMode || isAfter(currentDate, new Date())
+              ? 0
+              : 0.1,
+        }}
       >
         <MoveIncomplete
           tasks={tasks}
@@ -187,6 +202,7 @@ const ListScreen = () => {
           onMoveIncomplete={handleOpenIncompleteModal}
         />
       </View>
+
       <CalendarWidget
         calendarOpen={calendarOpen}
         toggleCalendar={handleToggleCalendar}
@@ -218,15 +234,12 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   moveIncomlpleteContainer: {
     paddingHorizontal: 20,
-
-    // flex: 1,
   },
   keyboardContainer: {
     paddingTop: 10,
     paddingBottom: 10,
     flex: 1,
     backgroundColor: "white",
-    alignContent: "space-between",
     justifyContent: "space-between",
   },
   skeletonContainer: {

@@ -17,6 +17,7 @@ const AddItem = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const addTask = useSelector((state) => state.today.addTaskMode);
+  const focusMode = useSelector((state) => state.today.focusMode);
   const currentDate = useSelector(selectCurrentDate);
   const [createTaskApi, createTaskApiResult] = useCreateTaskMutation();
   const [value, setValue] = useState("");
@@ -63,6 +64,10 @@ const AddItem = () => {
     setValue("");
     dispatch(toggleAddTaskMode(false));
   };
+
+  if (focusMode) {
+    return null;
+  }
 
   return (
     <View>

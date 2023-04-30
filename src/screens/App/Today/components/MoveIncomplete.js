@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import ProductoButton from "../../../../components/Button";
 import { isBefore, isAfter, isSameDay } from "date-fns";
 import { View } from "react-native";
@@ -7,7 +8,10 @@ const MoveIncomplete = ({
   isLoading,
   tasks,
 }) => {
-  if (isLoading) {
+  const addTaskMode = useSelector((state) => state.today.addTaskMode);
+  const editingTask = useSelector((state) => state.today.editingTask);
+
+  if (isLoading | addTaskMode | Boolean(editingTask)) {
     return null;
   }
 
@@ -16,7 +20,7 @@ const MoveIncomplete = ({
   }
 
   return (
-    <View style={{ paddingVertical: 30 }}>
+    <View style={{ paddingTop: 10, paddingHorizontal: 20 }}>
       <ProductoButton
         onPress={onMoveIncomplete}
         disabled={
