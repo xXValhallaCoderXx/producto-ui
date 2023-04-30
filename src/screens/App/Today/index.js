@@ -2,9 +2,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo } from "react";
 import { startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import DraggableFlatList from "react-native-draggable-flatlist";
-import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+} from "react-native";
 
 import { setCurrentDate, selectCurrentDate } from "./today-slice";
 
@@ -94,6 +99,10 @@ const ListScreen = () => {
     dispatch(toggleCalendar());
   };
 
+  const handleKeyboardDismiss = (e) => {
+    Keyboard.dismiss();
+  };
+
   const handleOnDeleteTask = () => {
     deleteTaskApi({
       id: deleteTaskId,
@@ -144,7 +153,7 @@ const ListScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      behavior="padding"
+      behavior={Platform.OS === "ios" ?? "padding"}
       keyboardVerticalOffset={155}
       style={{
         paddingTop: 10,
@@ -175,7 +184,10 @@ const ListScreen = () => {
         />
       )}
 
-      <View style={styles.moveIncomlpleteContainer}>
+      <View
+        onPress={handleKeyboardDismiss}
+        style={styles.moveIncomlpleteContainer}
+      >
         <MoveIncomplete
           tasks={tasks}
           currentDate={currentDate}
@@ -214,6 +226,7 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   moveIncomlpleteContainer: {
     paddingHorizontal: 20,
+    flex: 1,
   },
 });
 

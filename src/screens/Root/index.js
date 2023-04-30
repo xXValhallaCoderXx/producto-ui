@@ -1,7 +1,6 @@
-import { Animated, Image, Platform } from "react-native";
+import { Animated, Image } from "react-native";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import * as NavigationBar from "expo-navigation-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthScreens from "../Auth";
 import AppScreens from "../App";
