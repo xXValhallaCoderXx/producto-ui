@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo } from "react";
 import { startOfDay, endOfDay } from "date-fns";
 import * as NavigationBar from "expo-navigation-bar";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
 
@@ -168,7 +168,6 @@ const ListScreen = () => {
           bounces={false}
           keyExtractor={(item) => item?.id}
           renderItem={ListItem}
-          ListHeaderComponentStyle={{ paddingBottom: 20 }}
           keyboardDismissMode="none"
           keyboardShouldPersistTaps="handled"
           ListHeaderComponent={Header}

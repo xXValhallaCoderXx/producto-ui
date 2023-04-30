@@ -19,6 +19,7 @@ const ListItem = ({ drag, item }) => {
   const todayDate = format(new Date(), "yyyy-MM-dd");
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const addTaskMode = useSelector((state) => state.today.addTaskMode);
   const editTaskId = useSelector((state) => state.today.editingTask);
   const [editTaskTitle, setEditTaskTitle] = useState("");
   const [localIsChecked, setLocalIsChecked] = useState({ id: "" });
@@ -66,7 +67,7 @@ const ListItem = ({ drag, item }) => {
           }}
           left={() => (
             <View style={styles.leftContainer}>
-              <TouchableOpacity style={{ marginTop: 5 }} onLongPress={drag}>
+              <TouchableOpacity onLongPress={drag}>
                 <MaterialIcons
                   name="drag-indicator"
                   color={"#6B7280"}
@@ -102,7 +103,7 @@ const ListItem = ({ drag, item }) => {
   return (
     <List.Item
       title={item?.title}
-      //   disabled={addTaskMode || !!editTaskId}
+      disabled={addTaskMode || !!editTaskId}
       titleStyle={{
         color:
           item?.completed || localIsChecked.id === item.id ? "gray" : "black",
@@ -168,6 +169,7 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     flexDirection: "row",
+    alignItems: "center",
   },
 });
 

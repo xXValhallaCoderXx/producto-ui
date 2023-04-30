@@ -52,7 +52,13 @@ const TodayHeader = () => {
   };
 
   return (
-    <View style={{ paddingHorizontal: 20, backgroundColor: "white" }}>
+    <View
+      style={{
+        paddingHorizontal: 20,
+        backgroundColor: "white",
+        paddingBottom: 20,
+      }}
+    >
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
         <Text
           style={{
