@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTheme, Button } from "react-native-paper";
+import { useToast } from "react-native-toast-notifications";
 import {
   View,
   TouchableWithoutFeedback,
@@ -11,12 +12,36 @@ import { toggleAddTaskMode, selectCurrentDate } from "../today-slice";
 import { useCreateTaskMutation } from "../../../../api/task-api";
 
 const AddItem = () => {
+  const toast = useToast();
   const theme = useTheme();
   const dispatch = useDispatch();
   const addTask = useSelector((state) => state.today.addTaskMode);
   const currentDate = useSelector(selectCurrentDate);
-  const [createTaskApi] = useCreateTaskMutation();
+  const [createTaskApi, createTaskApiResult] = useCreateTaskMutation();
   const [value, setValue] = useState("");
+
+  useEffect(() => {
+    if (createTaskApiResult.isError) {
+      toast.show("", {
+        type: "error",
+        duration: 2500,
+        offset: 100,
+        animationType: "zoom-in",
+        placement: "top",
+        title: `Error creating task!`,
+        description: "",
+      });
+      // TODO - Test removing task from cache
+
+      if (createTaskApiResult.isSuccess) {
+        toast.show("", {
+          type: "success",
+          placement: "top",
+          title: `Task created!`,
+        });
+      }
+    }
+  }, [createTaskApiResult]);
 
   const handleOnPress = () => {
     dispatch(toggleAddTaskMode(true));

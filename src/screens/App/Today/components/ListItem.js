@@ -8,7 +8,11 @@ import { format, startOfDay, endOfDay } from "date-fns";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useUpdateTaskMutation } from "../../../../api/task-api";
-import { setEditingTask, selectCurrentDate } from "../today-slice";
+import {
+  setEditingTask,
+  selectCurrentDate,
+  setDeleteTaskId,
+} from "../today-slice";
 
 const ListItem = ({ drag, item }) => {
   const dispatch = useDispatch();
@@ -37,7 +41,9 @@ const ListItem = ({ drag, item }) => {
     dispatch(setEditingTask(null));
   };
 
-  const handlePressDelete = () => {};
+  const handlePressDelete = () => {
+    dispatch(setDeleteTaskId(item.id));
+  };
 
   const handleOnCheckTask = () => {
     updateTaskApi({
@@ -96,7 +102,6 @@ const ListItem = ({ drag, item }) => {
   return (
     <List.Item
       title={item?.title}
-      titleNumberOfLines={4}
       //   disabled={addTaskMode || !!editTaskId}
       titleStyle={{
         color:
@@ -109,7 +114,6 @@ const ListItem = ({ drag, item }) => {
         maxWidth: "90%",
       }}
       onLongPress={() => {
-        console.log("GO");
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         setEditTaskTitle(item?.title);
         dispatch(setEditingTask(item.id));
@@ -133,7 +137,7 @@ const ListItem = ({ drag, item }) => {
         minHeight: 60,
       }}
       left={() => (
-        <View pointerEvents="none" style={{ marginTop: 3, paddingLeft: 5 }}>
+        <View pointerEvents="none" style={{ paddingLeft: 5 }}>
           <Checkbox.Android
             status={
               item?.completed || localIsChecked.id === item.id

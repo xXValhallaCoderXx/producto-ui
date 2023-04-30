@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { add, sub, startOfDay, endOfDay } from "date-fns";
+import { add, sub } from "date-fns";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
-  Image,
 } from "react-native";
 import { format } from "date-fns";
 import { Text, useTheme } from "react-native-paper";
@@ -15,6 +13,7 @@ import IonIcon from "react-native-vector-icons/MaterialIcons";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleFocusMode,
+  toggleCalendar,
   selectIsToday,
   selectCurrentDate,
   setEditingTask,
@@ -22,6 +21,7 @@ import {
 } from "../today-slice";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ProgressBar from "../../../../components/ProgressBar";
+import { useMemo } from "react";
 
 const TodayHeader = () => {
   const theme = useTheme();
@@ -29,17 +29,18 @@ const TodayHeader = () => {
   const isToday = useSelector(selectIsToday);
   const clientUtc = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const calendarOpen = useSelector((state) => state.today.calendarOpen);
+  const progress = useSelector((state) => state.today.progress);
 
   const onPressDate = () => {
-    console.log("DATE");
+    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
   };
 
   const onPressToday = () => {
-    console.log("DATE");
+    dispatch(setCurrentDate(new Date().toISOString()));
   };
 
   const onChangeDate = (direction) => () => {
-    console.log("eheh");
     dispatch(setEditingTask(null));
     if (direction === "back") {
       const subUtcDate = sub(clientUtc, { days: 1 });
@@ -114,7 +115,7 @@ const TodayHeader = () => {
           </TouchableOpacity>
         }
       </View>
-      <ProgressBar progress={0.5} />
+      <ProgressBar progress={progress} />
     </View>
   );
 };
