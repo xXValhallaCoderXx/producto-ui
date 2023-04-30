@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { startOfDay, endOfDay } from "date-fns";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import {
@@ -38,7 +38,7 @@ import SkeletonList from "./components/SkeletonList";
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
-
+  const previousArgs = useRef(null);
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
@@ -53,7 +53,7 @@ const ListScreen = () => {
     end: endOfDay(currentDate).toISOString(),
   });
 
-  const { data: tasks, isLoading } = todaysTasks;
+  const { data: tasks, isLoading, isFetching, originalArgs } = todaysTasks;
 
   useEffect(() => {
     dispatch(setCurrentDate(new Date().toISOString()));
@@ -63,6 +63,7 @@ const ListScreen = () => {
     const total = tasks?.length;
     const completed = tasks?.filter((task) => task.completed).length;
     dispatch(setProgress(Math.round((completed / total) * 100) / 100));
+    previousArgs.current = originalArgs;
   }, [tasks]);
 
   useEffect(() => {
@@ -146,13 +147,15 @@ const ListScreen = () => {
     return filteredTasks;
   }, [tasks, focusMode]);
 
+  const isSame = originalArgs === previousArgs.current;
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : ""}
       keyboardVerticalOffset={155}
       style={styles.keyboardContainer}
     >
-      {isLoading ? (
+      {(isLoading || isFetching) && !isSame ? (
         <View>
           <Header />
           <View style={styles.skeletonContainer}>
@@ -215,7 +218,8 @@ const ListScreen = () => {
 const styles = StyleSheet.create({
   moveIncomlpleteContainer: {
     paddingHorizontal: 20,
-    flex: 1,
+
+    // flex: 1,
   },
   keyboardContainer: {
     paddingTop: 10,
