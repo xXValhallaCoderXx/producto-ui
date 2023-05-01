@@ -14,6 +14,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
+  Pressable,
 } from "react-native";
 
 import { setCurrentDate, selectCurrentDate } from "./today-slice";
@@ -181,6 +182,10 @@ const ListScreen = () => {
       runOnJS(swipeBackwards)();
     });
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : ""}
@@ -197,48 +202,42 @@ const ListScreen = () => {
       ) : (
         <GestureDetector gesture={leftSwipe}>
           <GestureDetector gesture={rightSwipe}>
-            <View
-              style={{
-                flex: 1,
-
-                justifyContent: "space-between",
-              }}
-            >
-              <DraggableFlatList
-                data={processedTasks || []}
-                stickyHeaderIndices={[0]}
-                bounces={false}
-                collapsable={false}
-                keyExtractor={(item) => item?.id}
-                renderItem={ListItem}
-                keyboardDismissMode="none"
-                contentContainerStyle={{ flexGrow: 1 }}
-                directionalLockEnabled={true}
-                // style={{
-                //   height:
-                //     isSameDay(new Date(), currentDate) ||
-                //     isBefore(new Date(), currentDate)
-                //       ? "100%"
-                //       : "95%",
-                // }}
-                keyboardShouldPersistTaps="handled"
-                ListHeaderComponent={Header}
-                ListFooterComponent={AddItem}
-              />
+            <Pressable onPress={dismissKeyboard} style={{ flex: 1 }}>
               <View
                 style={{
-                  paddingBottom: 20,
-                  paddingTop: 10,
+                  flex: 1,
+                  justifyContent: "space-between",
                 }}
               >
-                <MoveIncomplete
-                  tasks={tasks}
-                  currentDate={currentDate}
-                  isLoading={moveTasksApiResult.isLoading}
-                  onMoveIncomplete={handleOpenIncompleteModal}
+                <DraggableFlatList
+                  data={processedTasks || []}
+                  stickyHeaderIndices={[0]}
+                  bounces={false}
+                  collapsable={false}
+                  keyExtractor={(item) => item?.id}
+                  renderItem={ListItem}
+                  keyboardDismissMode="none"
+                  contentContainerStyle={{ flexGrow: 1 }}
+                  directionalLockEnabled={true}
+                  keyboardShouldPersistTaps="handled"
+                  ListHeaderComponent={Header}
+                  ListFooterComponent={AddItem}
                 />
+                <View
+                  style={{
+                    paddingBottom: 20,
+                    paddingTop: 10,
+                  }}
+                >
+                  <MoveIncomplete
+                    tasks={tasks}
+                    currentDate={currentDate}
+                    isLoading={moveTasksApiResult.isLoading}
+                    onMoveIncomplete={handleOpenIncompleteModal}
+                  />
+                </View>
               </View>
-            </View>
+            </Pressable>
           </GestureDetector>
         </GestureDetector>
       )}
