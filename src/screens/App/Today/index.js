@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { startOfDay, endOfDay, isAfter } from "date-fns";
+import { startOfDay, endOfDay, isBefore, isSameDay } from "date-fns";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
@@ -168,7 +168,8 @@ const ListScreen = () => {
         <View
           style={{
             flex: 1,
-            backgroundColor: "white",
+
+            justifyContent: "space-between",
           }}
         >
           <DraggableFlatList
@@ -178,20 +179,30 @@ const ListScreen = () => {
             keyExtractor={(item) => item?.id}
             renderItem={ListItem}
             keyboardDismissMode="none"
+            style={{
+              height:
+                isSameDay(new Date(), currentDate) ||
+                isBefore(new Date(), currentDate)
+                  ? "100%"
+                  : "90%",
+            }}
             keyboardShouldPersistTaps="handled"
             ListHeaderComponent={Header}
             ListFooterComponent={AddItem}
           />
-          {addTaskMode ||
-          editTaskMode ||
-          isAfter(currentDate, new Date()) ? null : (
+          <View
+            style={{
+              paddingBottom: 20,
+              paddingTop: 10,
+            }}
+          >
             <MoveIncomplete
               tasks={tasks}
               currentDate={currentDate}
               isLoading={moveTasksApiResult.isLoading}
               onMoveIncomplete={handleOpenIncompleteModal}
             />
-          )}
+          </View>
         </View>
       )}
 
@@ -228,9 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   keyboardContainer: {
-    // paddingBottom: 10,
     flex: 1,
-    justifyContent: "flex-end",
     backgroundColor: "white",
   },
   skeletonContainer: {

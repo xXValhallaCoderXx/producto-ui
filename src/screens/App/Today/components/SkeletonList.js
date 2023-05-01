@@ -38,6 +38,10 @@ const SkeletonList = () => {
       <SkeletonRow />
       <SkeletonRow />
       <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
+      <SkeletonRow />
     </View>
   );
 };
