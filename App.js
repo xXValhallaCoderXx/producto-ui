@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import * as Sentry from "sentry-expo";
 import { useState, useCallback, useEffect } from "react";
 import { Platform } from "react-native";
