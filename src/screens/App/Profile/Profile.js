@@ -154,7 +154,9 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.titleStyle}>ACCOUNT INFORMATION</Text>
 
         {isLoading ? (
-          <View style={{ marginBottom: 10, marginTop: 10 }}>
+          <View
+            style={{ marginBottom: 10, marginTop: 10, paddingHorizontal: 20 }}
+          >
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -174,7 +176,7 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
         {isLoading ? (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, paddingHorizontal: 20 }}>
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -193,7 +195,9 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
         {isLoading ? (
-          <View style={{ marginBottom: 10, marginTop: 10 }}>
+          <View
+            style={{ marginBottom: 10, marginTop: 10, paddingHorizontal: 20 }}
+          >
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -214,7 +218,7 @@ const ProfileScreen = ({ navigation }) => {
         )}
 
         {isLoading ? (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, paddingHorizontal: 20 }}>
             <SkeletonBox height={70} width={"100%"} />
           </View>
         ) : (

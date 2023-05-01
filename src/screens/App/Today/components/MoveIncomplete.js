@@ -10,8 +10,9 @@ const MoveIncomplete = ({
 }) => {
   const addTaskMode = useSelector((state) => state.today.addTaskMode);
   const editingTask = useSelector((state) => state.today.editingTask);
+  const focusMode = useSelector((state) => state.today.focusMode);
 
-  if (isLoading | addTaskMode | Boolean(editingTask)) {
+  if (isLoading | addTaskMode | Boolean(editingTask) || focusMode) {
     return null;
   }
 
