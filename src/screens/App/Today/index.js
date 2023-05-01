@@ -1,6 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo, useRef } from "react";
-import { startOfDay, endOfDay, isBefore, isSameDay } from "date-fns";
+import { startOfDay, endOfDay, sub, add } from "date-fns";
+import {
+  Gesture,
+  GestureDetector,
+  Directions,
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
@@ -38,6 +44,8 @@ import SkeletonList from "./components/SkeletonList";
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
+  const scrollRef = useRef();
+  const [hello, setHello] = useState(false);
   const previousArgs = useRef(null);
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
@@ -151,6 +159,28 @@ const ListScreen = () => {
 
   const isSame = originalArgs === previousArgs.current;
 
+  const swipeForward = () => {
+    const addUtcDate = add(new Date(currentDate), { days: 1 });
+    dispatch(setCurrentDate(addUtcDate.toISOString()));
+  };
+
+  const swipeBackwards = () => {
+    const subUtcDate = sub(currentDate, { days: 1 });
+    dispatch(setCurrentDate(subUtcDate.toISOString()));
+  };
+
+  const rightSwipe = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onEnd(() => {
+      runOnJS(swipeForward)();
+    });
+
+  const leftSwipe = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onEnd(() => {
+      runOnJS(swipeBackwards)();
+    });
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : ""}
@@ -165,45 +195,52 @@ const ListScreen = () => {
           </View>
         </View>
       ) : (
-        <View
-          style={{
-            flex: 1,
+        <GestureDetector gesture={leftSwipe}>
+          <GestureDetector gesture={rightSwipe}>
+            <View
+              style={{
+                flex: 1,
 
-            justifyContent: "space-between",
-          }}
-        >
-          <DraggableFlatList
-            data={processedTasks || []}
-            stickyHeaderIndices={[0]}
-            bounces={false}
-            keyExtractor={(item) => item?.id}
-            renderItem={ListItem}
-            keyboardDismissMode="none"
-            style={{
-              height:
-                isSameDay(new Date(), currentDate) ||
-                isBefore(new Date(), currentDate)
-                  ? "100%"
-                  : "90%",
-            }}
-            keyboardShouldPersistTaps="handled"
-            ListHeaderComponent={Header}
-            ListFooterComponent={AddItem}
-          />
-          <View
-            style={{
-              paddingBottom: 20,
-              paddingTop: 10,
-            }}
-          >
-            <MoveIncomplete
-              tasks={tasks}
-              currentDate={currentDate}
-              isLoading={moveTasksApiResult.isLoading}
-              onMoveIncomplete={handleOpenIncompleteModal}
-            />
-          </View>
-        </View>
+                justifyContent: "space-between",
+              }}
+            >
+              <DraggableFlatList
+                data={processedTasks || []}
+                stickyHeaderIndices={[0]}
+                bounces={false}
+                collapsable={false}
+                keyExtractor={(item) => item?.id}
+                renderItem={ListItem}
+                keyboardDismissMode="none"
+                contentContainerStyle={{ flexGrow: 1 }}
+                directionalLockEnabled={true}
+                // style={{
+                //   height:
+                //     isSameDay(new Date(), currentDate) ||
+                //     isBefore(new Date(), currentDate)
+                //       ? "100%"
+                //       : "95%",
+                // }}
+                keyboardShouldPersistTaps="handled"
+                ListHeaderComponent={Header}
+                ListFooterComponent={AddItem}
+              />
+              <View
+                style={{
+                  paddingBottom: 20,
+                  paddingTop: 10,
+                }}
+              >
+                <MoveIncomplete
+                  tasks={tasks}
+                  currentDate={currentDate}
+                  isLoading={moveTasksApiResult.isLoading}
+                  onMoveIncomplete={handleOpenIncompleteModal}
+                />
+              </View>
+            </View>
+          </GestureDetector>
+        </GestureDetector>
       )}
 
       <CalendarWidget
