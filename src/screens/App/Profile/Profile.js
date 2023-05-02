@@ -263,7 +263,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
           >
             <Text type="h3" color="black">
-              v1.0.2
+              v1.0.4
             </Text>
           </View>
         )}
