@@ -90,7 +90,7 @@ const AddItem = () => {
           icon="plus"
           contentStyle={styles.btnContent}
           style={styles.btnStyle}
-          labelStyle={styles.label}
+          labelStyle={styles.btnLabel}
           TouchableComponent={TouchableWithoutFeedback}
           color={theme.colors.primary}
           onPress={handleOnPress}

@@ -215,7 +215,7 @@ const LoginScreen = ({ navigation }) => {
                     fontWeight: "500",
                   }}
                 >
-                  Continue As{" "}
+                  Continue as{" "}
                   <Text style={{ fontWeight: "700" }}>
                     {emailForm.values.email}
                   </Text>

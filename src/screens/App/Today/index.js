@@ -173,13 +173,13 @@ const ListScreen = () => {
   const rightSwipe = Gesture.Fling()
     .direction(Directions.RIGHT)
     .onEnd(() => {
-      runOnJS(swipeForward)();
+      runOnJS(swipeBackwards)();
     });
 
   const leftSwipe = Gesture.Fling()
     .direction(Directions.LEFT)
     .onEnd(() => {
-      runOnJS(swipeBackwards)();
+      runOnJS(swipeForward)();
     });
 
   const dismissKeyboard = () => {
