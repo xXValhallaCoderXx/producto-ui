@@ -51,7 +51,7 @@ const AddItem = () => {
   const handleOnChange = (_value) => {
     setValue(_value);
   };
-
+  console.log("CURRENT DATA: ", currentDate.toISOString())
   const handleOnBlur = () => {
     if (value) {
       createTaskApi({

@@ -1,7 +1,7 @@
 module.exports = ({ config }) => {
   return {
     ...config,
-    plugins: ["expo-localization"],
+    plugins: ["expo-localization", "sentry-expo"],
     runtimeVersion: {
       policy: "sdkVersion",
     },
@@ -23,10 +23,10 @@ module.exports = ({ config }) => {
       url: "https://u.expo.dev/91edd9b2-7766-4ed5-88e8-8821573af2f6",
     },
     extra: {
-      // environment: "development",
-      // baseUrl: "http://192.168.10.132:3000",
-      environment: "production",
-      baseUrl: "https://producto-dev.herokuapp.com",
+      environment: "development",
+      baseUrl: "http://192.168.10.132:3000",
+      // environment: "production",
+      // baseUrl: "https://producto-dev.herokuapp.com",
       eas: {
         projectId: "91edd9b2-7766-4ed5-88e8-8821573af2f6",
       },

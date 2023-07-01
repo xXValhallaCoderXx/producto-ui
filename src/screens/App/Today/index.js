@@ -64,6 +64,12 @@ const ListScreen = () => {
     end: endOfDay(currentDate).toISOString(),
   });
 
+  const now = new Date();
+  const currentUTCTime = now.toISOString();
+
+  console.log(`Current time in UTC: ${currentUTCTime}`);
+
+
   const { data: tasks, isLoading, isFetching, originalArgs } = todaysTasks;
 
   useEffect(() => {
