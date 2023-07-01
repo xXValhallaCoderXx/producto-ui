@@ -1,94 +1,81 @@
 import { useSelector, useDispatch } from "react-redux";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useEffect, useState, useRef } from "react";
-import { add, sub, startOfDay, endOfDay } from "date-fns";
-import * as NavigationBar from "expo-navigation-bar";
-
+import { useEffect, useState, useMemo, useRef } from "react";
+import { startOfDay, endOfDay, sub, add } from "date-fns";
+import {
+  Gesture,
+  GestureDetector,
+  Directions,
+} from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
+import DraggableFlatList from "react-native-draggable-flatlist";
 import {
   StyleSheet,
   View,
-  Animated,
   Platform,
   KeyboardAvoidingView,
-  TouchableWithoutFeedback,
   Keyboard,
+  Pressable,
 } from "react-native";
-import Header from "./components/Header";
-import ProgressBar from "./ProgressBar";
-import TaskList from "./TaskList";
-import AddItem from "./AddItem";
-import MoveIncomplete from "./components/MoveIncomplete";
-import IntroBottomSheet from "./IntroBottomSheet";
-import SkeletonList from "./components/SkeletonList";
-import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
-import {
-  selectIsToday,
-  setCurrentDate,
-  setEditingTask,
-  selectCurrentDate,
-} from "./today-slice";
+
+import { setCurrentDate, selectCurrentDate } from "./today-slice";
 
 import {
   useGetTodaysTasksQuery,
-  useCreateTaskMutation,
-  useUpdateTaskMutation,
   useGetIncompleteTasksQuery,
   useMoveSpecificTasksMutation,
+  useDeleteTaskMutation,
 } from "../../../api/task-api";
-import { toggleCalendar } from "./today-slice";
-import { useGetProfileQuery } from "../../../api/user-api";
-import CalendarWidget from "./Calendar";
+import {
+  toggleCalendar,
+  setProgress,
+  setDeleteTaskId,
+  setEditingTask,
+} from "./today-slice";
+
 import { useToast } from "react-native-toast-notifications";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import CalendarWidget from "./components/Calendar";
+import MoveIncomplete from "./components/MoveIncomplete";
+import MoveIncompleteModal from "../../../components/MoveIncompleteModal";
+import Header from "./components/Header";
+import AddItem from "./components/AddItem";
+import ListItem from "./components/ListItem";
+import SkeletonList from "./components/SkeletonList";
 
 const ListScreen = () => {
   const dispatch = useDispatch();
   const toast = useToast();
-
-  const isToday = useSelector(selectIsToday);
+  const scrollRef = useRef();
+  const [hello, setHello] = useState(false);
+  const previousArgs = useRef(null);
   const currentDate = useSelector(selectCurrentDate);
   const focusMode = useSelector((state) => state.today.focusMode);
+  const addTaskMode = useSelector((state) => state.today.addTaskMode);
+  const editTaskMode = useSelector((state) => state.today.editingTask);
   const calendarOpen = useSelector((state) => state.today.calendarOpen);
-  const editTaskId = useSelector((state) => state.today.editingTask);
-
-  const [progress, setProgress] = useState(0);
+  const deleteTaskId = useSelector((state) => state.today.deleteTaskId);
   const [isMoveIncompleteOpen, setIsMoveIncompleteOpen] = useState(false);
-
-  const [updateTask] = useUpdateTaskMutation();
-  const [createTask, createTaskResult] = useCreateTaskMutation();
   const { data: incompleteTasks } = useGetIncompleteTasksQuery({});
   const [moveTasksApi, moveTasksApiResult] = useMoveSpecificTasksMutation();
+  const [deleteTaskApi, deleteTaskApiResults] = useDeleteTaskMutation();
 
   const todaysTasks = useGetTodaysTasksQuery({
     start: startOfDay(currentDate).toISOString(),
     end: endOfDay(currentDate).toISOString(),
   });
 
-  const posXanim = useRef(new Animated.Value(0)).current;
-
-  const { data: tasks, isLoading } = todaysTasks;
-
-  const { data: userData, isLoading: userProfileLoading } =
-    useGetProfileQuery();
+  const { data: tasks, isLoading, isFetching, originalArgs } = todaysTasks;
 
   useEffect(() => {
-    setTheme();
     dispatch(setCurrentDate(new Date().toISOString()));
   }, []);
 
-  const setTheme = async () => {
-    Platform.OS === "android" &&
-      (await NavigationBar.setBackgroundColorAsync("white"));
-    Platform.OS === "android" &&
-      (await NavigationBar.setButtonStyleAsync("dark"));
-  };
-
   useEffect(() => {
-    Animated.timing(posXanim, {
-      toValue: focusMode ? 0 : 50,
-      duration: 350,
-      useNativeDriver: true,
-    }).start();
-  }, [focusMode]);
+    const total = tasks?.length;
+    const completed = tasks?.filter((task) => task.completed).length;
+    dispatch(setProgress(Math.round((completed / total) * 100) / 100));
+    previousArgs.current = originalArgs;
+  }, [tasks]);
 
   useEffect(() => {
     if (moveTasksApiResult.isSuccess) {
@@ -104,51 +91,35 @@ const ListScreen = () => {
   }, [moveTasksApiResult.isSuccess]);
 
   useEffect(() => {
-    if (createTaskResult.isError) {
+    if (deleteTaskApiResults.isSuccess) {
       toast.show("", {
-        type: "error",
+        type: "success",
         duration: 2500,
         offset: 100,
         animationType: "zoom-in",
         placement: "top",
-        title: `Error creating task!`,
+        title: `Task Deleted!`,
         description: "",
       });
-      // TODO - Test removing task from cache
     }
-  }, [createTaskResult.isError]);
-
-  useEffect(() => {
-    if (createTaskResult.isSuccess) {
-      toast.show("", {
-        type: "success",
-        placement: "top",
-        title: `Task created!`,
-      });
-    }
-  }, [createTaskResult.isSuccess]);
-
-  useEffect(() => {
-    if (tasks) {
-      const total = tasks.length;
-      const completed = tasks.filter((task) => task.completed).length;
-      setProgress(Math.round((completed / total) * 100) / 100);
-    }
-  }, [tasks]);
+  }, [deleteTaskApiResults]);
 
   const handleToggleCalendar = () => {
     dispatch(toggleCalendar());
   };
 
-  const handleOnChangeDate = (direction) => () => {
+  const handleKeyboardDismiss = (e) => {
+    Keyboard.dismiss();
+  };
+
+  const handleOnDeleteTask = () => {
+    deleteTaskApi({
+      id: deleteTaskId,
+      start: startOfDay(currentDate).toISOString(),
+      end: endOfDay(currentDate).toISOString(),
+    });
     dispatch(setEditingTask(null));
-    if (direction === "back") {
-      const subUtcDate = sub(currentDate, { days: 1 });
-      dispatch(setCurrentDate(subUtcDate.toISOString()));
-    } else {
-      const addUtcDate = add(new Date(currentDate), { days: 1 });
-      dispatch(setCurrentDate(addUtcDate.toISOString()));
-    }
+    dispatch(setDeleteTaskId(null));
   };
 
   const handleOpenIncompleteModal = () => {
@@ -159,54 +130,13 @@ const ListScreen = () => {
     setIsMoveIncompleteOpen(false);
   };
 
-  const handleOnPressToday = async () => {
-    dispatch(setCurrentDate(new Date().toISOString()));
-  };
-
-  const handleOnPressDate = async () => {
-    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
+  const handleCloseDeleteModal = () => {
+    dispatch(setDeleteTaskId(null));
   };
 
   const handleOnSelectDay = (_day) => {
     dispatch(setCurrentDate(new Date(_day.dateString).toISOString()));
     dispatch(toggleCalendar({ calendarOpen: false }));
-  };
-
-  const handleKeyboardDismiss = (e) => {
-    // e.stopPropagation();
-    Keyboard.dismiss();
-  };
-
-  // NEW
-  const handleCreateNewTask = async (_title) => {
-    createTask({
-      title: _title,
-      deadline: currentDate.toISOString(),
-      start: startOfDay(currentDate).toISOString(),
-      end: endOfDay(currentDate).toISOString(),
-    });
-  };
-
-  const handleToggleTaskComplete = async (_task) => {
-    await updateTask({
-      id: _task.id,
-      data: {
-        completed: !_task.completed,
-      },
-      start: startOfDay(currentDate).toISOString(),
-      end: endOfDay(currentDate).toISOString(),
-    });
-  };
-
-  const handleToggleTaskFocus = async (_task) => {
-    await updateTask({
-      id: _task.id,
-      data: {
-        focus: !_task.focus,
-      },
-      start: startOfDay(currentDate).toISOString(),
-      end: endOfDay(currentDate).toISOString(),
-    });
   };
 
   const handleMoveIncompleteTasks = async (items) => {
@@ -215,117 +145,142 @@ const ListScreen = () => {
     setIsMoveIncompleteOpen(false);
   };
 
-  return (
-    <TouchableWithoutFeedback
-      onPress={handleKeyboardDismiss}
-      accessible={false}
-    >
-      <GestureHandlerRootView style={{ flex: 1, backgroundColor: "white" }}>
-        <KeyboardAvoidingView
-          keyboardVerticalOffset={Platform.OS === "ios" ? 155 : -110}
-          behavior={Platform.OS === "ios" ? "padding" : "padding"}
-          style={styles.keyboardContainer}
-        >
-          <View style={{ paddingHorizontal: 20 }}>
-            <Header
-              clientUtc={currentDate}
-              focusMode={focusMode}
-              onChangeDate={handleOnChangeDate}
-              onPressToday={handleOnPressToday}
-              onPressDate={handleOnPressDate}
-            />
-            <ProgressBar focusMode={focusMode} progress={progress} />
-          </View>
+  const processedTasks = useMemo(() => {
+    const filteredTasks = tasks?.filter((task) => {
+      if (focusMode && !task.completed) {
+        return task;
+      } else if (!focusMode) {
+        return task;
+      }
+      return false;
+    });
 
-          {isLoading ? (
-            <View style={styles.skeletonContainer}>
-              <SkeletonList />
-            </View>
-          ) : (
-            <View style={styles.container}>
-              <View style={{ flex: isToday ? 0.96 : 0.94 }}>
+    return filteredTasks;
+  }, [tasks, focusMode]);
+
+  const isSame = originalArgs === previousArgs.current;
+
+  const swipeForward = () => {
+    const addUtcDate = add(new Date(currentDate), { days: 1 });
+    dispatch(setCurrentDate(addUtcDate.toISOString()));
+  };
+
+  const swipeBackwards = () => {
+    const subUtcDate = sub(currentDate, { days: 1 });
+    dispatch(setCurrentDate(subUtcDate.toISOString()));
+  };
+
+  const rightSwipe = Gesture.Fling()
+    .direction(Directions.RIGHT)
+    .onEnd(() => {
+      runOnJS(swipeBackwards)();
+    });
+
+  const leftSwipe = Gesture.Fling()
+    .direction(Directions.LEFT)
+    .onEnd(() => {
+      runOnJS(swipeForward)();
+    });
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : ""}
+      keyboardVerticalOffset={155}
+      style={styles.keyboardContainer}
+    >
+      {(isLoading || isFetching) && !isSame ? (
+        <View>
+          <Header />
+          <View style={styles.skeletonContainer}>
+            <SkeletonList />
+          </View>
+        </View>
+      ) : (
+        <GestureDetector gesture={leftSwipe}>
+          <GestureDetector gesture={rightSwipe}>
+            <Pressable onPress={dismissKeyboard} style={{ flex: 1 }}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "space-between",
+                }}
+              >
+                <DraggableFlatList
+                  data={processedTasks || []}
+                  stickyHeaderIndices={[0]}
+                  bounces={false}
+                  collapsable={false}
+                  keyExtractor={(item) => item?.id}
+                  renderItem={ListItem}
+                  keyboardDismissMode="none"
+                  contentContainerStyle={{ flexGrow: 1 }}
+                  directionalLockEnabled={true}
+                  keyboardShouldPersistTaps="handled"
+                  ListHeaderComponent={Header}
+                  ListFooterComponent={AddItem}
+                />
                 <View
                   style={{
-                    flex: isToday ? 0.94 : 0.94,
+                    paddingBottom: 20,
                     paddingTop: 10,
                   }}
                 >
-                  <TaskList
-                    tasks={tasks || []}
-                    handleToggleTaskFocus={handleToggleTaskFocus}
-                    handleToggleTaskComplete={handleToggleTaskComplete}
-                    utcDate={currentDate}
+                  <MoveIncomplete
+                    tasks={tasks}
+                    currentDate={currentDate}
+                    isLoading={moveTasksApiResult.isLoading}
+                    onMoveIncomplete={handleOpenIncompleteModal}
                   />
-                  {!editTaskId && (
-                    <View style={styles.editContainer}>
-                      <AddItem
-                        handleCreateNewTask={handleCreateNewTask}
-                        currentDate={currentDate}
-                        focusMode={focusMode}
-                      />
-                    </View>
-                  )}
                 </View>
               </View>
-            </View>
-          )}
-          <CalendarWidget
-            calendarOpen={calendarOpen}
-            toggleCalendar={handleToggleCalendar}
-            incompleteTasks={incompleteTasks}
-            currentDate={currentDate}
-            handleOnSelectDay={handleOnSelectDay}
-          />
-        </KeyboardAvoidingView>
+            </Pressable>
+          </GestureDetector>
+        </GestureDetector>
+      )}
 
-        <View style={styles.moveIncomlpleteContainer}>
-          <MoveIncomplete
-            tasks={tasks}
-            currentDate={currentDate}
-            isLoading={moveTasksApiResult.isLoading}
-            onMoveIncomplete={handleOpenIncompleteModal}
-          />
-        </View>
-        <MoveIncompleteModal
-          tasks={tasks}
-          isVisible={isMoveIncompleteOpen}
-          onPress={handleMoveIncompleteTasks}
-          onCancel={handleCloseIncompleteModal}
-          currentDate={currentDate}
-        />
-        {/* <IntroBottomSheet
-          user={userData?.email}
-          isLoading={userProfileLoading}
-        /> */}
-      </GestureHandlerRootView>
-    </TouchableWithoutFeedback>
+      <CalendarWidget
+        calendarOpen={calendarOpen}
+        toggleCalendar={handleToggleCalendar}
+        incompleteTasks={incompleteTasks}
+        currentDate={currentDate}
+        handleOnSelectDay={handleOnSelectDay}
+      />
+
+      <MoveIncompleteModal
+        tasks={tasks}
+        isVisible={isMoveIncompleteOpen}
+        onPress={handleMoveIncompleteTasks}
+        onCancel={handleCloseIncompleteModal}
+        currentDate={currentDate}
+      />
+      <ConfirmationModal
+        isVisible={Boolean(deleteTaskId)}
+        title="Delete Task"
+        description="Are you sure you want to delete this task?"
+        onConfirm={handleOnDeleteTask}
+        onCancel={handleCloseDeleteModal}
+        confirmLabel="Confirm"
+        isLoading={deleteTaskApiResults.isLoading}
+      />
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
+  moveIncomlpleteContainer: {
+    paddingHorizontal: 20,
   },
   keyboardContainer: {
     flex: 1,
     backgroundColor: "white",
-    paddingHorizontal: 0,
-    paddingTop: 10,
   },
   skeletonContainer: {
-    marginTop: 15,
-    paddingLeft: 20,
-    paddingRight: 10,
-  },
-  editContainer: {
-    marginTop: 15,
-  },
-  moveIncomlpleteContainer: {
-    backgroundColor: "white",
+    paddingTop: 20,
     paddingHorizontal: 20,
-    justifyContent: "flex-end",
-    paddingBottom: 20,
   },
 });
 

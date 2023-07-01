@@ -9,6 +9,8 @@ import SkeletonBox from "../../../components/SkeletonBox";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import logoutIcon from "../../../assets/images/logout.png";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { format } from "date-fns";
+
 import { api } from "../../../api";
 import {
   JWT_KEY_STORE,
@@ -152,7 +154,9 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.titleStyle}>ACCOUNT INFORMATION</Text>
 
         {isLoading ? (
-          <View style={{ marginBottom: 10, marginTop: 10 }}>
+          <View
+            style={{ marginBottom: 10, marginTop: 10, paddingHorizontal: 20 }}
+          >
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -172,7 +176,7 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
         {isLoading ? (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, paddingHorizontal: 20 }}>
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -191,7 +195,9 @@ const ProfileScreen = ({ navigation }) => {
         <Text style={styles.titleStyle}>APP SETTINGS</Text>
 
         {isLoading ? (
-          <View style={{ marginBottom: 10, marginTop: 10 }}>
+          <View
+            style={{ marginBottom: 10, marginTop: 10, paddingHorizontal: 20 }}
+          >
             <SkeletonBox height={30} width={"100%"} />
           </View>
         ) : (
@@ -212,7 +218,7 @@ const ProfileScreen = ({ navigation }) => {
         )}
 
         {isLoading ? (
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10, paddingHorizontal: 20 }}>
             <SkeletonBox height={70} width={"100%"} />
           </View>
         ) : (
@@ -235,7 +241,8 @@ const ProfileScreen = ({ navigation }) => {
             />
             {data?.prefs?.autoMove && autotaskDate && (
               <Text style={{ paddingLeft: 23, marginTop: -5 }}>
-                Active From: {autotaskDate}
+                Active From:{" "}
+                {format(new Date(autotaskDate), "d LLL yyyy").toUpperCase()}
               </Text>
             )}
           </View>
@@ -256,7 +263,7 @@ const ProfileScreen = ({ navigation }) => {
             }}
           >
             <Text type="h3" color="black">
-              v1.0.2
+              v1.0.4
             </Text>
           </View>
         )}

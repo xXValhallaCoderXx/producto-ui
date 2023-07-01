@@ -9,6 +9,8 @@ export const todaySlice = createSlice({
     calendarOpen: false,
     editingTask: null,
     currentDate: new Date().toISOString(),
+    progress: 0,
+    deleteTaskId: null,
   },
   reducers: {
     toggleFocusMode: (state, action) => {
@@ -25,6 +27,12 @@ export const todaySlice = createSlice({
     },
     setEditingTask: (state, action) => {
       state.editingTask = action.payload;
+    },
+    setProgress: (state, action) => {
+      state.progress = action.payload;
+    },
+    setDeleteTaskId: (state, action) => {
+      state.deleteTaskId = action.payload;
     },
   },
 });
@@ -49,6 +57,8 @@ export const {
   toggleAddTaskMode,
   setCurrentDate,
   setEditingTask,
+  setProgress,
+  setDeleteTaskId,
 } = todaySlice.actions;
 
 export default todaySlice.reducer;

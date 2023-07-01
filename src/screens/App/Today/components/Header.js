@@ -1,35 +1,64 @@
-import { useEffect } from "react";
+import { add, sub } from "date-fns";
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   TouchableNativeFeedback,
   Platform,
-  Image,
 } from "react-native";
 import { format } from "date-fns";
 import { Text, useTheme } from "react-native-paper";
 import IonIcon from "react-native-vector-icons/MaterialIcons";
 
 import { useDispatch, useSelector } from "react-redux";
-import { toggleFocusMode, selectIsToday } from "../today-slice";
-import lockOpen from "../../../../assets/images/lock-open.png";
-import lockClosed from "../../../../assets/images/lock-closed.png";
+import {
+  toggleFocusMode,
+  toggleCalendar,
+  selectIsToday,
+  selectCurrentDate,
+  setEditingTask,
+  setCurrentDate,
+} from "../today-slice";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import ProgressBar from "../../../../components/ProgressBar";
+import { useMemo } from "react";
 
-const TodayHeader = ({
-  focusMode,
-  onChangeDate,
-  clientUtc,
-  onPressToday,
-  onPressDate,
-}) => {
+const TodayHeader = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isToday = useSelector(selectIsToday);
+  const clientUtc = useSelector(selectCurrentDate);
+  const focusMode = useSelector((state) => state.today.focusMode);
+  const calendarOpen = useSelector((state) => state.today.calendarOpen);
+  const progress = useSelector((state) => state.today.progress);
+
+  const onPressDate = () => {
+    dispatch(toggleCalendar({ calendarOpen: !calendarOpen }));
+  };
+
+  const onPressToday = () => {
+    dispatch(setCurrentDate(new Date().toISOString()));
+  };
+
+  const onChangeDate = (direction) => () => {
+    dispatch(setEditingTask(null));
+    if (direction === "back") {
+      const subUtcDate = sub(clientUtc, { days: 1 });
+      dispatch(setCurrentDate(subUtcDate.toISOString()));
+    } else {
+      const addUtcDate = add(new Date(clientUtc), { days: 1 });
+      dispatch(setCurrentDate(addUtcDate.toISOString()));
+    }
+  };
 
   return (
-    <View>
+    <View
+      style={{
+        paddingHorizontal: 20,
+        backgroundColor: "white",
+        paddingBottom: 20,
+      }}
+    >
       <TouchableOpacity style={{ height: 18 }} onPress={onPressDate}>
         <Text
           style={{
@@ -85,13 +114,14 @@ const TodayHeader = ({
             style={{ padding: 5 }}
           >
             <Ionicons
-              name={focusMode ? "eye-outline" : "eye-off-outline"}
+              name={focusMode ? "eye-off-outline" : "eye-outline"}
               size={32}
               color="#1c1b1f"
             />
           </TouchableOpacity>
         }
       </View>
+      <ProgressBar progress={progress} />
     </View>
   );
 };

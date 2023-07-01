@@ -1,5 +1,8 @@
+import "react-native-gesture-handler";
+import * as Sentry from "sentry-expo";
 import { useState, useCallback, useEffect } from "react";
 import { Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import * as NavigationBar from "expo-navigation-bar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -16,9 +19,15 @@ import Toast from "./src/components/Toast";
 
 SplashScreen.preventAutoHideAsync();
 
+Sentry.init({
+  dsn: "https://d6daab397b164138946fc445afb30f8b@o4505036216074240.ingest.sentry.io/4505036217647104",
+  enableInExpoDevelopment: true,
+  debug: true,
+});
+
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+function App() {
   const [appIsReady, setAppIsReady] = useState(false);
 
   useEffect(() => {
@@ -63,28 +72,32 @@ export default function App() {
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <SafeAreaView style={{ flex: 1 }}>
-        <Provider store={store}>
-          <ToastProvider
-            duration={2500}
-            animationType="zoom-in"
-            offset={30}
-            placement="bottom"
-            renderToast={(toastOptions) => <Toast toast={toastOptions} />}
-          >
-            <PaperProvider theme={theme}>
-              <NavigationContainer>
-                <Stack.Navigator
-                  screenOptions={() => ({
-                    headerShown: false,
-                  })}
-                >
-                  <Stack.Screen name="Root" component={RootScreens} />
-                </Stack.Navigator>
-              </NavigationContainer>
-            </PaperProvider>
-          </ToastProvider>
-        </Provider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <Provider store={store}>
+            <ToastProvider
+              duration={2500}
+              animationType="zoom-in"
+              offset={30}
+              placement="bottom"
+              renderToast={(toastOptions) => <Toast toast={toastOptions} />}
+            >
+              <PaperProvider theme={theme}>
+                <NavigationContainer>
+                  <Stack.Navigator
+                    screenOptions={() => ({
+                      headerShown: false,
+                    })}
+                  >
+                    <Stack.Screen name="Root" component={RootScreens} />
+                  </Stack.Navigator>
+                </NavigationContainer>
+              </PaperProvider>
+            </ToastProvider>
+          </Provider>
+        </GestureHandlerRootView>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
+
+export default Sentry.Native.wrap(App);

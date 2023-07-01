@@ -203,7 +203,27 @@ const LoginScreen = ({ navigation }) => {
         style={styles.container}
       >
         <AuthLayout>
-          <AuthLayout.Header subTitle="Sign in, to unlock your productivity" />
+          <AuthLayout.Header
+            customTitle={
+              step === 2 && (
+                <Text
+                  style={{
+                    fontSize: 16,
+                    marginTop: 22,
+                    marginLeft: -8,
+                    color: "gray",
+                    fontWeight: "500",
+                  }}
+                >
+                  Continue as{" "}
+                  <Text style={{ fontWeight: "700" }}>
+                    {emailForm.values.email}
+                  </Text>
+                </Text>
+              )
+            }
+            subTitle={"Sign in, to unlock your productivity"}
+          />
           <AuthLayout.Content>
             <Animated.View
               style={{
@@ -243,19 +263,6 @@ const LoginScreen = ({ navigation }) => {
                   </View>
                 </View>
                 <View style={styles.stepTwoContainer}>
-                  <View
-                    style={{
-                      width: "100%",
-                      marginBottom: 20,
-                    }}
-                  >
-                    <Text>
-                      Continue as{" "}
-                      <Text style={{ fontWeight: 600 }}>
-                        {emailForm.values.email}
-                      </Text>
-                    </Text>
-                  </View>
                   <Input
                     label="Password"
                     value={passwordForm.values.password}

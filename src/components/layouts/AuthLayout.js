@@ -6,11 +6,15 @@ const AuthLayout = ({ children }) => {
   return <View style={{ flex: 1 }}>{children}</View>;
 };
 
-const Header = ({ subTitle }) => {
+const Header = ({ subTitle, customTitle }) => {
   return (
     <View style={styles.headerContainer}>
       <Image source={titleDark} resizeMode="contain" style={styles.image} />
-      <Text style={styles.subTitle}>{subTitle}</Text>
+      {customTitle ? (
+        customTitle
+      ) : (
+        <Text style={styles.subTitle}>{subTitle}</Text>
+      )}
     </View>
   );
 };
